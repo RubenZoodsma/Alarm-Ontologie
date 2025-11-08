@@ -1,0 +1,11 @@
+@prefix : <http://example.org/cdo/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://example.org/cdo/core>
+    a owl:Ontology ;
+    owl:versionIRI <http://example.org/cdo/core/v1> ;
+    rdfs:label "Clinical–Device Ontology Core (structure only)" ;
+    owl:imports
+        <https://raw.githubusercontent.com/YourOrg/clinical-device-ontology/main/ontology/cdo_structure/cdo_device.owl> ,
+        <https://raw.githubusercontent.com/YourOrg/clinical-device-ontology/main/ontology/cdo_structure/cdo_clinical.owl> .

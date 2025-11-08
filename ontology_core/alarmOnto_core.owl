@@ -1,0 +1,283 @@
+@prefix : <http://example.org/clinical-device-ontology#> .
+@prefix cdo: <http://example.org/clinical-device-ontology#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+# ONTOLOGY HEADER
+#################################################################
+
+<http://example.org/clinical-device-ontology>
+    a owl:Ontology ;
+    rdfs:label "Integrated Clinical–Device Ontology (ICDO)" ;
+    rdfs:comment "Ontology capturing medical device (RTMSS/SDC-like) and clinical/physiological (OPB-like) structures, without alarm/event classes." .
+
+#################################################################
+# TOP-LEVEL / SHARED CLASSES
+#################################################################
+
+:Entity a owl:Class ;
+    rdfs:label "Entity" ;
+    rdfs:comment "Abstract superclass for all device and clinical entities." .
+
+:State a owl:Class ;
+    rdfs:label "State" ;
+    rdfs:comment "Abstract placeholder for state/value-like entities (Enabled, Impaired, etc.). Instances can be introduced in an ABox." .
+
+:Quantity a owl:Class ;
+    rdfs:label "Quantity" ;
+    rdfs:comment "Abstract superclass for measurable quantities." .
+
+#################################################################
+# DEVICE-SIDE CLASSES
+#################################################################
+
+:DeviceEntity a owl:Class ;
+    rdfs:subClassOf :Entity ;
+    rdfs:label "Device Entity" ;
+    rdfs:comment "Superclass for all device-related classes." .
+
+:PhysicalDevice a owl:Class ;
+    rdfs:subClassOf :DeviceEntity ;
+    rdfs:label "Physical Device" ;
+    rdfs:comment "Overall medical device, comparable to IEEE 11073 MDS." .
+
+:FunctionalUnit a owl:Class ;
+    rdfs:subClassOf :DeviceEntity ;
+    rdfs:label "Functional Unit" ;
+    rdfs:comment "Logical module or subsystem within a device (e.g. ventilation unit, gas supply unit)." .
+
+:SensorInterface a owl:Class ;
+    rdfs:subClassOf :DeviceEntity ;
+    rdfs:label "Sensor Interface" ;
+    rdfs:comment "Physical or logical interface to which a sensor is connected (e.g. flow sensor port)." .
+
+:Sensor a owl:Class ;
+    rdfs:subClassOf :DeviceEntity ;
+    rdfs:label "Sensor" ;
+    rdfs:comment "Sensing element or transducer producing a signal." .
+
+:DeviceChannel a owl:Class ;
+    rdfs:subClassOf :DeviceEntity ;
+    rdfs:label "Device Channel" ;
+    rdfs:comment "Grouping of related metrics/waveforms, comparable to IEEE 11073 Channel." .
+
+:Signal a owl:Class ;
+    rdfs:subClassOf :DeviceEntity ;
+    rdfs:label "Signal" ;
+    rdfs:comment "Raw or pre-processed data produced by a sensor." .
+
+:MeasurementProcess a owl:Class ;
+    rdfs:subClassOf :DeviceEntity ;
+    rdfs:label "Measurement Process" ;
+    rdfs:comment "Algorithm or logical step that consumes signals and produces metrics." .
+
+:Metric a owl:Class ;
+    rdfs:subClassOf :DeviceEntity ;
+    rdfs:label "Metric" ;
+    rdfs:comment "Atomic measurement/result object, aligned with IEEE 11073/SDC Metric." .
+
+#################################################################
+# CLINICAL-SIDE CLASSES
+#################################################################
+
+:ClinicalEntity a owl:Class ;
+    rdfs:subClassOf :Entity ;
+    rdfs:label "Clinical Entity" .
+
+:Patient a owl:Class ;
+    rdfs:subClassOf :ClinicalEntity ;
+    rdfs:label "Patient" ;
+    rdfs:comment "The subject/organism for which device and clinical data apply." .
+
+:PhysiologicalSystem a owl:Class ;
+    rdfs:subClassOf :ClinicalEntity ;
+    rdfs:label "Physiological System" ;
+    rdfs:comment "System of organs that collectively maintain a physiological function (e.g. pulmonary system)." .
+
+:Organ a owl:Class ;
+    rdfs:subClassOf :ClinicalEntity ;
+    rdfs:label "Organ" ;
+    rdfs:comment "Anatomical/functional unit such as lung or heart." .
+
+:PhysiologicalProcess a owl:Class ;
+    rdfs:subClassOf :ClinicalEntity ;
+    rdfs:label "Physiological Process" ;
+    rdfs:comment "Process such as oxygenation, ventilation, perfusion." .
+
+:PhysiologicalProperty a owl:Class ;
+    rdfs:subClassOf :ClinicalEntity , :Quantity ;
+    rdfs:label "Physiological Property" ;
+    rdfs:comment "Measurable property of a physiological process (e.g. SaO2, RR, PaO2)." .
+
+#################################################################
+# OBJECT PROPERTIES (DEVICE)
+#################################################################
+
+:hasFunctionalUnit a owl:ObjectProperty ;
+    rdfs:domain :PhysicalDevice ;
+    rdfs:range :FunctionalUnit ;
+    rdfs:label "has functional unit" ;
+    rdfs:comment "Links a physical device to one of its functional units." .
+
+:hasSensorInterface a owl:ObjectProperty ;
+    rdfs:domain :FunctionalUnit ;
+    rdfs:range :SensorInterface ;
+    rdfs:label "has sensor interface" ;
+    rdfs:comment "Functional unit exposes a sensor interface." .
+
+:hasSensor a owl:ObjectProperty ;
+    rdfs:domain :SensorInterface ;
+    rdfs:range :Sensor ;
+    rdfs:label "has sensor" ;
+    rdfs:comment "Sensor connected to a given sensor interface." .
+
+:producesSignal a owl:ObjectProperty ;
+    rdfs:domain :Sensor ;
+    rdfs:range :Signal ;
+    rdfs:label "produces signal" ;
+    rdfs:comment "A sensor produces a signal." .
+
+:takesSignal a owl:ObjectProperty ;
+    rdfs:domain :MeasurementProcess ;
+    rdfs:range :Signal ;
+    rdfs:label "takes signal" ;
+    rdfs:comment "A measurement process consumes a signal." .
+
+:producesMetric a owl:ObjectProperty ;
+    rdfs:domain :MeasurementProcess ;
+    rdfs:range :Metric ;
+    rdfs:label "produces metric" ;
+    rdfs:comment "A measurement process yields a metric." .
+
+:hasChannel a owl:ObjectProperty ;
+    rdfs:domain :FunctionalUnit ;
+    rdfs:range :DeviceChannel ;
+    rdfs:label "has channel" ;
+    rdfs:comment "A functional unit may have one or more device channels." .
+
+:channelHasMetric a owl:ObjectProperty ;
+    rdfs:domain :DeviceChannel ;
+    rdfs:range :Metric ;
+    rdfs:label "channel has metric" ;
+    rdfs:comment "A device channel groups metrics." .
+
+:partOfDevice a owl:ObjectProperty ;
+    rdfs:domain :FunctionalUnit ;
+    rdfs:range :PhysicalDevice ;
+    rdfs:label "part of device" ;
+    rdfs:comment "Inverse-like relation to hasFunctionalUnit (kept explicit)." .
+
+#################################################################
+# OBJECT PROPERTIES (CLINICAL)
+#################################################################
+
+:hasPhysiologicalSystem a owl:ObjectProperty ;
+    rdfs:domain :Patient ;
+    rdfs:range :PhysiologicalSystem ;
+    rdfs:label "has physiological system" .
+
+:hasOrgan a owl:ObjectProperty ;
+    rdfs:domain :PhysiologicalSystem ;
+    rdfs:range :Organ ;
+    rdfs:label "has organ" .
+
+:partOfSystem a owl:ObjectProperty ;
+    rdfs:domain :Organ ;
+    rdfs:range :PhysiologicalSystem ;
+    rdfs:label "part of system" .
+
+:hasPhysiologicalProcess a owl:ObjectProperty ;
+    rdfs:domain :Organ ;
+    rdfs:range :PhysiologicalProcess ;
+    rdfs:label "has physiological process" .
+
+:hasProperty a owl:ObjectProperty ;
+    rdfs:domain :PhysiologicalProcess ;
+    rdfs:range :PhysiologicalProperty ;
+    rdfs:label "has property" ;
+    rdfs:comment "Physiological process exhibits a measurable property." .
+
+:isPropertyOf a owl:ObjectProperty ;
+    rdfs:domain :PhysiologicalProperty ;
+    rdfs:range :PhysiologicalProcess ;
+    rdfs:label "is property of" .
+
+:dependsOnProcess a owl:ObjectProperty ;
+    rdfs:domain :PhysiologicalProcess ;
+    rdfs:range :PhysiologicalProcess ;
+    rdfs:label "depends on process" ;
+    rdfs:comment "Captures physiological dependencies, e.g. oxygenation depends on ventilation." .
+
+#################################################################
+# CROSS-DOMAIN PROPERTIES
+#################################################################
+
+:measuresProperty a owl:ObjectProperty ;
+    rdfs:domain :Metric ;
+    rdfs:range :PhysiologicalProperty ;
+    rdfs:label "measures property" ;
+    rdfs:comment "Device metric measures a clinical/physiological property." .
+
+:measuredByMetric a owl:ObjectProperty ;
+    rdfs:domain :PhysiologicalProperty ;
+    rdfs:range :Metric ;
+    rdfs:label "measured by metric" ;
+    rdfs:comment "Inverse link: physiological property is measured by a device metric." .
+
+#################################################################
+# DATA PROPERTIES (SHARED)
+#################################################################
+
+:hasState a owl:DatatypeProperty ;
+    rdfs:domain :Entity ;
+    rdfs:range xsd:string ;
+    rdfs:label "has state" ;
+    rdfs:comment "Generic state marker (e.g. Enabled, Impaired, Active)." .
+
+:hasActivationState a owl:DatatypeProperty ;
+    rdfs:domain :Metric ;
+    rdfs:range xsd:string ;
+    rdfs:label "has activation state" ;
+    rdfs:comment "Device-style activation state, e.g. On, Standby, Off." .
+
+:hasAvailabilityStatus a owl:DatatypeProperty ;
+    rdfs:domain :Entity ;
+    rdfs:range xsd:string ;
+    rdfs:label "has availability status" ;
+    rdfs:comment "Indicates if data/value is available." .
+
+:hasQualityIndicator a owl:DatatypeProperty ;
+    rdfs:domain :Signal ;
+    rdfs:range xsd:string ;
+    rdfs:label "has quality indicator" ;
+    rdfs:comment "Quality of a signal (e.g. Good, Bad, Questionable)." .
+
+:hasValue a owl:DatatypeProperty ;
+    rdfs:domain :Entity ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "has value" ;
+    rdfs:comment "Numeric value for metrics or physiological properties." .
+
+:hasUnit a owl:DatatypeProperty ;
+    rdfs:domain :Entity ;
+    rdfs:range xsd:string ;
+    rdfs:label "has unit" .
+
+:hasRange a owl:DatatypeProperty ;
+    rdfs:domain :Entity ;
+    rdfs:range xsd:string ;
+    rdfs:label "has range" .
+
+:hasSNOMEDCode a owl:DatatypeProperty ;
+    rdfs:domain :ClinicalEntity ;
+    rdfs:range xsd:string ;
+    rdfs:label "has SNOMED code" .
+
+:hasMDCCode a owl:DatatypeProperty ;
+    rdfs:domain :DeviceEntity ;
+    rdfs:range xsd:string ;
+    rdfs:label "has MDC code" ;
+    rdfs:comment "IEEE 11073/MDER code for device-side interoperability." .
