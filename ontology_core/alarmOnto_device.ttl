@@ -1,0 +1,19 @@
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix core: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/core#> .
+
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device>
+    a owl:Ontology ;
+    rdfs:label "Alarm Ontology - Device Module" ;
+    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_core.ttl> .
+
+:PhysicalDevice a owl:Class ; rdfs:subClassOf core:DeviceEntity .
+:FunctionalUnit a owl:Class ; rdfs:subClassOf core:DeviceEntity .
+:Sensor a owl:Class ; rdfs:subClassOf core:DeviceEntity .
+:Signal a owl:Class ; rdfs:subClassOf core:DeviceEntity .
+:Metric a owl:Class ; rdfs:subClassOf core:DeviceEntity .
+
+:hasFunctionalUnit a owl:ObjectProperty ;
+    rdfs:domain :PhysicalDevice ;
+    rdfs:range :FunctionalUnit .

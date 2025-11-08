@@ -1,10 +1,10 @@
-@prefix : <http://example.org/cdo/clinical#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-<http://example.org/cdo/clinical>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical>
     a owl:Ontology ;
-    rdfs:label "Clinical Ontology (structure)" .
+    rdfs:label "Alarm Ontology - Clinical Module" .
 
 :Patient a owl:Class .
 :PhysiologicalSystem a owl:Class .

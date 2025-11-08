@@ -1,0 +1,11 @@
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/core>
+    a owl:Ontology ;
+    owl:versionIRI <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/core/v1> ;
+    rdfs:label "Alarm Ontology Core (structure only)" ;
+    owl:imports
+        <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_device.ttl> ,
+        <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_clinical.ttl> .

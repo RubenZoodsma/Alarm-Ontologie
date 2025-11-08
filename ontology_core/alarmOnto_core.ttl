@@ -1,5 +1,5 @@
-@prefix : <http://example.org/clinical-device-ontology#> .
-@prefix cdo: <http://example.org/clinical-device-ontology#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/core#> .
+@prefix ao: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/core#> .
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
@@ -9,9 +9,9 @@
 # ONTOLOGY HEADER
 #################################################################
 
-<http://example.org/clinical-device-ontology>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/core>
     a owl:Ontology ;
-    rdfs:label "Integrated Clinical–Device Ontology (ICDO)" ;
+    rdfs:label "Integrated Alarm Ontology (IAO)" ;
     rdfs:comment "Ontology capturing medical device (RTMSS/SDC-like) and clinical/physiological (OPB-like) structures, without alarm/event classes." .
 
 #################################################################
