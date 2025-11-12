@@ -1,0 +1,37 @@
+######################################################################################################
+# FILE: 7_measurementProcess.ttl
+# DESCRIPTION:
+#   Instances of :MeasurementProcess represent algorithmic transformations 
+#   converting signals to metrics.
+######################################################################################################
+
+@prefix : <http://example.org/alarmOnto/instances#> .
+@prefix dev: <http://example.org/alarmOnto/device#> .
+@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/alarmOnto/instances/device/measurementProcess>
+    a owl:Ontology ;
+    rdfs:label "Measurement Process Instances" ;
+    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+
+######################################################################################################
+# BLUEPRINT — MEASUREMENTPROCESS INSTANCE STRUCTURE
+#
+# Data Properties:
+#   - hasAlgorithm (xsd:string) e.g. "Fourier transform + calibration"
+#   - hasLatency (xsd:decimal) e.g. 0.2
+#   - hasState (xsd:string) e.g. "Enabled"
+#
+# Object Properties:
+#   - takesSignal → Signal
+#   - producesMetric → Metric
+#
+# Example:
+#   :SpO2_Process_1 a dev:MeasurementProcess ;
+#       dev:hasAlgorithm "Fourier + calibration" ;
+#       dev:hasLatency 0.2 ;
+#       dev:takesSignal :SpO2_Signal_1 ;
+#       dev:producesMetric :SpO2_Metric_1 .
+######################################################################################################

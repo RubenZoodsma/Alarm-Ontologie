@@ -1,0 +1,50 @@
+######################################################################################################
+# FILE: 1_physicalDevice.ttl
+# DESCRIPTION:
+#   Instances of :PhysicalDevice represent physical medical devices 
+#   (e.g., monitors, ventilators). Equivalent to IEEE 11073 MDS.
+######################################################################################################
+
+@prefix : <http://example.org/alarmOnto/instances#> .
+@prefix dev: <http://example.org/alarmOnto/device#> .
+@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/alarmOnto/instances/device/physicalDevice>
+    a owl:Ontology ;
+    rdfs:label "Physical Device Instances" ;
+    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+
+######################################################################################################
+# BLUEPRINT — PHYSICALDEVICE INSTANCE STRUCTURE
+#
+# Data Properties:
+#   - hasManufacturer (xsd:string)      e.g. "Philips"
+#   - hasModelName (xsd:string)         e.g. "IntelliVue MP70"
+#   - hasSerialNumber (xsd:string)      e.g. "SN-112358"
+#   - hasUDI (xsd:string)               e.g. "(01)00884838010004"
+#   - hasState (xsd:string)             e.g. "Enabled"
+#
+# Object Properties:
+#   - hasFunctionalUnit → FunctionalUnit
+#       e.g. :Ventilator_1 dev:hasFunctionalUnit :GasDeliveryUnit_1
+#
+# Example:
+#   :Ventilator_1 a dev:PhysicalDevice ;
+#       dev:hasManufacturer "Philips" ;
+#       dev:hasModelName "Respironics V60" ;
+#       dev:hasState "Enabled" ;
+#       dev:hasFunctionalUnit :GasDeliveryUnit_1 .
+######################################################################################################
+
+# Physical device names:
+# - Monitor (Philips)
+# - Ventilator (Draeger, Hulbus, Datexahmedacom)
+# - Thermoregulator (Medibus)
+
+:PhilipsMonitor a dev:PhysicalDevice ;
+    dev:hasManufacturer "Philips" ;
+    dev:hasModelName "Unknown Model" ;
+    dev:hasState "Enabled" ;
+    dev:hasFunctionalUnit :Spo2_Module, :ECG_Module, :NIBP_Module, :Temp_Module, :IBP_Module, :VascPress_Module .

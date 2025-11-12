@@ -1,0 +1,36 @@
+######################################################################################################
+# FILE: 4_functionalUnit.ttl
+# DESCRIPTION:
+#   Instances of :FunctionalUnit represent logical subsystems in a device 
+#   (e.g. Gas Delivery Unit, ECG Module). Equivalent to RTMSS VMD.
+######################################################################################################
+
+@prefix : <http://example.org/alarmOnto/instances#> .
+@prefix dev: <http://example.org/alarmOnto/device#> .
+@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/alarmOnto/instances/device/functionalUnit>
+    a owl:Ontology ;
+    rdfs:label "Functional Unit Instances" ;
+    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+
+######################################################################################################
+# BLUEPRINT — FUNCTIONALUNIT INSTANCE STRUCTURE
+#
+# Data Properties:
+#   - hasDescription (xsd:string)       e.g. "Gas Delivery Unit"
+#   - hasState (xsd:string)             e.g. "Active"
+#
+# Object Properties:
+#   - partOfDevice → PhysicalDevice
+#   - hasDeviceChannel → DeviceChannel
+#
+# Example:
+#   :GasDeliveryUnit_1 a dev:FunctionalUnit ;
+#       dev:hasDescription "Gas Delivery Unit" ;
+#       dev:hasState "Active" ;
+#       dev:partOfDevice :Ventilator_1 ;
+#       dev:hasDeviceChannel :FlowChannel_1 .
+######################################################################################################

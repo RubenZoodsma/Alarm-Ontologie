@@ -1,0 +1,47 @@
+######################################################################################################
+# FILE: 1_patient.ttl
+# DESCRIPTION:
+#   Contains instances of the class :Patient within the AlarmOnto Clinical Ontology.
+#   Each individual represents a patient under monitoring, with demographic and 
+#   physiological context references (e.g., links to physiological systems).
+######################################################################################################
+
+@prefix : <http://example.org/alarmOnto/instances#> .
+@prefix clin: <http://example.org/alarmOnto/clinical#> .
+@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/alarmOnto/instances/clinical/patient>
+    a owl:Ontology ;
+    rdfs:label "Patient Instances" ;
+    owl:imports <https://raw.githubusercontent.com/YourOrg/clinical-device-ontology/main/ontology_core/alarmOnto_coreFile.ttl> .
+
+######################################################################################################
+# BLUEPRINT — PATIENT INSTANCE STRUCTURE
+#
+# Data Properties:
+#   - hasIdentifier (xsd:string) e.g. "12345"
+#   - hasAge (xsd:integer) e.g. 63
+#   - hasSex (xsd:string) e.g. "Female"
+#   - hasState (xsd:string) e.g. "Under monitoring"
+#
+# Object Properties:
+#   - hasPhysiologicalSystem → PhysiologicalSystem
+#       e.g. :Patient_001 hasPhysiologicalSystem :Pulmonary_System_1
+#
+# Example instance:
+#   :Patient_001 a clin:Patient ;
+#       clin:hasIdentifier "12345" ;
+#       clin:hasAge 63 ;
+#       clin:hasSex "Female" ;
+#       clin:hasState "Under monitoring" ;
+#       clin:hasPhysiologicalSystem :Pulmonary_System_1 .
+######################################################################################################
+
+:ExamplePatient a clin:Patient ;
+    clin:hasIdentifier "12345" ;
+    clin:hasAge 63 ;
+    clin:hasSex "Female" ;
+    clin:hasState "Admitted" ;
+    clin:hasPhysiologicalSystem :

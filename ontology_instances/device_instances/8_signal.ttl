@@ -1,0 +1,37 @@
+######################################################################################################
+# FILE: 8_signal.ttl
+# DESCRIPTION:
+#   Instances of :Signal represent time-series data produced by sensors. 
+#   Equivalent to RTMSS Real-Time Sample Arrays (RTSA).
+######################################################################################################
+
+@prefix : <http://example.org/alarmOnto/instances#> .
+@prefix dev: <http://example.org/alarmOnto/device#> .
+@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/alarmOnto/instances/device/signal>
+    a owl:Ontology ;
+    rdfs:label "Signal Instances" ;
+    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+
+######################################################################################################
+# BLUEPRINT — SIGNAL INSTANCE STRUCTURE
+#
+# Data Properties:
+#   - hasSignalQuality (xsd:string)     e.g. "Good"
+#   - hasSamplingRate (xsd:decimal)     e.g. 125
+#   - hasUnit (xsd:string)              e.g. "%"
+#
+# Object Properties:
+#   - isProducedBy → Sensor
+#   - inputToProcess → MeasurementProcess
+#
+# Example:
+#   :SpO2_Signal_1 a dev:Signal ;
+#       dev:hasSignalQuality "Good" ;
+#       dev:hasSamplingRate 125 ;
+#       dev:isProducedBy :O2Sensor_1 ;
+#       dev:inputToProcess :SpO2_Process_1 .
+######################################################################################################

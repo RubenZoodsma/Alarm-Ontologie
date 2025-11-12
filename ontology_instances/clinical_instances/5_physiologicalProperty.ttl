@@ -1,0 +1,82 @@
+######################################################################################################
+# FILE: 5_physiologicalProperty.ttl
+# DESCRIPTION:
+#   Contains instances of :PhysiologicalProperty — measurable biological quantities (e.g., SaO2, HR).
+#   These properties link directly to device metrics for interoperability.
+######################################################################################################
+
+@prefix : <http://example.org/alarmOnto/instances#> .
+@prefix clin: <http://example.org/alarmOnto/clinical#> .
+@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/alarmOnto/instances/clinical/physiologicalProperty>
+    a owl:Ontology ;
+    rdfs:label "Physiological Property Instances" ;
+    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+
+######################################################################################################
+# BLUEPRINT — PHYSIOLOGICALPROPERTY INSTANCE STRUCTURE
+#
+# Data Properties:
+#   - hasValue (xsd:decimal)            e.g. 94
+#   - hasUnit (xsd:string)              e.g. "%"
+#   - hasSNOMEDCode (xsd:string)        e.g. "103228002"   # Arterial O2 saturation
+#   - hasState (xsd:string)             e.g. "Low"
+#
+# Object Properties:
+#   - partOfProcess → PhysiologicalProcess
+#       e.g. :SaO2_Property_1 clin:partOfProcess :Pulmonary_Oxygenation_1
+#
+# Example instance:
+#   :SaO2_Property_1 a clin:PhysiologicalProperty ;
+#       clin:hasValue 94 ;
+#       clin:hasUnit "%" ;
+#       clin:hasState "Low" ;
+#       clin:partOfProcess :Pulmonary_Oxygenation_1 .
+######################################################################################################
+
+### Physiological properties:
+# - Arterial Oxygen Saturation (SaO2)
+# - Respiratory Rate (RR)
+# - Cardiac Output (CO)
+# - Cardiac electric activity (ECG)
+# - Arterial Blood Pressure (ABP)
+# - Peripheral cardiac pulse (PPG)
+
+:SaO2_Property a clin:PhysiologicalProperty ;
+    clin:hasValue 94 ;
+    clin:hasUnit "%" ;
+    clin:hasSNOMEDCode "103228002" ;
+    clin:hasState "Low" ;
+    clin:partOfProcess :Pulmonary_Oxygenation .
+
+:RR_Property a clin:PhysiologicalProperty ;
+    clin:hasValue 18 ;
+    clin:hasUnit "breaths/min" ;
+    clin:hasSNOMEDCode "86290005" ;
+    clin:hasState "Normal" ;
+    clin:partOfProcess :Pulmonary_Ventilation .
+
+:ABP_Systolic_Property a clin:PhysiologicalProperty ;
+    clin:hasValue 120 ;
+    clin:hasUnit "mmHg" ;
+    clin:hasSNOMEDCode "271649006" ;
+    clin:hasState "Normal" ;
+    clin:partOfProcess :Systemic_Perfusion .
+
+:ABP_Diastolic_Property a clin:PhysiologicalProperty ;
+    clin:hasValue 80 ;
+    clin:hasUnit "mmHg" ;
+    clin:hasSNOMEDCode "271650006" ;
+    clin:hasState "Normal" ;
+    clin:partOfProcess :Systemic_Perfusion .
+
+:ABP_Mean_Property a clin:PhysiologicalProperty ;
+    clin:hasValue 93 ;
+    clin:hasUnit "mmHg" ;
+    clin:hasSNOMEDCode "413429000" ;
+    clin:hasState "Normal" ;
+    clin:partOfProcess :Systemic_Perfusion .
+

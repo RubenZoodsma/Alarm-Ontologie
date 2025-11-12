@@ -1,0 +1,40 @@
+######################################################################################################
+# FILE: 6_metric.ttl
+# DESCRIPTION:
+#   Instances of :Metric represent quantitative measurements. 
+#   Maps to IEEE 11073 Metric / SDC MetricDescriptor.
+######################################################################################################
+
+@prefix : <http://example.org/alarmOnto/instances#> .
+@prefix dev: <http://example.org/alarmOnto/device#> .
+@prefix clin: <http://example.org/alarmOnto/clinical#> .
+@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/alarmOnto/instances/device/metric>
+    a owl:Ontology ;
+    rdfs:label "Metric Instances" ;
+    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+
+######################################################################################################
+# BLUEPRINT — METRIC INSTANCE STRUCTURE
+#
+# Data Properties:
+#   - hasMDCCode (xsd:string) e.g. "MDC_PULS_OXIM_SAT_O2"
+#   - hasSNOMEDCode (xsd:string) e.g. "103228002"
+#   - hasValue (xsd:decimal) e.g. 94
+#   - hasUnit (xsd:string) e.g. "%"
+#   - hasState (xsd:string) e.g. "Enabled"
+#
+# Object Properties:
+#   - producedBy → MeasurementProcess
+#   - measuresProperty → PhysiologicalProperty
+#
+# Example:
+#   :SpO2_Metric_1 a dev:Metric ;
+#       dev:hasMDCCode "MDC_PULS_OXIM_SAT_O2" ;
+#       dev:hasValue 94 ;
+#       dev:hasUnit "%" ;
+#       core:measuresProperty :SaO2_Property_1 .
+######################################################################################################

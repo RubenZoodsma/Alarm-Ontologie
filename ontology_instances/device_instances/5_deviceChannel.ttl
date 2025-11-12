@@ -1,0 +1,35 @@
+######################################################################################################
+# FILE: 5_deviceChannel.ttl
+# DESCRIPTION:
+#   Instances of :DeviceChannel represent logical groupings of related metrics.
+#   Equivalent to RTMSS Channel entities.
+######################################################################################################
+
+@prefix : <http://example.org/alarmOnto/instances#> .
+@prefix dev: <http://example.org/alarmOnto/device#> .
+@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/alarmOnto/instances/device/deviceChannel>
+    a owl:Ontology ;
+    rdfs:label "Device Channel Instances" ;
+    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+
+######################################################################################################
+# BLUEPRINT — DEVICECHANNEL INSTANCE STRUCTURE
+#
+# Data Properties:
+#   - hasLabel (xsd:string)             e.g. "Flow Measurements"
+#   - hasState (xsd:string)             e.g. "Enabled"
+#
+# Object Properties:
+#   - partOfFunctionalUnit → FunctionalUnit
+#   - hasMetric → Metric
+#
+# Example:
+#   :FlowChannel_1 a dev:DeviceChannel ;
+#       dev:hasLabel "Flow Measurements" ;
+#       dev:hasState "Enabled" ;
+#       dev:hasMetric :FlowRateMetric_1 .
+######################################################################################################

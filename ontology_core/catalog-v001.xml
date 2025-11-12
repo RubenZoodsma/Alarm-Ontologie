@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    <!-- Local file mappings for Alarm Ontology modules -->
+    <uri id="Common Module Import Resolution" 
+         name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_common.ttl" 
+         uri="alarmOnto_common.ttl"/>
+    <uri id="Clinical Module Import Resolution" 
+         name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_clinical.ttl" 
+         uri="alarmOnto_clinical.ttl"/>
+    <uri id="Device Module Import Resolution" 
+         name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_device.ttl" 
+         uri="alarmOnto_device.ttl"/>
+    <uri id="Core File Import Resolution" 
+         name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl" 
+         uri="alarmOnto_coreFile.ttl"/>
+    
+    <!-- Relative import mappings for local development -->
+    <uri id="Relative Common Import" 
+         name="./alarmOnto_common.ttl" 
+         uri="alarmOnto_common.ttl"/>
+    <uri id="Relative Clinical Import" 
+         name="./alarmOnto_clinical.ttl" 
+         uri="alarmOnto_clinical.ttl"/>
+    <uri id="Relative Device Import" 
+         name="./alarmOnto_device.ttl" 
+         uri="alarmOnto_device.ttl"/>
+    <uri id="Relative CoreFile Import" 
+         name="./alarmOnto_coreFile.ttl" 
+         uri="alarmOnto_coreFile.ttl"/>
+    
     <group id="Folder Repository, directory=, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base=""/>
 </catalog>

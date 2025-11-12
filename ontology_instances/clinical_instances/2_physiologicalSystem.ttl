@@ -1,0 +1,72 @@
+######################################################################################################
+# FILE: 2_physiologicalSystem.ttl
+# DESCRIPTION:
+#   Contains instances of :PhysiologicalSystem — such as pulmonary, cardiovascular, or nervous systems.
+#   Each system can contain one or more Organs and belongs to a Patient.
+######################################################################################################
+
+@prefix : <http://example.org/alarmOnto/instances#> .
+@prefix clin: <http://example.org/alarmOnto/clinical#> .
+@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/alarmOnto/instances/clinical/physiologicalSystem>
+    a owl:Ontology ;
+    rdfs:label "Physiological System Instances" ;
+    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+
+######################################################################################################
+# BLUEPRINT — PHYSIOLOGICALSYSTEM INSTANCE STRUCTURE
+#
+# Data Properties:
+#   - hasSNOMEDCode (xsd:string)        e.g. "39057004"   # Pulmonary system
+#   - hasState (xsd:string)             e.g. "Stable"
+#
+# Object Properties:
+#   - partOfPatient → Patient
+#       e.g. :Pulmonary_System_1 clin:partOfPatient :Patient_001
+#   - hasOrgan → Organ
+#       e.g. :Pulmonary_System_1 clin:hasOrgan :Lung_1
+#
+# Example instance:
+#   :Pulmonary_System_1 a clin:PhysiologicalSystem ;
+#       clin:hasSNOMEDCode "39057004" ;
+#       clin:hasState "Stable" ;
+#       clin:partOfPatient :Patient_001 ;
+#       clin:hasOrgan :Lung_1 .
+######################################################################################################
+
+### Physiological systems:
+# - Pulmonary System
+# - Cardiovascular System
+# - Nervous System [Not modelled here]
+# - Immune System [Not modelled here]
+# - Digestive System [Not modelled here]
+# - Renal System [Not modelled here]
+# - Musculoskeletal System [Not modelled here]
+# - Endocrine System [Not modelled here]
+
+:Pulmonary_System a clin:PhysiologicalSystem ;
+    clin:hasSNOMEDCode "UNKNOWN" ;
+    clin:hasState "UNKNOWN" ;
+    clin:partOfPatient :Patient ;
+    clin:hasOrgan :Lung .
+
+:Cardiovascular_System a clin:PhysiologicalSystem ;
+    clin:hasSNOMEDCode "UNKNOWN" ;
+    clin:hasState "UNKNOWN" ;
+    clin:partOfPatient :Patient ;
+    clin:hasOrgan :Heart , :Vessels .
+
+:Integumentary_System a clin:PhysiologicalSystem ;
+    clin:hasSNOMEDCode "UNKNOWN" ;
+    clin:hasState "UNKNOWN" ;
+    clin:partOfPatient :Patient ;
+    clin:hasOrgan :Skin .
+
+:Nervous_System a clin:PhysiologicalSystem ;
+    clin:hasSNOMEDCode "UNKNOWN" ;
+    clin:hasState "UNKNOWN" ;
+    clin:partOfPatient :Patient ;
+    clin:hasOrgan :Brain .

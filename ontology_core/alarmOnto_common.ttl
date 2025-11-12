@@ -1,0 +1,223 @@
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+# ONTOLOGY HEADER
+#################################################################
+
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common>
+    a owl:Ontology ;
+    rdfs:label "Alarm Ontology - Common/Shared Module" ;
+    rdfs:comment "Shared base classes and properties used by both clinical and device modules" .
+
+
+
+#################################################################
+# TOP-LEVEL / SHARED CLASSES
+#################################################################
+
+:Entity a owl:Class ;
+    rdfs:label "Entity" ;
+    rdfs:comment "Abstract superclass for all device and clinical entities." .
+
+:State a owl:Class ;
+    rdfs:label "State" ;
+    rdfs:comment "Abstract placeholder for state/value-like entities (Enabled, Impaired, etc.). Instances can be introduced in an ABox." .
+
+:Quantity a owl:Class ;
+    rdfs:label "Quantity" ;
+    rdfs:comment "Abstract superclass for measurable quantities." .
+
+
+
+#################################################################
+# CROSS-DOMAIN PROPERTIES
+#################################################################
+
+:measuresProperty a owl:ObjectProperty ;
+    rdfs:domain :Metric ;
+    rdfs:range :PhysiologicalProperty ;
+    rdfs:label "measures property" ;
+    rdfs:comment "Device metric measures a clinical/physiological property." .
+
+:measuredByMetric a owl:ObjectProperty ;
+    rdfs:domain :PhysiologicalProperty ;
+    rdfs:range :Metric ;
+    rdfs:label "measured by metric" ;
+    rdfs:comment "Inverse link: physiological property is measured by a device metric." .
+
+## Alarm-based object properties
+:priorityLevel a owl:ObjectProperty ;
+    rdfs:domain dev:AlarmCondition ;
+    rdfs:range :alarmPriorityLevels ;
+    rdfs:comment "Indicates the priority level of the alarm (e.g., High, Medium, Low)." .
+
+:alarmGroup a owl:ObjectProperty ;
+    rdfs:domain dev:AlarmCondition ;
+    rdfs:range :alarmGroups ;
+    rdfs:comment "Indicates the group/category of the alarm (e.g., Respiratory, Cardiac)." .
+
+:soundType a owl:ObjectProperty ;
+    rdfs:domain dev:AlarmCondition ;
+    rdfs:range :alarmSoundTypes ;
+    rdfs:comment "Indicates the type of sound associated with the alarm (e.g., low / medium / high alert)." .
+
+#################################################################
+# DATA PROPERTIES (SHARED)
+#################################################################
+
+:hasState a owl:DatatypeProperty ;
+    rdfs:domain :Entity ;
+    rdfs:range xsd:string ;
+    rdfs:label "has state" ;
+    rdfs:comment "Generic state marker (e.g. Enabled, Impaired, Active)." .
+
+:hasStateInstance a owl:ObjectProperty ;
+    rdfs:domain :Entity ;
+    rdfs:range :State ;
+    rdfs:label "has state instance" ;
+    rdfs:comment "Links an entity to a specific state individual from the state vocabulary." .
+
+:hasActivationState a owl:DatatypeProperty ;
+    rdfs:domain :Metric ;
+    rdfs:range xsd:string ;
+    rdfs:label "has activation state" ;
+    rdfs:comment "Device-style activation state, e.g. On, Standby, Off." .
+
+:hasAvailabilityStatus a owl:DatatypeProperty ;
+    rdfs:domain :Entity ;
+    rdfs:range xsd:string ;
+    rdfs:label "has availability status" ;
+    rdfs:comment "Indicates if data/value is available." .
+
+:hasQualityIndicator a owl:DatatypeProperty ;
+    rdfs:domain :Signal ;
+    rdfs:range xsd:string ;
+    rdfs:label "has quality indicator" ;
+    rdfs:comment "Quality of a signal (e.g. Good, Bad, Questionable)." .
+
+:hasValue a owl:DatatypeProperty ;
+    rdfs:domain :Entity ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "has value" ;
+    rdfs:comment "Numeric value for metrics or physiological properties." .
+
+:hasUnit a owl:DatatypeProperty ;
+    rdfs:domain :Entity ;
+    rdfs:range xsd:string ;
+    rdfs:label "has unit" .
+
+:hasRange a owl:DatatypeProperty ;
+    rdfs:domain :Entity ;
+    rdfs:range xsd:string ;
+    rdfs:label "has range" .
+
+:hasSNOMEDCode a owl:DatatypeProperty ;
+    rdfs:domain :ClinicalEntity ;
+    rdfs:range xsd:string ;
+    rdfs:label "has SNOMED code" .
+
+:hasMDCCode a owl:DatatypeProperty ;
+    rdfs:domain :DeviceEntity ;
+    rdfs:range xsd:string ;
+    rdfs:label "has MDC code" ;
+    rdfs:comment "IEEE 11073/MDER code for device-side interoperability." .
+
+
+#################################################################
+# SHARED STATE VOCABULARY
+#################################################################
+
+# Operational States
+:Enabled a :State ;
+    rdfs:label "Enabled" ;
+    rdfs:comment "Entity is operational and active." .
+
+:Disabled a :State ;
+    rdfs:label "Disabled" ;
+    rdfs:comment "Entity is turned off or not operational." .
+
+:Standby a :State ;
+    rdfs:label "Standby" ;
+    rdfs:comment "Entity is ready but not actively operating." .
+
+:Fault a :State ;
+    rdfs:label "Fault" ;
+    rdfs:comment "Entity has detected an error condition." .
+
+# Measurement States
+:Low a :State ;
+    rdfs:label "Low" ;
+    rdfs:comment "Value below normal or threshold range." .
+
+:High a :State ;
+    rdfs:label "High" ;
+    rdfs:comment "Value above normal or threshold range." .
+
+:Normal a :State ;
+    rdfs:label "Normal" ;
+    rdfs:comment "Value within acceptable range." .
+
+:Critical a :State ;
+    rdfs:label "Critical" ;
+    rdfs:comment "Value in critical/dangerous range." .
+
+# Activity States
+:Active a :State ;
+    rdfs:label "Active" ;
+    rdfs:comment "Currently active or triggered." .
+
+:Inactive a :State ;
+    rdfs:label "Inactive" ;
+    rdfs:comment "Currently not active or dormant." .
+
+# Quality States
+:Good a :State ;
+    rdfs:label "Good" ;
+    rdfs:comment "Signal or data quality is good." .
+
+:Poor a :State ;
+    rdfs:label "Poor" ;
+    rdfs:comment "Signal or data quality is degraded." .
+
+:Questionable a :State ;
+    rdfs:label "Questionable" ;
+    rdfs:comment "Signal or data quality is uncertain." .
+
+
+### Alarm-based object properties
+:lowAlertSound a :soundType ;
+    rdfs:label "Low Alert Sound" .
+
+:mediumAlertSound a :soundType ;
+    rdfs:label "Medium Alert Sound" .
+
+:highAlertSound a :soundType ;
+    rdfs:label "High Alert Sound" .
+
+
+:lowPriority a :priorityLevel ;
+    :hasSoundEffect :lowAlertSound ;
+    :hasColourEffect "Blue" ;
+    rdfs:label "Low Priority alarm" .
+
+:mediumPriority a :priorityLevel ;
+    :hasSoundEffect :mediumAlertSound ;
+    :hasColourEffect "Yellow" ;
+    rdfs:label "Medium Priority alarm" .
+
+:highPriority a :priorityLevel ;
+    :hasSoundEffect :highAlertSound ;
+    :hasColourEffect "Red" ;
+    rdfs:label "High Priority alarm" .
+
+
+:technicalAlarmGroup a :alarmGroup ;
+    rdfs:label "Technical Alarm Group" .
+
+:physiologicalAlarmGroup a :alarmGroup ;
+    rdfs:label "Physiological Alarm Group" .
+

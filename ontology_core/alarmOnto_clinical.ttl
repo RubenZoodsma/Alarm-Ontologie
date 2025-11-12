@@ -1,13 +1,92 @@
 @prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+
+#################################################################
+# ONTOLOGY HEADER
+#################################################################
 
 <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical>
     a owl:Ontology ;
-    rdfs:label "Alarm Ontology - Clinical Module" .
+    rdfs:label "Alarm Ontology - Clinical Module" ;
+    owl:imports <./alarmOnto_common.ttl> .
 
-:Patient a owl:Class .
-:PhysiologicalSystem a owl:Class .
-:Organ a owl:Class .
-:PhysiologicalProcess a owl:Class .
-:PhysiologicalProperty a owl:Class .
+
+#################################################################
+# CLINICAL-SIDE CLASSES
+#################################################################
+
+:ClinicalEntity a owl:Class ;
+    rdfs:subClassOf common:Entity ;
+    rdfs:label "Clinical Entity" .
+
+:Patient a owl:Class ;
+    rdfs:subClassOf :ClinicalEntity ;
+    rdfs:label "Patient" ;
+    rdfs:comment "The subject/organism for which device and clinical data apply." .
+
+:PhysiologicalSystem a owl:Class ;
+    rdfs:subClassOf :ClinicalEntity ;
+    rdfs:label "Physiological System" ;
+    rdfs:comment "System of organs that collectively maintain a physiological function (e.g. pulmonary system)." .
+
+:Organ a owl:Class ;
+    rdfs:subClassOf :ClinicalEntity ;
+    rdfs:label "Organ" ;
+    rdfs:comment "Anatomical/functional unit such as lung or heart." .
+
+:PhysiologicalProcess a owl:Class ;
+    rdfs:subClassOf :ClinicalEntity ;
+    rdfs:label "Physiological Process" ;
+    rdfs:comment "Process such as oxygenation, ventilation, perfusion." .
+
+:PhysiologicalProperty a owl:Class ;
+    rdfs:subClassOf :ClinicalEntity , common:Quantity ;
+    rdfs:label "Physiological Property" ;
+    rdfs:comment "Measurable property of a physiological process (e.g. SaO2, RR, PaO2)." .
+
+
+#################################################################
+# OBJECT PROPERTIES (CLINICAL)
+#################################################################
+
+:hasPhysiologicalSystem a owl:ObjectProperty ;
+    rdfs:domain :Patient ;
+    rdfs:range :PhysiologicalSystem ;
+    rdfs:label "has physiological system" .
+
+:hasOrgan a owl:ObjectProperty ;
+    rdfs:domain :PhysiologicalSystem ;
+    rdfs:range :Organ ;
+    rdfs:label "has organ" .
+
+:partOfSystem a owl:ObjectProperty ;
+    rdfs:domain :Organ ;
+    rdfs:range :PhysiologicalSystem ;
+    rdfs:label "part of system" .
+
+:hasPhysiologicalProcess a owl:ObjectProperty ;
+    rdfs:domain :Organ ;
+    rdfs:range :PhysiologicalProcess ;
+    rdfs:label "has physiological process" .
+
+:hasProperty a owl:ObjectProperty ;
+    rdfs:domain :PhysiologicalProcess ;
+    rdfs:range :PhysiologicalProperty ;
+    rdfs:label "has property" ;
+    rdfs:comment "Physiological process exhibits a measurable property." .
+
+:isPropertyOf a owl:ObjectProperty ;
+    rdfs:domain :PhysiologicalProperty ;
+    rdfs:range :PhysiologicalProcess ;
+    rdfs:label "is property of" .
+
+:dependsOnProcess a owl:ObjectProperty ;
+    rdfs:domain :PhysiologicalProcess ;
+    rdfs:range :PhysiologicalProcess ;
+    rdfs:label "depends on process" ;
+    rdfs:comment "Captures physiological dependencies, e.g. oxygenation depends on ventilation." .

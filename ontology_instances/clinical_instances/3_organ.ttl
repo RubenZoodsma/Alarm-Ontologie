@@ -1,0 +1,75 @@
+######################################################################################################
+# FILE: 3_organ.ttl
+# DESCRIPTION:
+#   Contains instances of :Organ — e.g., Lung, Heart, Kidney.
+#   Each organ is part of a physiological system and may have one or more physiological processes.
+######################################################################################################
+
+@prefix : <http://example.org/alarmOnto/instances#> .
+@prefix clin: <http://example.org/alarmOnto/clinical#> .
+@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/alarmOnto/instances/clinical/organ>
+    a owl:Ontology ;
+    rdfs:label "Organ Instances" ;
+    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+
+######################################################################################################
+# BLUEPRINT — ORGAN INSTANCE STRUCTURE
+#
+#
+# Data Properties:
+#   - hasSNOMEDCode (xsd:string)        e.g. "39607008"   # Lung
+#   - hasState (xsd:string)             e.g. "Normal"
+# Object Properties:
+#   - partOfSystem → PhysiologicalSystem
+#       e.g. :Lung_1 clin:partOfSystem :Pulmonary_System_1
+#   - hasPhysiologicalProcess → PhysiologicalProcess
+#       e.g. :Lung_1 clin:hasPhysiologicalProcess :Pulmonary_Oxygenation_1
+#
+# Example instance:
+#   :Lung_1 a clin:Organ ;
+#       clin:hasSNOMEDCode "39607008" ;
+#       clin:partOfSystem :Pulmonary_System_1 ;
+#       clin:hasPhysiologicalProcess :Pulmonary_Oxygenation_1 .
+######################################################################################################
+
+### Organs:
+# - Lung
+# - Heart
+# - Kidney [Not modelled here]
+# - Liver [Not modelled here]
+# - Brain
+# - Skin
+
+:Lung a clin:Organ ;
+    clin:hasSNOMEDCode "UNKNOWN" ;
+    clin:hasState "UNKNOWN" ;
+    clin:partOfSystem :Pulmonary_System ;
+    clin:hasPhysiologicalProcess :Pulmonary_Oxygenation, :Pulmonary_Ventilation , :Pulmonary_Perfusion .
+
+:Heart a clin:Organ ;
+    clin:hasSNOMEDCode "UNKNOWN" ;
+    clin:hasState "UNKNOWN" ;
+    clin:partOfSystem :Cardiovascular_System ;
+    clin:hasPhysiologicalProcess :Cardiac_Perfusion, :Pulmonary_Perfusion, :Systemic_Perfusion , :Cutaneous_Perfusion .
+
+:Vessels a clin:Organ ;
+    clin:hasSNOMEDCode "UNKNOWN" ;
+    clin:hasState "UNKNOWN" ;
+    clin:partOfSystem :Cardiovascular_System ;
+    clin:hasPhysiologicalProcess :Cardiac_Perfusion, :Pulmonary_Perfusion, :Systemic_Perfusion , :Cutaneous_Perfusion.
+
+:Brain a clin:Organ ;
+    clin:hasSNOMEDCode "UNKNOWN" ;
+    clin:hasState "UNKNOWN" .
+    clin:partOfSystem :Nervous_System .
+    clin:hasPhysiologicalProcess :Cerebral_Perfusion .
+
+:Skin a clin:Organ ;
+    clin:hasSNOMEDCode "UNKNOWN" ;
+    clin:hasState "UNKNOWN" .
+    clin:partOfSystem :Integumentary_System .
+    clin:hasPhysiologicalProcess :Cutaneous_Perfusion.

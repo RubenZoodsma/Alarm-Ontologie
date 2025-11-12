@@ -1,0 +1,73 @@
+######################################################################################################
+# FILE: 4_physiologicalProcess.ttl
+# DESCRIPTION:
+#   Contains instances of :PhysiologicalProcess — mechanisms such as gas exchange or perfusion.
+#   Each process occurs in an organ and produces one or more physiological properties.
+######################################################################################################
+
+@prefix : <http://example.org/alarmOnto/instances#> .
+@prefix clin: <http://example.org/alarmOnto/clinical#> .
+@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/alarmOnto/instances/clinical/physiologicalProcess>
+    a owl:Ontology ;
+    rdfs:label "Physiological Process Instances" ;
+    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+
+######################################################################################################
+# BLUEPRINT — PHYSIOLOGICALPROCESS INSTANCE STRUCTURE
+#
+# Data Properties:
+#   - hasState (xsd:string)             e.g. "Active"
+#
+# Object Properties:
+#   - occursInOrgan → Organ
+#       e.g. :Pulmonary_Oxygenation_1 clin:occursInOrgan :Lung_1
+#   - producesProperty → PhysiologicalProperty
+#       e.g. :Pulmonary_Oxygenation_1 clin:producesProperty :SaO2_Property_1
+#   - dependsOnProcess → PhysiologicalProcess
+#       e.g. :Oxygenation_1 clin:dependsOnProcess :Ventilation_1
+#
+# Example instance:
+#   :Pulmonary_Oxygenation_1 a clin:PhysiologicalProcess ;
+#       clin:occursInOrgan :Lung_1 ;
+#       clin:producesProperty :SaO2_Property_1 ;
+#       clin:hasState "Active" .
+######################################################################################################
+
+### Physiological processes:
+# - Oxygenation
+# - Ventilation
+# - Perfusion  
+
+:Pulmonary_Oxygenation a clin:PhysiologicalProcess ;
+    clin:occursInOrgan :Lung ;
+    clin:producesProperty :SaO2_Property ;
+    clin:hasState "Active" .
+
+:Pulmonary_Ventilation a clin:PhysiologicalProcess ;
+    clin:occursInOrgan :Lung ;
+    clin:producesProperty :RR_Property ;
+    clin:hasState "Active" .
+
+:Pulmonary_Perfusion a clin:PhysiologicalProcess ;
+    clin:occursInOrgan :Lung ;
+    clin:producesProperty :PaO2_Property ;
+    clin:hasState "Active" .    
+
+:Cardiac_Perfusion a clin:PhysiologicalProcess ;
+    clin:occursInOrgan :Heart ;
+    clin:producesProperty :CardiacOutput_Property ;
+    clin:hasState "Active" .
+
+:Systemic_Perfusion a clin:PhysiologicalProcess ;
+    clin:occursInOrgan :Heart ;
+    clin:producesProperty :MeanArterialPressure_Property ;
+    clin:hasState "Active" .
+
+:Cutaneous_Perfusion a clin:PhysiologicalProcess ;
+    clin:occursInOrgan :Heart ;
+    clin:producesProperty :SkinPerfusionIndex_Property ;
+    clin:hasState "Active" .

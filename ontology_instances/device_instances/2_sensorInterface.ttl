@@ -1,0 +1,37 @@
+######################################################################################################
+# FILE: 2_sensorInterface.ttl
+# DESCRIPTION:
+#   Instances of :SensorInterface represent physical or logical ports connecting sensors to the device.
+#   Corresponds to RTMSS Sensor Interface (SEN).
+######################################################################################################
+
+@prefix : <http://example.org/alarmOnto/instances#> .
+@prefix dev: <http://example.org/alarmOnto/device#> .
+@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/alarmOnto/instances/device/sensorInterface>
+    a owl:Ontology ;
+    rdfs:label "Sensor Interface Instances" ;
+    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+
+######################################################################################################
+# BLUEPRINT — SENSORINTERFACE INSTANCE STRUCTURE
+#
+# Data Properties:
+#   - hasPortType (xsd:string)          e.g. "Analog"
+#   - hasConnectorID (xsd:string)       e.g. "PortA1"
+#
+# Object Properties:
+#   - partOfFunctionalUnit → FunctionalUnit
+#       e.g. :O2Interface_1 dev:partOfFunctionalUnit :GasDeliveryUnit_1
+#   - connectsSensor → Sensor
+#       e.g. :O2Interface_1 dev:connectsSensor :O2Sensor_1
+#
+# Example:
+#   :O2Interface_1 a dev:SensorInterface ;
+#       dev:hasPortType "Analog" ;
+#       dev:hasConnectorID "PortA1" ;
+#       dev:connectsSensor :O2Sensor_1 .
+######################################################################################################

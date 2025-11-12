@@ -5,7 +5,29 @@
 <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/core>
     a owl:Ontology ;
     owl:versionIRI <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/core/v1> ;
-    rdfs:label "Alarm Ontology Core (structure only)" ;
+    rdfs:label "Alarm Ontology Core (structure + instances)" ;
+    rdfs:comment "Main ontology file that imports all structural modules and instance-level data for the Alarm Ontology." ;
+
     owl:imports
-        <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_device.ttl> ,
-        <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_clinical.ttl> .
+        # --- Core structure modules ---
+        <./alarmOnto_common.ttl> ,
+        <./alarmOnto_device.ttl> ,
+        <./alarmOnto_clinical.ttl> ,
+
+        # --- Clinical instance modules ---
+        <../ontology_instances/clinical_instances/1_patient.ttl> ,
+        <../ontology_instances/clinical_instances/2_physiologicalSystem.ttl> ,
+        <../ontology_instances/clinical_instances/3_organ.ttl> .
+        <../ontology_instances/clinical_instances/4_physiologicalProcess.ttl> ,
+        <../ontology_instances/clinical_instances/5_physiologicalProperty.ttl> ,
+
+        
+        # --- Device instance modules ---
+        <../ontology_instances/device_instances/1_physicalDevice.ttl> ,
+        <../ontology_instances/device_instances/2_sensorInterface.ttl> ,
+        <../ontology_instances/device_instances/3_sensor.ttl> ,
+        <../ontology_instances/device_instances/4_functionalUnit.ttl> ,
+        <../ontology_instances/device_instances/5_deviceChannel.ttl> ,
+        <../ontology_instances/device_instances/6_metric.ttl> ,
+        <../ontology_instances/device_instances/7_measurementProcess.ttl> ,
+        <../ontology_instances/device_instances/8_signal.ttl> .

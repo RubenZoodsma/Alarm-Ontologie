@@ -1,0 +1,37 @@
+######################################################################################################
+# FILE: 3_sensor.ttl
+# DESCRIPTION:
+#   Instances of :Sensor represent transducers converting physical phenomena 
+#   to measurable electrical signals. Maps to RTMSS MetricSource.
+######################################################################################################
+
+@prefix : <http://example.org/alarmOnto/instances#> .
+@prefix dev: <http://example.org/alarmOnto/device#> .
+@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/alarmOnto/instances/device/sensor>
+    a owl:Ontology ;
+    rdfs:label "Sensor Instances" ;
+    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+
+######################################################################################################
+# BLUEPRINT — SENSOR INSTANCE STRUCTURE
+#
+# Data Properties:
+#   - hasState (xsd:string)             e.g. "Operational"
+#   - hasSNOMEDCode (xsd:string)        e.g. "43724002"  # Pulse oximetry sensor
+#   - hasAccuracy (xsd:decimal)         e.g. 0.5
+#
+# Object Properties:
+#   - partOfInterface → SensorInterface
+#   - producesSignal → Signal
+#
+# Example:
+#   :O2Sensor_1 a dev:Sensor ;
+#       dev:hasAccuracy 0.5 ;
+#       dev:hasState "Operational" ;
+#       dev:partOfInterface :O2Interface_1 ;
+#       dev:producesSignal :SpO2_Signal_1 .
+######################################################################################################
