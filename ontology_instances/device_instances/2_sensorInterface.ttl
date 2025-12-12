@@ -5,16 +5,16 @@
 #   Corresponds to RTMSS Sensor Interface (SEN).
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix dev: <http://example.org/alarmOnto/device#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/device/sensorInterface>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/sensorInterface>
     a owl:Ontology ;
     rdfs:label "Sensor Interface Instances" ;
-    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
 
 ######################################################################################################
 # BLUEPRINT — SENSORINTERFACE INSTANCE STRUCTURE
@@ -35,3 +35,9 @@
 #       dev:hasConnectorID "PortA1" ;
 #       dev:connectsSensor :O2Sensor_1 .
 ######################################################################################################
+
+:SpO2_SensorInterface a dev:SensorInterface ;
+    dev:hasPortType "Digital" ;
+    dev:hasConnectorID "SpO2_Port" ;
+    dev:partOfFunctionalUnit :SpO2_Module ;
+    dev:connectsSensor :Pulse_Oximeter_Sensor .

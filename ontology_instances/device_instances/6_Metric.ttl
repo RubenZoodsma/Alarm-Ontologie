@@ -1,40 +1,40 @@
 ######################################################################################################
-# FILE: 6_metric.ttl
+# FILE: 6_Metric.ttl
 # DESCRIPTION:
-#   Instances of :Metric represent quantitative measurements. 
-#   Maps to IEEE 11073 Metric / SDC MetricDescriptor.
+#   Instances of :Metric represent specific measurements or parameters
+#   (e.g., SpO2 value, heart rate). Equivalent to IEEE 11073 metric objects.
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix dev: <http://example.org/alarmOnto/device#> .
-@prefix clin: <http://example.org/alarmOnto/clinical#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/device/metric>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/metric>
     a owl:Ontology ;
-    rdfs:label "Metric Instances" ;
-    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+    rdfs:label "Metric Instances" .
 
 ######################################################################################################
 # BLUEPRINT — METRIC INSTANCE STRUCTURE
 #
 # Data Properties:
-#   - hasMDCCode (xsd:string) e.g. "MDC_PULS_OXIM_SAT_O2"
-#   - hasSNOMEDCode (xsd:string) e.g. "103228002"
-#   - hasValue (xsd:decimal) e.g. 94
-#   - hasUnit (xsd:string) e.g. "%"
-#   - hasState (xsd:string) e.g. "Enabled"
+#   - hasMDCCode (xsd:string)          e.g. "MDC_PULS_OXIM_SAT_O2"
+#   - hasUnit (xsd:string)             e.g. "%"
+#   - hasLabel (xsd:string)            e.g. "SpO2"
+#   - hasState (xsd:string)            e.g. "Transmitting"
 #
 # Object Properties:
-#   - producedBy → MeasurementProcess
-#   - measuresProperty → PhysiologicalProperty
+#   - generatedByProcess → MeasurementProcess
+#       e.g. :SpO2_Metric dev:generatedByProcess :SpO2_MeasurementProcess
 #
-# Example:
-#   :SpO2_Metric_1 a dev:Metric ;
-#       dev:hasMDCCode "MDC_PULS_OXIM_SAT_O2" ;
-#       dev:hasValue 94 ;
-#       dev:hasUnit "%" ;
-#       core:measuresProperty :SaO2_Property_1 .
-######################################################################################################
+# Note: Metrics represent the actual measured values and their metadata
+####################################################
+
+:SpO2_Metric a dev:Metric ;
+    common:hasMDCCode "MDC_PULS_OXIM_SAT_O2" ;
+    dev:hasUnit "%" ;
+    dev:hasLabel "SpO2" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:generatedByProcess :SpO2_MeasurementProcess .

@@ -11,10 +11,11 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/clinical/physiologicalProcess>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/physiologicalProcess>
     a owl:Ontology ;
-    rdfs:label "Physiological Process Instances" ;
-    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+    owl:versionIRI <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/physiologicalProcess/v1> ;
+    rdfs:label "Clinical Instances: Physiological Processes" ;
+    rdfs:comment "Instance-level data for physiological processes in the clinical domain." .
 
 ######################################################################################################
 # BLUEPRINT — PHYSIOLOGICALPROCESS INSTANCE STRUCTURE
@@ -42,32 +43,52 @@
 # - Ventilation
 # - Perfusion  
 
-:Pulmonary_Oxygenation a clin:PhysiologicalProcess ;
+:Pulmonary_Oxygenation_Process a clin:PhysiologicalProcess ;
     clin:occursInOrgan :Lung ;
     clin:producesProperty :SaO2_Property ;
-    clin:hasState "Active" .
+    clin:hasState "Unknown" .
 
-:Pulmonary_Ventilation a clin:PhysiologicalProcess ;
+:Pulmonary_Ventilation_Process a clin:PhysiologicalProcess ;
     clin:occursInOrgan :Lung ;
     clin:producesProperty :RR_Property ;
-    clin:hasState "Active" .
+    clin:hasState "Unknown" .
 
-:Pulmonary_Perfusion a clin:PhysiologicalProcess ;
+:Ventricular_Repolarisation_Process a clin:PhysiologicalProcess ;
+    clin:occursInOrgan :Heart ;
+    clin:producesProperty ** ;
+    clin:hasState "Unknown" .
+
+:Thermoregulation_Process a clin:PhysiologicalProcess ;
+    clin:occursInOrgan :Skin ;
+    clin:producesProperty :CoreTemperature_Property, :SkinTemperature_Property , :RectalTemperature_Property ;
+    clin:hasState "Unknown" .
+
+:Cardiac_Contraction_Process a clin:PhysiologicalProcess ;
+    clin:occursInOrgan :Heart ;
+    clin:producesProperty :** ;
+    clin:hasState "Unknown" .
+
+:Arterial_Pressure_regulation_Process a clin:PhysiologicalProcess ;
+    clin:occursInOrgan :Heart ;
+    clin:producesProperty :SystolicArterialBloodPressure_Property, :MeanArterialBloodPressure_Property, :DiastolicArterialBloodPressure_Property ;
+    clin:hasState "Unknown" .
+
+:Venous_Pressure_regulation_Process a clin:PhysiologicalProcess ;
+    clin:occursInOrgan :Heart ;
+    clin:producesProperty :SystolicVenousBloodPressure_Property, :MeanVenousBloodPressure_Property, :DiastolicVenousBloodPressure_Property ;
+    clin:hasState "Unknown" .
+
+:Pulmonary_Perfusion_Process a clin:PhysiologicalProcess ;
     clin:occursInOrgan :Lung ;
-    clin:producesProperty :PaO2_Property ;
-    clin:hasState "Active" .    
+    clin:producesProperty :** ;
+    clin:hasState "Unknown" .    
 
-:Cardiac_Perfusion a clin:PhysiologicalProcess ;
+:Systemic_Perfusion_Process a clin:PhysiologicalProcess ;
     clin:occursInOrgan :Heart ;
-    clin:producesProperty :CardiacOutput_Property ;
-    clin:hasState "Active" .
+    clin:producesProperty :** ;
+    clin:hasState "Unknown" .
 
-:Systemic_Perfusion a clin:PhysiologicalProcess ;
-    clin:occursInOrgan :Heart ;
-    clin:producesProperty :MeanArterialPressure_Property ;
-    clin:hasState "Active" .
-
-:Cutaneous_Perfusion a clin:PhysiologicalProcess ;
+:Cutaneous_Perfusion_Process a clin:PhysiologicalProcess ;
     clin:occursInOrgan :Heart ;
     clin:producesProperty :SkinPerfusionIndex_Property ;
-    clin:hasState "Active" .
+    clin:hasState "Unknown" .

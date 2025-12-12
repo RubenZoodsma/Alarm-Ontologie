@@ -5,16 +5,18 @@
 #   These properties link directly to device metrics for interoperability.
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix clin: <http://example.org/alarmOnto/clinical#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/physiologicalProperty#> .
+@prefix clin: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/clinical/physiologicalProperty>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/physiologicalProperty>
     a owl:Ontology ;
-    rdfs:label "Physiological Property Instances" ;
-    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+    owl:versionIRI <https://github.com/RubenZoodsm/Alarm-Ontologie/ontology/instances/clinical/physiologicalProperty/v1> ;
+    rdfs:label "Clinical Instances: Physiological Properties" ;
+    rdfs:comment "Instance-level data for physiological properties (measurable characteristics) in the clinical domain." .
 
 ######################################################################################################
 # BLUEPRINT — PHYSIOLOGICALPROPERTY INSTANCE STRUCTURE
@@ -46,37 +48,94 @@
 # - Peripheral cardiac pulse (PPG)
 
 :SaO2_Property a clin:PhysiologicalProperty ;
-    clin:hasValue 94 ;
     clin:hasUnit "%" ;
     clin:hasSNOMEDCode "103228002" ;
-    clin:hasState "Low" ;
+    common:hasStateInstance common:Unknown ;
     clin:partOfProcess :Pulmonary_Oxygenation .
 
-:RR_Property a clin:PhysiologicalProperty ;
-    clin:hasValue 18 ;
+:Pulmonary_Ventilation_Rate_Property a clin:PhysiologicalProperty ;
     clin:hasUnit "breaths/min" ;
     clin:hasSNOMEDCode "86290005" ;
-    clin:hasState "Normal" ;
+    common:hasStateInstance common:Unknown ;
     clin:partOfProcess :Pulmonary_Ventilation .
 
 :ABP_Systolic_Property a clin:PhysiologicalProperty ;
-    clin:hasValue 120 ;
     clin:hasUnit "mmHg" ;
     clin:hasSNOMEDCode "271649006" ;
-    clin:hasState "Normal" ;
+    common:hasStateInstance common:Unknown ;
     clin:partOfProcess :Systemic_Perfusion .
 
 :ABP_Diastolic_Property a clin:PhysiologicalProperty ;
-    clin:hasValue 80 ;
     clin:hasUnit "mmHg" ;
     clin:hasSNOMEDCode "271650006" ;
-    clin:hasState "Normal" ;
+    common:hasStateInstance common:Unknown ;
     clin:partOfProcess :Systemic_Perfusion .
 
 :ABP_Mean_Property a clin:PhysiologicalProperty ;
-    clin:hasValue 93 ;
     clin:hasUnit "mmHg" ;
     clin:hasSNOMEDCode "413429000" ;
-    clin:hasState "Normal" ;
+    common:hasStateInstance common:Unknown ;
     clin:partOfProcess :Systemic_Perfusion .
 
+:CVP_Property a clin:PhysiologicalProperty ;
+    clin:hasUnit "mmHg" ;
+    clin:hasSNOMEDCode "36615009" ;
+    common:hasStateInstance common:Unknown ;
+    clin:partOfProcess :Venous_Pressure_regulation_Process .
+
+:ST_Deviation_Property a clin:PhysiologicalProperty ;
+    clin:hasUnit "mV" ;
+    clin:hasSNOMEDCode "364075005" ;
+    common:hasStateInstance common:Unknown ;
+    clin:partOfProcess :Ventricular_Repolarisation_Process .
+
+:RectalTemperature_Property a clin:PhysiologicalProperty ;
+    clin:hasUnit "°C" ;
+    clin:hasSNOMEDCode "386725007" ;
+    common:hasStateInstance common:Unknown ;
+    clin:partOfProcess :Thermoregulation_Process .
+
+:SkinTemperature_Property a clin:PhysiologicalProperty ;
+    clin:hasUnit "°C" ;
+    clin:hasSNOMEDCode "386725007" ;
+    common:hasStateInstance common:Unknown ;
+    clin:partOfProcess :Thermoregulation_Process .
+
+:CoreTemperature_Property a clin:PhysiologicalProperty ;
+    clin:hasUnit "°C" ;
+    clin:hasSNOMEDCode "386725007" ;
+    common:hasStateInstance common:Unknown ;
+    clin:partOfProcess :Thermoregulation_Process .
+
+:Cardiac_Contractile_Rate_Property a clin:PhysiologicalProperty ;
+    clin:hasUnit "beats/min" ;
+    clin:hasSNOMEDCode "364075005" ;
+    common:hasStateInstance common:Unknown ;
+    clin:partOfProcess :Cardiac_Contraction_Process .
+
+:Ventricular_Contractile_Rhythm_Property a clin:PhysiologicalProperty ;
+    clin:hasUnit "beats/min" ;
+    clin:hasSNOMEDCode "364075005" ;
+    common:hasStateInstance common:Unknown ;
+    clin:partOfProcess :Cardiac_Contraction_Process .
+
+:Arterial_Pressure_Property a clin:PhysiologicalProperty ;
+    clin:hasUnit "mmHg" ;
+    clin:hasSNOMEDCode "271649006" ;
+    common:hasStateInstance common:Unknown ;
+    clin:partOfProcess :Arterial_Pressure_regulation_Process .
+
+:Cardiac_Eletric_Rate_Property a clin:PhysiologicalProperty ;
+    clin:hasUnit "beats/min" ;
+    clin:hasSNOMEDCode "364075005" ;
+    common:hasStateInstance common:Unknown ;
+    clin:partOfProcess :Ventricular_Repolarisation_Process , :Cardiac_Contraction_Process .
+
+:SkinPerfusionIndex_Property a clin:PhysiologicalProperty ;
+    clin:hasUnit "%" ;
+    clin:hasSNOMEDCode "36615009" ;
+    common:hasStateInstance common:Unknown ;
+    clin:partOfProcess :Cutaneous_Perfusion_Process .
+
+
+:Ventrc

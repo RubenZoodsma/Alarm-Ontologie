@@ -11,10 +11,11 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/clinical/physiologicalSystem>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/physiologicalSystem>
     a owl:Ontology ;
-    rdfs:label "Physiological System Instances" ;
-    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+    owl:versionIRI <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/physiologicalSystem/v1> ;
+    rdfs:label "Clinical Instances: Physiological Systems" ;
+    rdfs:comment "Instance-level data for physiological systems in the clinical domain." .
 
 ######################################################################################################
 # BLUEPRINT — PHYSIOLOGICALSYSTEM INSTANCE STRUCTURE

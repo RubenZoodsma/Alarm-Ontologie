@@ -2,195 +2,77 @@
 @prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
 @prefix clin: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#> .
 @prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 #######################################################################
-# 🔗 Ontology header
+# Ontology header
 #######################################################################
 
 <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/alarms>
     a owl:Ontology ;
     rdfs:label "Alarm Condition Instances (Entity-State Definition)" ;
     rdfs:comment "Defines alarm instances based on entity:state requirements for activation" ;
-    owl:imports
-        <../../ontology_core/alarmOnto_coreFile.ttl> .
+    owl:imports <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/alarm-specifications> .
 
 #######################################################################
-# 🧩 Enhanced Supporting Structure
+# Test Alarm: PHILIPSMONITOR - SpO2 Left High
+# Using composite properties instead of separate requirement instances
 #######################################################################
 
-# Define the enhanced requiresState structure
-:requiresState a owl:ObjectProperty ;
-    rdfs:domain dev:AlarmCondition ;
-    rdfs:range :StateRequirement ;
-    rdfs:comment "Links an alarm condition to the entity:attribute:value requirements it depends on." .
+:LowSpO2_Def
+    a dev:AlarmDefinition ;
+    rdfs:label "Low SpO2 – semantic definition" ;
+    rdfs:comment "Explicit documentation of the latent conditions carried by the Low SpO2 alarm." ;
+    dev:requiresSpec
+        :Spec_MonitorEnabled ,
+        :Spec_SensorConnected ,
+        :Spec_SpO2Low .
 
-# Properties for specifying the target entity
-:targetEntity a owl:ObjectProperty ;
-    rdfs:domain :StateRequirement ;
-    rdfs:range owl:Thing ;
-    rdfs:comment "The specific entity instance whose attribute must have the required value." .
+:LowSpO2Alarm
+    a dev:AlarmCondition ;
+    rdfs:label "PHILIPSMONITOR - SpO2 Low" ;
+    rdfs:comment "Alarm triggered when monitor enabled AND sensor connected AND SpO2 interpreted as Low." ;
 
-:entityType a owl:ObjectProperty ;
-    rdfs:domain :StateRequirement ;
-    rdfs:range owl:Class ;
-    rdfs:comment "The class of entities (any instance of this type) whose attribute must have the required value." .
+    # Link to the human-friendly, explicit definition
+    dev:hasDefinition :LowSpO2_Def ;
 
-# Properties for specifying the attribute-value constraint
-:attribute a owl:ObjectProperty ;
-    rdfs:domain :StateRequirement ;
-    rdfs:range rdf:Property ;
-    rdfs:comment "The property/attribute to check on the entity (e.g., dev:takesSignal, common:hasState, common:hasValue)." .
+    # Reasoning definition (kept for inference/classification)
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            dev:AlarmSituation
 
-:requiredValue a rdf:Property ;
-    rdfs:domain :StateRequirement ;
-    rdfs:comment "The value that the attribute must have. Can be an object, string, number, etc." .
+            # [A=PhilipsMonitor, B=hasStateInstance, C=Enabled]
+            [ a owl:Restriction ; owl:onProperty dev:hasCondition ; owl:someValuesFrom
+                [ a owl:Class ; owl:intersectionOf (
+                    dev:Condition
+                    [ a owl:Restriction ; owl:onProperty dev:aboutEntity ; owl:hasValue :PhilipsMonitor ]
+                    [ a owl:Restriction ; owl:onProperty dev:onAttribute ; owl:hasValue common:hasStateInstance ]
+                    [ a owl:Restriction ; owl:onProperty dev:hasValue ; owl:hasValue :Enabled ]
+                )]
+            ]
 
-# StateRequirement class definition
-:StateRequirement a owl:Class ;
-    rdfs:comment "Specifies that an entity must have a specific attribute-value pair (triple: entity attribute value)." .
+            # [A=Pulse_Oximeter_Sensor, B=hasStateInstance, C=Connected]
+            [ a owl:Restriction ; owl:onProperty dev:hasCondition ; owl:someValuesFrom
+                [ a owl:Class ; owl:intersectionOf (
+                    dev:Condition
+                    [ a owl:Restriction ; owl:onProperty dev:aboutEntity ; owl:hasValue :Pulse_Oximeter_Sensor ]
+                    [ a owl:Restriction ; owl:onProperty dev:onAttribute ; owl:hasValue common:hasStateInstance ]
+                    [ a owl:Restriction ; owl:onProperty dev:hasValue ; owl:hasValue :Connected ]
+                )]
+            ]
 
-
-
-#######################################################################
-# ⚙️ Enhanced Example: Oxygen Saturation Low Alarm
-#######################################################################
-
-:alarm_1 a dev:AlarmCondition ;
-    rdfs:label "PHILIPS MONITOR - SpO2 low" ;
-    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
-    common:priorityLevel common:highPriority ;
-    :requiresState [
-        # Monitor must be enabled
-        :targetEntity dev:PhilipsMonitor ;
-        :attribute dev:hasState ;
-        :requiredValue dev:Enabled
-    ], [
-        # Any pulse oximetry sensor must be connected to SpO2 signal
-        :entityType dev:Sensor ;
-        :attribute dev:takesSignal ;
-        :requiredValue :SpO2_Signal
-    ], [
-        # SpO2 metric must be active  
-        :targetEntity :SpO2_metric ;
-        :attribute common:hasActivationState ;
-        :requiredValue "On"
-    ], [
-        # SpO2 value must be below threshold (indicating low saturation)
-        :targetEntity :SpO2_metric ;
-        :attribute common:hasValue ;
-        :requiredValue 90  # Below 90% is typically considered low
-    ], [
-        # Signal quality must be acceptable
-        :entityType dev:Signal ;
-        :attribute common:hasQualityIndicator ;
-        :requiredValue "Good"
-    ] ;
-    dev:detectedBy :PhilipsMonitor_MP70 ;
-
-#######################################################################
-# ⚙️ Additional Example: High Blood Pressure Alarm
-#######################################################################
-
-:BloodPressureHigh a dev:AlarmCondition ;
-    rdfs:label "Blood Pressure High" ;
-    dev:refersTo :SystolicBP_metric ;
-    :requiresState [
-        # Monitor must be operational
-        :targetEntity :PhilipsMonitor_MP70 ;
-        :attribute common:hasStateInstance ;
-        :requiredValue common:Enabled
-    ], [
-        # BP cuff must be connected to pressure signal
-        :entityType dev:Sensor ;
-        :attribute dev:producesSignal ;
-        :requiredValue :PressureSignal_1
-    ], [
-        # BP metric must be measuring cardiovascular property
-        :targetEntity :SystolicBP_metric ;
-        :attribute common:measuresProperty ;
-        :requiredValue :BloodPressureProperty_1
-    ], [
-        # Systolic value must exceed hypertension threshold
-        :targetEntity :SystolicBP_metric ;
-        :attribute common:hasValue ;
-        :requiredValue 140  # mmHg - hypertension threshold
-    ] ;
-    common:hasStateInstance common:Inactive ;
-    dev:detectedBy :PhilipsMonitor_MP70 ;
-    dev:affectsPhysiologicalProperty clin:BloodPressure ;
-    dev:triggeredAt "2025-11-12T16:15:00Z"^^xsd:dateTime .
-
-
-#######################################################################
-# 🧭 Enhanced Notes
-#######################################################################
-# - This file defines alarms using the enhanced 'entity:attribute:value' model.
-# - Each StateRequirement specifies a triple constraint that must hold.
-# - Use :targetEntity for specific instances, :entityType for class-based constraints.
-# - :attribute can be ANY property from your ontology (dev:, common:, clin:).
-# - :requiredValue can be objects, strings, numbers, dates, etc.
-# - Reasoners can evaluate complex logical conditions across your domain model.
-#######################################################################
-
-#######################################################################
-# 🧱 Enhanced Template (copy to create new alarms)
-#######################################################################
-
-# :<AlarmName> a dev:AlarmCondition ;
-#     rdfs:label "<Human-readable alarm name>" ;
-#     dev:refersTo :<MetricInstance> ;
-#     :requiresState [
-#         # Specific device must be enabled
-#         :targetEntity :<DeviceInstance> ;
-#         :attribute common:hasStateInstance ;
-#         :requiredValue common:Enabled
-#     ], [
-#         # Any sensor of correct type must be connected
-#         :entityType dev:Sensor ;
-#         :attribute dev:takesSignal ;
-#         :requiredValue :<SignalType>
-#     ], [
-#         # Metric must be actively monitoring
-#         :targetEntity :<MetricInstance> ;
-#         :attribute common:hasActivationState ;
-#         :requiredValue "On"
-#     ], [
-#         # Clinical property must be in specific state
-#         :targetEntity :<ClinicalPropertyInstance> ;
-#         :attribute clin:hasProperty ;
-#         :requiredValue :<PhysiologicalProcess>
-#     ], [
-#         # Value-based constraint (threshold crossing)
-#         :targetEntity :<MetricInstance> ;
-#         :attribute common:hasValue ;
-#         :requiredValue <threshold_number>
-#     ] ;
-#     dev:hasTriggerLogic "<Optional procedural logic string>" ;
-#     common:hasStateInstance common:Inactive ;
-#     dev:detectedBy :<DeviceInstance> ;
-#     dev:affectsPhysiologicalProperty clin:<Property> ;
-#     dev:triggeredAt "<timestamp>"^^xsd:dateTime .
-#
-# Available properties from your ontology:
-# 
-# DEVICE PROPERTIES:
-# - dev:hasFunctionalUnit, dev:hasSensor, dev:takesSignal, dev:producesSignal
-# - dev:producesMetric, dev:hasChannel, dev:channelHasMetric, dev:partOfDevice
-# 
-# COMMON PROPERTIES:
-# - common:hasState, common:hasStateInstance, common:hasActivationState
-# - common:hasValue, common:hasUnit, common:hasQualityIndicator
-# - common:measuresProperty, common:hasMDCCode, common:hasSNOMEDCode
-# 
-# CLINICAL PROPERTIES:
-# - clin:hasPhysiologicalSystem, clin:hasOrgan, clin:hasPhysiologicalProcess
-# - clin:hasProperty, clin:isPropertyOf, clin:dependsOnProcess
-#
-# EXAMPLE VALUE TYPES:
-# - State instances: common:Enabled, common:Low, common:High, common:Active
-# - Strings: "On", "Off", "Good", "Poor", "Critical"
-# - Numbers: 90, 95.5, 120 (for thresholds)
-# - Objects: :SpO2_Signal, :VentilationUnit_1, clin:SaO2
+            # [A=SpO2_Metric, B=hasAlarmInterpretation, C=Low]
+            [ a owl:Restriction ; owl:onProperty dev:hasCondition ; owl:someValuesFrom
+                [ a owl:Class ; owl:intersectionOf (
+                    dev:Condition
+                    [ a owl:Restriction ; owl:onProperty dev:aboutEntity ; owl:hasValue :SpO2_Metric ]
+                    [ a owl:Restriction ; owl:onProperty dev:onAttribute ; owl:hasValue dev:hasAlarmInterpretation ]
+                    [ a owl:Restriction ; owl:onProperty dev:hasValue ; owl:hasValue :Low ]
+                )]
+            ]
+        )
+    ] .

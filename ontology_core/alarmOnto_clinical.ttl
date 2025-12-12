@@ -46,8 +46,12 @@
 
 :PhysiologicalProperty a owl:Class ;
     rdfs:subClassOf :ClinicalEntity , common:Quantity ;
+    rdfs:subClassOf [ a owl:Restriction ;
+                     owl:onProperty common:hasStateInstance ;
+                     owl:someValuesFrom [ a owl:Class ;
+                                        owl:oneOf ( common:Low common:High common:Normal common:Critical common:Unknown common:Missing ) ] ] ;
     rdfs:label "Physiological Property" ;
-    rdfs:comment "Measurable property of a physiological process (e.g. SaO2, RR, PaO2)." .
+    rdfs:comment "Measurable property of a physiological process (e.g. SaO2, RR, PaO2). States are constrained to measurement-related values (Low, High, Normal, Critical, Unknown, Missing)." .
 
 
 #################################################################

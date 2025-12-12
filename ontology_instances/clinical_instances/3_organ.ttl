@@ -11,10 +11,11 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/clinical/organ>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/organ>
     a owl:Ontology ;
-    rdfs:label "Organ Instances" ;
-    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+    owl:versionIRI <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/organ/v1> ;
+    rdfs:label "Clinical Instances: Organs" ;
+    rdfs:comment "Instance-level data for human organs in the clinical domain." .
 
 ######################################################################################################
 # BLUEPRINT — ORGAN INSTANCE STRUCTURE
@@ -48,28 +49,28 @@
     clin:hasSNOMEDCode "UNKNOWN" ;
     clin:hasState "UNKNOWN" ;
     clin:partOfSystem :Pulmonary_System ;
-    clin:hasPhysiologicalProcess :Pulmonary_Oxygenation, :Pulmonary_Ventilation , :Pulmonary_Perfusion .
+    clin:hasPhysiologicalProcess :Pulmonary_Oxygenation_Process, :Pulmonary_Ventilation_Process, :Pulmonary_Perfusion_Process .
 
 :Heart a clin:Organ ;
     clin:hasSNOMEDCode "UNKNOWN" ;
     clin:hasState "UNKNOWN" ;
     clin:partOfSystem :Cardiovascular_System ;
-    clin:hasPhysiologicalProcess :Cardiac_Perfusion, :Pulmonary_Perfusion, :Systemic_Perfusion , :Cutaneous_Perfusion .
+    clin:hasPhysiologicalProcess :Pulmonary_Perfusion_Process, :Systemic_Perfusion_Process, :Cutaneous_Perfusion_Process .
 
 :Vessels a clin:Organ ;
     clin:hasSNOMEDCode "UNKNOWN" ;
     clin:hasState "UNKNOWN" ;
     clin:partOfSystem :Cardiovascular_System ;
-    clin:hasPhysiologicalProcess :Cardiac_Perfusion, :Pulmonary_Perfusion, :Systemic_Perfusion , :Cutaneous_Perfusion.
+    clin:hasPhysiologicalProcess :Pulmonary_Perfusion_Process, :Systemic_Perfusion_Process, :Cutaneous_Perfusion_Process.
 
 :Brain a clin:Organ ;
     clin:hasSNOMEDCode "UNKNOWN" ;
     clin:hasState "UNKNOWN" .
     clin:partOfSystem :Nervous_System .
-    clin:hasPhysiologicalProcess :Cerebral_Perfusion .
+    clin:hasPhysiologicalProcess :Cerebral_Perfusion_Process .
 
 :Skin a clin:Organ ;
     clin:hasSNOMEDCode "UNKNOWN" ;
     clin:hasState "UNKNOWN" .
     clin:partOfSystem :Integumentary_System .
-    clin:hasPhysiologicalProcess :Cutaneous_Perfusion.
+    clin:hasPhysiologicalProcess :Cutaneous_Perfusion_Process.

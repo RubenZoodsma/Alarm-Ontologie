@@ -5,16 +5,16 @@
 #   converting signals to metrics.
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix dev: <http://example.org/alarmOnto/device#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/device/measurementProcess>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/measurementProcess>
     a owl:Ontology ;
     rdfs:label "Measurement Process Instances" ;
-    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
 
 ######################################################################################################
 # BLUEPRINT — MEASUREMENTPROCESS INSTANCE STRUCTURE
@@ -35,3 +35,10 @@
 #       dev:takesSignal :SpO2_Signal_1 ;
 #       dev:producesMetric :SpO2_Metric_1 .
 ######################################################################################################
+
+:SpO2_MeasurementProcess a dev:MeasurementProcess ;
+    dev:hasAlgorithm "Photoplethysmography + calibration" ;
+    dev:hasLatency 0.1 ;
+    common:hasStateInstance common:Active ;
+    dev:takesSignal :SpO2_Signal ;
+    dev:producesMetric :SpO2_Metric .

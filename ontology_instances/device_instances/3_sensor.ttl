@@ -1,37 +1,37 @@
 ######################################################################################################
 # FILE: 3_sensor.ttl
 # DESCRIPTION:
-#   Instances of :Sensor represent transducers converting physical phenomena 
-#   to measurable electrical signals. Maps to RTMSS MetricSource.
+#   Instances of :Sensor represent individual sensors within functional units
+#   (e.g., pulse oximeter sensor, ECG electrodes). Equivalent to IEEE 11073 VMD.
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix dev: <http://example.org/alarmOnto/device#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/device/sensor>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/sensor>
     a owl:Ontology ;
-    rdfs:label "Sensor Instances" ;
-    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+    rdfs:label "Sensor Instances" .
 
 ######################################################################################################
 # BLUEPRINT — SENSOR INSTANCE STRUCTURE
 #
 # Data Properties:
-#   - hasState (xsd:string)             e.g. "Operational"
-#   - hasSNOMEDCode (xsd:string)        e.g. "43724002"  # Pulse oximetry sensor
-#   - hasAccuracy (xsd:decimal)         e.g. 0.5
+#   - hasAccuracy (xsd:decimal)         e.g. 0.95
+#   - hasResolution (xsd:decimal)       e.g. 0.1
+#   - hasState (xsd:string)             e.g. "Connected"
 #
 # Object Properties:
-#   - partOfInterface → SensorInterface
-#   - producesSignal → Signal
+#   - hasDeviceChannel → DeviceChannel
+#       e.g. :Pulse_Oximeter_Sensor dev:hasDeviceChannel :SpO2_Channel
 #
-# Example:
-#   :O2Sensor_1 a dev:Sensor ;
-#       dev:hasAccuracy 0.5 ;
-#       dev:hasState "Operational" ;
-#       dev:partOfInterface :O2Interface_1 ;
-#       dev:producesSignal :SpO2_Signal_1 .
-######################################################################################################
+# Note: Sensors are the measurement components within functional units
+##########################################
+
+:Pulse_Oximeter_Sensor a dev:Sensor ;
+    dev:hasAccuracy 0.95 ;
+    common:hasStateInstance common:Connected ;
+    dev:hasDeviceChannel :SpO2_Channel .

@@ -49,22 +49,6 @@
     rdfs:label "measured by metric" ;
     rdfs:comment "Inverse link: physiological property is measured by a device metric." .
 
-## Alarm-based object properties
-:priorityLevel a owl:ObjectProperty ;
-    rdfs:domain dev:AlarmCondition ;
-    rdfs:range :alarmPriorityLevels ;
-    rdfs:comment "Indicates the priority level of the alarm (e.g., High, Medium, Low)." .
-
-:alarmGroup a owl:ObjectProperty ;
-    rdfs:domain dev:AlarmCondition ;
-    rdfs:range :alarmGroups ;
-    rdfs:comment "Indicates the group/category of the alarm (e.g., Respiratory, Cardiac)." .
-
-:soundType a owl:ObjectProperty ;
-    rdfs:domain dev:AlarmCondition ;
-    rdfs:range :alarmSoundTypes ;
-    rdfs:comment "Indicates the type of sound associated with the alarm (e.g., low / medium / high alert)." .
-
 #################################################################
 # DATA PROPERTIES (SHARED)
 #################################################################
@@ -126,6 +110,12 @@
     rdfs:label "has MDC code" ;
     rdfs:comment "IEEE 11073/MDER code for device-side interoperability." .
 
+:hasExogenousInfluence a owl:ObjectProperty ;
+    rdfs:domain :Entity ;
+    rdfs:range :State ;
+    rdfs:label "has exogenous influence" ;
+    rdfs:comment "Indicates external monitoring or influence on the entity." .
+
 
 #################################################################
 # SHARED STATE VOCABULARY
@@ -186,6 +176,51 @@
 :Questionable a :State ;
     rdfs:label "Questionable" ;
     rdfs:comment "Signal or data quality is uncertain." .
+
+# Unknown/Missing States
+:Unknown a :State ;
+    rdfs:label "Unknown" ;
+    rdfs:comment "State is not yet determined or available." .
+
+:Missing a :State ;
+    rdfs:label "Missing" ;
+    rdfs:comment "Value or state information is missing." .
+
+# Connection States
+:Connected a :State ;
+    rdfs:label "Connected" ;
+    rdfs:comment "Device or sensor is properly connected." .
+
+:Disconnected a :State ;
+    rdfs:label "Disconnected" ;
+    rdfs:comment "Device or sensor is not connected." .
+
+# Transmission States
+:Transmitting a :State ;
+    rdfs:label "Transmitting" ;
+    rdfs:comment "Signal or data is being transmitted." .
+
+:NotTransmitting a :State ;
+    rdfs:label "Not Transmitting" ;
+    rdfs:comment "Signal or data is not being transmitted." .
+
+# Measurement States
+:Measuring a :State ;
+    rdfs:label "Measuring" ;
+    rdfs:comment "Device is actively measuring or collecting data." .
+
+:NotMeasuring a :State ;
+    rdfs:label "Not Measuring" ;
+    rdfs:comment "Device is not actively measuring." .
+
+# Monitoring States
+:MonitoredState a :State ;
+    rdfs:label "Monitored State" ;
+    rdfs:comment "Entity is being actively monitored." .
+
+:UnmonitoredState a :State ;
+    rdfs:label "Unmonitored State" ;
+    rdfs:comment "Entity is not being monitored." .
 
 
 ### Alarm-based object properties

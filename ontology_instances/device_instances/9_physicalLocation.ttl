@@ -1,0 +1,77 @@
+######################################################################################################
+# FILE: 9_physicalLocation.ttl
+# DESCRIPTION:
+#   Instances of :PhysicalLocation represent specific anatomical or physical placement locations
+#   for sensors and monitoring devices.
+######################################################################################################
+
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/physicalLocation>
+    a owl:Ontology ;
+    rdfs:label "Physical Location Instances" ;
+
+######################################################################################################
+# BLUEPRINT — PHYSICALLOCATION INSTANCE STRUCTURE
+#
+# Data Properties:
+#   - hasDescription (xsd:string)       e.g. "Left hand placement"
+#   - hasSNOMEDCode (xsd:string)        e.g. "368208006"  # Left hand
+#
+# Object Properties:
+#   - (typically used as object in hasPhysicalLocation relationships)
+#
+# Example:
+#   :LeftHand a dev:PhysicalLocation ;
+#       dev:hasDescription "Left hand placement for pulse oximetry" ;
+#       common:hasSNOMEDCode "368208006" .
+######################################################################################################
+
+### Hand Locations
+:LeftHand a dev:PhysicalLocation ;
+    dev:hasDescription "Left hand placement for pulse oximetry" ;
+    common:hasSNOMEDCode "368208006" ;
+    rdfs:label "Left Hand" .
+
+:RightHand a dev:PhysicalLocation ;
+    dev:hasDescription "Right hand placement for pulse oximetry" ;
+    common:hasSNOMEDCode "368209003" ;
+    rdfs:label "Right Hand" .
+
+### Foot Locations  
+:LeftFoot a dev:PhysicalLocation ;
+    dev:hasDescription "Left foot placement for pulse oximetry" ;
+    common:hasSNOMEDCode "22335008" ;
+    rdfs:label "Left Foot" .
+
+:RightFoot a dev:PhysicalLocation ;
+    dev:hasDescription "Right foot placement for pulse oximetry" ;
+    common:hasSNOMEDCode "22335008" ;
+    rdfs:label "Right Foot" .
+
+### Pre/Post Ductal Locations
+:PreDuctal a dev:PhysicalLocation ;
+    dev:hasDescription "Pre-ductal placement (typically right hand for neonates)" ;
+    common:hasSNOMEDCode "368209003" ;
+    rdfs:label "Pre-ductal Location" .
+
+:PostDuctal a dev:PhysicalLocation ;
+    dev:hasDescription "Post-ductal placement (typically feet for neonates)" ;
+    common:hasSNOMEDCode "22335008" ;
+    rdfs:label "Post-ductal Location" .
+
+### Other Body Locations
+:Earlobe a dev:PhysicalLocation ;
+    dev:hasDescription "Earlobe placement for pulse oximetry" ;
+    common:hasSNOMEDCode "42859004" ;
+    rdfs:label "Earlobe" .
+
+:Forehead a dev:PhysicalLocation ;
+    dev:hasDescription "Forehead placement for pulse oximetry" ;
+    common:hasSNOMEDCode "52795006" ;
+    rdfs:label "Forehead" .

@@ -5,16 +5,16 @@
 #   Equivalent to RTMSS Real-Time Sample Arrays (RTSA).
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix dev: <http://example.org/alarmOnto/device#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/device/signal>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/signal>
     a owl:Ontology ;
     rdfs:label "Signal Instances" ;
-    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
 
 ######################################################################################################
 # BLUEPRINT — SIGNAL INSTANCE STRUCTURE
@@ -35,3 +35,11 @@
 #       dev:isProducedBy :O2Sensor_1 ;
 #       dev:inputToProcess :SpO2_Process_1 .
 ######################################################################################################
+
+:SpO2_Signal a dev:Signal ;
+    common:hasQualityIndicator "Good" ;
+    dev:hasSamplingRate 125.0 ;
+    common:hasUnit "%" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:isProducedBy :Pulse_Oximeter_Sensor ;
+    dev:inputToProcess :SpO2_MeasurementProcess .

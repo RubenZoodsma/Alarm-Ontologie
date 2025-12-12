@@ -5,16 +5,16 @@
 #   Equivalent to RTMSS Channel entities.
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix dev: <http://example.org/alarmOnto/device#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/device/deviceChannel>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/deviceChannel>
     a owl:Ontology ;
     rdfs:label "Device Channel Instances" ;
-    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
 
 ######################################################################################################
 # BLUEPRINT — DEVICECHANNEL INSTANCE STRUCTURE
@@ -33,3 +33,10 @@
 #       dev:hasState "Enabled" ;
 #       dev:hasMetric :FlowRateMetric_1 .
 ######################################################################################################
+
+:SpO2_Channel a dev:DeviceChannel ;
+    dev:hasLabel "SpO2 Measurements" ;
+    common:hasStateInstance common:Enabled ;
+    dev:partOfFunctionalUnit :SpO2_Module ;
+    dev:hasMetric :SpO2_Metric ;
+    dev:hasThresholdInterpretation common:High .

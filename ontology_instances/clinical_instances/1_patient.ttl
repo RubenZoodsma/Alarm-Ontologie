@@ -12,10 +12,11 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/clinical/patient>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/patient>
     a owl:Ontology ;
-    rdfs:label "Patient Instances" ;
-    owl:imports <https://raw.githubusercontent.com/YourOrg/clinical-device-ontology/main/ontology_core/alarmOnto_coreFile.ttl> .
+    owl:versionIRI <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/patient/v1> ;
+    rdfs:label "Clinical Instances: Patient" ;
+    rdfs:comment "Instance-level data for patients in the clinical domain." .
 
 ######################################################################################################
 # BLUEPRINT — PATIENT INSTANCE STRUCTURE
