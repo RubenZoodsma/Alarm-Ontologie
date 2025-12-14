@@ -5,10 +5,11 @@
 #   Each system can contain one or more Organs and belongs to a Patient.
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix clin: <http://example.org/alarmOnto/clinical#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix clin: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/physiologicalSystem>
@@ -65,6 +66,11 @@
     clin:hasState "UNKNOWN" ;
     clin:partOfPatient :Patient ;
     clin:hasOrgan :Skin .
+
+:Endocrine_System a clin:PhysiologicalSystem ;
+    clin:hasSNOMEDCode "UNKNOWN" ;
+    clin:hasState "UNKNOWN" ;
+    clin:partOfPatient :Patient .
 
 :Nervous_System a clin:PhysiologicalSystem ;
     clin:hasSNOMEDCode "UNKNOWN" ;

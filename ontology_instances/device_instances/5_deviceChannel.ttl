@@ -14,7 +14,7 @@
 
 <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/deviceChannel>
     a owl:Ontology ;
-    rdfs:label "Device Channel Instances" ;
+    rdfs:label "Device Channel Instances" .
 
 ######################################################################################################
 # BLUEPRINT — DEVICECHANNEL INSTANCE STRUCTURE
@@ -35,8 +35,41 @@
 ######################################################################################################
 
 :SpO2_Channel a dev:DeviceChannel ;
-    dev:hasLabel "SpO2 Measurements" ;
+    dev:hasLabel "SpO2 Channel" ;
     common:hasStateInstance common:Enabled ;
-    dev:partOfFunctionalUnit :SpO2_Module ;
-    dev:hasMetric :SpO2_Metric ;
-    dev:hasThresholdInterpretation common:High .
+    dev:hasMetric :SpO2_Metric .
+
+:ST_II_Channel a dev:DeviceChannel ;
+    dev:hasLabel "ST II Channel" ;
+    common:hasStateInstance common:Enabled ;
+    dev:hasMetric :ST_II_Metric .
+
+:ST_V_Channel a dev:DeviceChannel ;
+    dev:hasLabel "ST V Channel" ;
+    common:hasStateInstance common:Enabled ;
+    dev:hasMetric :ST_V_Metric .
+
+:Skin_Temp_Channel a dev:DeviceChannel ;
+    dev:hasLabel "Skin Temperature Channel" ;
+    common:hasStateInstance common:Enabled ;
+    dev:hasMetric :Skin_Temp_Metric .
+
+:Core_Temp_Channel a dev:DeviceChannel ;
+    dev:hasLabel "Core Temperature Channel" ;
+    common:hasStateInstance common:Enabled ;
+    dev:hasMetric :Core_Temp_Metric .
+
+:PulseRate_Channel a dev:DeviceChannel ;
+    dev:hasLabel "Pulse Rate Channel" ;
+    common:hasStateInstance common:Enabled ;
+    dev:hasMetric :PulseRate_Metric .
+
+:ABP_Channel a dev:DeviceChannel ;
+    dev:hasLabel "Arterial Blood Pressure Channel" ;
+    common:hasStateInstance common:Enabled ;
+    dev:hasMetric :ABP_Systolic_Metric, :ABP_Diastolic_Metric, :ABP_Mean_Metric .
+
+:EtCO2_Channel a dev:DeviceChannel ;
+    dev:hasLabel "End-Tidal CO2 Channel" ;
+    common:hasStateInstance common:Enabled ;
+    dev:hasMetric :EtCO2_Metric .

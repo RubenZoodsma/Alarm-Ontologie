@@ -32,6 +32,77 @@
 ##########################################
 
 :Pulse_Oximeter_Sensor a dev:Sensor ;
-    dev:hasAccuracy 0.95 ;
-    common:hasStateInstance common:Connected ;
-    dev:hasDeviceChannel :SpO2_Channel .
+    rdfs:label "Pulse Oximeter Sensor" ;
+    rdfs:comment "SpO2 sensor that can be in Connected or Disconnected state depending on physical connection status." ;
+    dev:ProducesSignal :PulseOximetry_Signal .
+
+:ECG_LA_Sensor a dev:Sensor ;
+    rdfs:label "ECG Left Arm Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the left arm." ;
+    dev:ProducesSignal :ECG_LA_Signal .
+
+:ECG_LL_Sensor a dev:Sensor ;
+    rdfs:label "ECG Left Leg Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the left leg." ;
+    dev:hasAccuracy 0.98 ;
+    dev:ProducesSignal :ECG_LL_Signal .
+
+:ECG_RA_Sensor a dev:Sensor ;
+    rdfs:label "ECG Right Arm Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the right arm." ;
+    dev:ProducesSignal :ECG_RA_Signal .
+
+:ECG_RL_Sensor a dev:Sensor ;
+    rdfs:label "ECG Right Leg Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the right leg." ;
+    dev:ProducesSignal :ECG_RL_Signal .
+
+:ECG_V1_Sensor a dev:Sensor ;
+    rdfs:label "ECG V1 Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the V1 position." ;
+    dev:ProducesSignal :ECG_V1_Signal .
+
+:ECG_V2_Sensor a dev:Sensor ;
+    rdfs:label "ECG V2 Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the V2 position." ;
+    dev:ProducesSignal :ECG_V2_Signal .
+
+:ECG_V3_Sensor a dev:Sensor ;
+    rdfs:label "ECG V3 Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the V3 position." ;
+    dev:ProducesSignal :ECG_V3_Signal .
+
+:ECG_V4_Sensor a dev:Sensor ;
+    rdfs:label "ECG V4 Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the V4 position." ;
+    dev:ProducesSignal :ECG_V4_Signal .
+
+:ECG_V5_Sensor a dev:Sensor ;
+    rdfs:label "ECG V5 Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the V5 position." ;
+    dev:ProducesSignal :ECG_V5_Signal .
+
+:ECG_V6_Sensor a dev:Sensor ;
+    rdfs:label "ECG V6 Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the V6 position." ;
+    dev:ProducesSignal :ECG_V6_Signal .
+
+:SkinTemperature_Probe_Sensor a dev:Sensor ;
+    rdfs:label "Skin Temperature Probe Sensor" ;
+    rdfs:comment "Sensor for measuring skin temperature." ;
+    dev:ProducesSignal :SkinTemp_Signal .
+
+:CoreTemperature_Probe_Sensor a dev:Sensor ;
+    rdfs:label "Core Temperature Probe Sensor" ;
+    rdfs:comment "Sensor for measuring core body temperature." ;
+    dev:ProducesSignal :CoreTemp_Signal .
+
+:ABP_Transducer_Sensor a dev:Sensor ;
+    rdfs:label "Arterial Blood Pressure Transducer Sensor" ;
+    rdfs:comment "Sensor for measuring arterial blood pressure." ;
+    dev:ProducesSignal :ABP_Waveform_Signal .
+
+:Capnography_Sensor a dev:Sensor ;
+    rdfs:label "Capnography CO2 Sensor" ;
+    rdfs:comment "Sensor for measuring end-tidal CO2 levels." ;
+    dev:ProducesSignal :Capno_Waveform_Signal .

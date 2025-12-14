@@ -14,7 +14,7 @@
 
 <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/physicalLocation>
     a owl:Ontology ;
-    rdfs:label "Physical Location Instances" ;
+    rdfs:label "Physical Location Instances" .
 
 ######################################################################################################
 # BLUEPRINT — PHYSICALLOCATION INSTANCE STRUCTURE

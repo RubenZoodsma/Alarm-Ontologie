@@ -5,10 +5,11 @@
 #   Each organ is part of a physiological system and may have one or more physiological processes.
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix clin: <http://example.org/alarmOnto/clinical#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix clin: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/organ>
@@ -45,7 +46,7 @@
 # - Brain
 # - Skin
 
-:Lung a clin:Organ ;
+:Lungs a clin:Organ ;
     clin:hasSNOMEDCode "UNKNOWN" ;
     clin:hasState "UNKNOWN" ;
     clin:partOfSystem :Pulmonary_System ;
@@ -57,20 +58,8 @@
     clin:partOfSystem :Cardiovascular_System ;
     clin:hasPhysiologicalProcess :Pulmonary_Perfusion_Process, :Systemic_Perfusion_Process, :Cutaneous_Perfusion_Process .
 
-:Vessels a clin:Organ ;
-    clin:hasSNOMEDCode "UNKNOWN" ;
-    clin:hasState "UNKNOWN" ;
-    clin:partOfSystem :Cardiovascular_System ;
-    clin:hasPhysiologicalProcess :Pulmonary_Perfusion_Process, :Systemic_Perfusion_Process, :Cutaneous_Perfusion_Process.
-
-:Brain a clin:Organ ;
-    clin:hasSNOMEDCode "UNKNOWN" ;
-    clin:hasState "UNKNOWN" .
-    clin:partOfSystem :Nervous_System .
-    clin:hasPhysiologicalProcess :Cerebral_Perfusion_Process .
-
 :Skin a clin:Organ ;
     clin:hasSNOMEDCode "UNKNOWN" ;
-    clin:hasState "UNKNOWN" .
-    clin:partOfSystem :Integumentary_System .
-    clin:hasPhysiologicalProcess :Cutaneous_Perfusion_Process.
+    clin:hasState "UNKNOWN" ;
+    clin:partOfSystem :Integumentary_System ;
+    clin:hasPhysiologicalProcess :Cutaneous_Perfusion_Process .

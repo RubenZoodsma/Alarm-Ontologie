@@ -14,7 +14,7 @@
 
 <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/functionalUnit>
     a owl:Ontology ;
-    rdfs:label "Functional Unit Instances" ;
+    rdfs:label "Functional Unit Instances" .
 
 ######################################################################################################
 # BLUEPRINT — FUNCTIONALUNIT INSTANCE STRUCTURE
@@ -35,9 +35,37 @@
 #       dev:hasDeviceChannel :FlowChannel_1 .
 ######################################################################################################
 
-:SpO2_Module a dev:FunctionalUnit ;
+:PulseOximetry_Module a dev:FunctionalUnit ;
     dev:hasDescription "Pulse Oximetry Module" ;
     common:hasStateInstance common:Active ;
     dev:partOfDevice :PhilipsMonitor ;
-    dev:hasDeviceChannel :SpO2_Channel ;
-    dev:hasSensorInterface :SpO2_SensorInterface .
+    dev:hasDeviceChannel :SpO2_Channel .
+
+:ECG_Module a dev:FunctionalUnit ;
+    dev:hasDescription "ECG Module" ;
+    common:hasStateInstance common:Active ;
+    dev:partOfDevice :PhilipsMonitor ;
+    dev:hasDeviceChannel :ECG_Channel .
+
+:Temp_Module a dev:FunctionalUnit ;
+    dev:hasDescription "Temperature Module" ;
+    common:hasStateInstance common:Active ;
+    dev:partOfDevice :PhilipsMonitor ;
+    dev:hasDeviceChannel :Temp_Channel .
+
+:IBP_Module a dev:FunctionalUnit ;
+    dev:hasDescription "Invasive Blood Pressure Module" ;
+    common:hasStateInstance common:Active ;
+    dev:partOfDevice :PhilipsMonitor ;
+    dev:hasDeviceChannel :ABP_Channel .
+
+:Battery_Module a dev:FunctionalUnit ;
+    dev:hasDescription "Battery Module" ;
+    common:hasStateInstance common:Active ;
+    dev:partOfDevice :PhilipsMonitor .
+
+:Capnography_Module a dev:FunctionalUnit ;
+    dev:hasDescription "Capnography Module" ;
+    common:hasStateInstance common:Active ;
+    dev:partOfDevice :PhilipsMonitor ;
+    dev:hasDeviceChannel :Capno_Channel .

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    <uri id="User Entered Import Resolution" name="https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/alarm-specifications" uri="file:/Users/rzoodsm2/Documents/GIT-repositories/Alarm-Ontologie/ontology_instances/alarm_instances/2_AlarmSpecifications.ttl"/>
     <uri id="User Entered Import Resolution" name="https://raw.githubusercontent.com/YourOrg/clinical-device-ontology/main/ontology_core/alarmOnto_coreFile.ttl" uri="alarmOnto_coreFile.ttl"/>
     <uri id="Common Module Import Resolution" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_common.ttl" uri="alarmOnto_common.ttl"/>
     <uri id="Clinical Module Import Resolution" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_clinical.ttl" uri="alarmOnto_clinical.ttl"/>

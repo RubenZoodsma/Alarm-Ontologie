@@ -41,8 +41,14 @@
 
 :Sensor a owl:Class ;
     rdfs:subClassOf :DeviceEntity ;
+    rdfs:subClassOf [ a owl:Restriction ;
+        owl:onProperty common:hasStateInstance ;
+        owl:someValuesFrom [ a owl:Class ;
+            owl:oneOf ( common:Connected common:Disconnected )
+        ]
+    ] ;
     rdfs:label "Sensor" ;
-    rdfs:comment "Sensing element or transducer producing a signal." .
+    rdfs:comment "Sensing element or transducer producing a signal. Can be in Connected or Disconnected state." .
 
 :DeviceChannel a owl:Class ;
     rdfs:subClassOf :DeviceEntity ;
@@ -276,10 +282,10 @@
     rdfs:label "required value" ;
     rdfs:comment "Specifies the required value for a state requirement." .
 
-:priorityLevel a owl:ObjectProperty ;
+:emittedPriorityLevel a owl:ObjectProperty ;
     rdfs:domain :AlarmCondition ;
     rdfs:range common:priorityLevel ;
-    rdfs:label "priority level" ;
+    rdfs:label "emitted priority level" ;
     rdfs:comment "Indicates the priority level of the alarm (e.g., High, Medium, Low)." .
 
 :alarmGroup a owl:ObjectProperty ;
@@ -287,6 +293,12 @@
     rdfs:range common:alarmGroup ;
     rdfs:label "alarm group" ;
     rdfs:comment "Indicates the group/category of the alarm (e.g., Respiratory, Cardiac)." .
+
+:isPartOfDevice a owl:ObjectProperty;
+    rdfs:domain :DeviceEntity ;
+    rdfs:range :PhysicalDevice ;
+    rdfs:label "is part of device" ;
+    rdfs:comment "Inverse-like relation to partOfDevice (kept explicit)." .
 
 # Properties for complex alarm condition modeling
 :hasCondition a owl:ObjectProperty ;
@@ -341,10 +353,11 @@
     rdfs:label "spec attribute" ;
     rdfs:comment "Specifies which attribute this condition spec checks." .
 
-:specValue a owl:DatatypeProperty, owl:ObjectProperty ;
+:specValue a owl:ObjectProperty ;
     rdfs:domain :ConditionSpec ;
+    rdfs:range common:Entity ;
     rdfs:label "spec value" ;
-    rdfs:comment "Specifies the required value for this condition spec." .
+    rdfs:comment "Specifies the required value for this condition spec (typically a state or entity individual)." .
 
 :soundType a owl:ObjectProperty ;
     rdfs:domain :AlarmCondition ;

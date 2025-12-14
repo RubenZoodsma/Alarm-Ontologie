@@ -36,5 +36,6 @@
         <../ontology_instances/device_instances/9_physicalLocation.ttl> ,
 
         # --- Alarm instance modules ---
-        <../ontology_instances/alarm_instances/2_AlarmSpecifications.ttl> ,
-        <../ontology_instances/alarm_instances/1_MonitorAlarms.ttl> .
+        <../ontology_instances/alarm_instances/1_ACD_MonitorAlarms.ttl> ,
+        <../ontology_instances/alarm_instances/2_ACS_MonitorAlarms.ttl> ,
+        <../ontology_instances/alarm_instances/3_Cond_MonitorAlarms.ttl> .

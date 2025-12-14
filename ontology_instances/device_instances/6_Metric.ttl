@@ -33,8 +33,72 @@
 ####################################################
 
 :SpO2_Metric a dev:Metric ;
-    common:hasMDCCode "MDC_PULS_OXIM_SAT_O2" ;
-    dev:hasUnit "%" ;
+    dev:hasMDCCode "MDC_PULS_OXIM_SAT_O2" ;
+    common:hasUnit "%" ;
     dev:hasLabel "SpO2" ;
     common:hasStateInstance common:Transmitting ;
-    dev:generatedByProcess :SpO2_MeasurementProcess .
+    dev:generatedByProcess :PulseOximetry_MeasurementProcess .
+
+:ST_II_Metric a dev:Metric ;
+    dev:hasMDCCode "MDC_ECG_LEAD_II_ST_SEGMENT" ;
+    common:hasUnit "mV" ;
+    dev:hasLabel "ST II" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:generatedByProcess :ECG_Waveform_MeasurementProcess .
+
+:ST_V_Metric a dev:Metric ;
+    dev:hasMDCCode "MDC_ECG_LEAD_V_ST_SEGMENT" ;
+    common:hasUnit "mV" ;
+    dev:hasLabel "ST V" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:generatedByProcess :ECG_Waveform_MeasurementProcess .
+
+:Skin_Temp_Metric a dev:Metric ;
+    dev:hasMDCCode "MDC_TEMP_SKIN" ;
+    common:hasUnit "°C" ;
+    dev:hasLabel "Skin Temperature" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:generatedByProcess :SkinTemp_MeasurementProcess .
+
+:Core_Temp_Metric a dev:Metric ;
+    dev:hasMDCCode "MDC_TEMP_CORE" ;
+    common:hasUnit "°C" ;
+    dev:hasLabel "Core Temperature" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:generatedByProcess :CoreTemp_MeasurementProcess .
+
+:PulseRate_Metric a dev:Metric ;
+    dev:hasMDCCode "MDC_PULS_OXIM_PULS_RATE" ;
+    common:hasUnit "bpm" ;
+    dev:hasLabel "Pulse Rate" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:generatedByProcess :PulseOximetry_MeasurementProcess .
+
+:ABP_Systolic_Metric a dev:Metric ;
+    dev:hasMDCCode "MDC_PRESS_BLD_ART_ABP_SYSTOLIC" ;
+    common:hasUnit "mmHg" ;
+    dev:hasLabel "ABP Systolic" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:generatedByProcess :ABP_Waveform_MeasurementProcess .
+
+:ABP_Mean_Metric a dev:Metric ;
+    dev:hasMDCCode "MDC_PRESS_BLD_ART_ABP_MEAN" ;
+    common:hasUnit "mmHg" ;
+    dev:hasLabel "ABP Mean" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:generatedByProcess :ABP_Waveform_MeasurementProcess .
+
+:ABP_Diastolic_Metric a dev:Metric ;
+    dev:hasMDCCode "MDC_PRESS_BLD_ART_ABP_DIASTOLIC" ;
+    common:hasUnit "mmHg" ;
+    dev:hasLabel "ABP Diastolic" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:generatedByProcess :ABP_Waveform_MeasurementProcess .
+
+:EtCO2_Metric a dev:Metric ;
+    dev:hasMDCCode "MDC_CAPN_ET_CO2" ;
+    common:hasUnit "mmHg" ;
+    dev:hasLabel "EtCO2" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:generatedByProcess :Capno_Waveform_MeasurementProcess .  
+

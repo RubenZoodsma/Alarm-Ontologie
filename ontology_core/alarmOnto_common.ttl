@@ -138,22 +138,42 @@
     rdfs:label "Fault" ;
     rdfs:comment "Entity has detected an error condition." .
 
-# Measurement States
-:Low a :State ;
-    rdfs:label "Low" ;
-    rdfs:comment "Value below normal or threshold range." .
+# Limit violation interpretations
+:LowLimitViolation a :State ;
+    rdfs:label "Low Limit Violation" ;
+    rdfs:comment "Measured value is below the defined lower limit." .
 
-:High a :State ;
-    rdfs:label "High" ;
-    rdfs:comment "Value above normal or threshold range." .
+:HighLimitViolation a :State ;
+    rdfs:label "High Limit Violation" ;
+    rdfs:comment "Measured value is above the defined upper limit." .
 
-:Normal a :State ;
-    rdfs:label "Normal" ;
-    rdfs:comment "Value within acceptable range." .
+# Absent cycle interpretations
+:ApneaInterpretation a :State ;
+    rdfs:label "Apnea Interpretation" ;
+    rdfs:comment "Absence of breathing cycles detected." .
 
-:Critical a :State ;
-    rdfs:label "Critical" ;
-    rdfs:comment "Value in critical/dangerous range." .
+:AsystoleInterpretation a :State ;
+    rdfs:label "Asystole Interpretation" ;
+    rdfs:comment "Absence of cardiac electrical activity detected." .
+
+# Rhythm interpretations
+
+:VentricularFibrillationInterpretation a :State ;
+    rdfs:label "Ventricular Fibrillation Interpretation" ;
+    rdfs:comment "Irregular and rapid heart rhythm detected." .
+
+:VentricularTachycardiaInterpretation a :State ;
+    rdfs:label "Ventricular Tachycardia Interpretation" ;
+    rdfs:comment "Fast heart rhythm originating from the ventricles detected." .
+
+# Rate interpretations
+:BradycardiaInterpretation a :State ;
+    rdfs:label "Bradycardia Interpretation" ;
+    rdfs:comment "Heart rate below normal limits detected." .
+
+:TachycardiaInterpretation a :State ;
+    rdfs:label "Tachycardia Interpretation" ;
+    rdfs:comment "Heart rate above normal limits detected." .
 
 # Activity States
 :Active a :State ;
@@ -163,28 +183,6 @@
 :Inactive a :State ;
     rdfs:label "Inactive" ;
     rdfs:comment "Currently not active or dormant." .
-
-# Quality States
-:Good a :State ;
-    rdfs:label "Good" ;
-    rdfs:comment "Signal or data quality is good." .
-
-:Poor a :State ;
-    rdfs:label "Poor" ;
-    rdfs:comment "Signal or data quality is degraded." .
-
-:Questionable a :State ;
-    rdfs:label "Questionable" ;
-    rdfs:comment "Signal or data quality is uncertain." .
-
-# Unknown/Missing States
-:Unknown a :State ;
-    rdfs:label "Unknown" ;
-    rdfs:comment "State is not yet determined or available." .
-
-:Missing a :State ;
-    rdfs:label "Missing" ;
-    rdfs:comment "Value or state information is missing." .
 
 # Connection States
 :Connected a :State ;
@@ -200,28 +198,15 @@
     rdfs:label "Transmitting" ;
     rdfs:comment "Signal or data is being transmitted." .
 
-:NotTransmitting a :State ;
-    rdfs:label "Not Transmitting" ;
-    rdfs:comment "Signal or data is not being transmitted." .
-
-# Measurement States
-:Measuring a :State ;
-    rdfs:label "Measuring" ;
+# Metric availability states
+:MetricAvailable a :State ;
+    rdfs:label "Metric Available" ;
     rdfs:comment "Device is actively measuring or collecting data." .
-
-:NotMeasuring a :State ;
-    rdfs:label "Not Measuring" ;
-    rdfs:comment "Device is not actively measuring." .
 
 # Monitoring States
 :MonitoredState a :State ;
     rdfs:label "Monitored State" ;
     rdfs:comment "Entity is being actively monitored." .
-
-:UnmonitoredState a :State ;
-    rdfs:label "Unmonitored State" ;
-    rdfs:comment "Entity is not being monitored." .
-
 
 ### Alarm-based object properties
 :lowAlertSound a :soundType ;
@@ -232,6 +217,7 @@
 
 :highAlertSound a :soundType ;
     rdfs:label "High Alert Sound" .
+
 
 
 :lowPriority a :priorityLevel ;

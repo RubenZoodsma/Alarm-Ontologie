@@ -5,10 +5,11 @@
 #   Each process occurs in an organ and produces one or more physiological properties.
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix clin: <http://example.org/alarmOnto/clinical#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix clin: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/physiologicalProcess>
@@ -45,7 +46,7 @@
 
 :Pulmonary_Oxygenation_Process a clin:PhysiologicalProcess ;
     clin:occursInOrgan :Lung ;
-    clin:producesProperty :SaO2_Property ;
+    clin:producesProperty :Arterial_Oxygenation_Property ;
     clin:hasState "Unknown" .
 
 :Pulmonary_Ventilation_Process a clin:PhysiologicalProcess ;
@@ -53,42 +54,22 @@
     clin:producesProperty :RR_Property ;
     clin:hasState "Unknown" .
 
-:Ventricular_Repolarisation_Process a clin:PhysiologicalProcess ;
-    clin:occursInOrgan :Heart ;
-    clin:producesProperty ** ;
-    clin:hasState "Unknown" .
-
-:Thermoregulation_Process a clin:PhysiologicalProcess ;
-    clin:occursInOrgan :Skin ;
-    clin:producesProperty :CoreTemperature_Property, :SkinTemperature_Property , :RectalTemperature_Property ;
+:Pulmonary_Diffusion_Process a clin:PhysiologicalProcess ;
+    clin:occursInOrgan :Lung ;
+    clin:producesProperty :Alveolar_CarbonDioxide_Property, :Arterial_Oxygenation_Property ;
     clin:hasState "Unknown" .
 
 :Cardiac_Contraction_Process a clin:PhysiologicalProcess ;
     clin:occursInOrgan :Heart ;
-    clin:producesProperty :** ;
+    clin:producesProperty :Cardiac_Contractile_Frequency_Property ;
     clin:hasState "Unknown" .
 
-:Arterial_Pressure_regulation_Process a clin:PhysiologicalProcess ;
-    clin:occursInOrgan :Heart ;
-    clin:producesProperty :SystolicArterialBloodPressure_Property, :MeanArterialBloodPressure_Property, :DiastolicArterialBloodPressure_Property ;
+:Thermoregulation_Process a clin:PhysiologicalProcess ;
+    clin:occursInOrgan :Skin ;
+    clin:producesProperty :Skin_Temp_Property , :Core_Temp_Property ;
     clin:hasState "Unknown" .
 
-:Venous_Pressure_regulation_Process a clin:PhysiologicalProcess ;
+:Arterial_Perfusion_Process a clin:PhysiologicalProcess ;
     clin:occursInOrgan :Heart ;
-    clin:producesProperty :SystolicVenousBloodPressure_Property, :MeanVenousBloodPressure_Property, :DiastolicVenousBloodPressure_Property ;
-    clin:hasState "Unknown" .
-
-:Pulmonary_Perfusion_Process a clin:PhysiologicalProcess ;
-    clin:occursInOrgan :Lung ;
-    clin:producesProperty :** ;
-    clin:hasState "Unknown" .    
-
-:Systemic_Perfusion_Process a clin:PhysiologicalProcess ;
-    clin:occursInOrgan :Heart ;
-    clin:producesProperty :** ;
-    clin:hasState "Unknown" .
-
-:Cutaneous_Perfusion_Process a clin:PhysiologicalProcess ;
-    clin:occursInOrgan :Heart ;
-    clin:producesProperty :SkinPerfusionIndex_Property ;
+    clin:producesProperty :ABP_Systolic_Property , :ABP_Diastolic_Property, :ABP_Mean_Property ;
     clin:hasState "Unknown" .

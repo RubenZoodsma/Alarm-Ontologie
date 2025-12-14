@@ -38,8 +38,7 @@
 # - Ventilator (Draeger, Hulbus, Datexahmedacom)
 # - Thermoregulator (Medibus)
 
-:PhilipsMonitor a dev:PhysicalDevice ;
+:PhilipsMonitor a dev:PhysicalDevice, dev:MonitoringDevice ;
     dev:hasManufacturer "Philips" ;
     dev:hasModelName "Unknown Model" ;
-    common:hasStateInstance common:Enabled ;
     dev:hasFunctionalUnit :SpO2_Module, :ECG_Module, :NIBP_Module, :Temp_Module, :IBP_Module, :VascPress_Module .

@@ -14,7 +14,7 @@
 
 <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/measurementProcess>
     a owl:Ontology ;
-    rdfs:label "Measurement Process Instances" ;
+    rdfs:label "Measurement Process Instances" .
 
 ######################################################################################################
 # BLUEPRINT — MEASUREMENTPROCESS INSTANCE STRUCTURE
@@ -36,9 +36,26 @@
 #       dev:producesMetric :SpO2_Metric_1 .
 ######################################################################################################
 
-:SpO2_MeasurementProcess a dev:MeasurementProcess ;
-    dev:hasAlgorithm "Photoplethysmography + calibration" ;
-    dev:hasLatency 0.1 ;
-    common:hasStateInstance common:Active ;
+:PulseOximetry_MeasurementProcess a dev:MeasurementProcess ;
     dev:takesSignal :SpO2_Signal ;
-    dev:producesMetric :SpO2_Metric .
+    dev:producesMetric :SpO2_Metric , :PulseRate_Metric .
+
+:ECG_Waveform_MeasurementProcess a dev:MeasurementProcess ;
+    dev:takesSignal :ECG_Signal ;
+    dev:producesMetric :ST_II_Metric, :ST_V_Metric .
+
+:SkinTemp_MeasurementProcess a dev:MeasurementProcess ;
+    dev:takesSignal :SkinTemp_Signal ;
+    dev:producesMetric :Skin_Temp_Metric .
+
+:CoreTemp_MeasurementProcess a dev:MeasurementProcess ;
+    dev:takesSignal :CoreTemp_Signal ;
+    dev:producesMetric :Core_Temp_Metric .
+
+:ABP_Waveform_MeasurementProcess a dev:MeasurementProcess ;
+    dev:takesSignal :ABP_Waveform_Signal ;
+    dev:producesMetric :ABP_Diastolic_Metric, :ABP_Systolic_Metric, :ABP_Mean_Metric .
+
+:Capno_Waveform_MeasurementProcess a dev:MeasurementProcess ;
+    dev:takesSignal :Capno_Waveform_Signal ;
+    dev:producesMetric :EtCO2_Metric .

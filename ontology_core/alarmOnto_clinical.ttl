@@ -24,6 +24,11 @@
     rdfs:subClassOf common:Entity ;
     rdfs:label "Clinical Entity" .
 
+:TherapeuticModality a owl:Class ;
+    rdfs:subClassOf :ClinicalEntity ;
+    rdfs:label "Therapeutic Modality" ;
+    rdfs:comment "Intervention or treatment aimed at managing physiological conditions." .
+
 :Patient a owl:Class ;
     rdfs:subClassOf :ClinicalEntity ;
     rdfs:label "Patient" ;

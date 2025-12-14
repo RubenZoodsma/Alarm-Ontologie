@@ -11,33 +11,37 @@
 # Ontology header
 #######################################################################
 
-<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/alarms>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/alarm-condition-states>
     a owl:Ontology ;
-    rdfs:label "Alarm Condition Instances (Entity-State Definition)" ;
-    rdfs:comment "Defines alarm instances based on entity:state requirements for activation" ;
-    owl:imports <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/alarm-specifications> .
+    rdfs:label "Alarm Condition States (ACS)" ;
+    rdfs:comment "Defines AlertConditionState instances representing active alarm states and their properties" .
 
-#######################################################################
-# Test Alarm: PHILIPSMONITOR - SpO2 Left High
-# Using composite properties instead of separate requirement instances
-#######################################################################
+##### Initially included alarms: 
+# 1  | PHILIPSMONITOR - ?? SpO2l hoog	
+# 2  | PHILIPSMONITOR - ?? SpO2po hoog	
+# 3  | PHILIPSMONITOR - ?? ST-II laag	
+# 4  | PHILIPSMONITOR - ?? ST-V hoog g	
+# 5  | PHILIPSMONITOR - ?? Thuid laag	
+# 6  | PHILIPSMONITOR - ?? Tkern hoog	
+# 7  | PHILIPSMONITOR - ??? Brady (pols)	
+# 8  | PHILIPSMONITOR - ABP slecht signaal	
+# 9  | PHILIPSMONITOR - ABPm hoog 	
+# 10 | PHILIPSMONITOR - BATTERY LOW	
+# 11 | PHILIPSMONITOR - Pols hoog 	
+# 12 | PHILIPSMONITOR - Pols laag 	
+# 13 | PHILIPSMONITOR - SpO2 laag 	
+# 14 | PHILIPSMONITOR - EtCO2 laag
 
-:LowSpO2_Def
-    a dev:AlarmDefinition ;
-    rdfs:label "Low SpO2 – semantic definition" ;
-    rdfs:comment "Explicit documentation of the latent conditions carried by the Low SpO2 alarm." ;
-    dev:requiresSpec
-        :Spec_MonitorEnabled ,
-        :Spec_SensorConnected ,
-        :Spec_SpO2Low .
 
-:LowSpO2Alarm
-    a dev:AlarmCondition ;
-    rdfs:label "PHILIPSMONITOR - SpO2 Low" ;
-    rdfs:comment "Alarm triggered when monitor enabled AND sensor connected AND SpO2 interpreted as Low." ;
+
+
+:ACS_Alarm_1
+    a dev:AlertConditionState ;
+    rdfs:label "AlertConditionState reasoning object: PHILIPSMONITOR - SpO2 Low" ;
+    rdfs:comment "Reasoning-level alarm condition triggered when definition conditions are met." ;
 
     # Link to the human-friendly, explicit definition
-    dev:hasDefinition :LowSpO2_Def ;
+    dev:hasDefinition :Alarm_1_definition ;
 
     # Reasoning definition (kept for inference/classification)
     owl:equivalentClass [
