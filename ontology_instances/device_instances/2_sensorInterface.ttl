@@ -5,16 +5,16 @@
 #   Corresponds to RTMSS Sensor Interface (SEN).
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix dev: <http://example.org/alarmOnto/device#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/device/sensorInterface>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/sensorInterface>
     a owl:Ontology ;
-    rdfs:label "Sensor Interface Instances" ;
-    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+    rdfs:label "Sensor Interface Instances" .
 
 ######################################################################################################
 # BLUEPRINT — SENSORINTERFACE INSTANCE STRUCTURE
@@ -35,3 +35,33 @@
 #       dev:hasConnectorID "PortA1" ;
 #       dev:connectsSensor :O2Sensor_1 .
 ######################################################################################################
+
+:PulseOximeter_Interface a dev:SensorInterface ;
+    dev:isPartOfDevice :PhilipsMonitor ;
+    dev:partOfFunctionalUnit :PulseOximetry_Module ;
+    dev:connectsSensor :Pulse_Oximeter_Sensor .
+
+:ECG_Interface a dev:SensorInterface ;
+    dev:isPartOfDevice :PhilipsMonitor ;
+    dev:partOfFunctionalUnit :ECG_Module ;
+    dev:connectsSensor :ECG_LA_Sensor, :ECG_LL_Sensor, :ECG_RA_Sensor, :ECG_RL_Sensor, :ECG_V1_Sensor, :ECG_V2_Sensor, :ECG_V3_Sensor, :ECG_V4_Sensor, :ECG_V5_Sensor, :ECG_V6_Sensor .
+
+:SkinTemperature_Probe_Interface a dev:SensorInterface ;
+    dev:isPartOfDevice :PhilipsMonitor ;
+    dev:partOfFunctionalUnit :Temp_Module ;
+    dev:connectsSensor :SkinTemperature_Probe_Sensor .
+
+:CoreTemperature_Probe_Interface a dev:SensorInterface ;
+    dev:isPartOfDevice :PhilipsMonitor ;
+    dev:partOfFunctionalUnit :Temp_Module ;
+    dev:connectsSensor :CoreTemperature_Probe_Sensor .
+
+:IBP_Transducer_Interface a dev:SensorInterface ;
+    dev:isPartOfDevice :PhilipsMonitor ;
+    dev:partOfFunctionalUnit :IBP_Module ;
+    dev:connectsSensor :ABP_Transducer_Sensor .
+
+:CO2_Sensor_Interface a dev:SensorInterface ;
+    dev:isPartOfDevice :PhilipsMonitor ;
+    dev:partOfFunctionalUnit :Capnography_Module ;
+    dev:connectsSensor :Capnography_Sensor .

@@ -1,0 +1,45 @@
+######################################################################################################
+# FILE: 6_TherapeuticModalities.ttl
+# DESCRIPTION:
+#   Contains instances of :TherapeuticModality — interventions aimed at treating or managing physiological conditions.
+######################################################################################################
+
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix clin: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/therapeuticModality>
+    a owl:Ontology ;
+    owl:versionIRI <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/therapeuticModality/v1> ;
+    rdfs:label "Clinical Instances: Therapeutic Modalities" ;
+    rdfs:comment "Instance-level data for therapeutic modalities (interventions) in the clinical domain." .
+
+######################################################################################################
+# BLUEPRINT — THERAPEUTICMODALITY INSTANCE STRUCTURE
+#
+# Data Properties:
+#   - hasSNOMEDCode (xsd:string)        e.g. "71083000"   # Mechanical ventilation
+#   - hasState (xsd:string)             e.g. "Active"
+# Object Properties:
+#   - targetsProcess → PhysiologicalProcess
+#       e.g. :Mechanical_Ventilation_1 clin:targetsProcess :Pulmonary_Ventilation_1
+#   - administeredToPatient → Patient
+#       e.g. :Mechanical_Ventilation_1 clin:administeredToPatient :Patient_001
+#
+# Example instance:
+#   :Mechanical_Ventilation_1 a clin:TherapeuticModality ;
+#       clin:hasSNOMEDCode "71083000" ;
+#       clin:hasState "Active" ;
+#       clin:targetsProcess :Pulmonary_Ventilation_1 ;
+#       clin:administeredToPatient :Patient_001 .
+######################################################################################################
+
+### Invasive mechanical ventilation
+:Mechanical_Ventilation a clin:TherapeuticModality ;
+    clin:hasSNOMEDCode "71083000" ;
+    clin:hasState "Active" ;
+    clin:targetsProcess :Pulmonary_Ventilation_Process ;
+    clin:administeredToPatient :JohnDoe .

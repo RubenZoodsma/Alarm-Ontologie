@@ -1,0 +1,453 @@
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
+@prefix clin: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+#######################################################################
+# Ontology header
+#######################################################################
+
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/alarm-condition-descriptions>
+    a owl:Ontology ;
+    rdfs:label "Alarm Condition Descriptions (ACD)" ;
+    rdfs:comment "Defines AlertConditionDescription instances with explicit semantic requirements for alarm activation" .
+
+##### Initially included alarms: 
+# 1  | PHILIPSMONITOR - ?? SpO2l hoog	
+# 2  | PHILIPSMONITOR - ?? SpO2po hoog	
+# 3  | PHILIPSMONITOR - ?? ST-II laag	
+# 4  | PHILIPSMONITOR - ?? ST-V hoog g	
+# 5  | PHILIPSMONITOR - ?? Thuid laag	
+# 6  | PHILIPSMONITOR - ?? Tkern hoog	
+# 7  | PHILIPSMONITOR - ??? Brady (pols)	
+# 8  | PHILIPSMONITOR - ABP slecht signaal	
+# 9  | PHILIPSMONITOR - ABPm hoog 	
+# 10 | PHILIPSMONITOR - BATTERY LOW	
+# 11 | PHILIPSMONITOR - Pols hoog 	
+# 12 | PHILIPSMONITOR - Pols laag 	
+# 13 | PHILIPSMONITOR - SpO2 laag 	
+# 14 | PHILIPSMONITOR - EtCO2 laag
+
+
+
+#######################################################################
+# Alarm 1  | PHILIPSMONITOR - ?? SpO2l hoog	
+#######################################################################
+
+:ACD_Alarm_1 ## PHILIPSMONITOR - ?? SpO2l hoog
+    a dev:AlertConditionDescription ;
+    rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - ?? SpO2l hoog" ;
+    rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - ?? SpO2l hoog'." ;
+
+    dev:hasAlertConditionState :ACS_Alarm_1 ;
+    dev:emittedPriorityLevel :mediumPriority ;
+    dev:alarmMessageLabel "PHILIPSMONITOR - ?? SpO2l hoog" ;
+    dev:alarmCategory :physiologicalAlarmGroup ;
+    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
+
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_PulseOximetrySensor_FunctionalState_Connected ,       ## pulseOximeterSensor is connected
+        :Cond_SpO2Metric_AvailabilityState_Available ,              ## SpO2 metric is being measured
+        :Cond_SpO2Metric_ValueInterpretation_HighLimitViolation ,   ## SpO2_metric hasValueInterpretation = HighLimitViolation
+        :Cond_PulseOximetrySensor_MeasurementLocation_Left          ## pulseOximeterSensor hasMeasurementLocation = Left
+        ;
+
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Device-related inferrals
+        :Cond_PulseOximeterInterfaceConnected ,
+        :Cond_SpO2DeviceChannel_FunctionalState_Enabled ,
+        
+        ## Clinical-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_PulseOximetry ,
+        :Cond_SaO2Property_ObservationState_Monitored
+        .
+
+:ACD_Alarm_2 ## PHILIPSMONITOR - ?? SpO2po hoog
+    a dev:AlertConditionDescription ;
+    rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - ?? SpO2po hoog" ;
+    rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - ?? SpO2po hoog'." ;
+
+    dev:hasAlertConditionState :ACS_Alarm_2 ;
+    dev:emittedPriorityLevel :mediumPriority ;
+    dev:alarmMessageLabel "PHILIPSMONITOR - ?? SpO2po hoog" ;
+    dev:alarmCategory :physiologicalAlarmGroup ;
+    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
+
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_PulseOximetrySensor_FunctionalState_Connected ,       ## pulseOximeterSensor is connected
+        :Cond_SpO2Metric_AvailabilityState_Available ,              ## SpO2 metric is being measured
+        :Cond_SpO2Metric_ValueInterpretation_HighLimitViolation ,   ## SpO2_metric hasValueInterpretation = HighLimitViolation
+        :Cond_PulseOximetrySensor_MeasurementLocation_postDuctal    ## pulseOximeterSensor hasMeasurementLocation = postDuctal
+        ;
+
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Device-related inferrals
+        :Cond_PulseOximeterInterfaceConnected ,
+        :Cond_SpO2DeviceChannel_FunctionalState_Enabled ,
+        
+        ## Clinical-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_PulseOximetry ,
+        :Cond_SaO2Property_ObservationState_Monitored
+        .
+
+:ACD_Alarm_3 ## PHILIPSMONITOR - ?? ST-II laag
+    a dev:AlertConditionDescription ;
+    rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - ?? ST-II laag" ;
+    rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - ?? ST-II laag'." ;
+
+    dev:hasAlertConditionState :ACS_Alarm_3 ;
+    dev:emittedPriorityLevel :mediumPriority ;
+    dev:alarmMessageLabel "PHILIPSMONITOR - ?? ST-II laag" ;
+    dev:alarmCategory :physiologicalAlarmGroup ;
+    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
+
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_ECGRASensor_FunctionalState_Connected ,          ## ECG RA sensor is connected
+        :Cond_ECGLLSensor_FunctionalState_Connected ,         ## ECG LL sensor is connected
+        :Cond_STII_Metric_AvailabilityState_Available ,             ## ST-II metric is being measured/calculated
+        :Cond_STII_Metric_ValueInterpretation_LowLimitViolation      ## ST-II_metric hasValueInterpretation = LowLimitViolation
+        ;
+
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Device-related inferrals
+        :Cond_ECGInterface_FunctionalState_Connected ,
+        :Cond_STIIDeviceChannel_FunctionalState_Enabled ,
+        
+        ## Clinical-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_ECG ,
+        :Cond_CardiacDepolarizationProperty_ObservationState_Monitored
+        .
+
+:ACD_Alarm_4 ## PHILIPSMONITOR - ?? ST-V hoog g
+    a dev:AlertConditionDescription ;
+    rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - ?? ST-V hoog g" ;
+    rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - ?? ST-V hoog g'." ;
+
+    dev:hasAlertConditionState :ACS_Alarm_4 ;
+    dev:emittedPriorityLevel :mediumPriority ;
+    dev:alarmMessageLabel "PHILIPSMONITOR - ?? ST-V hoog g" ;
+    dev:alarmCategory :physiologicalAlarmGroup ;
+    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
+
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_ECGV1Sensor_FunctionalState_Connected ,          ## ECG V1 sensor is connected
+        :Cond_ECGV2Sensor_FunctionalState_Connected ,         ## ECG V2 sensor is connected
+        :Cond_ECGV3Sensor_FunctionalState_Connected ,         ## ECG V3 sensor is connected
+        :Cond_ECGV4Sensor_FunctionalState_Connected ,         ## ECG V4 sensor is connected
+        :Cond_ECGV5Sensor_FunctionalState_Connected ,         ## ECG V5 sensor is connected
+        :Cond_ECGV6Sensor_FunctionalState_Connected ,         ## ECG V6 sensor is connected
+        :Cond_STV_Metric_AvailabilityState_Available ,             ## ST-V metric is being measured/calculated
+        :Cond_STV_Metric_ValueInterpretation_HighLimitViolation      ## ST-V_metric hasValueInterpretation = HighLimitViolation
+        ;
+
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Device-related inferrals
+        :Cond_ECGInterface_FunctionalState_Connected ,
+        :Cond_STVDeviceChannel_FunctionalState_Enabled ,
+        
+        ## Clinical-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_ECG ,
+        :Cond_CardiacDepolarizationProperty_ObservationState_Monitored
+        .
+
+:ACD_Alarm_5 ## PHILIPSMONITOR - ?? Thuid laag
+    a dev:AlertConditionDescription ;
+    rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - ?? Thuid laag" ;
+    rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - ?? Thuid laag'." ;
+
+    dev:hasAlertConditionState :ACS_Alarm_5 ;
+    dev:emittedPriorityLevel :mediumPriority ;
+    dev:alarmMessageLabel "PHILIPSMONITOR - ?? Thuid laag" ;
+    dev:alarmCategory :physiologicalAlarmGroup ;
+    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
+
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_SkinTemperatureSensor_FunctionalState_Connected ,       ## skin temperature sensor is connected
+        :Cond_SkinTempMetric_AvailabilityState_Available ,              ## SkinTemp metric is being measured
+        :Cond_SkinTempMetric_Metric_ValueInterpretation_LowLimitViolation      ## SkinTemp Metric hasValueInterpretation = LowLimitViolation
+        ;
+
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Device-related inferrals
+        :Cond_SkinTemperatureSensorInterface_FunctionalState_Connected ,
+        :Cond_SkinTemperatureDeviceChannel_FunctionalState_Enabled ,
+        
+        ## Clinical-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_SkinTempSensor ,
+        :Cond_SkinTemperatureProperty_ObservationState_Monitored
+        .
+
+:ACD_Alarm_6 ## PHILIPSMONITOR - ?? Tkern hoog
+    a dev:AlertConditionDescription ;
+    rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - ?? Tkern hoog" ;
+    rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - ?? Tkern hoog'." ;
+
+    dev:hasAlertConditionState :ACS_Alarm_6 ;
+    dev:emittedPriorityLevel :mediumPriority ;
+    dev:alarmMessageLabel "PHILIPSMONITOR - ?? Tkern hoog" ;
+    dev:alarmCategory :physiologicalAlarmGroup ;
+    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
+
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_CoreTemperatureSensor_FunctionalState_Connected ,       ## core temperature sensor is connected
+        :Cond_CoreTempMetric_AvailabilityState_Available ,              ## CoreTemp metric is being measured
+        :Cond_CoreTempMetric_ValueInterpretation_HighLimitViolation      ## CoreTemp Metric hasValueInterpretation = HighLimitViolation
+        ;
+    
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Device-related inferrals
+        :Cond_CoreTemperatureDeviceChannel_FunctionalState_Enabled ,
+        :Cond_CoreTemperatureSensorInterface_FunctionalState_Connected ,
+    
+        ## Clinical-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_CoreTempSensor ,
+        :Cond_BodyTemperatureProperty_ObservationState_Monitored
+        .
+
+:ACD_Alarm_7 ## PHILIPSMONITOR - ??? Brady (pols)
+    a dev:AlertConditionDescription ;
+    rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - ??? Brady (pols)" ;
+    rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - ??? Brady (pols)'." ;
+
+    dev:hasAlertConditionState :ACS_Alarm_7 ;
+    dev:emittedPriorityLevel :mediumPriority ;
+    dev:alarmMessageLabel "PHILIPSMONITOR - ??? Brady (pols)" ;
+    dev:alarmCategory :physiologicalAlarmGroup ;
+    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
+
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_PulseOximetrySensor_FunctionalState_Connected ,       ## pulseOximeterSensor is connected
+        :Cond_PulseRateMetric_AvailabilityState_Available ,              ## PulseRate metric is being measured
+        :Cond_PulseRateMetric_ValueInterpretation_Bradycardia      ## PulseRate_metric hasValueInterpretation = Bradycardia
+        ;
+
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Device-related inferrals
+        :Cond_PulseRateDeviceChannel_FunctionalState_Enabled ,
+        :Cond_PulseOximeterSensorInterface_FunctionalState_Connected ,
+        
+        ## Clinical-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_PulseOximetry ,
+        :Cond_PulsatileHeartRateProperty_ObservationState_Monitored
+        .
+
+:ACD_Alarm_8 ## PHILIPSMONITOR - ABP slecht signaal
+    a dev:AlertConditionDescription ;
+    rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - ABP slecht signaal" ;
+    rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - ABP slecht signaal'." ;
+
+    dev:hasAlertConditionState :ACS_Alarm_8 ;
+    dev:emittedPriorityLevel :mediumPriority ;
+    dev:alarmMessageLabel "PHILIPSMONITOR - ABP slecht signaal" ;
+    dev:alarmCategory :technicalAlarmGroup ;
+    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
+
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ArterialBloodPressureSensor_FunctionalState_Connected ,   ## arterialBloodPressureSensor is connected
+        :Cond_ABP_Signal_QualityState_Insufficient                       ## ABP metric is unavailable
+        ;
+
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Device-related inferrals
+        :Cond_ABPDeviceChannel_FunctionalState_Enabled ,
+        :Cond_ABPSensorInterface_FunctionalState_Connected ,
+        :Cond_ABPSensor_MeasurementLocation_DistalRadialArtery ,
+        
+        ## Clinical-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_ABPtransducer ,
+        :Cond_ArterialBloodPressureProperty_ObservationState_Monitored
+        .
+
+:ACD_Alarm_9 ## PHILIPSMONITOR - ABPm hoog
+    a dev:AlertConditionDescription ;
+    rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - ABPm hoog" ;
+    rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - ABPm hoog'." ;
+
+    dev:hasAlertConditionState :ACS_Alarm_9 ;
+    dev:emittedPriorityLevel :mediumPriority ;
+    dev:alarmMessageLabel "PHILIPSMONITOR - ABPm hoog" ;
+    dev:alarmCategory :physiologicalAlarmGroup ;
+    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
+
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ArterialBloodPressureSensor_FunctionalState_Connected ,   ## arterialBloodPressureSensor is connected
+        :Cond_ABPMean_Metric_AvailabilityState_Available ,              ## ABP Mean metric is being measured
+        :Cond_ABPMean_Metric_ValueInterpretation_HighLimitViolation      ## ABP Mean metric hasValueInterpretation = HighLimitViolation
+        ;
+
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Device-related inferrals
+        :Cond_ABPDeviceChannel_FunctionalState_Enabled ,
+        :Cond_ABPSensorInterface_FunctionalState_Connected ,
+        :Cond_ABPSensor_MeasurementLocation_DistalRadialArtery ,
+
+        ## Clinical-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_ABPtransducer ,
+        :Cond_ArterialBloodPressureProperty_ObservationState_Monitored
+        .
+
+:ACD_Alarm_10 ## PHILIPSMONITOR - BATTERY LOW
+    a dev:AlertConditionDescription ;
+    rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - BATTERY LOW" ;
+    rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - BATTERY LOW'." ;
+
+    dev:hasAlertConditionState :ACS_Alarm_10 ;
+    dev:emittedPriorityLevel :mediumPriority ;
+    dev:alarmMessageLabel "PHILIPSMONITOR - BATTERY LOW" ;
+    dev:alarmCategory :technicalAlarmGroup ;
+    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
+
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_BatteryFunctionalUnit_FunctionalState_Enabled ,      ## batteryFunctionalUnit is enabled
+        :Cond_BatteryFunctionalUnit_PowerState_Low                       ## philipsMonitor hasBatteryState = Low
+        ;
+    
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Device-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor
+        .
+
+:ACD_Alarm_11 ## PHILIPSMONITOR - Pols hoog
+    a dev:AlertConditionDescription ;
+    rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - Pols hoog" ;
+    rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - Pols hoog'." ;
+
+    dev:hasAlertConditionState :ACS_Alarm_11 ;
+    dev:emittedPriorityLevel :mediumPriority ;
+    dev:alarmMessageLabel "PHILIPSMONITOR - Pols hoog" ;
+    dev:alarmCategory :physiologicalAlarmGroup ;
+    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
+
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_PulseOximetrySensor_FunctionalState_Connected ,       ## pulseOximeterSensor is connected
+        :Cond_PulseRateMetric_AvailabilityState_Available ,              ## PulseRate metric is being measured
+        :Cond_PulseRateMetric_ValueInterpretation_HighLimitViolation      ## PulseRate_metric hasValueInterpretation = HighLimitViolation
+        ;
+    
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Device-related inferrals
+        :Cond_PulseRateDeviceChannel_FunctionalState_Enabled ,
+        :Cond_PulseOximeterSensorInterface_FunctionalState_Connected ,
+        :Cond_PulseOximetrySensor_MeasurementLocation_Extremity ,
+
+        ## Clinical-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_PulseOximetry ,
+        :Cond_PulsatileHeartRateProperty_ObservationState_Monitored
+        .
+
+:ACD_Alarm_12 ## PHILIPSMONITOR - Pols laag
+    a dev:AlertConditionDescription ;
+    rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - Pols laag" ;
+    rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - Pols laag'." ;
+
+    dev:hasAlertConditionState :ACS_Alarm_12 ;
+    dev:emittedPriorityLevel :mediumPriority ;
+    dev:alarmMessageLabel "PHILIPSMONITOR - Pols laag" ;
+    dev:alarmCategory :physiologicalAlarmGroup ;
+    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
+
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_PulseOximetrySensor_FunctionalState_Connected ,       ## pulseOximeterSensor is connected
+        :Cond_PulseRateMetric_AvailabilityState_Available ,              ## PulseRate metric is being measured
+        :Cond_PulseRateMetric_ValueInterpretation_LowLimitViolation      ## PulseRate_metric hasValueInterpretation = LowLimitViolation
+        ;
+
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Device-related inferrals
+        :Cond_PulseRateDeviceChannel_FunctionalState_Enabled ,
+        :Cond_PulseOximeterSensorInterface_FunctionalState_Connected ,
+        :Cond_PulseOximetrySensor_MeasurementLocation_Extremity ,
+
+        ## Clinical-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_PulseOximetry ,
+        :Cond_PulsatileHeartRateProperty_ObservationState_Monitored
+        .
+
+:ACD_Alarm_13 ## PHILIPSMONITOR - SpO2 laag
+    a dev:AlertConditionDescription ;
+    rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - SpO2 laag" ;
+    rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - SpO2 laag'." ;
+
+    dev:hasAlertConditionState :ACS_Alarm_13 ;
+    dev:emittedPriorityLevel :mediumPriority ;
+    dev:alarmMessageLabel "PHILIPSMONITOR - SpO2 laag" ;
+    dev:alarmCategory :physiologicalAlarmGroup ;
+    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
+
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_PulseOximetrySensor_FunctionalState_Connected ,       ## pulseOximeterSensor is connected
+        :Cond_SpO2Metric_AvailabilityState_Available ,              ## SpO2 metric is being measured
+        :Cond_SpO2Metric_ValueInterpretation_LowLimitViolation       ## SpO2_metric hasValueInterpretation = LowLimitViolation
+        ;
+    
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Device-related inferrals
+        :Cond_PulseOximeterInterfaceConnected ,
+        :Cond_SpO2DeviceChannel_FunctionalState_Enabled ,
+
+        ## Clinical-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_PulseOximetry ,
+        :Cond_SaO2Property_ObservationState_Monitored
+        .
+
+:ACD_Alarm_14 ## PHILIPSMONITOR - EtCO2 laag
+    a dev:AlertConditionDescription ;
+    rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - EtCO2 laag" ;
+    rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - EtCO2 laag'." ;  
+
+    dev:hasAlertConditionState :ACS_Alarm_14 ;
+    dev:emittedPriorityLevel :mediumPriority ;
+    dev:alarmMessageLabel "PHILIPSMONITOR - EtCO2 laag" ;
+    dev:alarmCategory :physiologicalAlarmGroup ;
+    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
+
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_CapnographySensor_FunctionalState_Connected ,       ## capnographySensor is connected
+        :Cond_EtCO2Metric_AvailabilityState_Available ,              ## EtCO2 metric is being measured
+        :Cond_EtCO2Metric_ValueInterpretation_LowLimitViolation       ## EtCO2_metric hasValueInterpretation = LowLimitViolation
+        ;
+    
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Device-related inferrals
+        :Cond_CapnographySensorInterface_FunctionalState_Connected ,
+        :Cond_EtCO2DeviceChannel_FunctionalState_Enabled ,
+        :Cond_EtCO2Sensor_MeasurementLocation_TerminalAirway ,
+        ## Clinical-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedDevice_Ventilator ,
+        :Cond_Patient_HasConnectedSensor_Capnography ,
+        :Cond_AlveolarCO2Property_ObservationState_Monitored ,
+        :Cond_PulmonarySystem_SubjectOfTherapy_MechanicalVentilation ,
+        :Cond_PulmVentilationProcess_SupportMode_ExternalInvasiveSupport
+        .
+

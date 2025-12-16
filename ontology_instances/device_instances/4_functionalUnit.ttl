@@ -5,16 +5,16 @@
 #   (e.g. Gas Delivery Unit, ECG Module). Equivalent to RTMSS VMD.
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix dev: <http://example.org/alarmOnto/device#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/device/functionalUnit>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/functionalUnit>
     a owl:Ontology ;
-    rdfs:label "Functional Unit Instances" ;
-    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+    rdfs:label "Functional Unit Instances" .
 
 ######################################################################################################
 # BLUEPRINT — FUNCTIONALUNIT INSTANCE STRUCTURE
@@ -34,3 +34,38 @@
 #       dev:partOfDevice :Ventilator_1 ;
 #       dev:hasDeviceChannel :FlowChannel_1 .
 ######################################################################################################
+
+:PulseOximetry_Module a dev:FunctionalUnit ;
+    dev:hasDescription "Pulse Oximetry Module" ;
+    common:hasStateInstance common:Active ;
+    dev:partOfDevice :PhilipsMonitor ;
+    dev:hasDeviceChannel :SpO2_Channel .
+
+:ECG_Module a dev:FunctionalUnit ;
+    dev:hasDescription "ECG Module" ;
+    common:hasStateInstance common:Active ;
+    dev:partOfDevice :PhilipsMonitor ;
+    dev:hasDeviceChannel :ECG_Channel .
+
+:Temp_Module a dev:FunctionalUnit ;
+    dev:hasDescription "Temperature Module" ;
+    common:hasStateInstance common:Active ;
+    dev:partOfDevice :PhilipsMonitor ;
+    dev:hasDeviceChannel :Temp_Channel .
+
+:IBP_Module a dev:FunctionalUnit ;
+    dev:hasDescription "Invasive Blood Pressure Module" ;
+    common:hasStateInstance common:Active ;
+    dev:partOfDevice :PhilipsMonitor ;
+    dev:hasDeviceChannel :ABP_Channel .
+
+:Battery_Module a dev:FunctionalUnit ;
+    dev:hasDescription "Battery Module" ;
+    common:hasStateInstance common:Active ;
+    dev:partOfDevice :PhilipsMonitor .
+
+:Capnography_Module a dev:FunctionalUnit ;
+    dev:hasDescription "Capnography Module" ;
+    common:hasStateInstance common:Active ;
+    dev:partOfDevice :PhilipsMonitor ;
+    dev:hasDeviceChannel :Capno_Channel .

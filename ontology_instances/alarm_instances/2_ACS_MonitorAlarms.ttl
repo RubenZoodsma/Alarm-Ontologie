@@ -1,0 +1,72 @@
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
+@prefix clin: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+#######################################################################
+# Ontology header
+#######################################################################
+
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/alarm-condition-states>
+    a owl:Ontology ;
+    rdfs:label "Alarm Condition States (ACS)" ;
+    rdfs:comment "Defines AlertConditionState instances representing active alarm states and their properties" .
+
+##### Initially included alarms: 
+# 1  | PHILIPSMONITOR - ?? SpO2l hoog	
+# 2  | PHILIPSMONITOR - ?? SpO2po hoog	
+# 3  | PHILIPSMONITOR - ?? ST-II laag	
+# 4  | PHILIPSMONITOR - ?? ST-V hoog g	
+# 5  | PHILIPSMONITOR - ?? Thuid laag	
+# 6  | PHILIPSMONITOR - ?? Tkern hoog	
+# 7  | PHILIPSMONITOR - ??? Brady (pols)	
+# 8  | PHILIPSMONITOR - ABP slecht signaal	
+# 9  | PHILIPSMONITOR - ABPm hoog 	
+# 10 | PHILIPSMONITOR - BATTERY LOW	
+# 11 | PHILIPSMONITOR - Pols hoog 	
+# 12 | PHILIPSMONITOR - Pols laag 	
+# 13 | PHILIPSMONITOR - SpO2 laag 	
+# 14 | PHILIPSMONITOR - EtCO2 laag
+
+
+
+
+:ACS_Alarm_1 a owl:Class ;
+    rdfs:subClassOf dev:AlertConditionState ;
+    rdfs:label "ACS | reasoning object: PHILIPSMONITOR - ?? SpO2l hoog" ;
+    rdfs:comment "Reasoning object representing the alarm conditions for 'PHILIPSMONITOR - ?? SpO2l hoog'." ;
+
+    # Link to the human-friendly, explicit definition
+    dev:hasDefinition :Alarm_1_definition ;
+
+    # Reasoning definition (kept for inference/classification)
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+
+            # [A=PhilipsMonitor, B=hasStateInstance, C=Enabled]
+            [ a owl:Restriction ; owl:onProperty dev:hasCondition ; owl:someValuesFrom
+                [ a owl:Class ; owl:intersectionOf (
+                    dev:AlertCondition
+                    [ a owl:Restriction ; owl:onProperty dev:aboutEntity ; owl:hasValue :PhilipsMonitor ]
+                    [ a owl:Restriction ; owl:onProperty dev:onAttribute ; owl:hasValue common:hasStateInstance ]
+                    [ a owl:Restriction ; owl:onProperty dev:hasValue ; owl:hasValue common:Enabled ]
+                )]
+            ]
+
+            # [A=Pulse_Oximeter_Sensor, B=hasStateInstance, C=Connected]
+            [ a owl:Restriction ; owl:onProperty dev:hasCondition ; owl:someValuesFrom
+                [ a owl:Class ; owl:intersectionOf (
+                    dev:AlertCondition
+                    [ a owl:Restriction ; owl:onProperty dev:aboutEntity ; owl:hasValue :Pulse_Oximeter_Sensor ]
+                    [ a owl:Restriction ; owl:onProperty dev:onAttribute ; owl:hasValue common:hasStateInstance ]
+                    [ a owl:Restriction ; owl:onProperty dev:hasValue ; owl:hasValue :Connected ]
+                )]
+            ]
+
+        )
+    ] .

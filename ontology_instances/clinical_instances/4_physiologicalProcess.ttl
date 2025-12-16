@@ -5,16 +5,18 @@
 #   Each process occurs in an organ and produces one or more physiological properties.
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix clin: <http://example.org/alarmOnto/clinical#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix clin: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/clinical/physiologicalProcess>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/physiologicalProcess>
     a owl:Ontology ;
-    rdfs:label "Physiological Process Instances" ;
-    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+    owl:versionIRI <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/physiologicalProcess/v1> ;
+    rdfs:label "Clinical Instances: Physiological Processes" ;
+    rdfs:comment "Instance-level data for physiological processes in the clinical domain." .
 
 ######################################################################################################
 # BLUEPRINT — PHYSIOLOGICALPROCESS INSTANCE STRUCTURE
@@ -42,32 +44,32 @@
 # - Ventilation
 # - Perfusion  
 
-:Pulmonary_Oxygenation a clin:PhysiologicalProcess ;
+:Pulmonary_Oxygenation_Process a clin:PhysiologicalProcess ;
     clin:occursInOrgan :Lung ;
-    clin:producesProperty :SaO2_Property ;
-    clin:hasState "Active" .
+    clin:producesProperty :Arterial_Oxygenation_Property ;
+    clin:hasState "Unknown" .
 
-:Pulmonary_Ventilation a clin:PhysiologicalProcess ;
+:Pulmonary_Ventilation_Process a clin:PhysiologicalProcess ;
     clin:occursInOrgan :Lung ;
     clin:producesProperty :RR_Property ;
-    clin:hasState "Active" .
+    clin:hasState "Unknown" .
 
-:Pulmonary_Perfusion a clin:PhysiologicalProcess ;
+:Pulmonary_Diffusion_Process a clin:PhysiologicalProcess ;
     clin:occursInOrgan :Lung ;
-    clin:producesProperty :PaO2_Property ;
-    clin:hasState "Active" .    
+    clin:producesProperty :Alveolar_CarbonDioxide_Property, :Arterial_Oxygenation_Property ;
+    clin:hasState "Unknown" .
 
-:Cardiac_Perfusion a clin:PhysiologicalProcess ;
+:Cardiac_Contraction_Process a clin:PhysiologicalProcess ;
     clin:occursInOrgan :Heart ;
-    clin:producesProperty :CardiacOutput_Property ;
-    clin:hasState "Active" .
+    clin:producesProperty :Cardiac_Contractile_Frequency_Property ;
+    clin:hasState "Unknown" .
 
-:Systemic_Perfusion a clin:PhysiologicalProcess ;
-    clin:occursInOrgan :Heart ;
-    clin:producesProperty :MeanArterialPressure_Property ;
-    clin:hasState "Active" .
+:Thermoregulation_Process a clin:PhysiologicalProcess ;
+    clin:occursInOrgan :Skin ;
+    clin:producesProperty :Skin_Temp_Property , :Core_Temp_Property ;
+    clin:hasState "Unknown" .
 
-:Cutaneous_Perfusion a clin:PhysiologicalProcess ;
+:Arterial_Perfusion_Process a clin:PhysiologicalProcess ;
     clin:occursInOrgan :Heart ;
-    clin:producesProperty :SkinPerfusionIndex_Property ;
-    clin:hasState "Active" .
+    clin:producesProperty :ABP_Systolic_Property , :ABP_Diastolic_Property, :ABP_Mean_Property ;
+    clin:hasState "Unknown" .

@@ -2,11 +2,14 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
+# NOTE: This core file is designed for Protégé import resolution.
+# For programmatic loading with RDFLib, load modules individually.
+
 <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/core>
     a owl:Ontology ;
     owl:versionIRI <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/core/v1> ;
     rdfs:label "Alarm Ontology Core (structure + instances)" ;
-    rdfs:comment "Main ontology file that imports all structural modules and instance-level data for the Alarm Ontology." ;
+    rdfs:comment "Main ontology file that imports all structural modules and instance-level data for the Alarm Ontology. For Protégé: load this file. For Python/RDFLib: load individual modules." ;
 
     owl:imports
         # --- Core structure modules ---
@@ -21,7 +24,6 @@
         <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/clinical_instances/4_physiologicalProcess.ttl> ,
         <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/clinical_instances/5_physiologicalProperty.ttl> ,
 
-        
         # --- Device instance modules ---
         <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/device_instances/1_physicalDevice.ttl> ,
         <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/device_instances/2_sensorInterface.ttl> ,

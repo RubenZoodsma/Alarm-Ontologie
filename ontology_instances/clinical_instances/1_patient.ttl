@@ -6,16 +6,18 @@
 #   physiological context references (e.g., links to physiological systems).
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix clin: <http://example.org/alarmOnto/clinical#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix clin: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/clinical/patient>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/patient>
     a owl:Ontology ;
-    rdfs:label "Patient Instances" ;
-    owl:imports <https://raw.githubusercontent.com/YourOrg/clinical-device-ontology/main/ontology_core/alarmOnto_coreFile.ttl> .
+    owl:versionIRI <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/clinical/patient/v1> ;
+    rdfs:label "Clinical Instances: Patient" ;
+    rdfs:comment "Instance-level data for patients in the clinical domain." .
 
 ######################################################################################################
 # BLUEPRINT — PATIENT INSTANCE STRUCTURE
@@ -39,9 +41,9 @@
 #       clin:hasPhysiologicalSystem :Pulmonary_System_1 .
 ######################################################################################################
 
-:ExamplePatient a clin:Patient ;
-    clin:hasIdentifier "12345" ;
-    clin:hasAge 63 ;
-    clin:hasSex "Female" ;
-    clin:hasState "Admitted" ;
-    clin:hasPhysiologicalSystem :
+:Patient a clin:Patient ;
+    rdfs:label "Generic Patient" ;
+    rdfs:comment "Generic patient entity for alarm condition modeling" .
+
+:JohnDoe a clin:Patient ;
+    clin:hasPhysiologicalSystem :Pulmonary_System .
