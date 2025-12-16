@@ -29,7 +29,7 @@
 
 # ABP (Arterial Blood Pressure) Conditions
 :Cond_ABPMean_Metric_AvailabilityState_Available
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ABP Mean Metric Available" ;
     rdfs:comment "Condition: ABP Mean metric is being measured and available" ;
     dev:aboutEntity :ABP_Mean_Metric ;
@@ -37,7 +37,7 @@
     dev:hasValue common:MetricAvailable .
 
 :Cond_ABPMean_Metric_ValueInterpretation_HighLimitViolation
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ABP Mean High Limit Violation" ;
     rdfs:comment "Condition: ABP Mean metric value exceeds high threshold" ;
     dev:aboutEntity :ABP_Mean_Metric ;
@@ -45,7 +45,7 @@
     dev:hasValue common:HighLimitViolation .
 
 :Cond_ABP_Signal_QualityState_Insufficient
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ABP Signal Quality Insufficient" ;
     rdfs:comment "Condition: ABP signal quality is insufficient for reliable measurements" ;
     dev:aboutEntity :ABP_Waveform_Signal ;
@@ -53,7 +53,7 @@
     dev:hasValue :Insufficient .
 
 :Cond_ArterialBloodPressureSensor_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ABP Sensor Connected" ;
     rdfs:comment "Condition: Arterial blood pressure sensor is connected" ;
     dev:aboutEntity :ABP_Transducer_Sensor ;
@@ -62,7 +62,7 @@
 
 # Battery Conditions
 :Cond_BatteryFunctionalUnit_FunctionalState_Enabled
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Battery Unit Enabled" ;
     rdfs:comment "Condition: Battery functional unit is enabled" ;
     dev:aboutEntity :Battery_Module ;
@@ -70,7 +70,7 @@
     dev:hasValue common:Active .
 
 :Cond_BatteryFunctionalUnit_PowerState_Low
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Battery Power Low" ;
     rdfs:comment "Condition: Battery functional unit power level is low" ;
     dev:aboutEntity :Battery_Module ;
@@ -79,7 +79,7 @@
 
 # Capnography Conditions  
 :Cond_CapnographySensor_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Capnography Sensor Connected" ;
     rdfs:comment "Condition: Capnography sensor is connected" ;
     dev:aboutEntity :Capnography_Sensor ;
@@ -88,7 +88,7 @@
 
 # Temperature Conditions
 :Cond_CoreTempMetric_AvailabilityState_Available
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Core Temperature Metric Available" ;
     rdfs:comment "Condition: Core temperature metric is being measured and available" ;
     dev:aboutEntity :Core_Temp_Metric ;
@@ -96,7 +96,7 @@
     dev:hasValue common:MetricAvailable .
 
 :Cond_CoreTempMetric_ValueInterpretation_HighLimitViolation
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Core Temperature High Limit Violation" ;
     rdfs:comment "Condition: Core temperature metric value exceeds high threshold" ;
     dev:aboutEntity :Core_Temp_Metric ;
@@ -104,7 +104,7 @@
     dev:hasValue common:HighLimitViolation .
 
 :Cond_CoreTemperatureSensor_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Core Temperature Sensor Connected" ;
     rdfs:comment "Condition: Core temperature sensor is connected" ;
     dev:aboutEntity :CoreTemperature_Probe_Sensor ;
@@ -113,7 +113,7 @@
 
 # ECG Conditions
 :Cond_ECGLLSensor_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ECG LL Sensor Connected" ;
     rdfs:comment "Condition: ECG LL (Left Leg) sensor is connected" ;
     dev:aboutEntity :ECG_LL_Sensor ;
@@ -121,7 +121,7 @@
     dev:hasValue common:Connected .
 
 :Cond_ECGRASensor_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ECG RA Sensor Connected" ;
     rdfs:comment "Condition: ECG RA (Right Arm) sensor is connected" ;
     dev:aboutEntity :ECG_RA_Sensor ;
@@ -129,7 +129,7 @@
     dev:hasValue common:Connected .
 
 :Cond_ECGV1Sensor_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ECG V1 Sensor Connected" ;
     rdfs:comment "Condition: ECG V1 precordial sensor is connected" ;
     dev:aboutEntity :ECG_V1_Sensor ;
@@ -137,7 +137,7 @@
     dev:hasValue common:Connected .
 
 :Cond_ECGV2Sensor_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ECG V2 Sensor Connected" ;
     rdfs:comment "Condition: ECG V2 precordial sensor is connected" ;
     dev:aboutEntity :ECG_V2_Sensor ;
@@ -145,7 +145,7 @@
     dev:hasValue common:Connected .
 
 :Cond_ECGV3Sensor_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ECG V3 Sensor Connected" ;
     rdfs:comment "Condition: ECG V3 precordial sensor is connected" ;
     dev:aboutEntity :ECG_V3_Sensor ;
@@ -153,7 +153,7 @@
     dev:hasValue common:Connected .
 
 :Cond_ECGV4Sensor_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ECG V4 Sensor Connected" ;
     rdfs:comment "Condition: ECG V4 precordial sensor is connected" ;
     dev:aboutEntity :ECG_V4_Sensor ;
@@ -161,7 +161,7 @@
     dev:hasValue common:Connected .
 
 :Cond_ECGV5Sensor_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ECG V5 Sensor Connected" ;
     rdfs:comment "Condition: ECG V5 precordial sensor is connected" ;
     dev:aboutEntity :ECG_V5_Sensor ;
@@ -169,7 +169,7 @@
     dev:hasValue common:Connected .
 
 :Cond_ECGV6Sensor_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ECG V6 Sensor Connected" ;
     rdfs:comment "Condition: ECG V6 precordial sensor is connected" ;
     dev:aboutEntity :ECG_V6_Sensor ;
@@ -178,7 +178,7 @@
 
 # EtCO2 Conditions
 :Cond_EtCO2Metric_AvailabilityState_Available
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "EtCO2 Metric Available" ;
     rdfs:comment "Condition: End-tidal CO2 metric is being measured and available" ;
     dev:aboutEntity :EtCO2_Metric ;
@@ -186,7 +186,7 @@
     dev:hasValue common:MetricAvailable .
 
 :Cond_EtCO2Metric_ValueInterpretation_LowLimitViolation
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "EtCO2 Low Limit Violation" ;
     rdfs:comment "Condition: End-tidal CO2 metric value below low threshold" ;
     dev:aboutEntity :EtCO2_Metric ;
@@ -195,7 +195,7 @@
 
 # Philips Monitor Condition
 :Cond_PhilipsMonitor_FunctionalState_Enabled
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Philips Monitor Enabled" ;
     rdfs:comment "Condition: Philips Monitor is enabled and operational" ;
     dev:aboutEntity :PhilipsMonitor ;
@@ -204,7 +204,7 @@
 
 # Pulse Oximetry Conditions
 :Cond_PulseOximetrySensor_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Pulse Oximetry Sensor Connected" ;
     rdfs:comment "Condition: Pulse oximetry sensor is connected" ;
     dev:aboutEntity :Pulse_Oximeter_Sensor ;
@@ -212,32 +212,32 @@
     dev:hasValue common:Connected .
 
 :Cond_PulseOximetrySensor_MeasurementLocation_Extremity
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Pulse Oximetry Location Extremity" ;
     rdfs:comment "Condition: Pulse oximetry sensor measurement location is extremity" ;
     dev:aboutEntity :Pulse_Oximeter_Sensor ;
-    dev:onAttribute dev:hasMeasurementLocation ;
+    dev:onAttribute dev:hasMeasurementSite ;
     dev:hasValue :Extremity .
 
 :Cond_PulseOximetrySensor_MeasurementLocation_Left
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Pulse Oximetry Location Left" ;
     rdfs:comment "Condition: Pulse oximetry sensor measurement location is left side" ;
     dev:aboutEntity :Pulse_Oximeter_Sensor ;
-    dev:onAttribute dev:hasMeasurementLocation ;
+    dev:onAttribute dev:hasMeasurementSite ;
     dev:hasValue :Left .
 
 :Cond_PulseOximetrySensor_MeasurementLocation_postDuctal
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Pulse Oximetry Location Post-ductal" ;
     rdfs:comment "Condition: Pulse oximetry sensor measurement location is post-ductal" ;
     dev:aboutEntity :Pulse_Oximeter_Sensor ;
-    dev:onAttribute dev:hasMeasurementLocation ;
+    dev:onAttribute dev:hasMeasurementSite ;
     dev:hasValue :postDuctal .
 
 # Pulse Rate Conditions
 :Cond_PulseRateMetric_AvailabilityState_Available
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Pulse Rate Metric Available" ;
     rdfs:comment "Condition: Pulse rate metric is being measured and available" ;
     dev:aboutEntity :PulseRate_Metric ;
@@ -245,7 +245,7 @@
     dev:hasValue common:MetricAvailable .
 
 :Cond_PulseRateMetric_ValueInterpretation_Bradycardia
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Pulse Rate Bradycardia" ;
     rdfs:comment "Condition: Pulse rate metric indicates bradycardia" ;
     dev:aboutEntity :PulseRate_Metric ;
@@ -253,7 +253,7 @@
     dev:hasValue common:BradycardiaInterpretation .
 
 :Cond_PulseRateMetric_ValueInterpretation_HighLimitViolation
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Pulse Rate High Limit Violation" ;
     rdfs:comment "Condition: Pulse rate metric value exceeds high threshold" ;
     dev:aboutEntity :PulseRate_Metric ;
@@ -262,7 +262,7 @@
 
 # Skin Temperature Conditions
 :Cond_SkinTempMetric_AvailabilityState_Available
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Skin Temperature Metric Available" ;
     rdfs:comment "Condition: Skin temperature metric is being measured and available" ;
     dev:aboutEntity :Skin_Temp_Metric ;
@@ -270,7 +270,7 @@
     dev:hasValue common:MetricAvailable .
 
 :Cond_SkinTempMetric_Metric_ValueInterpretation_LowLimitViolation
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Skin Temperature Low Limit Violation" ;
     rdfs:comment "Condition: Skin temperature metric value below low threshold" ;
     dev:aboutEntity :Skin_Temp_Metric ;
@@ -278,7 +278,7 @@
     dev:hasValue common:LowLimitViolation .
 
 :Cond_SkinTemperatureSensor_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Skin Temperature Sensor Connected" ;
     rdfs:comment "Condition: Skin temperature sensor is connected" ;
     dev:aboutEntity :SkinTemperature_Probe_Sensor ;
@@ -287,7 +287,7 @@
 
 # SpO2 Conditions
 :Cond_SpO2Metric_AvailabilityState_Available
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "SpO2 Metric Available" ;
     rdfs:comment "Condition: SpO2 metric is being measured and available" ;
     dev:aboutEntity :SpO2_Metric ;
@@ -295,7 +295,7 @@
     dev:hasValue common:MetricAvailable .
 
 :Cond_SpO2Metric_ValueInterpretation_HighLimitViolation
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "SpO2 High Limit Violation" ;
     rdfs:comment "Condition: SpO2 metric value exceeds high threshold" ;
     dev:aboutEntity :SpO2_Metric ;
@@ -303,7 +303,7 @@
     dev:hasValue common:HighLimitViolation .
 
 :Cond_SpO2Metric_ValueInterpretation_LowLimitViolation
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "SpO2 Low Limit Violation" ;
     rdfs:comment "Condition: SpO2 metric value below low threshold" ;
     dev:aboutEntity :SpO2_Metric ;
@@ -312,7 +312,7 @@
 
 # ST Segment Conditions
 :Cond_STII_Metric_AvailabilityState_Available
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ST-II Metric Available" ;
     rdfs:comment "Condition: ST-II metric is being measured/calculated and available" ;
     dev:aboutEntity :ST_II_Metric ;
@@ -320,7 +320,7 @@
     dev:hasValue common:MetricAvailable .
 
 :Cond_STII_Metric_ValueInterpretation_LowLimitViolation
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ST-II Low Limit Violation" ;
     rdfs:comment "Condition: ST-II metric value below low threshold" ;
     dev:aboutEntity :ST_II_Metric ;
@@ -328,7 +328,7 @@
     dev:hasValue common:LowLimitViolation .
 
 :Cond_STV_Metric_AvailabilityState_Available
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ST-V Metric Available" ;
     rdfs:comment "Condition: ST-V metric is being measured/calculated and available" ;
     dev:aboutEntity :ST_V_Metric ;
@@ -336,7 +336,7 @@
     dev:hasValue common:MetricAvailable .
 
 :Cond_STV_Metric_ValueInterpretation_HighLimitViolation
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ST-V High Limit Violation" ;
     rdfs:comment "Condition: ST-V metric value exceeds high threshold" ;
     dev:aboutEntity :ST_V_Metric ;
@@ -351,7 +351,7 @@
 
 # Device Channel Conditions (Infrastructure)
 :Cond_ABPDeviceChannel_FunctionalState_Enabled
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ABP Device Channel Enabled" ;
     rdfs:comment "Inferred: ABP device channel is enabled (from connected sensor)" ;
     dev:aboutEntity :ABP_Channel ;
@@ -359,7 +359,7 @@
     dev:hasValue common:Active .
 
 :Cond_CoreTemperatureDeviceChannel_FunctionalState_Enabled
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Core Temperature Channel Enabled" ;
     rdfs:comment "Inferred: Core temperature device channel is enabled" ;
     dev:aboutEntity :Core_Temp_Channel ;
@@ -367,7 +367,7 @@
     dev:hasValue common:Active .
 
 :Cond_EtCO2DeviceChannel_FunctionalState_Enabled
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "EtCO2 Device Channel Enabled" ;
     rdfs:comment "Inferred: EtCO2 device channel is enabled" ;
     dev:aboutEntity :EtCO2_Channel ;
@@ -375,7 +375,7 @@
     dev:hasValue common:Active .
 
 :Cond_PulseRateDeviceChannel_FunctionalState_Enabled
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Pulse Rate Channel Enabled" ;
     rdfs:comment "Inferred: Pulse rate device channel is enabled" ;
     dev:aboutEntity :PulseRate_Channel ;
@@ -383,7 +383,7 @@
     dev:hasValue common:Active .
 
 :Cond_SkinTemperatureDeviceChannel_FunctionalState_Enabled
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Skin Temperature Channel Enabled" ;
     rdfs:comment "Inferred: Skin temperature device channel is enabled" ;
     dev:aboutEntity :Skin_Temp_Channel ;
@@ -391,7 +391,7 @@
     dev:hasValue common:Active .
 
 :Cond_SpO2DeviceChannel_FunctionalState_Enabled
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "SpO2 Device Channel Enabled" ;
     rdfs:comment "Inferred: SpO2 device channel is enabled" ;
     dev:aboutEntity :SpO2_Channel ;
@@ -399,7 +399,7 @@
     dev:hasValue common:Active .
 
 :Cond_STIIDeviceChannel_FunctionalState_Enabled
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ST-II Device Channel Enabled" ;
     rdfs:comment "Inferred: ST-II device channel is enabled" ;
     dev:aboutEntity :ST_II_Channel ;
@@ -407,7 +407,7 @@
     dev:hasValue common:Active .
 
 :Cond_STVDeviceChannel_FunctionalState_Enabled
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ST-V Device Channel Enabled" ;
     rdfs:comment "Inferred: ST-V device channel is enabled" ;
     dev:aboutEntity :ST_V_Channel ;
@@ -416,7 +416,7 @@
 
 # Sensor Interface Conditions (Connectivity)
 :Cond_ABPSensorInterface_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ABP Sensor Interface Connected" ;
     rdfs:comment "Inferred: ABP sensor interface is connected" ;
     dev:aboutEntity :IBP_Transducer_Interface ;
@@ -424,7 +424,7 @@
     dev:hasValue common:Connected .
 
 :Cond_ECGInterface_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ECG Interface Connected" ;
     rdfs:comment "Inferred: ECG interface is connected (alternative form)" ;
     dev:aboutEntity :ECG_Interface ;
@@ -432,7 +432,7 @@
     dev:hasValue :Connected .
 
 :Cond_PulseOximeterInterfaceConnected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Pulse Oximeter Interface Connected" ;
     rdfs:comment "Inferred: Pulse oximeter interface is connected" ;
     dev:aboutEntity :PulseOximeter_Interface ;
@@ -440,7 +440,7 @@
     dev:hasValue :Connected .
 
 :Cond_PulseOximeterSensorInterface_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Pulse Oximeter Interface Connected" ;
     rdfs:comment "Inferred: Pulse oximeter sensor interface is connected (alternative form)" ;
     dev:aboutEntity :PulseOximeter_Interface ;
@@ -448,7 +448,7 @@
     dev:hasValue :Connected .
 
 :Cond_SkinTemperatureSensorInterface_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Skin Temperature Interface Connected" ;
     rdfs:comment "Inferred: Skin temperature sensor interface is connected" ;
     dev:aboutEntity :SkinTemperature_Probe_Interface ;
@@ -456,7 +456,7 @@
     dev:hasValue common:Connected .
 
 :Cond_CoreTemperatureSensorInterface_FunctionalState_Connected
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Core Temperature Sensor Interface Connected" ;
     rdfs:comment "Inferred: Core temperature sensor interface is connected" ;
     dev:aboutEntity :CoreTemperature_Probe_Interface ;
@@ -465,24 +465,24 @@
 
 # Measurement Location Conditions
 :Cond_ABPSensor_MeasurementLocation_DistalRadialArtery
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "ABP Location Distal Radial Artery" ;
     rdfs:comment "Inferred: ABP sensor measurement location is distal radial artery" ;
     dev:aboutEntity :ABP_Transducer_Sensor ;
-    dev:onAttribute dev:hasMeasurementLocation ;
+    dev:onAttribute dev:hasMeasurementSite ;
     dev:hasValue :DistalRadialArtery .
 
 :Cond_EtCO2Sensor_MeasurementLocation_TerminalAirway
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "EtCO2 Location Terminal Airway" ;
     rdfs:comment "Inferred: EtCO2 sensor measurement location is terminal airway" ;
     dev:aboutEntity :Capnography_Sensor ;
-    dev:onAttribute dev:hasMeasurementLocation ;
+    dev:onAttribute dev:hasMeasurementSite ;
     dev:hasValue :TerminalAirway .
 
 # Patient-Device Connection Conditions (Clinical Network)
 :Cond_Patient_HasConnectedDevice_PhilipsMonitor
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Patient Connected to Philips Monitor" ;
     rdfs:comment "Inferred: Patient has connected Philips Monitor device" ;
     dev:aboutEntity :Patient ;
@@ -490,7 +490,7 @@
     dev:hasValue :PhilipsMonitor .
 
 :Cond_Patient_HasConnectedDevice_Ventilator
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Patient Connected to Ventilator" ;
     rdfs:comment "Inferred: Patient has connected ventilator device" ;
     dev:aboutEntity :Patient ;
@@ -499,7 +499,7 @@
 
 # Patient-Sensor Connection Conditions
 :Cond_Patient_HasConnectedSensor_ABPtransducer
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Patient Connected ABP Transducer" ;
     rdfs:comment "Inferred: Patient has connected ABP transducer sensor" ;
     dev:aboutEntity :Patient ;
@@ -507,7 +507,7 @@
     dev:hasValue :ABP_Transducer_Sensor .
 
 :Cond_Patient_HasConnectedSensor_Capnography
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Patient Connected Capnography" ;
     rdfs:comment "Inferred: Patient has connected capnography sensor" ;
     dev:aboutEntity :Patient ;
@@ -515,7 +515,7 @@
     dev:hasValue :Capnography_Sensor .
 
 :Cond_Patient_HasConnectedSensor_CoreTempSensor
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Patient Connected Core Temperature" ;
     rdfs:comment "Inferred: Patient has connected core temperature sensor" ;
     dev:aboutEntity :Patient ;
@@ -523,7 +523,7 @@
     dev:hasValue :CoreTemperature_Probe_Sensor .
 
 :Cond_Patient_HasConnectedSensor_ECG
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Patient Connected ECG" ;
     rdfs:comment "Inferred: Patient has connected ECG sensors" ;
     dev:aboutEntity :Patient ;
@@ -531,7 +531,7 @@
     dev:hasValue :ECG_RA_Sensor, :ECG_LA_Sensor, :ECG_LL_Sensor, :ECG_RL_Sensor, :ECG_V1_Sensor, :ECG_V2_Sensor, :ECG_V3_Sensor, :ECG_V4_Sensor, :ECG_V5_Sensor, :ECG_V6_Sensor .
 
 :Cond_Patient_HasConnectedSensor_PulseOximetry
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Patient Connected Pulse Oximetry" ;
     rdfs:comment "Inferred: Patient has connected pulse oximetry sensor" ;
     dev:aboutEntity :Patient ;
@@ -539,7 +539,7 @@
     dev:hasValue :Pulse_Oximeter_Sensor .
 
 :Cond_Patient_HasConnectedSensor_SkinTempSensor
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Patient Connected Skin Temperature" ;
     rdfs:comment "Inferred: Patient has connected skin temperature sensor" ;
     dev:aboutEntity :Patient ;
@@ -548,7 +548,7 @@
 
 # Clinical Property Observation Conditions
 :Cond_AlveolarCO2Property_ObservationState_Monitored
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Alveolar CO2 Monitored" ;
     rdfs:comment "Inferred: Alveolar CO2 property is being monitored" ;
     dev:aboutEntity :Alveolar_CarbonDioxide_Property ;
@@ -556,7 +556,7 @@
     dev:hasValue common:MonitoredState .
 
 :Cond_ArterialBloodPressureProperty_ObservationState_Monitored
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Arterial Blood Pressure Monitored" ;
     rdfs:comment "Inferred: Arterial blood pressure property is being monitored" ;
     dev:aboutEntity :ABP_Systolic_Property, :ABP_Diastolic_Property, :ABP_Mean_Property ;
@@ -564,7 +564,7 @@
     dev:hasValue common:MonitoredState .
 
 :Cond_BodyTemperatureProperty_ObservationState_Monitored
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Body Temperature Monitored" ;
     rdfs:comment "Inferred: Body temperature property is being monitored" ;
     dev:aboutEntity :Body_Temperature_Property ;
@@ -572,7 +572,7 @@
     dev:hasValue common:MonitoredState .
 
 :Cond_CardiacDepolarizationProperty_ObservationState_Monitored
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Cardiac Depolarization Monitored" ;
     rdfs:comment "Inferred: Cardiac depolarization property is being monitored" ;
     dev:aboutEntity :Cardiac_Electrical_Depolarization_Property ;
@@ -580,7 +580,7 @@
     dev:hasValue :MonitoredState .
 
 :Cond_PulsatileHeartRateProperty_ObservationState_Monitored
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Pulsatile Heart Rate Monitored" ;
     rdfs:comment "Inferred: Pulsatile heart rate property is being monitored" ;
     dev:aboutEntity :Cardiac_Contractile_Frequency_Property ;
@@ -588,7 +588,7 @@
     dev:hasValue :MonitoredState .
 
 :Cond_SaO2Property_ObservationState_Monitored
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Arterial Oxygen Saturation Monitored" ;
     rdfs:comment "Inferred: Arterial oxygen saturation property is being monitored" ;
     dev:aboutEntity :Arterial_Oxygenation_Property ;
@@ -596,7 +596,7 @@
     dev:hasValue :MonitoredState .
 
 :Cond_SkinTemperatureProperty_ObservationState_Monitored
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Skin Temperature Monitored" ;
     rdfs:comment "Inferred: Skin temperature property is being monitored" ;
     dev:aboutEntity :Temperature_Skin_Property ;
@@ -604,7 +604,7 @@
     dev:hasValue :MonitoredState .
 
 :Cond_PulmVentilationProcess_SupportMode_ExternalInvasiveSupport
-    a dev:Condition ;
+    a dev:AlertCondition ;
     rdfs:label "Pulmonary Ventilation External Invasive Support" ;
     rdfs:comment "Inferred: Pulmonary ventilation process is in external invasive support mode" ;
     dev:aboutEntity :Pulmonary_Ventilation_Process ;

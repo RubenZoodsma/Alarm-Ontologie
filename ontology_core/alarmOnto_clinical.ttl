@@ -50,7 +50,7 @@
     rdfs:comment "Process such as oxygenation, ventilation, perfusion." .
 
 :PhysiologicalProperty a owl:Class ;
-    rdfs:subClassOf :ClinicalEntity , common:Quantity ;
+    rdfs:subClassOf :ClinicalEntity ;
     rdfs:subClassOf [ a owl:Restriction ;
                      owl:onProperty common:hasStateInstance ;
                      owl:someValuesFrom [ a owl:Class ;
@@ -83,19 +83,4 @@
     rdfs:range :PhysiologicalProcess ;
     rdfs:label "has physiological process" .
 
-:hasProperty a owl:ObjectProperty ;
-    rdfs:domain :PhysiologicalProcess ;
-    rdfs:range :PhysiologicalProperty ;
-    rdfs:label "has property" ;
-    rdfs:comment "Physiological process exhibits a measurable property." .
 
-:isPropertyOf a owl:ObjectProperty ;
-    rdfs:domain :PhysiologicalProperty ;
-    rdfs:range :PhysiologicalProcess ;
-    rdfs:label "is property of" .
-
-:dependsOnProcess a owl:ObjectProperty ;
-    rdfs:domain :PhysiologicalProcess ;
-    rdfs:range :PhysiologicalProcess ;
-    rdfs:label "depends on process" ;
-    rdfs:comment "Captures physiological dependencies, e.g. oxygenation depends on ventilation." .

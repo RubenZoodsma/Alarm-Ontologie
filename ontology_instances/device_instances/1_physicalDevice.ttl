@@ -38,7 +38,12 @@
 # - Ventilator (Draeger, Hulbus, Datexahmedacom)
 # - Thermoregulator (Medibus)
 
-:PhilipsMonitor a dev:PhysicalDevice, dev:MonitoringDevice ;
+:PhilipsMonitor a dev:MonitoringDevice ;
     dev:hasManufacturer "Philips" ;
     dev:hasModelName "Unknown Model" ;
     dev:hasFunctionalUnit :SpO2_Module, :ECG_Module, :NIBP_Module, :Temp_Module, :IBP_Module, :VascPress_Module .
+
+:Datexahmedacom_Ventilator a dev:VentilationDevice ;
+    dev:hasManufacturer "Datexahmedacom" ;
+    dev:hasModelName "Unknown Model" .
+    ## Inclomplete

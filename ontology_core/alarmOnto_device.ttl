@@ -14,10 +14,43 @@
     rdfs:label "Alarm Ontology - Device Module" ;
     owl:imports <./alarmOnto_common.ttl> .
 
+#################################################################
+# ALARM-ORIENTED CLASSES
+#################################################################
+
+:AlertEntity a owl:Class ;
+    rdfs:subClassOf :DeviceEntity ;
+    rdfs:comment "Alert-related entities." ;
+    rdfs:label "Alert Entity" . 
+
+:AlertCondition a owl:Class ;
+    rdfs:subClassOf :AlertEntity ;
+    rdfs:label "Alert Condition" ;
+    rdfs:comment "Represents a logical condition about an entity's attribute and value in a triple-format." .
+
+:AlertConditionDescription a owl:Class ;
+    rdfs:subClassOf :AlertEntity ;
+    rdfs:label "Alert Condition Description" ;
+    rdfs:comment "Human-readable description of an alert condition, documenting its latent conditions, both implied and asserted." .
+
+:AlertConditionState a owl:Class ;
+    rdfs:subClassOf :AlertEntity ;
+    rdfs:label "Alert Condition State" ;
+    rdfs:comment "Represents the state requirements for an alert condition for use in reasoners (see AlertConditionDescription for human-readable notations)." .
 
 #################################################################
 # DEVICE-SIDE CLASSES
 #################################################################
+
+:MonitoringDevice a owl:Class ;
+    rdfs:subClassOf :PhysicalDevice ;
+    rdfs:label "Monitoring Device" ;
+    rdfs:comment "Device primarily intended for patient monitoring functions." .
+
+:VentilationDevice a owl:Class ;
+    rdfs:subClassOf :PhysicalDevice ;
+    rdfs:label "Ventilation Device" ;
+    rdfs:comment "Device primarily intended for patient ventilation functions." .
 
 :DeviceEntity a owl:Class ;
     rdfs:subClassOf common:Entity ;
@@ -70,35 +103,10 @@
     rdfs:label "Metric" ;
     rdfs:comment "Atomic measurement/result object, aligned with IEEE 11073/SDC Metric." .
 
-:AlarmCondition a owl:Class ;
+:MeasurementSite a owl:Class ;
     rdfs:subClassOf :DeviceEntity ;
-    rdfs:label "Alarm Condition" ;
-    rdfs:comment "Represents an alarm condition that can be triggered by device or clinical state changes." .
-
-:AlarmSituation a owl:Class ;
-    rdfs:subClassOf :DeviceEntity ;
-    rdfs:label "Alarm Situation" ;
-    rdfs:comment "Represents a complex alarm situation that can be defined using logical conditions." .
-
-:Condition a owl:Class ;
-    rdfs:subClassOf :DeviceEntity ;
-    rdfs:label "Condition" ;
-    rdfs:comment "Represents a logical condition about an entity's attribute and value." .
-
-:AlarmDefinition a owl:Class ;
-    rdfs:subClassOf :DeviceEntity ;
-    rdfs:label "Alarm Definition" ;
-    rdfs:comment "Human-readable definition of when an alarm should trigger, composed of condition specifications." .
-
-:ConditionSpec a owl:Class ;
-    rdfs:subClassOf :DeviceEntity ;
-    rdfs:label "Condition Specification" ;
-    rdfs:comment "Specifies that a particular entity must have a particular attribute with a particular value." .
-
-:PhysicalLocation a owl:Class ;
-    rdfs:subClassOf :DeviceEntity ;
-    rdfs:label "Physical Location" ;
-    rdfs:comment "Represents a physical location or placement for sensors and devices." .
+    rdfs:label "Measurement Site" ;
+    rdfs:comment "Represents a location or placement for the measurement of a sensor." .
 
 :StateRequirement a owl:Class ;
     rdfs:subClassOf :DeviceEntity ;
@@ -181,18 +189,6 @@
     rdfs:label "has functional unit" ;
     rdfs:comment "Links a physical device to one of its functional units." .
 
-:hasSensorInterface a owl:ObjectProperty ;
-    rdfs:domain :FunctionalUnit ;
-    rdfs:range :SensorInterface ;
-    rdfs:label "has sensor interface" ;
-    rdfs:comment "Functional unit exposes a sensor interface." .
-
-:hasSensor a owl:ObjectProperty ;
-    rdfs:domain :SensorInterface ;
-    rdfs:range :Sensor ;
-    rdfs:label "has sensor" ;
-    rdfs:comment "Sensor connected to a given sensor interface." .
-
 :producesSignal a owl:ObjectProperty ;
     rdfs:domain :Sensor ;
     rdfs:range :Signal ;
@@ -211,70 +207,41 @@
     rdfs:label "produces metric" ;
     rdfs:comment "A measurement process yields a metric." .
 
-:hasChannel a owl:ObjectProperty ;
-    rdfs:domain :FunctionalUnit ;
-    rdfs:range :DeviceChannel ;
-    rdfs:label "has channel" ;
-    rdfs:comment "A functional unit may have one or more device channels." .
-
-:channelHasMetric a owl:ObjectProperty ;
-    rdfs:domain :DeviceChannel ;
-    rdfs:range :Metric ;
-    rdfs:label "channel has metric" ;
-    rdfs:comment "A device channel groups metrics." .
-
 :partOfDevice a owl:ObjectProperty ;
     rdfs:domain :DeviceEntity ;
     rdfs:range :PhysicalDevice ;
     rdfs:label "part of device" ;
     rdfs:comment "Links device entities to their containing physical device." .
 
-:detectedBy a owl:ObjectProperty ;
-    rdfs:domain :AlarmCondition ;
-    rdfs:range :PhysicalDevice ;
-    rdfs:label "detected by" ;
-    rdfs:comment "Links an alarm condition to the physical device that detects it." .
-
 :originatesFromPhysicalEntity a owl:ObjectProperty ;
-    rdfs:domain :AlarmCondition ;
+    rdfs:domain :AlertConditionDescription ;
     rdfs:range :PhysicalDevice ;
     rdfs:label "originates from physical entity" ;
-    rdfs:comment "Links an alarm condition to the physical device entity from which it originates." .
+    rdfs:comment "Links an alert condition to the physical device entity from which it originates." .
 
-:hasPhysicalLocation a owl:ObjectProperty ;
+:hasMeasurementSite a owl:ObjectProperty ;
     rdfs:domain :Sensor ;
-    rdfs:range :PhysicalLocation ;
-    rdfs:label "has physical location" ;
+    rdfs:range :MeasurementSite ;
+    rdfs:label "has measurement site" ;
     rdfs:comment "Specifies the physical placement or location of a sensor." .
 
-:hasThresholdInterpretation a owl:ObjectProperty ;
-    rdfs:domain :DeviceChannel ;
-    rdfs:range common:State ;
-    rdfs:label "has threshold interpretation" ;
-    rdfs:comment "Indicates how the device channel interprets measurement values relative to thresholds." .
+:impliesCondition a owl:ObjectProperty ;
+    rdfs:domain :AlertConditionDescription ;
+    rdfs:range :AlertCondition ;
+    rdfs:label "implies condition" ;
+    rdfs:comment "Links an alert condition to a logical condition that is implied, but not explicitly stated." .
 
-:requiresState a owl:ObjectProperty ;
-    rdfs:domain :AlarmCondition ;
-    rdfs:range :StateRequirement ;
-    rdfs:label "requires state" ;
-    rdfs:comment "Links an alarm condition to a state requirement that must be met for activation." .
-
-:requiresEntityInState a owl:ObjectProperty ;
-    rdfs:domain :AlarmCondition ;
-    rdfs:label "requires entity in state" ;
-    rdfs:comment "Simplified property linking alarm condition directly to entity-state pairs without intermediate objects." .
+:requiresCondition a owl:ObjectProperty ;
+    rdfs:domain :AlertConditionDescription ;
+    rdfs:range :AlertCondition ;
+    rdfs:label "requires condition" ;
+    rdfs:comment "Links an alert condition to a logical condition that must be satisfied for alert triggering." .
 
 :targetEntity a owl:ObjectProperty ;
     rdfs:domain :StateRequirement ;
     rdfs:range common:Entity ;
     rdfs:label "target entity" ;
     rdfs:comment "Specifies the entity that must satisfy a state requirement." .
-
-:attribute a owl:ObjectProperty ;
-    rdfs:domain :StateRequirement ;
-    rdfs:range owl:ObjectProperty ;
-    rdfs:label "attribute" ;
-    rdfs:comment "Specifies the property/attribute to check in a state requirement." .
 
 :requiredValue a owl:ObjectProperty ;
     rdfs:domain :StateRequirement ;
@@ -283,85 +250,49 @@
     rdfs:comment "Specifies the required value for a state requirement." .
 
 :emittedPriorityLevel a owl:ObjectProperty ;
-    rdfs:domain :AlarmCondition ;
-    rdfs:range common:priorityLevel ;
+    rdfs:domain :AlertCondition ;
+    rdfs:range common:AlertTypeGroup ;
     rdfs:label "emitted priority level" ;
     rdfs:comment "Indicates the priority level of the alarm (e.g., High, Medium, Low)." .
 
-:alarmGroup a owl:ObjectProperty ;
-    rdfs:domain :AlarmCondition ;
-    rdfs:range common:alarmGroup ;
-    rdfs:label "alarm group" ;
+:alarmCategory a owl:ObjectProperty ;
+    rdfs:domain :AlertCondition ;
+    rdfs:range common:AlertTypeGroup ;
+    rdfs:label "alarm category" ;
     rdfs:comment "Indicates the group/category of the alarm (e.g., Respiratory, Cardiac)." .
 
-:isPartOfDevice a owl:ObjectProperty;
+:isPartOfDevice a owl:ObjectProperty ;
     rdfs:domain :DeviceEntity ;
     rdfs:range :PhysicalDevice ;
     rdfs:label "is part of device" ;
     rdfs:comment "Inverse-like relation to partOfDevice (kept explicit)." .
 
-# Properties for complex alarm condition modeling
-:hasCondition a owl:ObjectProperty ;
-    rdfs:domain :AlarmSituation ;
-    rdfs:range :Condition ;
-    rdfs:label "has condition" ;
-    rdfs:comment "Links an alarm situation to its constituent conditions." .
-
 :aboutEntity a owl:ObjectProperty ;
-    rdfs:domain :Condition ;
+    rdfs:domain :AlertCondition ;
     rdfs:range common:Entity ;
     rdfs:label "about entity" ;
     rdfs:comment "Specifies which entity a condition is about." .
 
 :onAttribute a owl:ObjectProperty ;
-    rdfs:domain :Condition ;
+    rdfs:domain :AlertCondition ;
     rdfs:label "on attribute" ;
     rdfs:comment "Specifies which attribute of an entity a condition checks." .
 
-:hasValue a owl:DatatypeProperty, owl:ObjectProperty ;
-    rdfs:domain :Condition ;
+:hasValue a owl:ObjectProperty ;
+    rdfs:domain :AlertCondition ;
     rdfs:label "has value" ;
     rdfs:comment "Specifies the expected value in a condition." .
 
-:hasAlarmInterpretation a owl:ObjectProperty ;
-    rdfs:domain :Metric ;
-    rdfs:range common:State ;
-    rdfs:label "has alarm interpretation" ;
-    rdfs:comment "Indicates how a metric value should be interpreted for alarm purposes (e.g., High, Low, Normal)." .
-
-# Properties for AlarmDefinition approach
+# Properties for AlertConditionDescription approach
 :hasDefinition a owl:ObjectProperty ;
-    rdfs:domain :AlarmCondition ;
-    rdfs:range :AlarmDefinition ;
+    rdfs:domain :AlertCondition ;
+    rdfs:range :AlertConditionDescription ;
     rdfs:label "has definition" ;
     rdfs:comment "Links an alarm condition to its human-readable definition." .
 
-:requiresSpec a owl:ObjectProperty ;
-    rdfs:domain :AlarmDefinition ;
-    rdfs:range :ConditionSpec ;
-    rdfs:label "requires spec" ;
-    rdfs:comment "Links an alarm definition to condition specifications that must be met." .
-
-:specEntity a owl:ObjectProperty ;
-    rdfs:domain :ConditionSpec ;
-    rdfs:range common:Entity ;
-    rdfs:label "spec entity" ;
-    rdfs:comment "Specifies which entity this condition spec is about." .
-
-:specAttribute a owl:ObjectProperty ;
-    rdfs:domain :ConditionSpec ;
-    rdfs:label "spec attribute" ;
-    rdfs:comment "Specifies which attribute this condition spec checks." .
-
-:specValue a owl:ObjectProperty ;
-    rdfs:domain :ConditionSpec ;
-    rdfs:range common:Entity ;
-    rdfs:label "spec value" ;
-    rdfs:comment "Specifies the required value for this condition spec (typically a state or entity individual)." .
-
 :soundType a owl:ObjectProperty ;
-    rdfs:domain :AlarmCondition ;
-    rdfs:range common:soundType ;
+    rdfs:domain :AlertCondition ;
+    rdfs:range common:AlertSoundType ;
     rdfs:label "sound type" ;
     rdfs:comment "Indicates the type of sound associated with the alarm." .
 

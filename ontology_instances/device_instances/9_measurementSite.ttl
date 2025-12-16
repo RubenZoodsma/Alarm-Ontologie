@@ -1,7 +1,7 @@
 ######################################################################################################
-# FILE: 9_physicalLocation.ttl
+# FILE: 9_measurementSite.ttl
 # DESCRIPTION:
-#   Instances of :PhysicalLocation represent specific anatomical or physical placement locations
+#   Instances of :MeasurementSite represent specific anatomical or physical placement locations
 #   for sensors and monitoring devices.
 ######################################################################################################
 
@@ -12,12 +12,12 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/physicalLocation>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/measurementSite>
     a owl:Ontology ;
-    rdfs:label "Physical Location Instances" .
+    rdfs:label "Measurement Site Instances" .
 
 ######################################################################################################
-# BLUEPRINT — PHYSICALLOCATION INSTANCE STRUCTURE
+# BLUEPRINT — MEASUREMENTSITE INSTANCE STRUCTURE
 #
 # Data Properties:
 #   - hasDescription (xsd:string)       e.g. "Left hand placement"
@@ -33,45 +33,45 @@
 ######################################################################################################
 
 ### Hand Locations
-:LeftHand a dev:PhysicalLocation ;
+:LeftHand a dev:MeasurementSite ;
     dev:hasDescription "Left hand placement for pulse oximetry" ;
     common:hasSNOMEDCode "368208006" ;
     rdfs:label "Left Hand" .
 
-:RightHand a dev:PhysicalLocation ;
+:RightHand a dev:MeasurementSite ;
     dev:hasDescription "Right hand placement for pulse oximetry" ;
     common:hasSNOMEDCode "368209003" ;
     rdfs:label "Right Hand" .
 
 ### Foot Locations  
-:LeftFoot a dev:PhysicalLocation ;
+:LeftFoot a dev:MeasurementSite ;
     dev:hasDescription "Left foot placement for pulse oximetry" ;
     common:hasSNOMEDCode "22335008" ;
     rdfs:label "Left Foot" .
 
-:RightFoot a dev:PhysicalLocation ;
+:RightFoot a dev:MeasurementSite ;
     dev:hasDescription "Right foot placement for pulse oximetry" ;
     common:hasSNOMEDCode "22335008" ;
     rdfs:label "Right Foot" .
 
 ### Pre/Post Ductal Locations
-:PreDuctal a dev:PhysicalLocation ;
+:PreDuctal a dev:MeasurementSite ;
     dev:hasDescription "Pre-ductal placement (typically right hand for neonates)" ;
     common:hasSNOMEDCode "368209003" ;
     rdfs:label "Pre-ductal Location" .
 
-:PostDuctal a dev:PhysicalLocation ;
+:PostDuctal a dev:MeasurementSite ;
     dev:hasDescription "Post-ductal placement (typically feet for neonates)" ;
     common:hasSNOMEDCode "22335008" ;
     rdfs:label "Post-ductal Location" .
 
 ### Other Body Locations
-:Earlobe a dev:PhysicalLocation ;
+:Earlobe a dev:MeasurementSite ;
     dev:hasDescription "Earlobe placement for pulse oximetry" ;
     common:hasSNOMEDCode "42859004" ;
     rdfs:label "Earlobe" .
 
-:Forehead a dev:PhysicalLocation ;
+:Forehead a dev:MeasurementSite ;
     dev:hasDescription "Forehead placement for pulse oximetry" ;
     common:hasSNOMEDCode "52795006" ;
     rdfs:label "Forehead" .

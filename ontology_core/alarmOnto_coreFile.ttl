@@ -33,7 +33,7 @@
         <../ontology_instances/device_instances/6_Metric.ttl> ,
         <../ontology_instances/device_instances/7_measurementProcess.ttl> ,
         <../ontology_instances/device_instances/8_signal.ttl> ,
-        <../ontology_instances/device_instances/9_physicalLocation.ttl> ,
+        <../ontology_instances/device_instances/9_measurementSite.ttl> ,
 
         # --- Alarm instance modules ---
         <../ontology_instances/alarm_instances/1_ACD_MonitorAlarms.ttl> ,

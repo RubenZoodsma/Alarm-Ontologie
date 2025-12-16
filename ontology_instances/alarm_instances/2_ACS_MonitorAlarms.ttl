@@ -35,10 +35,10 @@
 
 
 
-:ACS_Alarm_1
-    a dev:AlertConditionState ;
-    rdfs:label "AlertConditionState reasoning object: PHILIPSMONITOR - SpO2 Low" ;
-    rdfs:comment "Reasoning-level alarm condition triggered when definition conditions are met." ;
+:ACS_Alarm_1 a owl:Class ;
+    rdfs:subClassOf dev:AlertConditionState ;
+    rdfs:label "ACS | reasoning object: PHILIPSMONITOR - ?? SpO2l hoog" ;
+    rdfs:comment "Reasoning object representing the alarm conditions for 'PHILIPSMONITOR - ?? SpO2l hoog'." ;
 
     # Link to the human-friendly, explicit definition
     dev:hasDefinition :Alarm_1_definition ;
@@ -47,36 +47,26 @@
     owl:equivalentClass [
         a owl:Class ;
         owl:intersectionOf (
-            dev:AlarmSituation
 
             # [A=PhilipsMonitor, B=hasStateInstance, C=Enabled]
             [ a owl:Restriction ; owl:onProperty dev:hasCondition ; owl:someValuesFrom
                 [ a owl:Class ; owl:intersectionOf (
-                    dev:Condition
+                    dev:AlertCondition
                     [ a owl:Restriction ; owl:onProperty dev:aboutEntity ; owl:hasValue :PhilipsMonitor ]
                     [ a owl:Restriction ; owl:onProperty dev:onAttribute ; owl:hasValue common:hasStateInstance ]
-                    [ a owl:Restriction ; owl:onProperty dev:hasValue ; owl:hasValue :Enabled ]
+                    [ a owl:Restriction ; owl:onProperty dev:hasValue ; owl:hasValue common:Enabled ]
                 )]
             ]
 
             # [A=Pulse_Oximeter_Sensor, B=hasStateInstance, C=Connected]
             [ a owl:Restriction ; owl:onProperty dev:hasCondition ; owl:someValuesFrom
                 [ a owl:Class ; owl:intersectionOf (
-                    dev:Condition
+                    dev:AlertCondition
                     [ a owl:Restriction ; owl:onProperty dev:aboutEntity ; owl:hasValue :Pulse_Oximeter_Sensor ]
                     [ a owl:Restriction ; owl:onProperty dev:onAttribute ; owl:hasValue common:hasStateInstance ]
                     [ a owl:Restriction ; owl:onProperty dev:hasValue ; owl:hasValue :Connected ]
                 )]
             ]
 
-            # [A=SpO2_Metric, B=hasAlarmInterpretation, C=Low]
-            [ a owl:Restriction ; owl:onProperty dev:hasCondition ; owl:someValuesFrom
-                [ a owl:Class ; owl:intersectionOf (
-                    dev:Condition
-                    [ a owl:Restriction ; owl:onProperty dev:aboutEntity ; owl:hasValue :SpO2_Metric ]
-                    [ a owl:Restriction ; owl:onProperty dev:onAttribute ; owl:hasValue dev:hasAlarmInterpretation ]
-                    [ a owl:Restriction ; owl:onProperty dev:hasValue ; owl:hasValue :Low ]
-                )]
-            ]
         )
     ] .

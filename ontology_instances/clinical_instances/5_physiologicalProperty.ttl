@@ -8,6 +8,7 @@
 @prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
 @prefix clin: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#> .
 @prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
+@prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -51,59 +52,72 @@
     clin:hasUnit "%" ;
     clin:hasSNOMEDCode "103228002" ;
     common:hasStateInstance common:Unknown ;
-    clin:partOfProcess :Pulmonary_Oxygenation_Process .
+    clin:partOfProcess :Pulmonary_Oxygenation_Process ;
+    common:measuredByMetric dev:SpO2_Metric .
 
 :Cardiac_Electrical_Depolarization_Property a clin:PhysiologicalProperty ;
     clin:hasUnit "mV" ;
     clin:hasSNOMEDCode "364075005" ;
     common:hasStateInstance common:Unknown ;
-    clin:partOfProcess :Cardiac_Contraction_Process .
+    clin:partOfProcess :Cardiac_Contraction_Process ;
+    common:measuredByMetric dev:ST_II_Metric, dev:ST_V_Metric .
 
 :Body_Temperature_Property a clin:PhysiologicalProperty ;
+    rdfs:subClassOf clin:PhysiologicalProperty ;
     clin:hasUnit "°C" ;
-    clin:hasSNOMEDCode "386725007", "386724002" ;
     common:hasStateInstance common:Unknown ;
-    clin:partOfProcess :Thermoregulation_Process .
+    clin:partOfProcess :Thermoregulation_Process ;
+    dev:measuredByMetric dev:Skin_Temp_Metric, dev:Core_Temp_Metric .
 
-:Temperature_Skin_Property a clin:PhysiologicalProperty, :BodyTemperatureProperty ;
+:Temperature_Skin_Property a clin:PhysiologicalProperty ;
+    rdfs:subClassOf :Body_Temperature_Property ;
     clin:hasUnit "°C" ;
     clin:hasSNOMEDCode "386725007" ;
     common:hasStateInstance common:Unknown ;
-    clin:partOfProcess :Thermoregulation_Process .
+    clin:partOfProcess :Thermoregulation_Process ;
+    dev:measuredByMetric dev:Skin_Temp_Metric .
 
-:Temperature_Core_property a clin:PhysiologicalProperty, :BodyTemperatureProperty ;
+
+:Temperature_Core_Property a clin:PhysiologicalProperty ;
+    rdfs:subClassOf :Body_Temperature_Property ;
     clin:hasUnit "°C" ;
     clin:hasSNOMEDCode "386724002" ;
     common:hasStateInstance common:Unknown ;
-    clin:partOfProcess :Thermoregulation_Process .
+    clin:partOfProcess :Thermoregulation_Process ;
+    dev:measuredByMetric dev:Core_Temp_Metric .
 
 :ABP_Systolic_Property a clin:PhysiologicalProperty ;
     clin:hasUnit "mmHg" ;
     clin:hasSNOMEDCode "271649006" ;
     common:hasStateInstance common:Unknown ;
-    clin:partOfProcess :Arterial_Perfusion_Process .
+    clin:partOfProcess :Arterial_Perfusion_Process ;
+    dev:measuredByMetric dev:ABP_Systolic_Metric .
 
 :ABP_Diastolic_Property a clin:PhysiologicalProperty ;
     clin:hasUnit "mmHg" ;
     clin:hasSNOMEDCode "271650006" ;
     common:hasStateInstance common:Unknown ;
-    clin:partOfProcess :Arterial_Perfusion_Process .
+    clin:partOfProcess :Arterial_Perfusion_Process ;
+    dev:measuredByMetric dev:ABP_Diastolic_Metric .
 
 :ABP_Mean_Property a clin:PhysiologicalProperty ;
     clin:hasUnit "mmHg" ;
     clin:hasSNOMEDCode "271651005" ;
     common:hasStateInstance common:Unknown ;
-    clin:partOfProcess :Arterial_Perfusion_Process .
+    clin:partOfProcess :Arterial_Perfusion_Process ;
+    dev:measuredByMetric dev:ABP_Mean_Metric .
 
 :Alveolar_CarbonDioxide_Property a clin:PhysiologicalProperty ;
     clin:hasUnit "mmHg" ;
     clin:hasSNOMEDCode "271650006" ;
     common:hasStateInstance common:Unknown ;
-    clin:partOfProcess :Pulmonary_Diffusion_Process .
+    clin:partOfProcess :Pulmonary_Diffusion_Process ;
+    dev:measuredByMetric dev:EtCO2_Metric .
 
 :Cardiac_Contractile_Frequency_Property a clin:PhysiologicalProperty ;
     clin:hasUnit "bpm" ;
     clin:hasSNOMEDCode "364075005" ;
     common:hasStateInstance common:Unknown ;
-    clin:partOfProcess :Cardiac_Contraction_Process .
+    clin:partOfProcess :Cardiac_Contraction_Process ;
+    dev:measuredByMetric dev:PulseRate_Metric .
 
