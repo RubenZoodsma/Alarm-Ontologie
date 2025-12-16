@@ -102,3 +102,10 @@
     common:hasStateInstance common:Transmitting ;
     dev:generatedByProcess :Capno_Waveform_MeasurementProcess .  
 
+:RespiratoryRate_Metric a dev:Metric ;
+    dev:hasMDCCode "MDC_RESP_RATE" ;
+    common:hasUnit "breaths/min" ;
+    dev:hasLabel "Respiratory Rate" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:generatedByProcess :ECG_Waveform_MeasurementProcess .
+

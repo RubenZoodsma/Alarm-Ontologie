@@ -66,7 +66,7 @@
 
 :Thermoregulation_Process a clin:PhysiologicalProcess ;
     clin:occursInOrgan :Skin ;
-    clin:producesProperty :Skin_Temp_Property , :Core_Temp_Property ;
+    clin:producesProperty :Temperature_Core_Property , :Temperature_Skin_Property ;
     clin:hasState "Unknown" .
 
 :Arterial_Perfusion_Process a clin:PhysiologicalProcess ;

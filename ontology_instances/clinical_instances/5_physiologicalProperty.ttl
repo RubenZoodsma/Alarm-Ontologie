@@ -121,3 +121,8 @@
     clin:partOfProcess :Cardiac_Contraction_Process ;
     dev:measuredByMetric dev:PulseRate_Metric .
 
+:Pulmonary_Ventilation_Property a clin:PhysiologicalProperty ;
+    clin:hasUnit "breaths/min" ;
+    clin:hasSNOMEDCode "86290005" ;
+    common:hasStateInstance common:Unknown ;
+    clin:measuredByMetric dev:RespiratoryRate_Metric .
