@@ -5,16 +5,16 @@
 #   (e.g., monitors, ventilators). Equivalent to IEEE 11073 MDS.
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix dev: <http://example.org/alarmOnto/device#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/device/physicalDevice>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/physicalDevice>
     a owl:Ontology ;
-    rdfs:label "Physical Device Instances" ;
-    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+    rdfs:label "Physical Device Instances" .
 
 ######################################################################################################
 # BLUEPRINT — PHYSICALDEVICE INSTANCE STRUCTURE
@@ -28,14 +28,9 @@
 #
 # Object Properties:
 #   - hasFunctionalUnit → FunctionalUnit
-#       e.g. :Ventilator_1 dev:hasFunctionalUnit :GasDeliveryUnit_1
+#       e.g. :PhilipsMonitor_1 dev:hasFunctionalUnit :SpO2_Module_1
 #
-# Example:
-#   :Ventilator_1 a dev:PhysicalDevice ;
-#       dev:hasManufacturer "Philips" ;
-#       dev:hasModelName "Respironics V60" ;
-#       dev:hasState "Enabled" ;
-#       dev:hasFunctionalUnit :GasDeliveryUnit_1 .
+# Note: PhysicalDevice is the top-level container for all device components
 ######################################################################################################
 
 # Physical device names:
@@ -43,8 +38,12 @@
 # - Ventilator (Draeger, Hulbus, Datexahmedacom)
 # - Thermoregulator (Medibus)
 
-:PhilipsMonitor a dev:PhysicalDevice ;
+:PhilipsMonitor a dev:MonitoringDevice ;
     dev:hasManufacturer "Philips" ;
     dev:hasModelName "Unknown Model" ;
-    dev:hasState "Enabled" ;
-    dev:hasFunctionalUnit :Spo2_Module, :ECG_Module, :NIBP_Module, :Temp_Module, :IBP_Module, :VascPress_Module .
+    dev:hasFunctionalUnit :SpO2_Module, :ECG_Module, :NIBP_Module, :Temp_Module, :IBP_Module, :VascPress_Module .
+
+:Datexahmedacom_Ventilator a dev:VentilationDevice ;
+    dev:hasManufacturer "Datexahmedacom" ;
+    dev:hasModelName "Unknown Model" .
+    ## Inclomplete

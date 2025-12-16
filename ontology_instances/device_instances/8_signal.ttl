@@ -5,16 +5,16 @@
 #   Equivalent to RTMSS Real-Time Sample Arrays (RTSA).
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix dev: <http://example.org/alarmOnto/device#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/device/signal>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/signal>
     a owl:Ontology ;
-    rdfs:label "Signal Instances" ;
-    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+    rdfs:label "Signal Instances" .
 
 ######################################################################################################
 # BLUEPRINT — SIGNAL INSTANCE STRUCTURE
@@ -35,3 +35,93 @@
 #       dev:isProducedBy :O2Sensor_1 ;
 #       dev:inputToProcess :SpO2_Process_1 .
 ######################################################################################################
+
+:PulseOximetry_Signal a dev:Signal ;
+    common:hasQualityIndicator "Good" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:isProducedBy :Pulse_Oximeter_Sensor ;
+    dev:inputToProcess :PulseOximetry_MeasurementProcess .
+
+:ECG_RA_Signal a dev:Signal ;
+    common:hasQualityIndicator "Good" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:isProducedBy :ECG_Electrodes_Sensor ;
+    dev:inputToProcess :ECG_MeasurementProcess .
+
+:ECG_RL_Signal a dev:Signal ;
+    common:hasQualityIndicator "Good" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:isProducedBy :ECG_Electrodes_Sensor ;
+    dev:inputToProcess :ECG_MeasurementProcess .
+
+:ECG_LA_Signal a dev:Signal ;
+    common:hasQualityIndicator "Good" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:isProducedBy :ECG_Electrodes_Sensor ;
+    dev:inputToProcess :ECG_MeasurementProcess .
+
+:ECG_LL_Signal a dev:Signal ;
+    common:hasQualityIndicator "Good" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:isProducedBy :ECG_Electrodes_Sensor ;
+    dev:inputToProcess :ECG_MeasurementProcess .    
+
+:ECG_V1_Signal a dev:Signal ;
+    common:hasQualityIndicator "Good" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:isProducedBy :ECG_Electrodes_Sensor ;
+    dev:inputToProcess :ECG_MeasurementProcess .
+
+:ECG_V2_Signal a dev:Signal ;
+    common:hasQualityIndicator "Good" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:isProducedBy :ECG_Electrodes_Sensor ;
+    dev:inputToProcess :ECG_MeasurementProcess .
+
+:ECG_V3_Signal a dev:Signal ;
+    common:hasQualityIndicator "Good" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:isProducedBy :ECG_Electrodes_Sensor ;
+    dev:inputToProcess :ECG_MeasurementProcess .
+
+:ECG_V4_Signal a dev:Signal ;
+    common:hasQualityIndicator "Good" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:isProducedBy :ECG_Electrodes_Sensor ;
+    dev:inputToProcess :ECG_MeasurementProcess .
+
+:ECG_V5_Signal a dev:Signal ;
+    common:hasQualityIndicator "Good" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:isProducedBy :ECG_Electrodes_Sensor ;
+    dev:inputToProcess :ECG_MeasurementProcess .
+
+:ECG_V6_Signal a dev:Signal ;
+    common:hasQualityIndicator "Good" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:isProducedBy :ECG_Electrodes_Sensor ;   
+    dev:inputToProcess :ECG_MeasurementProcess .
+
+:SkinTemp_Signal a dev:Signal ;
+    common:hasQualityIndicator "Good" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:isProducedBy :Skin_Temperature_Sensor ;
+    dev:inputToProcess :SkinTemp_MeasurementProcess .
+
+:CoreTemp_Signal a dev:Signal ;
+    common:hasQualityIndicator "Good" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:isProducedBy :Core_Temperature_Sensor ;
+    dev:inputToProcess :CoreTemp_MeasurementProcess .
+
+:ABP_Waveform_Signal a dev:Signal ;
+    common:hasQualityIndicator "Good" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:isProducedBy :ABP_Transducer_Sensor ;
+    dev:inputToProcess :ABP_Waveform_MeasurementProcess .
+
+:Capno_Waveform_Signal a dev:Signal ;
+    common:hasQualityIndicator "Good" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:isProducedBy :Capnography_Sensor ;
+    dev:inputToProcess :Capno_Waveform_MeasurementProcess .

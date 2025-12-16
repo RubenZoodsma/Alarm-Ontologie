@@ -5,16 +5,16 @@
 #   Equivalent to RTMSS Channel entities.
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix dev: <http://example.org/alarmOnto/device#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/device/deviceChannel>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/deviceChannel>
     a owl:Ontology ;
-    rdfs:label "Device Channel Instances" ;
-    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+    rdfs:label "Device Channel Instances" .
 
 ######################################################################################################
 # BLUEPRINT — DEVICECHANNEL INSTANCE STRUCTURE
@@ -33,3 +33,43 @@
 #       dev:hasState "Enabled" ;
 #       dev:hasMetric :FlowRateMetric_1 .
 ######################################################################################################
+
+:SpO2_Channel a dev:DeviceChannel ;
+    dev:hasLabel "SpO2 Channel" ;
+    common:hasStateInstance common:Enabled ;
+    dev:hasMetric :SpO2_Metric .
+
+:ST_II_Channel a dev:DeviceChannel ;
+    dev:hasLabel "ST II Channel" ;
+    common:hasStateInstance common:Enabled ;
+    dev:hasMetric :ST_II_Metric .
+
+:ST_V_Channel a dev:DeviceChannel ;
+    dev:hasLabel "ST V Channel" ;
+    common:hasStateInstance common:Enabled ;
+    dev:hasMetric :ST_V_Metric .
+
+:Skin_Temp_Channel a dev:DeviceChannel ;
+    dev:hasLabel "Skin Temperature Channel" ;
+    common:hasStateInstance common:Enabled ;
+    dev:hasMetric :Skin_Temp_Metric .
+
+:Core_Temp_Channel a dev:DeviceChannel ;
+    dev:hasLabel "Core Temperature Channel" ;
+    common:hasStateInstance common:Enabled ;
+    dev:hasMetric :Core_Temp_Metric .
+
+:PulseRate_Channel a dev:DeviceChannel ;
+    dev:hasLabel "Pulse Rate Channel" ;
+    common:hasStateInstance common:Enabled ;
+    dev:hasMetric :PulseRate_Metric .
+
+:ABP_Channel a dev:DeviceChannel ;
+    dev:hasLabel "Arterial Blood Pressure Channel" ;
+    common:hasStateInstance common:Enabled ;
+    dev:hasMetric :ABP_Systolic_Metric, :ABP_Diastolic_Metric, :ABP_Mean_Metric .
+
+:EtCO2_Channel a dev:DeviceChannel ;
+    dev:hasLabel "End-Tidal CO2 Channel" ;
+    common:hasStateInstance common:Enabled ;
+    dev:hasMetric :EtCO2_Metric .

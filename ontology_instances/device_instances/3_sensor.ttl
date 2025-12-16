@@ -1,37 +1,108 @@
 ######################################################################################################
 # FILE: 3_sensor.ttl
 # DESCRIPTION:
-#   Instances of :Sensor represent transducers converting physical phenomena 
-#   to measurable electrical signals. Maps to RTMSS MetricSource.
+#   Instances of :Sensor represent individual sensors within functional units
+#   (e.g., pulse oximeter sensor, ECG electrodes). Equivalent to IEEE 11073 VMD.
 ######################################################################################################
 
-@prefix : <http://example.org/alarmOnto/instances#> .
-@prefix dev: <http://example.org/alarmOnto/device#> .
-@prefix core: <http://example.org/alarmOnto/core#> .
+@prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#> .
+@prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
+@prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://example.org/alarmOnto/instances/device/sensor>
+<https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances/device/sensor>
     a owl:Ontology ;
-    rdfs:label "Sensor Instances" ;
-    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_coreFile.ttl> .
+    rdfs:label "Sensor Instances" .
 
 ######################################################################################################
 # BLUEPRINT — SENSOR INSTANCE STRUCTURE
 #
 # Data Properties:
-#   - hasState (xsd:string)             e.g. "Operational"
-#   - hasSNOMEDCode (xsd:string)        e.g. "43724002"  # Pulse oximetry sensor
-#   - hasAccuracy (xsd:decimal)         e.g. 0.5
+#   - hasAccuracy (xsd:decimal)         e.g. 0.95
+#   - hasResolution (xsd:decimal)       e.g. 0.1
+#   - hasState (xsd:string)             e.g. "Connected"
 #
 # Object Properties:
-#   - partOfInterface → SensorInterface
-#   - producesSignal → Signal
+#   - hasDeviceChannel → DeviceChannel
+#       e.g. :Pulse_Oximeter_Sensor dev:hasDeviceChannel :SpO2_Channel
 #
-# Example:
-#   :O2Sensor_1 a dev:Sensor ;
-#       dev:hasAccuracy 0.5 ;
-#       dev:hasState "Operational" ;
-#       dev:partOfInterface :O2Interface_1 ;
-#       dev:producesSignal :SpO2_Signal_1 .
-######################################################################################################
+# Note: Sensors are the measurement components within functional units
+##########################################
+
+:Pulse_Oximeter_Sensor a dev:Sensor ;
+    rdfs:label "Pulse Oximeter Sensor" ;
+    rdfs:comment "SpO2 sensor that can be in Connected or Disconnected state depending on physical connection status." ;
+    dev:ProducesSignal :PulseOximetry_Signal .
+
+:ECG_LA_Sensor a dev:Sensor ;
+    rdfs:label "ECG Left Arm Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the left arm." ;
+    dev:ProducesSignal :ECG_LA_Signal .
+
+:ECG_LL_Sensor a dev:Sensor ;
+    rdfs:label "ECG Left Leg Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the left leg." ;
+    dev:hasAccuracy 0.98 ;
+    dev:ProducesSignal :ECG_LL_Signal .
+
+:ECG_RA_Sensor a dev:Sensor ;
+    rdfs:label "ECG Right Arm Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the right arm." ;
+    dev:ProducesSignal :ECG_RA_Signal .
+
+:ECG_RL_Sensor a dev:Sensor ;
+    rdfs:label "ECG Right Leg Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the right leg." ;
+    dev:ProducesSignal :ECG_RL_Signal .
+
+:ECG_V1_Sensor a dev:Sensor ;
+    rdfs:label "ECG V1 Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the V1 position." ;
+    dev:ProducesSignal :ECG_V1_Signal .
+
+:ECG_V2_Sensor a dev:Sensor ;
+    rdfs:label "ECG V2 Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the V2 position." ;
+    dev:ProducesSignal :ECG_V2_Signal .
+
+:ECG_V3_Sensor a dev:Sensor ;
+    rdfs:label "ECG V3 Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the V3 position." ;
+    dev:ProducesSignal :ECG_V3_Signal .
+
+:ECG_V4_Sensor a dev:Sensor ;
+    rdfs:label "ECG V4 Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the V4 position." ;
+    dev:ProducesSignal :ECG_V4_Signal .
+
+:ECG_V5_Sensor a dev:Sensor ;
+    rdfs:label "ECG V5 Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the V5 position." ;
+    dev:ProducesSignal :ECG_V5_Signal .
+
+:ECG_V6_Sensor a dev:Sensor ;
+    rdfs:label "ECG V6 Electrode Sensor" ;
+    rdfs:comment "ECG electrode sensor for the V6 position." ;
+    dev:ProducesSignal :ECG_V6_Signal .
+
+:SkinTemperature_Probe_Sensor a dev:Sensor ;
+    rdfs:label "Skin Temperature Probe Sensor" ;
+    rdfs:comment "Sensor for measuring skin temperature." ;
+    dev:ProducesSignal :SkinTemp_Signal .
+
+:CoreTemperature_Probe_Sensor a dev:Sensor ;
+    rdfs:label "Core Temperature Probe Sensor" ;
+    rdfs:comment "Sensor for measuring core body temperature." ;
+    dev:ProducesSignal :CoreTemp_Signal .
+
+:ABP_Transducer_Sensor a dev:Sensor ;
+    rdfs:label "Arterial Blood Pressure Transducer Sensor" ;
+    rdfs:comment "Sensor for measuring arterial blood pressure." ;
+    dev:ProducesSignal :ABP_Waveform_Signal .
+
+:Capnography_Sensor a dev:Sensor ;
+    rdfs:label "Capnography CO2 Sensor" ;
+    rdfs:comment "Sensor for measuring end-tidal CO2 levels." ;
+    dev:ProducesSignal :Capno_Waveform_Signal .
