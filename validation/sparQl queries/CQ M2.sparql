@@ -1,0 +1,95 @@
+# ============================================================
+# CQ M2 — Alternative Interpretation Paths
+# ============================================================
+# Definition: Determine whether one technical assertion (a
+# metric in a given state) can lead to multiple distinct
+# clinical interpretations, keeping interpretations explicit.
+# Tests whether the ontology can represent ambiguity or
+# competing hypotheses.
+#
+# Input:  A technical assertion (metric + value interpretation).
+# Output: All distinct clinical interpretation paths — each
+#         ending in a different physiological property or process.
+#
+# Interpretation paths exist when a single metric maps to
+# multiple PhysiologicalProperties (via measuredByMetric),
+# OR when a metric appears in multiple alarms that imply
+# different clinical conditions.
+#
+# Two variants:
+#   M2a — Via metric→property: structural ambiguity in ontology
+#   M2b — Via alarm implied conditions: per-alarm interpretations
+# ============================================================
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+
+# ------------------------------------------------------------
+# M2a — Structural ambiguity: metrics mapping to multiple
+#        physiological properties
+# ------------------------------------------------------------
+# Returns metrics that have more than one clinical interpretation
+# in the ontology (i.e., measured by multiple properties).
+# Replace inst:SpO2_Metric to query a specific metric.
+# ------------------------------------------------------------
+
+SELECT ?metric ?metricLabel
+       (GROUP_CONCAT(DISTINCT ?propertyLabel ; separator=" | ") AS ?interpretations)
+       (COUNT(DISTINCT ?property) AS ?interpretationCount)
+WHERE {
+
+  # --- Optional: bind a specific metric ---
+  # BIND(inst:SpO2_Metric AS ?metric)
+
+  ?metric a dev:Metric .
+  OPTIONAL { ?metric dev:hasLabel ?metricLabel }
+
+  ?property a clin:PhysiologicalProperty ;
+            common:measuredByMetric ?metric .
+  OPTIONAL { ?property rdfs:label ?propertyLabel }
+}
+GROUP BY ?metric ?metricLabel
+HAVING (COUNT(DISTINCT ?property) > 1)
+ORDER BY DESC(?interpretationCount)
+
+
+# ------------------------------------------------------------
+# M2b — Per-alarm: given a technical assertion, find all
+#        distinct clinical implied conditions across alarms
+# ------------------------------------------------------------
+# Groups by technical pattern and shows diverging clinical
+# implied conditions per matching alarm.
+# Example input: SpO2_Metric with HighLimitViolation.
+# ------------------------------------------------------------
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?alarmLabel ?clinEntity ?clinAttribute ?clinValue WHERE {
+
+  ?alarm a dev:AlertConditionDescription ;
+         dev:alarmMessageLabel ?alarmLabel ;
+         dev:requiresCondition ?techCond ;
+         dev:impliesCondition  ?clinCond .
+
+  # --- Bind your technical pattern here ---
+  ?techCond dev:aboutEntity inst:SpO2_Metric ;
+            dev:onAttribute dev:hasValueInterpretation ;
+            dev:hasValue    common:HighLimitViolation .
+
+  # Collect the clinical implied conditions
+  ?clinCond dev:aboutEntity ?clinEntity ;
+            dev:onAttribute ?clinAttribute ;
+            dev:hasValue    ?clinValue .
+
+  # Filter to clinical entities only
+  ?clinEntity a clin:PhysiologicalProperty .
+}
+ORDER BY ?alarmLabel ?clinEntity

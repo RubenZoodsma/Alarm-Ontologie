@@ -1,8 +1,0 @@
-
-BACKGROUND: Clinical alarm systems in intensive care environments generate frequent false alarms, compromising patient safety and staff workflow. Ontological modeling can provide formal semantic foundations for intelligent alarm interpretation.
-
-METHODS: We developed a comprehensive alarm ontology comprising 28 core classes, 64 properties (43 object, 21 data), and 19 predefined states. The ontology instantiates 204 individuals across clinical (37, 18.1%), device (109, 53.4%), and alarm-specific (58, 28.4%) domains.
-
-RESULTS: The alarm modeling approach distinguishes 494 condition specifications into 228 explicitly asserted and 197 computationally inferred requirements (inference multiplier: 0.86x). Domain coverage encompasses 7 major physiological monitoring areas and 7 medical device categories. Standards alignment includes 8 SNOMED CT-coded entities organized across 21 modular namespaces.
-
-CONCLUSIONS: The ontology provides formal semantic foundations for alarm interpretation with 1,569 RDF triples (density: 4.46 triples/entity), supporting automated reasoning over clinical alarm scenarios in intensive care environments.

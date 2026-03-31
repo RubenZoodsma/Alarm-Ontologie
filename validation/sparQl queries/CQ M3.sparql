@@ -1,0 +1,90 @@
+# ============================================================
+# CQ M3 — Cross-Domain Convergence
+# ============================================================
+# Definition: Determine which different technical assertions
+# converge onto the same clinical meaning. Tests whether
+# heterogeneous technical origins can be reduced into a
+# common clinical feature.
+#
+# Input:  A clinical concept–attribute–value pattern
+#         (physiological property + state).
+# Output: All technical assertions (metrics + alarms) that
+#         map to that clinical assertion.
+#
+# Convergence path (reverse of M1):
+#   PhysiologicalProperty ← measuredByMetric ← Metric
+#     ← (aboutEntity in requiresCondition) ← Alarm
+#
+# Two variants:
+#   M3a — Parametric : from a clinical property to all technical sources
+#   M3b — Discovery  : full convergence map across all properties
+# ============================================================
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+
+# ------------------------------------------------------------
+# M3a — Parametric: from a clinical property to its technical sources
+# ------------------------------------------------------------
+# Replace inst:Arterial_Oxygenation_Property with any property.
+# ------------------------------------------------------------
+
+SELECT ?property ?metric ?metricLabel ?alarm ?alarmLabel WHERE {
+
+  # --- Bind your clinical property here ---
+  BIND(inst:Arterial_Oxygenation_Property AS ?property)
+
+  # Step 1: metrics measuring this property
+  ?property common:measuredByMetric ?metric .
+  OPTIONAL { ?metric dev:hasLabel ?metricLabel }
+
+  # Step 2: alarms referencing this metric in their required conditions
+  ?alarm a dev:AlertConditionDescription ;
+         dev:alarmMessageLabel ?alarmLabel ;
+         dev:requiresCondition ?cond .
+
+  ?cond dev:aboutEntity ?metric .
+}
+ORDER BY ?metricLabel ?alarmLabel
+
+
+# ------------------------------------------------------------
+# M3b — Discovery: full convergence map
+# ------------------------------------------------------------
+# Shows, for each physiological property, how many distinct
+# alarms and metrics converge onto it.
+# ------------------------------------------------------------
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?property ?propertyLabel
+       (COUNT(DISTINCT ?metric) AS ?metricCount)
+       (COUNT(DISTINCT ?alarm)  AS ?alarmCount)
+       (GROUP_CONCAT(DISTINCT ?metricLabel ; separator=" | ") AS ?metrics)
+       (GROUP_CONCAT(DISTINCT ?alarmLabel  ; separator=" | ") AS ?alarms)
+WHERE {
+
+  ?property a clin:PhysiologicalProperty ;
+            common:measuredByMetric ?metric .
+
+  OPTIONAL { ?property rdfs:label ?propertyLabel }
+  OPTIONAL { ?metric dev:hasLabel ?metricLabel }
+
+  OPTIONAL {
+    ?alarm a dev:AlertConditionDescription ;
+           dev:alarmMessageLabel ?alarmLabel ;
+           dev:requiresCondition ?cond .
+
+    ?cond dev:aboutEntity ?metric .
+  }
+}
+GROUP BY ?property ?propertyLabel
+ORDER BY DESC(?alarmCount)

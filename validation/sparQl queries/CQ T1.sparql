@@ -1,0 +1,121 @@
+# ============================================================
+# CQ T1 — Technical Equivalence
+# ============================================================
+# Definition: Identify alarms that instantiate the same
+# technical assertion pattern (entity, attribute, value),
+# regardless of vendor wording.
+#
+# Three variants are provided:
+#   T1a — Pattern Lookup     : parametric, given a specific pattern as input
+#   T1b — Discovery          : groups all alarms by shared condition patterns
+#   T1c — Full Equivalence   : pairs of alarms with identical condition sets
+# ============================================================
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+
+# ------------------------------------------------------------
+# T1a — Pattern Lookup (parametric)
+# ------------------------------------------------------------
+# Given a specific (entity, attribute, value) pattern as input,
+# return all alarms that require it.
+# Example: SpO2 metric with a high-limit violation.
+# ------------------------------------------------------------
+
+SELECT ?alarm ?label WHERE {
+
+  ?alarm a dev:AlertConditionDescription ;
+         dev:alarmMessageLabel ?label ;
+         dev:requiresCondition ?cond .
+
+  # --- Bind your target pattern here ---
+  ?cond dev:aboutEntity inst:SpO2_Metric ;
+        dev:onAttribute dev:hasValueInterpretation ;
+        dev:hasValue    common:HighLimitViolation .
+}
+ORDER BY ?label
+
+
+# ------------------------------------------------------------
+# T1b — Discovery (group alarms by shared condition pattern)
+# ------------------------------------------------------------
+# No fixed input. Scans all alarms and groups them by shared
+# (entity, attribute, value) patterns.
+# Returns only patterns shared by more than one alarm.
+# ------------------------------------------------------------
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?entity ?attribute ?value
+       (GROUP_CONCAT(DISTINCT ?label ; separator=" | ") AS ?alarms)
+       (COUNT(DISTINCT ?alarm) AS ?count)
+WHERE {
+
+  ?alarm a dev:AlertConditionDescription ;
+         dev:alarmMessageLabel ?label ;
+         dev:requiresCondition ?cond .
+
+  ?cond dev:aboutEntity ?entity ;
+        dev:onAttribute ?attribute ;
+        dev:hasValue    ?value .
+}
+GROUP BY ?entity ?attribute ?value
+HAVING (COUNT(DISTINCT ?alarm) > 1)
+ORDER BY DESC(?count)
+
+
+# ------------------------------------------------------------
+# T1c — Full Semantic Equivalence (identical condition sets)
+# ------------------------------------------------------------
+# Finds pairs of alarms whose entire requiresCondition sets
+# are identical. Matches on (entity, attribute, value) content,
+# not condition IRIs — correct for cross-vendor comparison.
+#
+# NOTE: Returns no results with the current single-vendor
+# instance set. Will produce results once a second device's
+# alarms are added that share the same technical assertions.
+# ------------------------------------------------------------
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?alarm1 ?label1 ?alarm2 ?label2 WHERE {
+
+  ?alarm1 a dev:AlertConditionDescription ; dev:alarmMessageLabel ?label1 .
+  ?alarm2 a dev:AlertConditionDescription ; dev:alarmMessageLabel ?label2 .
+
+  # Avoid duplicate pairs
+  FILTER(?alarm1 < ?alarm2)
+
+  # Every condition pattern of alarm1 must be present in alarm2
+  FILTER NOT EXISTS {
+    ?alarm1 dev:requiresCondition ?c1 .
+    ?c1 dev:aboutEntity ?e ; dev:onAttribute ?a ; dev:hasValue ?v .
+    FILTER NOT EXISTS {
+      ?alarm2 dev:requiresCondition ?c2 .
+      ?c2 dev:aboutEntity ?e ; dev:onAttribute ?a ; dev:hasValue ?v .
+    }
+  }
+
+  # Every condition pattern of alarm2 must be present in alarm1
+  FILTER NOT EXISTS {
+    ?alarm2 dev:requiresCondition ?c2 .
+    ?c2 dev:aboutEntity ?e ; dev:onAttribute ?a ; dev:hasValue ?v .
+    FILTER NOT EXISTS {
+      ?alarm1 dev:requiresCondition ?c1 .
+      ?c1 dev:aboutEntity ?e ; dev:onAttribute ?a ; dev:hasValue ?v .
+    }
+  }
+}
+ORDER BY ?label1 ?label2

@@ -1,0 +1,74 @@
+# ============================================================
+# CQ T2 — Sensor Alarm Propagation
+# ============================================================
+# Definition: Determine whether a sensor-level technical problem
+# propagates to multiple downstream metrics.
+# This tests whether the ontology captures technical dependency
+# structure in the measurement chain.
+#
+# Input:  A sensor individual (e.g. inst:Pulse_Oximeter_Sensor)
+# Output: All metrics that depend on that sensor
+#
+# Traversal path:
+#   Sensor ← isProducedBy ← Signal → inputToProcess
+#          → MeasurementProcess → producesMetric → Metric
+#
+# Two variants:
+#   T2a — Parametric : given a specific sensor as input
+#   T2b — Discovery  : shows the full sensor→metric dependency map
+# ============================================================
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+
+# ------------------------------------------------------------
+# T2a — Parametric: given a sensor, find affected metrics
+# ------------------------------------------------------------
+# Replace inst:Pulse_Oximeter_Sensor with any sensor individual.
+# ------------------------------------------------------------
+
+SELECT ?sensor ?signal ?process ?metric ?metricLabel WHERE {
+
+  # --- Bind your target sensor here ---
+  BIND(inst:Pulse_Oximeter_Sensor AS ?sensor)
+
+  ?signal dev:isProducedBy ?sensor ;
+          dev:inputToProcess ?process .
+
+  ?process dev:producesMetric ?metric .
+
+  OPTIONAL { ?metric dev:hasLabel ?metricLabel }
+}
+ORDER BY ?metricLabel
+
+
+# ------------------------------------------------------------
+# T2b — Discovery: full sensor → metric dependency map
+# ------------------------------------------------------------
+# No input. Returns all sensor→metric chains in the ontology.
+# ------------------------------------------------------------
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?sensor ?sensorLabel ?metric ?metricLabel
+       (COUNT(DISTINCT ?metric) AS ?affectedMetricCount)
+WHERE {
+
+  ?signal dev:isProducedBy ?sensor ;
+          dev:inputToProcess ?process .
+
+  ?process dev:producesMetric ?metric .
+
+  OPTIONAL { ?sensor rdfs:label ?sensorLabel }
+  OPTIONAL { ?metric dev:hasLabel ?metricLabel }
+}
+GROUP BY ?sensor ?sensorLabel ?metric ?metricLabel
+ORDER BY ?sensorLabel ?metricLabel

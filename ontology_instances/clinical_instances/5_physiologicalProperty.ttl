@@ -53,21 +53,21 @@
     clin:hasSNOMEDCode "103228002" ;
     common:hasStateInstance common:Unknown ;
     clin:partOfProcess :Pulmonary_Oxygenation_Process ;
-    common:measuredByMetric dev:SpO2_Metric .
+    common:measuredByMetric :SpO2_Metric .
 
 :Cardiac_Electrical_Depolarization_Property a clin:PhysiologicalProperty ;
     clin:hasUnit "mV" ;
     clin:hasSNOMEDCode "364075005" ;
     common:hasStateInstance common:Unknown ;
     clin:partOfProcess :Cardiac_Contraction_Process ;
-    common:measuredByMetric dev:ST_II_Metric, dev:ST_V_Metric .
+    common:measuredByMetric :ST_II_Metric, :ST_V_Metric .
 
 :Body_Temperature_Property a clin:PhysiologicalProperty ;
     rdfs:subClassOf clin:PhysiologicalProperty ;
     clin:hasUnit "°C" ;
     common:hasStateInstance common:Unknown ;
     clin:partOfProcess :Thermoregulation_Process ;
-    dev:measuredByMetric dev:Skin_Temp_Metric, dev:Core_Temp_Metric .
+    common:measuredByMetric :Skin_Temp_Metric, :Core_Temp_Metric .
 
 :Temperature_Skin_Property a clin:PhysiologicalProperty ;
     rdfs:subClassOf :Body_Temperature_Property ;
@@ -75,8 +75,7 @@
     clin:hasSNOMEDCode "386725007" ;
     common:hasStateInstance common:Unknown ;
     clin:partOfProcess :Thermoregulation_Process ;
-    dev:measuredByMetric dev:Skin_Temp_Metric .
-
+    common:measuredByMetric :Skin_Temp_Metric .
 
 :Temperature_Core_Property a clin:PhysiologicalProperty ;
     rdfs:subClassOf :Body_Temperature_Property ;
@@ -84,45 +83,45 @@
     clin:hasSNOMEDCode "386724002" ;
     common:hasStateInstance common:Unknown ;
     clin:partOfProcess :Thermoregulation_Process ;
-    dev:measuredByMetric dev:Core_Temp_Metric .
+    common:measuredByMetric :Core_Temp_Metric .
 
 :ABP_Systolic_Property a clin:PhysiologicalProperty ;
     clin:hasUnit "mmHg" ;
     clin:hasSNOMEDCode "271649006" ;
     common:hasStateInstance common:Unknown ;
     clin:partOfProcess :Arterial_Perfusion_Process ;
-    dev:measuredByMetric dev:ABP_Systolic_Metric .
+    common:measuredByMetric :ABP_Systolic_Metric .
 
 :ABP_Diastolic_Property a clin:PhysiologicalProperty ;
     clin:hasUnit "mmHg" ;
     clin:hasSNOMEDCode "271650006" ;
     common:hasStateInstance common:Unknown ;
     clin:partOfProcess :Arterial_Perfusion_Process ;
-    dev:measuredByMetric dev:ABP_Diastolic_Metric .
+    common:measuredByMetric :ABP_Diastolic_Metric .
 
 :ABP_Mean_Property a clin:PhysiologicalProperty ;
     clin:hasUnit "mmHg" ;
     clin:hasSNOMEDCode "271651005" ;
     common:hasStateInstance common:Unknown ;
     clin:partOfProcess :Arterial_Perfusion_Process ;
-    dev:measuredByMetric dev:ABP_Mean_Metric .
+    common:measuredByMetric :ABP_Mean_Metric .
 
 :Alveolar_CarbonDioxide_Property a clin:PhysiologicalProperty ;
     clin:hasUnit "mmHg" ;
     clin:hasSNOMEDCode "271650006" ;
     common:hasStateInstance common:Unknown ;
     clin:partOfProcess :Pulmonary_Diffusion_Process ;
-    dev:measuredByMetric dev:EtCO2_Metric .
+    common:measuredByMetric :EtCO2_Metric .
 
 :Cardiac_Contractile_Frequency_Property a clin:PhysiologicalProperty ;
     clin:hasUnit "bpm" ;
     clin:hasSNOMEDCode "364075005" ;
     common:hasStateInstance common:Unknown ;
     clin:partOfProcess :Cardiac_Contraction_Process ;
-    dev:measuredByMetric dev:PulseRate_Metric .
+    common:measuredByMetric :PulseRate_Metric .
 
 :Pulmonary_Ventilation_Property a clin:PhysiologicalProperty ;
     clin:hasUnit "breaths/min" ;
     clin:hasSNOMEDCode "86290005" ;
     common:hasStateInstance common:Unknown ;
-    clin:measuredByMetric dev:RespiratoryRate_Metric .
+    common:measuredByMetric :RespiratoryRate_Metric .

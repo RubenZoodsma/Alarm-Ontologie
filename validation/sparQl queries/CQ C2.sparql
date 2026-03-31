@@ -1,0 +1,86 @@
+# ============================================================
+# CQ C2 — Clinical Process Coupling
+# ============================================================
+# Definition: Determine which distinct clinical assertions can
+# be grouped under a common physiological process. Tests whether
+# the ontology supports abstraction from property-level
+# abnormalities to process-level interpretation.
+#
+# Input:  A physiological process individual.
+# Output: Linked clinical assertions and alarms for that process.
+#
+# Traversal path:
+#   PhysiologicalProcess → producesProperty → PhysiologicalProperty
+#     ← measuredByMetric ← Metric ← (aboutEntity in requiresCondition)
+#     ← AlertConditionDescription
+#
+# Two variants:
+#   C2a — Parametric : given a process, return properties + alarms
+#   C2b — Discovery  : full process → alarm coupling map
+# ============================================================
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+
+# ------------------------------------------------------------
+# C2a — Parametric: given a process, find properties and alarms
+# ------------------------------------------------------------
+# Replace inst:Pulmonary_Oxygenation_Process with any process.
+# ------------------------------------------------------------
+
+SELECT ?process ?property ?metric ?alarm ?alarmLabel WHERE {
+
+  # --- Bind your target process here ---
+  BIND(inst:Pulmonary_Oxygenation_Process AS ?process)
+
+  # Step 1: properties produced by the process
+  ?process clin:producesProperty ?property .
+
+  # Step 2: metrics measuring those properties
+  ?property common:measuredByMetric ?metric .
+
+  # Step 3: alarms whose conditions reference that metric
+  ?alarm a dev:AlertConditionDescription ;
+         dev:alarmMessageLabel ?alarmLabel ;
+         dev:requiresCondition ?cond .
+
+  ?cond dev:aboutEntity ?metric .
+}
+ORDER BY ?alarmLabel
+
+
+# ------------------------------------------------------------
+# C2b — Discovery: full process → property → alarm map
+# ------------------------------------------------------------
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?process ?processLabel ?property ?propertyLabel
+       (GROUP_CONCAT(DISTINCT ?alarmLabel ; separator=" | ") AS ?alarms)
+       (COUNT(DISTINCT ?alarm) AS ?alarmCount)
+WHERE {
+
+  ?process a clin:PhysiologicalProcess ;
+           clin:producesProperty ?property .
+
+  ?property common:measuredByMetric ?metric .
+
+  ?alarm a dev:AlertConditionDescription ;
+         dev:alarmMessageLabel ?alarmLabel ;
+         dev:requiresCondition ?cond .
+
+  ?cond dev:aboutEntity ?metric .
+
+  OPTIONAL { ?process rdfs:label ?processLabel }
+  OPTIONAL { ?property rdfs:label ?propertyLabel }
+}
+GROUP BY ?process ?processLabel ?property ?propertyLabel
+ORDER BY ?processLabel ?propertyLabel

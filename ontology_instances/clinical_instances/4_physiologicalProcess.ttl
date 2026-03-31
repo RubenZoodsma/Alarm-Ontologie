@@ -51,7 +51,7 @@
 
 :Pulmonary_Ventilation_Process a clin:PhysiologicalProcess ;
     clin:occursInOrgan :Lung ;
-    clin:producesProperty :RR_Property ;
+    clin:producesProperty :Pulmonary_Ventilation_Property ;
     clin:hasState "Unknown" .
 
 :Pulmonary_Diffusion_Process a clin:PhysiologicalProcess ;

@@ -1,0 +1,128 @@
+# ============================================================
+# CQ C1 — Clinical Equivalence
+# ============================================================
+# Definition: Identify alarms that are semantically identical
+# at the clinical level, regardless of device or measurement
+# origin. Tests whether alarms can be normalized into shared
+# clinical meaning.
+#
+# Input:  A clinical concept–attribute–value pattern, or
+#         the full set of alarms to group by such patterns.
+# Output: Alarms that instantiate the same clinical assertion.
+#
+# Clinical assertions are carried in dev:impliesCondition,
+# where the aboutEntity is a clin:PhysiologicalProperty.
+#
+# Three variants (mirroring T1):
+#   C1a — Pattern Lookup : parametric
+#   C1b — Discovery      : group alarms by shared clinical pattern
+#   C1c — Full Equivalence: identical implied clinical condition sets
+# ============================================================
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+
+# ------------------------------------------------------------
+# C1a — Pattern Lookup (parametric)
+# ------------------------------------------------------------
+# Given a clinical (entity, attribute, value) pattern,
+# return all alarms that imply it.
+# Example: SaO2 property in Monitored state.
+# ------------------------------------------------------------
+
+SELECT ?alarm ?label WHERE {
+
+  ?alarm a dev:AlertConditionDescription ;
+         dev:alarmMessageLabel ?label ;
+         dev:impliesCondition ?cond .
+
+  # --- Bind your target clinical pattern here ---
+  ?cond dev:aboutEntity inst:Arterial_Oxygenation_Property ;
+        dev:onAttribute dev:hasStateInstance ;
+        dev:hasValue    common:MonitoredState .
+}
+ORDER BY ?label
+
+
+# ------------------------------------------------------------
+# C1b — Discovery (group alarms by shared clinical pattern)
+# ------------------------------------------------------------
+# Groups alarms by shared (clinicalEntity, attribute, value).
+# Filters to implied conditions whose entity is a
+# PhysiologicalProperty — these are the clinical assertions.
+# ------------------------------------------------------------
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?clinEntity ?attribute ?value
+       (GROUP_CONCAT(DISTINCT ?label ; separator=" | ") AS ?alarms)
+       (COUNT(DISTINCT ?alarm) AS ?count)
+WHERE {
+
+  ?alarm a dev:AlertConditionDescription ;
+         dev:alarmMessageLabel ?label ;
+         dev:impliesCondition ?cond .
+
+  ?cond dev:aboutEntity ?clinEntity ;
+        dev:onAttribute ?attribute ;
+        dev:hasValue    ?value .
+
+  # Filter to clinical entities only
+  ?clinEntity a clin:PhysiologicalProperty .
+}
+GROUP BY ?clinEntity ?attribute ?value
+HAVING (COUNT(DISTINCT ?alarm) > 1)
+ORDER BY DESC(?count)
+
+
+# ------------------------------------------------------------
+# C1c — Full Clinical Equivalence (identical implied clinical sets)
+# ------------------------------------------------------------
+# Finds alarm pairs whose entire set of implied clinical
+# assertions (PhysiologicalProperty conditions) is identical.
+# ------------------------------------------------------------
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?alarm1 ?label1 ?alarm2 ?label2 WHERE {
+
+  ?alarm1 a dev:AlertConditionDescription ; dev:alarmMessageLabel ?label1 .
+  ?alarm2 a dev:AlertConditionDescription ; dev:alarmMessageLabel ?label2 .
+
+  FILTER(?alarm1 < ?alarm2)
+
+  # Every clinical implied condition of alarm1 is present in alarm2
+  FILTER NOT EXISTS {
+    ?alarm1 dev:impliesCondition ?c1 .
+    ?c1 dev:aboutEntity ?e ; dev:onAttribute ?a ; dev:hasValue ?v .
+    ?e a clin:PhysiologicalProperty .
+    FILTER NOT EXISTS {
+      ?alarm2 dev:impliesCondition ?c2 .
+      ?c2 dev:aboutEntity ?e ; dev:onAttribute ?a ; dev:hasValue ?v .
+    }
+  }
+
+  # Every clinical implied condition of alarm2 is present in alarm1
+  FILTER NOT EXISTS {
+    ?alarm2 dev:impliesCondition ?c2 .
+    ?c2 dev:aboutEntity ?e ; dev:onAttribute ?a ; dev:hasValue ?v .
+    ?e a clin:PhysiologicalProperty .
+    FILTER NOT EXISTS {
+      ?alarm1 dev:impliesCondition ?c1 .
+      ?c1 dev:aboutEntity ?e ; dev:onAttribute ?a ; dev:hasValue ?v .
+    }
+  }
+}
+ORDER BY ?label1 ?label2

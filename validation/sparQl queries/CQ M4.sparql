@@ -1,0 +1,126 @@
+# ============================================================
+# CQ M4 — End-to-End Feature Derivation
+# ============================================================
+# Definition: Derive the reduced ontology-based representation
+# of an alarm for downstream reasoning or modeling. Tests
+# whether the ontology can be used as a semantic compression
+# mechanism over raw alarms.
+#
+# Input:  A single alarm (AlertConditionDescription individual).
+# Output: A compact feature set including:
+#           - Alarm metadata (label, priority, category, device)
+#           - Technical features (required condition patterns)
+#           - Clinical features (implied clinical conditions)
+#           - Physiological process chain (property → process → organ)
+#
+# Two variants:
+#   M4a — Parametric : full feature set for one specific alarm
+#   M4b — Tabular    : one-row-per-alarm summary for all alarms
+# ============================================================
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+
+# ------------------------------------------------------------
+# M4a — Parametric: full feature derivation for one alarm
+# ------------------------------------------------------------
+# Replace inst:ACD_Alarm_1 with any alarm individual.
+# Returns one row per feature — pivot or collect downstream.
+# ------------------------------------------------------------
+
+SELECT ?featureType ?entity ?attribute ?value WHERE {
+
+  # --- Bind your target alarm here ---
+  BIND(inst:ACD_Alarm_1 AS ?alarm)
+
+  {
+    # --- Technical features (required conditions) ---
+    ?alarm dev:requiresCondition ?cond .
+    ?cond dev:aboutEntity ?entity ;
+          dev:onAttribute ?attribute ;
+          dev:hasValue    ?value .
+    BIND("technical_required" AS ?featureType)
+  }
+  UNION
+  {
+    # --- Clinical features (implied conditions, clinical entities only) ---
+    ?alarm dev:impliesCondition ?cond .
+    ?cond dev:aboutEntity ?entity ;
+          dev:onAttribute ?attribute ;
+          dev:hasValue    ?value .
+    ?entity a clin:PhysiologicalProperty .
+    BIND("clinical_implied" AS ?featureType)
+  }
+  UNION
+  {
+    # --- Physiological process chain (via metric bridge) ---
+    ?alarm dev:requiresCondition ?cond .
+    ?cond dev:aboutEntity ?metric .
+    ?metric a dev:Metric .
+
+    ?property common:measuredByMetric ?metric ;
+              clin:partOfProcess ?process .
+
+    ?process clin:occursInOrgan ?organ .
+
+    BIND(?process AS ?entity)
+    BIND("physiological_process" AS ?attribute)
+    BIND(?organ AS ?value)
+    BIND("process_chain" AS ?featureType)
+  }
+}
+ORDER BY ?featureType ?entity
+
+
+# ------------------------------------------------------------
+# M4b — Tabular summary: one row per alarm with aggregated features
+# ------------------------------------------------------------
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?alarmLabel ?priority ?category ?device
+       (GROUP_CONCAT(DISTINCT ?techEntity  ; separator=" | ") AS ?technicalEntities)
+       (GROUP_CONCAT(DISTINCT ?clinEntity  ; separator=" | ") AS ?clinicalEntities)
+       (GROUP_CONCAT(DISTINCT ?processLabel ; separator=" | ") AS ?processes)
+WHERE {
+
+  ?alarm a dev:AlertConditionDescription ;
+         dev:alarmMessageLabel ?alarmLabel .
+
+  OPTIONAL { ?alarm dev:emittedPriorityLevel   ?priority }
+  OPTIONAL { ?alarm dev:alarmCategory          ?category }
+  OPTIONAL { ?alarm dev:originatesFromPhysicalEntity ?device }
+
+  # Technical features
+  OPTIONAL {
+    ?alarm dev:requiresCondition ?techCond .
+    ?techCond dev:aboutEntity ?techEntity .
+  }
+
+  # Clinical features
+  OPTIONAL {
+    ?alarm dev:impliesCondition ?clinCond .
+    ?clinCond dev:aboutEntity ?clinEntity .
+    ?clinEntity a clin:PhysiologicalProperty .
+  }
+
+  # Process chain
+  OPTIONAL {
+    ?alarm dev:requiresCondition ?metricCond .
+    ?metricCond dev:aboutEntity ?metric .
+    ?metric a dev:Metric .
+    ?property common:measuredByMetric ?metric ;
+              clin:partOfProcess ?process .
+    OPTIONAL { ?process rdfs:label ?processLabel }
+  }
+}
+GROUP BY ?alarmLabel ?priority ?category ?device
+ORDER BY ?alarmLabel

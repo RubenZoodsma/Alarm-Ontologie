@@ -1,0 +1,89 @@
+# ============================================================
+# CQ M1 — Technical-to-Clinical Mapping
+# ============================================================
+# Definition: Determine how a technical assertion is translated
+# into clinical meaning. Tests whether the ontology explicitly
+# captures the latent knowledge bridge from measurement space
+# to physiology space.
+#
+# Input:  A technical concept–attribute–value pattern (metric,
+#         attribute, value derived from an alarm condition).
+# Output: The linked clinical assertion(s) — physiological
+#         property, process, and organ — for that metric.
+#
+# Bridge: dev:Metric ← common:measuredByMetric ← clin:PhysiologicalProperty
+#                                               → clin:partOfProcess
+#                                               → clin:occursInOrgan
+#
+# Two variants:
+#   M1a — Parametric : from a single metric to its clinical chain
+#   M1b — Discovery  : full technical→clinical mapping table
+# ============================================================
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+
+# ------------------------------------------------------------
+# M1a — Parametric: from a metric to its full clinical chain
+# ------------------------------------------------------------
+# Replace inst:SpO2_Metric with any metric individual.
+# ------------------------------------------------------------
+
+SELECT ?metric ?metricLabel ?property ?process ?processLabel ?organ ?organLabel WHERE {
+
+  # --- Bind your target metric here ---
+  BIND(inst:SpO2_Metric AS ?metric)
+
+  OPTIONAL { ?metric dev:hasLabel ?metricLabel }
+
+  # Cross-domain bridge: metric → physiological property
+  ?property common:measuredByMetric ?metric .
+
+  # Property → Process
+  OPTIONAL {
+    ?property clin:partOfProcess ?process .
+    OPTIONAL { ?process rdfs:label ?processLabel }
+
+    # Process → Organ
+    OPTIONAL {
+      ?process clin:occursInOrgan ?organ .
+      OPTIONAL { ?organ rdfs:label ?organLabel }
+    }
+  }
+}
+
+
+# ------------------------------------------------------------
+# M1b — Discovery: full technical → clinical mapping table
+# ------------------------------------------------------------
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?metricLabel ?propertyLabel ?processLabel ?organLabel WHERE {
+
+  ?metric a dev:Metric .
+  OPTIONAL { ?metric dev:hasLabel ?metricLabel }
+
+  ?property a clin:PhysiologicalProperty ;
+            common:measuredByMetric ?metric .
+  OPTIONAL { ?property rdfs:label ?propertyLabel }
+
+  OPTIONAL {
+    ?property clin:partOfProcess ?process .
+    OPTIONAL { ?process rdfs:label ?processLabel }
+
+    OPTIONAL {
+      ?process clin:occursInOrgan ?organ .
+      OPTIONAL { ?organ rdfs:label ?organLabel }
+    }
+  }
+}
+ORDER BY ?metricLabel
