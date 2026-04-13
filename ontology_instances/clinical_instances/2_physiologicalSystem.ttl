@@ -23,7 +23,7 @@
 #
 # Data Properties:
 #   - hasSNOMEDCode (xsd:string)        e.g. "39057004"   # Pulmonary system
-#   - hasState (xsd:string)             e.g. "Stable"
+#   - hasFunctionalState (ObjectProperty)             e.g. "Stable"
 #
 # Object Properties:
 #   - partOfPatient → Patient
@@ -34,7 +34,7 @@
 # Example instance:
 #   :Pulmonary_System_1 a clin:PhysiologicalSystem ;
 #       clin:hasSNOMEDCode "39057004" ;
-#       clin:hasState "Stable" ;
+#       clin:hasFunctionalState "Stable" ;
 #       clin:partOfPatient :Patient_001 ;
 #       clin:hasOrgan :Lung_1 .
 ######################################################################################################
@@ -51,29 +51,29 @@
 
 :Pulmonary_System a clin:PhysiologicalSystem ;
     clin:hasSNOMEDCode "UNKNOWN" ;
-    clin:hasState "UNKNOWN" ;
+    clin:hasFunctionalState "UNKNOWN" ;
     clin:partOfPatient :Patient ;
     clin:hasOrgan :Lung .
 
 :Cardiovascular_System a clin:PhysiologicalSystem ;
     clin:hasSNOMEDCode "UNKNOWN" ;
-    clin:hasState "UNKNOWN" ;
+    clin:hasFunctionalState "UNKNOWN" ;
     clin:partOfPatient :Patient ;
     clin:hasOrgan :Heart , :Vessels .
 
 :Integumentary_System a clin:PhysiologicalSystem ;
     clin:hasSNOMEDCode "UNKNOWN" ;
-    clin:hasState "UNKNOWN" ;
+    clin:hasFunctionalState "UNKNOWN" ;
     clin:partOfPatient :Patient ;
     clin:hasOrgan :Skin .
 
 :Endocrine_System a clin:PhysiologicalSystem ;
     clin:hasSNOMEDCode "UNKNOWN" ;
-    clin:hasState "UNKNOWN" ;
+    clin:hasFunctionalState "UNKNOWN" ;
     clin:partOfPatient :Patient .
 
 :Nervous_System a clin:PhysiologicalSystem ;
     clin:hasSNOMEDCode "UNKNOWN" ;
-    clin:hasState "UNKNOWN" ;
+    clin:hasFunctionalState "UNKNOWN" ;
     clin:partOfPatient :Patient ;
     clin:hasOrgan :Brain .

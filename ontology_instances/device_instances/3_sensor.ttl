@@ -22,7 +22,7 @@
 # Data Properties:
 #   - hasAccuracy (xsd:decimal)         e.g. 0.95
 #   - hasResolution (xsd:decimal)       e.g. 0.1
-#   - hasState (xsd:string)             e.g. "Connected"
+#   - hasOperationalState (ObjectProperty)             e.g. "Connected"
 #
 # Object Properties:
 #   - hasDeviceChannel → DeviceChannel

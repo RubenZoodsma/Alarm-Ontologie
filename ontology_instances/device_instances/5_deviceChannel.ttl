@@ -21,7 +21,7 @@
 #
 # Data Properties:
 #   - hasLabel (xsd:string)             e.g. "Flow Measurements"
-#   - hasState (xsd:string)             e.g. "Enabled"
+#   - hasOperationalState (ObjectProperty)             e.g. "Enabled"
 #
 # Object Properties:
 #   - partOfFunctionalUnit → FunctionalUnit

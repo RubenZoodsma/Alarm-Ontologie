@@ -1,0 +1,31 @@
+
+PREFIX inst: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX dev:  <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?techLabel ?physLabel ?sharedSensorCond
+WHERE {
+    # --- technical alarm: must have a sensor-connectivity condition AND a sensor-invalidation condition ---
+    ?techACD a dev:AlertConditionDescription ;
+             dev:alarmCategory inst:technicalAlarmGroup ;
+             dev:alarmMessageLabel ?techLabel ;
+             dev:requiresCondition ?sharedSensorCond ;
+             dev:requiresCondition ?qualCond .
+
+    # sharedSensorCond must be a SensorConnectivityCondition (semantic class, not string matching)
+    ?sharedSensorCond a ?connType .
+    ?connType rdfs:subClassOf* dev:SensorConnectivityCondition .
+
+    # qualCond must be a SensorInvalidationCondition (SignalQualityCondition or SensorFaultCondition)
+    ?qualCond a ?qualType .
+    ?qualType rdfs:subClassOf* dev:SensorInvalidationCondition .
+
+    # --- physiological alarm that shares the same sensor-connectivity condition ---
+    ?physACD a dev:AlertConditionDescription ;
+             dev:alarmCategory inst:physiologicalAlarmGroup ;
+             dev:alarmMessageLabel ?physLabel ;
+             dev:requiresCondition ?sharedSensorCond .
+
+    FILTER(?techACD != ?physACD)
+}
+ORDER BY ?techLabel ?physLabel

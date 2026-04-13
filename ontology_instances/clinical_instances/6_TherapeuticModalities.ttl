@@ -22,7 +22,7 @@
 #
 # Data Properties:
 #   - hasSNOMEDCode (xsd:string)        e.g. "71083000"   # Mechanical ventilation
-#   - hasState (xsd:string)             e.g. "Active"
+#   - hasFunctionalState (ObjectProperty)             e.g. "Active"
 # Object Properties:
 #   - targetsProcess → PhysiologicalProcess
 #       e.g. :Mechanical_Ventilation_1 clin:targetsProcess :Pulmonary_Ventilation_1
@@ -32,7 +32,7 @@
 # Example instance:
 #   :Mechanical_Ventilation_1 a clin:TherapeuticModality ;
 #       clin:hasSNOMEDCode "71083000" ;
-#       clin:hasState "Active" ;
+#       clin:hasFunctionalState "Active" ;
 #       clin:targetsProcess :Pulmonary_Ventilation_1 ;
 #       clin:administeredToPatient :Patient_001 .
 ######################################################################################################
@@ -40,6 +40,6 @@
 ### Invasive mechanical ventilation
 :Mechanical_Ventilation a clin:TherapeuticModality ;
     clin:hasSNOMEDCode "71083000" ;
-    clin:hasState "Active" ;
+    clin:hasFunctionalState "Active" ;
     clin:targetsProcess :Pulmonary_Ventilation_Process ;
     clin:administeredToPatient :JohnDoe .

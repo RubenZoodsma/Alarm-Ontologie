@@ -83,4 +83,16 @@
     rdfs:range :PhysiologicalProcess ;
     rdfs:label "has physiological process" .
 
+:hasObservationState a owl:ObjectProperty ;
+    rdfs:domain :ClinicalEntity ;
+    rdfs:range common:State ;
+    rdfs:label "has observation state" ;
+    rdfs:comment "Indicates whether a clinical entity (property, process, organ, system) is being actively monitored. Observation states (e.g. Monitored, NotMonitored) propagate upward through the clinical taxonomy via property chain axioms — if a process is monitored, the containing organ is also monitored." .
+
+:hasFunctionalState a owl:ObjectProperty ;
+    rdfs:domain common:Entity ;
+    rdfs:range common:State ;
+    rdfs:label "has functional state" ;
+    rdfs:comment "Indicates the operational or health status of a clinical entity (e.g. Active, Insufficient, Unknown). Functional states are local and do not propagate upward through the taxonomy. Replaces the generic clin:hasState for all non-observation state assertions." .
+
 

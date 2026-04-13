@@ -24,7 +24,7 @@
 #
 # Data Properties:
 #   - hasSNOMEDCode (xsd:string)        e.g. "39607008"   # Lung
-#   - hasState (xsd:string)             e.g. "Normal"
+#   - hasFunctionalState (ObjectProperty)             e.g. "Normal"
 # Object Properties:
 #   - partOfSystem → PhysiologicalSystem
 #       e.g. :Lung_1 clin:partOfSystem :Pulmonary_System_1
@@ -48,18 +48,18 @@
 
 :Lungs a clin:Organ ;
     clin:hasSNOMEDCode "UNKNOWN" ;
-    clin:hasState "UNKNOWN" ;
+    clin:hasFunctionalState "UNKNOWN" ;
     clin:partOfSystem :Pulmonary_System ;
     clin:hasPhysiologicalProcess :Pulmonary_Oxygenation_Process, :Pulmonary_Ventilation_Process, :Pulmonary_Perfusion_Process .
 
 :Heart a clin:Organ ;
     clin:hasSNOMEDCode "UNKNOWN" ;
-    clin:hasState "UNKNOWN" ;
+    clin:hasFunctionalState "UNKNOWN" ;
     clin:partOfSystem :Cardiovascular_System ;
     clin:hasPhysiologicalProcess :Pulmonary_Perfusion_Process, :Systemic_Perfusion_Process, :Cutaneous_Perfusion_Process .
 
 :Skin a clin:Organ ;
     clin:hasSNOMEDCode "UNKNOWN" ;
-    clin:hasState "UNKNOWN" ;
+    clin:hasFunctionalState "UNKNOWN" ;
     clin:partOfSystem :Integumentary_System ;
     clin:hasPhysiologicalProcess :Cutaneous_Perfusion_Process .

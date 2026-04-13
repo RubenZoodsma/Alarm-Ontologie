@@ -1,0 +1,74 @@
+# Check whether >1 alarms have IDENTICAL sets of:
+#  - dev:requiresCondition (technical / required)
+#  - dev:impliesCondition  (implied)
+#
+# Equality is tested on the condition “pattern”:
+#   (dev:aboutEntity, dev:onAttribute, dev:hasValue)
+#
+# Result: all alarm PAIRS that are fully identical on both sets.
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?alarm1 ?label1 ?alarm2 ?label2
+WHERE {
+  ?alarm1 a dev:AlertConditionDescription ; dev:alarmMessageLabel ?label1 .
+  ?alarm2 a dev:AlertConditionDescription ; dev:alarmMessageLabel ?label2 .
+  FILTER(?alarm1 < ?alarm2)
+
+  # ----------------------------
+  # Required conditions: alarm1 ⊆ alarm2
+  # ----------------------------
+  FILTER NOT EXISTS {
+    ?alarm1 dev:requiresCondition ?rc1 .
+    ?rc1 dev:aboutEntity ?re ; dev:onAttribute ?ra ; dev:hasValue ?rv .
+    FILTER NOT EXISTS {
+      ?alarm2 dev:requiresCondition ?rc2 .
+      ?rc2 dev:aboutEntity ?re ; dev:onAttribute ?ra ; dev:hasValue ?rv .
+    }
+  }
+
+  # Required conditions: alarm2 ⊆ alarm1
+  FILTER NOT EXISTS {
+    ?alarm2 dev:requiresCondition ?rc2 .
+    ?rc2 dev:aboutEntity ?re ; dev:onAttribute ?ra ; dev:hasValue ?rv .
+    FILTER NOT EXISTS {
+      ?alarm1 dev:requiresCondition ?rc1 .
+      ?rc1 dev:aboutEntity ?re ; dev:onAttribute ?ra ; dev:hasValue ?rv .
+    }
+  }
+
+  # ----------------------------
+  # Implied conditions: alarm1 ⊆ alarm2
+  # ----------------------------
+  FILTER NOT EXISTS {
+    ?alarm1 dev:impliesCondition ?ic1 .
+    ?ic1 dev:aboutEntity ?ie ; dev:onAttribute ?ia ; dev:hasValue ?iv .
+
+    # OPTIONAL: uncomment to restrict implied conditions to clinical assertions only
+    # ?ie a clin:PhysiologicalProperty .
+
+    FILTER NOT EXISTS {
+      ?alarm2 dev:impliesCondition ?ic2 .
+      ?ic2 dev:aboutEntity ?ie ; dev:onAttribute ?ia ; dev:hasValue ?iv .
+    }
+  }
+
+  # Implied conditions: alarm2 ⊆ alarm1
+  FILTER NOT EXISTS {
+    ?alarm2 dev:impliesCondition ?ic2 .
+    ?ic2 dev:aboutEntity ?ie ; dev:onAttribute ?ia ; dev:hasValue ?iv .
+
+    # OPTIONAL: uncomment to restrict implied conditions to clinical assertions only
+    # ?ie a clin:PhysiologicalProperty .
+
+    FILTER NOT EXISTS {
+      ?alarm1 dev:impliesCondition ?ic1 .
+      ?ic1 dev:aboutEntity ?ie ; dev:onAttribute ?ia ; dev:hasValue ?iv .
+    }
+  }
+}
+ORDER BY ?label1 ?label2

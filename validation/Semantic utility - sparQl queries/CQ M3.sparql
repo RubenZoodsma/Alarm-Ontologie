@@ -66,23 +66,31 @@ PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instanc
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?property ?propertyLabel
-       (COUNT(DISTINCT ?metric) AS ?metricCount)
-       (COUNT(DISTINCT ?alarm)  AS ?alarmCount)
+       (COUNT(DISTINCT ?metric)     AS ?metricCount)
+       (COUNT(DISTINCT ?alarm)      AS ?alarmCount)
        (GROUP_CONCAT(DISTINCT ?metricLabel ; separator=" | ") AS ?metrics)
        (GROUP_CONCAT(DISTINCT ?alarmLabel  ; separator=" | ") AS ?alarms)
 WHERE {
-
   ?property a clin:PhysiologicalProperty ;
             common:measuredByMetric ?metric .
 
   OPTIONAL { ?property rdfs:label ?propertyLabel }
-  OPTIONAL { ?metric dev:hasLabel ?metricLabel }
 
+  # Required join (not OPTIONAL): every Metric instance has dev:hasLabel.
+  # Keeping it required guarantees GROUP_CONCAT never sees an unbound value,
+  # which non-compliant engines coerce to "" and then DISTINCT collapses to
+  # a single spurious "".  If this returns no rows, 6_Metric.ttl is not
+  # loaded into the active query graph.
+  ?metric dev:hasLabel ?metricLabel .
+
+  # Alarm join is still optional — not every metric has an alarm referencing it.
+  # dev:alarmMessageLabel is asserted on every ACD instance, so ?alarmLabel is
+  # always bound when ?alarm is bound; unbound rows (no alarm for this metric)
+  # contribute nothing to either aggregation.
   OPTIONAL {
     ?alarm a dev:AlertConditionDescription ;
            dev:alarmMessageLabel ?alarmLabel ;
            dev:requiresCondition ?cond .
-
     ?cond dev:aboutEntity ?metric .
   }
 }

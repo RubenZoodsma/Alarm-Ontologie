@@ -23,7 +23,7 @@
 #   - hasMDCCode (xsd:string)          e.g. "MDC_PULS_OXIM_SAT_O2"
 #   - hasUnit (xsd:string)             e.g. "%"
 #   - hasLabel (xsd:string)            e.g. "SpO2"
-#   - hasState (xsd:string)            e.g. "Transmitting"
+#   - hasOperationalState (ObjectProperty)            e.g. "Transmitting"
 #
 # Object Properties:
 #   - generatedByProcess → MeasurementProcess

@@ -21,7 +21,7 @@
 #
 # Data Properties:
 #   - hasDescription (xsd:string)       e.g. "Gas Delivery Unit"
-#   - hasState (xsd:string)             e.g. "Active"
+#   - hasOperationalState (ObjectProperty)             e.g. "Active"
 #
 # Object Properties:
 #   - partOfDevice → PhysicalDevice

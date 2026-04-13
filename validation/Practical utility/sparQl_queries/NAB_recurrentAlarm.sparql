@@ -1,0 +1,22 @@
+PREFIX inst: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX dev:  <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+# NAB-2 — Rapid alarm recurrence suppression
+# Returns every alarm label that is eligible for recurrence suppression.
+# An alarm is eligible if it is a physiological alarm — technical alarms are
+# excluded because rapid technical re-triggering (e.g. lead-off recovered and
+# re-disconnected) carries distinct actionable information each time.
+#
+# Python rule: for each patient, for each eligible alarm type, an instance is
+# flagged if its alarm_start falls within `recurrence_window_sec` after the
+# alarm_eind of the immediately preceding instance of the same alarm type on
+# the same bed.  The first occurrence in any run is never flagged.
+
+SELECT DISTINCT ?alarmLabel
+WHERE {
+    ?acd a dev:AlertConditionDescription ;
+         dev:alarmMessageLabel ?alarmLabel ;
+         dev:alarmCategory inst:physiologicalAlarmGroup .
+}
+ORDER BY ?alarmLabel

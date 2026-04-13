@@ -24,7 +24,7 @@
 #   - hasModelName (xsd:string)         e.g. "IntelliVue MP70"
 #   - hasSerialNumber (xsd:string)      e.g. "SN-112358"
 #   - hasUDI (xsd:string)               e.g. "(01)00884838010004"
-#   - hasState (xsd:string)             e.g. "Enabled"
+#   - hasOperationalState (ObjectProperty)             e.g. "Enabled"
 #
 # Object Properties:
 #   - hasFunctionalUnit → FunctionalUnit

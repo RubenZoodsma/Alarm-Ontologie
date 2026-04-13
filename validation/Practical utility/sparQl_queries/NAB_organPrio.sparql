@@ -1,0 +1,66 @@
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+# NAB-1 — Organ-level priority dominance
+# Returns every (dominant alarm, subordinate alarm) pair that share the same organ,
+# where the dominant alarm's priority >= the subordinate alarm's priority.
+#
+# Path from ACD to organ:
+#   ACD → (requiresCondition|impliesCondition) → Condition
+#       → aboutEntity → Metric
+#       ← measuredByMetric ← PhysiologicalProperty
+#       → partOfProcess → PhysiologicalProcess
+#       → occursInOrgan → Organ
+#
+# Python rule: while the dominant alarm is active, any subordinate alarm that
+# starts concurrently (alarm_start within [dom.alarm_start … dom.alarm_eind]) is
+# flagged as providing no additional benefit.
+
+SELECT DISTINCT ?domLabel ?subLabel ?organLabel ?domRank ?subRank
+WHERE {
+    # --- priority rank assignment (high=3, medium=2, low=1) ---
+    VALUES (?domPrio ?domRank) {
+        (inst:highPriority   3)
+        (inst:mediumPriority 2)
+        (inst:lowPriority    1)
+    }
+    VALUES (?subPrio ?subRank) {
+        (inst:highPriority   3)
+        (inst:mediumPriority 2)
+        (inst:lowPriority    1)
+    }
+
+    # --- dominant alarm ---
+    ?domACD a dev:AlertConditionDescription ;
+            dev:alarmMessageLabel ?domLabel ;
+            dev:emittedPriorityLevel ?domPrio .
+
+    # Trace dominant alarm to its organ via condition → metric → property → process → organ
+    ?domACD (dev:requiresCondition|dev:impliesCondition) ?domCond .
+    ?domCond dev:aboutEntity ?domMetric .
+    ?domProp common:measuredByMetric ?domMetric ;
+             clin:partOfProcess ?domProc .
+    ?domProc clin:occursInOrgan ?organ .
+
+    # --- subordinate alarm (same organ, same or lower priority) ---
+    ?subACD a dev:AlertConditionDescription ;
+            dev:alarmMessageLabel ?subLabel ;
+            dev:emittedPriorityLevel ?subPrio .
+
+    ?subACD (dev:requiresCondition|dev:impliesCondition) ?subCond .
+    ?subCond dev:aboutEntity ?subMetric .
+    ?subProp common:measuredByMetric ?subMetric ;
+             clin:partOfProcess ?subProc .
+    ?subProc clin:occursInOrgan ?organ .
+
+    # Extract organ local name for display
+    BIND(STRAFTER(STR(?organ), "#") AS ?organLabel)
+
+    # Dominant must have >= priority rank; alarms must be distinct
+    FILTER(?domRank >= ?subRank)
+    FILTER(?domACD != ?subACD)
+}
+ORDER BY ?organLabel DESC(?domRank) ?domLabel ?subLabel

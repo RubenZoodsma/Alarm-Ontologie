@@ -22,7 +22,7 @@
 # Data Properties:
 #   - hasAlgorithm (xsd:string) e.g. "Fourier transform + calibration"
 #   - hasLatency (xsd:decimal) e.g. 0.2
-#   - hasState (xsd:string) e.g. "Enabled"
+#   - hasOperationalState (ObjectProperty) e.g. "Enabled"
 #
 # Object Properties:
 #   - takesSignal → Signal

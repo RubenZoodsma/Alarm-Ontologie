@@ -28,6 +28,70 @@
     rdfs:label "Alert Condition" ;
     rdfs:comment "Represents a logical condition about an entity's attribute and value in a triple-format." .
 
+# ── AlertCondition subtype hierarchy ─────────────────────────────────────────
+# Used for semantic, IRI-name-independent reasoning over alarm conditions.
+# Subtypes are asserted on instances in 3_Cond_MonitorAlarms.ttl.
+
+:SensorInvalidationCondition a owl:Class ;
+    rdfs:subClassOf :AlertCondition ;
+    rdfs:label "Sensor Invalidation Condition" ;
+    rdfs:comment "Superclass for conditions that indicate a sensor is unreliable or faulty, invalidating downstream metrics." .
+
+:SignalQualityCondition a owl:Class ;
+    rdfs:subClassOf :SensorInvalidationCondition ;
+    rdfs:label "Signal Quality Condition" ;
+    rdfs:comment "Condition that checks signal quality (hasQualityState). Subtype of SensorInvalidationCondition." .
+
+:SensorFaultCondition a owl:Class ;
+    rdfs:subClassOf :SensorInvalidationCondition ;
+    rdfs:label "Sensor Fault Condition" ;
+    rdfs:comment "Condition that indicates a sensor hardware fault or disconnection (malfunctioning). Subtype of SensorInvalidationCondition." .
+
+:SensorConnectivityCondition a owl:Class ;
+    rdfs:subClassOf :AlertCondition ;
+    rdfs:label "Sensor Connectivity Condition" ;
+    rdfs:comment "Condition that checks whether a sensor or interface is connected (hasOperationalState = Connected)." .
+
+:MetricAvailabilityCondition a owl:Class ;
+    rdfs:subClassOf :AlertCondition ;
+    rdfs:label "Metric Availability Condition" ;
+    rdfs:comment "Condition that checks whether a metric is available/being measured (hasOperationalState = MetricAvailable)." .
+
+:DeviceOperationalCondition a owl:Class ;
+    rdfs:subClassOf :AlertCondition ;
+    rdfs:label "Device Operational Condition" ;
+    rdfs:comment "Condition that checks whether a device, channel, or functional unit is in an operational state (e.g. Enabled, Active)." .
+
+:PhysiologicalValueCondition a owl:Class ;
+    rdfs:subClassOf :AlertCondition ;
+    rdfs:label "Physiological Value Condition" ;
+    rdfs:comment "Condition that checks a metric's value interpretation against a limit (hasValueInterpretation)." .
+
+:ObservationStateCondition a owl:Class ;
+    rdfs:subClassOf :AlertCondition ;
+    rdfs:label "Observation State Condition" ;
+    rdfs:comment "Condition that checks whether a clinical property is being observed (hasObservationState = Monitored)." .
+
+:MeasurementLocationCondition a owl:Class ;
+    rdfs:subClassOf :AlertCondition ;
+    rdfs:label "Measurement Location Condition" ;
+    rdfs:comment "Condition that checks the measurement site of a sensor (hasMeasurementSite)." .
+
+:PatientConnectivityCondition a owl:Class ;
+    rdfs:subClassOf :AlertCondition ;
+    rdfs:label "Patient Connectivity Condition" ;
+    rdfs:comment "Condition that checks whether a patient has a connected device or sensor (hasConnectedDevice / hasConnectedSensor)." .
+
+:PowerStateCondition a owl:Class ;
+    rdfs:subClassOf :AlertCondition ;
+    rdfs:label "Power State Condition" ;
+    rdfs:comment "Condition that checks the power state of a functional unit (hasPowerState)." .
+
+:TherapyStateCondition a owl:Class ;
+    rdfs:subClassOf :AlertCondition ;
+    rdfs:label "Therapy State Condition" ;
+    rdfs:comment "Condition that checks the active therapy or support mode (hasSupportMode)." .
+
 :AlertConditionDescription a owl:Class ;
     rdfs:subClassOf :AlertEntity ;
     rdfs:label "Alert Condition Description" ;
@@ -301,3 +365,11 @@
     rdfs:range :PhysicalDevice ;
     rdfs:label "part of device" ;
     rdfs:comment "Inverse-like relation to hasFunctionalUnit (kept explicit)." .
+
+:hasOperationalState a owl:ObjectProperty ;
+    rdfs:domain [ a owl:Class ;
+        owl:unionOf ( :PhysicalDevice :Sensor :Metric :Signal :MeasurementProcess :DeviceChannel :SensorInterface :FunctionalUnit )
+    ] ;
+    rdfs:range common:State ;
+    rdfs:label "has operational state" ;
+    rdfs:comment "Indicates the current operational status of a device-side entity (e.g. Connected, Active, Enabled, Disabled, Fault). Device-side counterpart to clin:hasFunctionalState. States are local and do not propagate through the device hierarchy." .
