@@ -835,7 +835,7 @@
     dev:emittedPriorityLevel :mediumPriority ;
     dev:alarmMessageLabel "PHILIPSMONITOR - ABP uit gedaan" ;
     dev:alarmCategory :technicalAlarmGroup ;
-    dev:originatesFromPhysicalEntity :PhilipsMonitor .
+    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition
         :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
