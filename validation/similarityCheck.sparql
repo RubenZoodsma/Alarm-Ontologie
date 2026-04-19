@@ -1,11 +1,22 @@
-# Check whether >1 alarms have IDENTICAL sets of:
-#  - dev:requiresCondition (technical / required)
-#  - dev:impliesCondition  (implied)
+# Detect groups of alarms with IDENTICAL condition sets.
 #
-# Equality is tested on the condition “pattern”:
-#   (dev:aboutEntity, dev:onAttribute, dev:hasValue)
+# Each alarm is assigned a canonical representative = the lexicographically
+# minimum equivalent alarm IRI. Alarms sharing the same canonical form one group.
 #
-# Result: all alarm PAIRS that are fully identical on both sets.
+# Conditions matched by IRI identity (e.g. :Cond_PhilipsMonitor_FunctionalState_Enabled),
+# not by (aboutEntity, onAttribute, hasValue) triples.
+#
+# Notes:
+#   - STR(?alarm1) < STR(?alarm2) is required: plain < on IRIs is undefined in SPARQL
+#     and silently returns false in both ARQ (Protege) and RDFLib.
+#   - Alarms with no conditions (## TODO placeholders) are excluded via FILTER EXISTS.
+#   - STRAFTER() is NOT used: Protege runs Sesame 2.7 which does not support it.
+#     Full IRIs are used instead (local name visible after the # fragment).
+#
+# Results: one row per duplicate group, ordered by group size (largest first).
+#   ?groupSize  - number of alarms in the group
+#   ?alarmIDs   - full IRIs of all alarms in the group (local name after #)
+#   ?alarmLabels - alarm message labels for the group
 
 PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
 PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
@@ -13,62 +24,38 @@ PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinica
 PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?alarm1 ?label1 ?alarm2 ?label2
+SELECT ?canonical
+       (COUNT(DISTINCT ?member) AS ?groupSize)
+       (GROUP_CONCAT(DISTINCT STR(?member) ; separator=" | ") AS ?alarmIDs)
+       (GROUP_CONCAT(DISTINCT ?label ; separator=" | ") AS ?alarmLabels)
 WHERE {
-  ?alarm1 a dev:AlertConditionDescription ; dev:alarmMessageLabel ?label1 .
-  ?alarm2 a dev:AlertConditionDescription ; dev:alarmMessageLabel ?label2 .
-  FILTER(?alarm1 < ?alarm2)
+  # ----------------------------
+  # Subquery: assign each alarm its canonical representative
+  # (the lexicographically minimum equivalent alarm, by IRI string)
+  # ----------------------------
+  {
+    SELECT ?member (MIN(STR(?equiv)) AS ?canonical)
+    WHERE {
+      ?member a dev:AlertConditionDescription .
+      ?equiv  a dev:AlertConditionDescription .
 
-  # ----------------------------
-  # Required conditions: alarm1 ⊆ alarm2
-  # ----------------------------
-  FILTER NOT EXISTS {
-    ?alarm1 dev:requiresCondition ?rc1 .
-    ?rc1 dev:aboutEntity ?re ; dev:onAttribute ?ra ; dev:hasValue ?rv .
-    FILTER NOT EXISTS {
-      ?alarm2 dev:requiresCondition ?rc2 .
-      ?rc2 dev:aboutEntity ?re ; dev:onAttribute ?ra ; dev:hasValue ?rv .
+      # Exclude TODO placeholders (no conditions at all)
+      FILTER EXISTS { { ?member dev:requiresCondition ?x } UNION { ?member dev:impliesCondition ?x } }
+      FILTER EXISTS { { ?equiv  dev:requiresCondition ?x } UNION { ?equiv  dev:impliesCondition ?x } }
+
+      # Required conditions: member = equiv  (bidirectional subset)
+      FILTER NOT EXISTS { ?member dev:requiresCondition ?rc . FILTER NOT EXISTS { ?equiv  dev:requiresCondition ?rc . } }
+      FILTER NOT EXISTS { ?equiv  dev:requiresCondition ?rc . FILTER NOT EXISTS { ?member dev:requiresCondition ?rc . } }
+
+      # Implied conditions: member = equiv  (bidirectional subset)
+      FILTER NOT EXISTS { ?member dev:impliesCondition ?ic .  FILTER NOT EXISTS { ?equiv  dev:impliesCondition ?ic . } }
+      FILTER NOT EXISTS { ?equiv  dev:impliesCondition ?ic .  FILTER NOT EXISTS { ?member dev:impliesCondition ?ic . } }
     }
+    GROUP BY ?member
   }
 
-  # Required conditions: alarm2 ⊆ alarm1
-  FILTER NOT EXISTS {
-    ?alarm2 dev:requiresCondition ?rc2 .
-    ?rc2 dev:aboutEntity ?re ; dev:onAttribute ?ra ; dev:hasValue ?rv .
-    FILTER NOT EXISTS {
-      ?alarm1 dev:requiresCondition ?rc1 .
-      ?rc1 dev:aboutEntity ?re ; dev:onAttribute ?ra ; dev:hasValue ?rv .
-    }
-  }
-
-  # ----------------------------
-  # Implied conditions: alarm1 ⊆ alarm2
-  # ----------------------------
-  FILTER NOT EXISTS {
-    ?alarm1 dev:impliesCondition ?ic1 .
-    ?ic1 dev:aboutEntity ?ie ; dev:onAttribute ?ia ; dev:hasValue ?iv .
-
-    # OPTIONAL: uncomment to restrict implied conditions to clinical assertions only
-    # ?ie a clin:PhysiologicalProperty .
-
-    FILTER NOT EXISTS {
-      ?alarm2 dev:impliesCondition ?ic2 .
-      ?ic2 dev:aboutEntity ?ie ; dev:onAttribute ?ia ; dev:hasValue ?iv .
-    }
-  }
-
-  # Implied conditions: alarm2 ⊆ alarm1
-  FILTER NOT EXISTS {
-    ?alarm2 dev:impliesCondition ?ic2 .
-    ?ic2 dev:aboutEntity ?ie ; dev:onAttribute ?ia ; dev:hasValue ?iv .
-
-    # OPTIONAL: uncomment to restrict implied conditions to clinical assertions only
-    # ?ie a clin:PhysiologicalProperty .
-
-    FILTER NOT EXISTS {
-      ?alarm1 dev:impliesCondition ?ic1 .
-      ?ic1 dev:aboutEntity ?ie ; dev:onAttribute ?ia ; dev:hasValue ?iv .
-    }
-  }
+  ?member dev:alarmMessageLabel ?label .
 }
-ORDER BY ?label1 ?label2
+GROUP BY ?canonical
+HAVING (COUNT(DISTINCT ?member) > 1)
+ORDER BY DESC(?groupSize) ?canonical

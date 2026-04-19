@@ -47,18 +47,21 @@
 # - Skin
 
 :Lungs a clin:Organ ;
+    rdfs:label "Lungs" ;
     clin:hasSNOMEDCode "UNKNOWN" ;
     clin:hasFunctionalState "UNKNOWN" ;
     clin:partOfSystem :Pulmonary_System ;
     clin:hasPhysiologicalProcess :Pulmonary_Oxygenation_Process, :Pulmonary_Ventilation_Process, :Pulmonary_Perfusion_Process .
 
 :Heart a clin:Organ ;
+    rdfs:label "Heart" ;
     clin:hasSNOMEDCode "UNKNOWN" ;
     clin:hasFunctionalState "UNKNOWN" ;
     clin:partOfSystem :Cardiovascular_System ;
     clin:hasPhysiologicalProcess :Pulmonary_Perfusion_Process, :Systemic_Perfusion_Process, :Cutaneous_Perfusion_Process .
 
 :Skin a clin:Organ ;
+    rdfs:label "Skin" ;
     clin:hasSNOMEDCode "UNKNOWN" ;
     clin:hasFunctionalState "UNKNOWN" ;
     clin:partOfSystem :Integumentary_System ;

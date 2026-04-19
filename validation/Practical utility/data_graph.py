@@ -6,11 +6,19 @@ organised in three categories:
 
   1. Reduction of likely false positives          (FP-1, FP-2)
   2. Reduction of alarms with no additional benefit (NAB-1, NAB-2)
-  3. Clinical recalculation of emitted priority    (PR-1, PR-2)
+  3. Clinical recalculation of emitted priority    (PR-RA, PR-2)
 
 For each implemented rule the ontology is queried via SPARQL to derive a
 semantic mapping; that mapping is then applied to the alarm log using temporal
 and attribute-based criteria.  A summary table is printed at the end.
+
+Rules implemented:
+  FP-1  Signal-quality sensor masking
+  FP-2  Sensor-malfunction invalidation
+  NAB-1 Organ-level priority dominance
+  NAB-2 Rapid alarm recurrence suppression
+  PR-RA Respiratory arrest sequence escalation (A→B→C within 1-hour windows)
+  PR-CF Cardiac failure co-occurrence (low HR + low ABP within 1-hour window)
 """
 
 from dataclasses import dataclass, field
@@ -40,7 +48,7 @@ ONTOLOGY_FILES = [
     REPO_ROOT / "ontology_instances" / "alarm_instances" / "2_ACS_MonitorAlarms.ttl",
     REPO_ROOT / "ontology_instances" / "alarm_instances" / "3_Cond_MonitorAlarms.ttl",
 ]
-CSV_PATH = REPO_ROOT / "20260311_dataSample.csv"
+CSV_PATH = REPO_ROOT / "Methodology" / "V2" / "DataSample250Pt.csv"
 
 # ─── Namespaces ───────────────────────────────────────────────────────────────
 
@@ -259,76 +267,248 @@ def _apply_nab2_rapid_recurrence(
     return mask
 
 
+def _apply_pra_respiratory_arrest(
+        df: pd.DataFrame, g: Graph, sparql_path: Path, params: dict
+) -> pd.Series:
+    """
+    PR-RA — Priority recalculation: Respiratory arrest sequence
+    Detects the deterioration cascade A → B → C per patient:
+      A: Alveolar hypoventilation (low EtCO2 / CO2 diffusion alarm)
+      B: Arterial desaturation    (low SpO2)
+      C: Bradycardia              (heart rate below threshold)
+
+    For each C occurrence, we look backwards within `window_sec` for a B onset,
+    and further backwards within another `window_sec` for an A onset that
+    preceded B.  When the full A→B→C chain is found, the C alarm row
+    (and optionally B) is flagged for priority escalation.
+
+    Only the most recent A before B and B before C are used to avoid
+    double-counting; the chain must be strictly ordered in time:
+      A.alarm_start  <  B.alarm_start  <  C.alarm_start
+    with each successive gap ≤ window_sec.
+    """
+    window_sec = params.get("window_sec", 3600)  ## default 1 hour
+    window     = pd.Timedelta(seconds=window_sec)
+
+    query_text   = sparql_path.read_text(encoding="utf-8")
+    triplet_rows = list(g.query(query_text))
+
+    a_labels: set[str] = {str(r.aLabel).strip() for r in triplet_rows}
+    b_labels: set[str] = {str(r.bLabel).strip() for r in triplet_rows}
+    c_labels: set[str] = {str(r.cLabel).strip() for r in triplet_rows}
+
+    # Supplemental labels not captured by SPARQL (technical CO2 alarms,
+    # asystole) that are clinically valid A / C chain members.
+    a_labels |= params.get("extra_a_labels", set())
+    c_labels |= params.get("extra_c_labels", set())
+
+    if not (a_labels and b_labels and c_labels):
+        print("  No alarm types returned by SPARQL for PR-RA — check ontology.")
+        return pd.Series(False, index=df.index)
+
+    print(f"  A-alarms (hypoventilation) : {sorted(a_labels)}")
+    print(f"  B-alarms (desaturation)    : {sorted(b_labels)}")
+    print(f"  C-alarms (bradycardia)     : {sorted(c_labels)}")
+
+    mask = pd.Series(False, index=df.index)
+
+    for _, group in df.groupby("patientID"):
+        # group is already sorted by alarm_start
+        a_rows = group[group["conditie"].isin(a_labels)]
+        b_rows = group[group["conditie"].isin(b_labels)]
+        c_rows = group[group["conditie"].isin(c_labels)]
+
+        for c_idx, c_row in c_rows.iterrows():
+            # Find most recent B that started before C and within the window
+            preceding_b = b_rows[
+                (b_rows["alarm_start"] < c_row["alarm_start"]) &
+                (b_rows["alarm_start"] >= c_row["alarm_start"] - window)
+            ]
+            if preceding_b.empty:
+                continue
+            b_row = preceding_b.iloc[-1]  # most recent B before C
+
+            # Find most recent A that started before B and within the window
+            preceding_a = a_rows[
+                (a_rows["alarm_start"] < b_row["alarm_start"]) &
+                (a_rows["alarm_start"] >= b_row["alarm_start"] - window)
+            ]
+            if preceding_a.empty:
+                continue
+
+            # Full chain confirmed — flag the C alarm
+            mask.loc[c_idx] = True
+
+    return mask
+
+
+def _apply_prcf_cardiac_failure(
+        df: pd.DataFrame, g: Graph, sparql_path: Path, params: dict
+) -> pd.Series:
+    """
+    PR-CF — Priority recalculation: Cardiac failure co-occurrence
+    Detects concurrent physiological compromise per patient:
+      A: Low heart rate or asystole  (Cardiac_Rate_Process)
+      B: Low blood pressure          (Arterial_Perfusion_Process, any ABP metric)
+
+    For each B occurrence, any A alarm that starts within `window_sec` of B
+    (before or after) constitutes a co-occurrence.  Both the A and B rows
+    are flagged for priority escalation.
+
+    The window is symmetric: |A.alarm_start − B.alarm_start| ≤ window_sec.
+    This reflects that either condition may present first in cardiogenic shock.
+    """
+    window_sec = params.get("window_sec", 3600)
+    window     = pd.Timedelta(seconds=window_sec)
+
+    query_text = sparql_path.read_text(encoding="utf-8")
+    pair_rows  = list(g.query(query_text))
+
+    a_labels: set[str] = {str(r.aLabel).strip() for r in pair_rows}
+    b_labels: set[str] = {str(r.bLabel).strip() for r in pair_rows}
+
+    if not (a_labels and b_labels):
+        print("  No alarm types returned by SPARQL for PR-CF — check ontology.")
+        return pd.Series(False, index=df.index)
+
+    print(f"  A-alarms (low heart rate) : {sorted(a_labels)}")
+    print(f"  B-alarms (low ABP)        : {sorted(b_labels)}")
+
+    mask = pd.Series(False, index=df.index)
+
+    for _, group in df.groupby("patientID"):
+        a_rows = group[group["conditie"].isin(a_labels)]
+        b_rows = group[group["conditie"].isin(b_labels)]
+
+        if a_rows.empty or b_rows.empty:
+            continue
+
+        for b_idx, b_row in b_rows.iterrows():
+            # Find any A alarm within the symmetric window around B
+            co_a = a_rows[
+                (a_rows["alarm_start"] >= b_row["alarm_start"] - window) &
+                (a_rows["alarm_start"] <= b_row["alarm_start"] + window)
+            ]
+            if co_a.empty:
+                continue
+            # Flag the B row and all co-occurring A rows
+            mask.loc[b_idx] = True
+            mask.loc[co_a.index] = True
+
+    return mask
+
+
 # ─── 4. Rule registry ─────────────────────────────────────────────────────────
 
 @dataclass
 class Rule:
-    category:    str
-    id:          str
-    name:        str
-    sparql_file: str
-    flag_col:    str
-    apply_fn:    Optional[Callable] = None
-    params:      dict = field(default_factory=dict)
+    category:     str
+    id:           str
+    name:         str
+    sparql_file:  str
+    flag_col:     str
+    apply_fn:     Optional[Callable] = None
+    params:       dict = field(default_factory=dict)
+    activeStatus: str = "ENABLED"   # "ENABLED" | "DISABLED"
 
 
 RULES: list[Rule] = [
     # ── False Positives ───────────────────────────────────────────────────────
     Rule(
-        category    = "False Positives",
-        id          = "FP-1",
-        name        = "Signal-quality sensor masking",
-        sparql_file = "falsePositives_sensorQual.sparql",
-        flag_col    = "flag_fp1",
-        apply_fn    = _apply_fp1_sensor_quality,
-        params      = {"grace_sec": 30, "max_phys_sec": 10},
+        category     = "False Positives",
+        id           = "FP-1",
+        name         = "Signal-quality sensor masking",
+        sparql_file  = "falsePositives_sensorQual.sparql",
+        flag_col     = "flag_fp1",
+        apply_fn     = _apply_fp1_sensor_quality,
+        params       = {"grace_sec": 30, "max_phys_sec": 10},
+        activeStatus = "ENABLED",
     ),
     Rule(
-        category    = "False Positives",
-        id          = "FP-2",
-        name        = "Sensor-malfunction invalidation",
-        sparql_file = "falsePositives_sensorMalf.sparql",
-        flag_col    = "flag_fp2",
-        apply_fn    = _apply_fp2_sensor_malfunction,
-        params      = {"grace_sec": 30},
+        category     = "False Positives",
+        id           = "FP-2",
+        name         = "Sensor-malfunction invalidation",
+        sparql_file  = "falsePositives_sensorMalf.sparql",
+        flag_col     = "flag_fp2",
+        apply_fn     = _apply_fp2_sensor_malfunction,
+        params       = {"grace_sec": 30},
+        activeStatus = "ENABLED",
     ),
 
     # ── No Additional Benefit ─────────────────────────────────────────────────
     Rule(
-        category    = "No Additional Benefit",
-        id          = "NAB-1",
-        name        = "Organ-level priority dominance",
-        sparql_file = "NAB_organPrio.sparql",
-        flag_col    = "flag_nab1",
-        apply_fn    = _apply_nab1_organ_priority,
-        params      = {},
+        category     = "No Additional Benefit",
+        id           = "NAB-1",
+        name         = "Organ-level priority dominance",
+        sparql_file  = "NAB_organPrio.sparql",
+        flag_col     = "flag_nab1",
+        apply_fn     = _apply_nab1_organ_priority,
+        params       = {},
+        activeStatus = "ENABLED",
     ),
     Rule(
-        category    = "No Additional Benefit",
-        id          = "NAB-2",
-        name        = "Rapid alarm recurrence suppression",
-        sparql_file = "NAB_recurrentAlarm.sparql",
-        flag_col    = "flag_nab2",
-        apply_fn    = _apply_nab2_rapid_recurrence,
-        params      = {"recurrence_window_sec": 10},
+        category     = "No Additional Benefit",
+        id           = "NAB-2",
+        name         = "Rapid alarm recurrence suppression",
+        sparql_file  = "NAB_recurrentAlarm.sparql",
+        flag_col     = "flag_nab2",
+        apply_fn     = _apply_nab2_rapid_recurrence,
+        params       = {"recurrence_window_sec": 10},
+        activeStatus = "ENABLED",
     ),
 
     # ── Priority Recalculation ────────────────────────────────────────────────
     Rule(
-        category    = "Priority Recalculation",
-        id          = "PR-1",
-        name        = "[Placeholder] — to be defined",
-        sparql_file = "priorityRecalculation_placeholder1.sparql",
-        flag_col    = "flag_pr1",
+        category     = "Priority Recalculation",
+        id           = "PR-RA",
+        name         = "Respiratory arrest sequence escalation",
+        sparql_file  = "PrioRecalc_RespiratoryArrest.sparql",
+        flag_col     = "flag_pra",
+        apply_fn     = _apply_pra_respiratory_arrest,
+        params       = {
+            "window_sec": 3600,
+            ## Supplemental A-alarms: CO2 technical disruption alarms that
+            ## signal loss of CO2 monitoring and precede a deterioration chain.
+            "extra_a_labels": {
+                "PHILIPSMONITOR - CO2 auto nulling",
+                "PHILIPSMONITOR - CO2 wast uit",
+                "PHILIPSMONITOR - CO2 wzig schaal l",
+            },
+            ## Supplemental C-alarms: asystole is a more severe C-endpoint
+            ## alongside bradycardia.
+            "extra_c_labels": {
+                "PHILIPSMONITOR - Asystolie",
+            },
+        },
+        activeStatus = "ENABLED",
     ),
     Rule(
-        category    = "Priority Recalculation",
-        id          = "PR-2",
-        name        = "[Placeholder] — to be defined",
-        sparql_file = "priorityRecalculation_placeholder2.sparql",
-        flag_col    = "flag_pr2",
+        category     = "Priority Recalculation",
+        id           = "PR-CF",
+        name         = "Cardiac failure co-occurrence escalation",
+        sparql_file  = "PrioRecalc_CardiacFailure.sparql",
+        flag_col     = "flag_prcf",
+        apply_fn     = _apply_prcf_cardiac_failure,
+        params       = {
+            "window_sec": 3600,
+        },
+        activeStatus = "ENABLED",
     ),
 ]
+
+# ─── Quick-toggle overview ────────────────────────────────────────────────────
+# Change "ENABLED" / "DISABLED" here; the values are written back into RULES
+# so there is no need to scroll through the full registry above.
+_ACTIVE_STATUS: dict[str, str] = {
+    "FP-1":  "DISABLED",   # Signal-quality sensor masking
+    "FP-2":  "DISABLED",   # Sensor-malfunction invalidation
+    "NAB-1": "DISABLED",   # Organ-level priority dominance
+    "NAB-2": "DISABLED",   # Rapid alarm recurrence suppression
+    "PR-RA": "DISABLED",    # Respiratory arrest sequence escalation
+    "PR-CF": "ENABLED",    # Cardiac failure co-occurrence escalation
+}
+for _rule in RULES:
+    _rule.activeStatus = _ACTIVE_STATUS[_rule.id]
 
 # ─── 5. Apply all rules ───────────────────────────────────────────────────────
 
@@ -339,6 +519,24 @@ for rule in RULES:
     implemented = rule.apply_fn is not None and sparql_path.exists()
 
     print(f"[{rule.id}] {rule.name}")
+
+    if rule.activeStatus == "DISABLED":
+        print(f"  Skipped — DISABLED\n")
+        df[rule.flag_col] = False
+        summary_rows.append({
+            "Category":   rule.category,
+            "ID":         rule.id,
+            "Rule":       rule.name,
+            "Status":     "disabled",
+            "Flagged n":  "—",
+            "Flagged %":  "—",
+            "Patients":   "—",
+            "Beds":       "—",
+            "Alarm types":"—",
+            "Top alarm":  "—",
+        })
+        continue
+
     if not implemented:
         reason = "apply function not yet implemented" if rule.apply_fn is None else f"SPARQL file not found ({rule.sparql_file})"
         print(f"  Skipped — {reason}\n")

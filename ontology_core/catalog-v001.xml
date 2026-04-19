@@ -10,5 +10,30 @@
     <uri id="Relative Clinical Import" name="./alarmOnto_clinical.ttl" uri="alarmOnto_clinical.ttl"/>
     <uri id="Relative Device Import" name="./alarmOnto_device.ttl" uri="alarmOnto_device.ttl"/>
     <uri id="Relative CoreFile Import" name="./alarmOnto_coreFile.ttl" uri="alarmOnto_coreFile.ttl"/>
+
+    <!-- Alarm instance files - redirect GitHub raw URLs to local copies -->
+    <uri id="ACD Monitor Alarms Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/alarm_instances/1_ACD_MonitorAlarms.ttl" uri="../ontology_instances/alarm_instances/1_ACD_MonitorAlarms.ttl"/>
+    <uri id="ACS Monitor Alarms Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/alarm_instances/2_ACS_MonitorAlarms.ttl" uri="../ontology_instances/alarm_instances/2_ACS_MonitorAlarms.ttl"/>
+    <uri id="Cond Monitor Alarms Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/alarm_instances/3_Cond_MonitorAlarms.ttl" uri="../ontology_instances/alarm_instances/3_Cond_MonitorAlarms.ttl"/>
+
+    <!-- Clinical instance files - redirect GitHub raw URLs to local copies -->
+    <uri id="Patient Instances Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/clinical_instances/1_patient.ttl" uri="../ontology_instances/clinical_instances/1_patient.ttl"/>
+    <uri id="Physiological System Instances Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/clinical_instances/2_physiologicalSystem.ttl" uri="../ontology_instances/clinical_instances/2_physiologicalSystem.ttl"/>
+    <uri id="Organ Instances Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/clinical_instances/3_organ.ttl" uri="../ontology_instances/clinical_instances/3_organ.ttl"/>
+    <uri id="Physiological Process Instances Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/clinical_instances/4_physiologicalProcess.ttl" uri="../ontology_instances/clinical_instances/4_physiologicalProcess.ttl"/>
+    <uri id="Physiological Property Instances Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/clinical_instances/5_physiologicalProperty.ttl" uri="../ontology_instances/clinical_instances/5_physiologicalProperty.ttl"/>
+    <uri id="Therapeutic Modalities Instances Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/clinical_instances/6_TherapeuticModalities.ttl" uri="../ontology_instances/clinical_instances/6_TherapeuticModalities.ttl"/>
+
+    <!-- Device instance files - redirect GitHub raw URLs to local copies -->
+    <uri id="Physical Device Instances Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/device_instances/1_physicalDevice.ttl" uri="../ontology_instances/device_instances/1_physicalDevice.ttl"/>
+    <uri id="Sensor Interface Instances Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/device_instances/2_sensorInterface.ttl" uri="../ontology_instances/device_instances/2_sensorInterface.ttl"/>
+    <uri id="Sensor Instances Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/device_instances/3_sensor.ttl" uri="../ontology_instances/device_instances/3_sensor.ttl"/>
+    <uri id="Functional Unit Instances Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/device_instances/4_functionalUnit.ttl" uri="../ontology_instances/device_instances/4_functionalUnit.ttl"/>
+    <uri id="Device Channel Instances Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/device_instances/5_deviceChannel.ttl" uri="../ontology_instances/device_instances/5_deviceChannel.ttl"/>
+    <uri id="Metric Instances Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/device_instances/6_Metric.ttl" uri="../ontology_instances/device_instances/6_Metric.ttl"/>
+    <uri id="Measurement Process Instances Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/device_instances/7_measurementProcess.ttl" uri="../ontology_instances/device_instances/7_measurementProcess.ttl"/>
+    <uri id="Signal Instances Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/device_instances/8_signal.ttl" uri="../ontology_instances/device_instances/8_signal.ttl"/>
+    <uri id="Measurement Site Instances Import" name="https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_instances/device_instances/9_measurementSite.ttl" uri="../ontology_instances/device_instances/9_measurementSite.ttl"/>
+
     <group id="Folder Repository, directory=, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base=""/>
 </catalog>

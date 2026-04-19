@@ -774,3 +774,14 @@
     dev:aboutEntity :PulseRate_Metric ;
     dev:onAttribute dev:hasValueInterpretation ;
     dev:hasValue common:LowLimitViolation .
+
+# ── Electric heart rate absent / asystole (Alarm 33) ──────────────────
+# Was a dangling reference in 1_ACD_MonitorAlarms.ttl — defined here so the
+# metric→property→process chain can be traversed generically by SPARQL.
+:Cond_ElectricHeartRateMetric_ValueInterpretation_absentRateInterpretation
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Electric Heart Rate Absent (Asystole)" ;
+    rdfs:comment "Condition: ECG-derived heart rate is absent, indicating asystole" ;
+    dev:aboutEntity :ElectricHeartRate_Metric ;
+    dev:onAttribute dev:hasValueInterpretation ;
+    dev:hasValue common:AsystoleInterpretation .

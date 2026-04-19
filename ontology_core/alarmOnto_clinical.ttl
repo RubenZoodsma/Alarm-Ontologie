@@ -83,11 +83,26 @@
     rdfs:range :PhysiologicalProcess ;
     rdfs:label "has physiological process" .
 
+:partOfProcess a owl:ObjectProperty ;
+    rdfs:domain :PhysiologicalProperty ;
+    rdfs:range :PhysiologicalProcess ;
+    rdfs:label "part of process" ;
+    rdfs:comment "Links a PhysiologicalProperty to the PhysiologicalProcess it belongs to. Used as entry point for upward propagation of hasObservationState via property chain axioms." .
+
 :hasObservationState a owl:ObjectProperty ;
     rdfs:domain :ClinicalEntity ;
     rdfs:range common:State ;
     rdfs:label "has observation state" ;
-    rdfs:comment "Indicates whether a clinical entity (property, process, organ, system) is being actively monitored. Observation states (e.g. Monitored, NotMonitored) propagate upward through the clinical taxonomy via property chain axioms — if a process is monitored, the containing organ is also monitored." .
+    rdfs:comment "Indicates whether a clinical entity (property, process, organ, system) is being actively monitored. Observation states (e.g. Monitored, NotMonitored) propagate upward through the clinical taxonomy via property chain axioms — if a process is monitored, the containing organ is also monitored." ;
+    ## Chain 1: Property → Process
+    ## If a PhysiologicalProperty has observationState X, the process it belongs to also has X.
+    owl:propertyChainAxiom ( [ owl:inverseOf :partOfProcess ] :hasObservationState ) ;
+    ## Chain 2: Process → Organ
+    ## If a PhysiologicalProcess has observationState X, the organ hosting it also has X.
+    owl:propertyChainAxiom ( :hasPhysiologicalProcess :hasObservationState ) ;
+    ## Chain 3: Organ → System
+    ## If an Organ has observationState X, the system it belongs to also has X.
+    owl:propertyChainAxiom ( :hasOrgan :hasObservationState ) .
 
 :hasFunctionalState a owl:ObjectProperty ;
     rdfs:domain common:Entity ;

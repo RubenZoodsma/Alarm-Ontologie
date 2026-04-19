@@ -1,0 +1,101 @@
+# ============================================================
+# PR-RA — Priority Recalculation: Respiratory Arrest Sequence
+# ============================================================
+# Detects the physiological deterioration cascade:
+#
+#   A) Alveolar hypoventilation  (low CO2 exhaled / low EtCO2)
+#      → breathing effort is absent or severely reduced
+#   B) Arterial desaturation     (SpO2 low)
+#      → oxygen reserves are depleted
+#   C) Bradycardia               (heart rate below threshold)
+#      → cardiac compensation has failed
+#
+# This sequence is a recognised precursor of respiratory/cardiopulmonary
+# arrest. The combination warrants escalation of the emitted priority of
+# the downstream alarms (B, C) when the preceding event in the chain is
+# concurrently active.
+#
+# ─── Matching Strategy (generic) ─────────────────────────────────────
+# Alarm types are NOT matched by individual ACD IRI (e.g. inst:ACD_Alarm_14).
+# Instead each alarm is classified by tracing:
+#
+#   ACD → requiresCondition → PhysiologicalValueCondition
+#       → aboutEntity (metric)
+#       ← measuredByMetric ← PhysiologicalProperty
+#       → partOfProcess → PhysiologicalProcess
+#
+# The discriminating (process, value) pairs are:
+#   A: partOfProcess = inst:Pulmonary_Diffusion_Process
+#      hasValue      = common:LowLimitViolation
+#   B: partOfProcess = inst:Pulmonary_Oxygenation_Process
+#      hasValue      = common:LowLimitViolation
+#   C: partOfProcess = inst:Cardiac_Contraction_Process
+#      hasValue      = common:BradycardiaInterpretation
+#
+# Any new alarm added to the ontology that links to these processes
+# via the metric bridge is automatically included — no query edits needed.
+#
+# ─── Output ───────────────────────────────────────────────────────────
+# Returns all valid (?aLabel, ?bLabel, ?cLabel) triplets.
+# Python detects per-patient temporal sequences A → B → C within a
+# configurable time window (e.g. 120 s between each step).
+# ============================================================
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?aLabel ?bLabel ?cLabel
+WHERE {
+
+  # ── A: Alveolar hypoventilation ────────────────────────────────────
+  # Any alarm requiring LowLimitViolation on a metric that measures a
+  # property in the Pulmonary Diffusion process
+  # (covers: EtCO2, imCO2, and any future CO2-diffusion metric)
+  ?alarmA a dev:AlertConditionDescription ;
+          dev:alarmMessageLabel ?aLabel ;
+          dev:requiresCondition ?condA .
+
+  ?condA a dev:PhysiologicalValueCondition ;
+         dev:aboutEntity ?metricA ;
+         dev:hasValue common:LowLimitViolation .
+
+  ?propA common:measuredByMetric ?metricA ;
+         clin:partOfProcess inst:Pulmonary_Diffusion_Process .
+
+  # ── B: Arterial desaturation ───────────────────────────────────────
+  # Any alarm requiring LowLimitViolation on a metric that measures a
+  # property in the Pulmonary Oxygenation process
+  # (covers: SpO2, and any future saturation metric)
+  ?alarmB a dev:AlertConditionDescription ;
+          dev:alarmMessageLabel ?bLabel ;
+          dev:requiresCondition ?condB .
+
+  ?condB a dev:PhysiologicalValueCondition ;
+         dev:aboutEntity ?metricB ;
+         dev:hasValue common:LowLimitViolation .
+
+  ?propB common:measuredByMetric ?metricB ;
+         clin:partOfProcess inst:Pulmonary_Oxygenation_Process .
+
+  # ── C: Bradycardia ─────────────────────────────────────────────────
+  # Any alarm requiring BradycardiaInterpretation on a metric that
+  # measures a property in the Cardiac Contraction process
+  # (covers: PulseRate, and any future cardiac-rate metric)
+  ?alarmC a dev:AlertConditionDescription ;
+          dev:alarmMessageLabel ?cLabel ;
+          dev:requiresCondition ?condC .
+
+  ?condC a dev:PhysiologicalValueCondition ;
+         dev:aboutEntity ?metricC ;
+         dev:hasValue common:BradycardiaInterpretation .
+
+  ?propC common:measuredByMetric ?metricC ;
+         clin:partOfProcess inst:Cardiac_Contraction_Process .
+
+  # Each role must be carried by a distinct alarm type
+  FILTER(?aLabel != ?bLabel && ?bLabel != ?cLabel && ?aLabel != ?cLabel)
+}
+ORDER BY ?aLabel ?bLabel ?cLabel

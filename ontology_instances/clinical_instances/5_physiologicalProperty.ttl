@@ -49,6 +49,7 @@
 # - Peripheral cardiac pulse (PPG)
 
 :Arterial_Oxygenation_Property a clin:PhysiologicalProperty ;
+    rdfs:label "Arterial Oxygenation" ;
     clin:hasUnit "%" ;
     clin:hasSNOMEDCode "103228002" ;
     common:hasStateInstance common:Unknown ;
@@ -56,6 +57,7 @@
     common:measuredByMetric :SpO2_Metric .
 
 :Cardiac_Electrical_Depolarization_Property a clin:PhysiologicalProperty ;
+    rdfs:label "Cardiac Electrical Depolarization" ;
     clin:hasUnit "mV" ;
     clin:hasSNOMEDCode "364075005" ;
     common:hasStateInstance common:Unknown ;
@@ -63,6 +65,7 @@
     common:measuredByMetric :ST_II_Metric, :ST_V_Metric .
 
 :Body_Temperature_Property a clin:PhysiologicalProperty ;
+    rdfs:label "Body Temperature" ;
     rdfs:subClassOf clin:PhysiologicalProperty ;
     clin:hasUnit "°C" ;
     common:hasStateInstance common:Unknown ;
@@ -70,6 +73,7 @@
     common:measuredByMetric :Skin_Temp_Metric, :Core_Temp_Metric .
 
 :Temperature_Skin_Property a clin:PhysiologicalProperty ;
+    rdfs:label "Skin Temperature" ;
     rdfs:subClassOf :Body_Temperature_Property ;
     clin:hasUnit "°C" ;
     clin:hasSNOMEDCode "386725007" ;
@@ -78,6 +82,7 @@
     common:measuredByMetric :Skin_Temp_Metric .
 
 :Temperature_Core_Property a clin:PhysiologicalProperty ;
+    rdfs:label "Core Temperature" ;
     rdfs:subClassOf :Body_Temperature_Property ;
     clin:hasUnit "°C" ;
     clin:hasSNOMEDCode "386724002" ;
@@ -86,6 +91,7 @@
     common:measuredByMetric :Core_Temp_Metric .
 
 :ABP_Systolic_Property a clin:PhysiologicalProperty ;
+    rdfs:label "ABP Systolic" ;
     clin:hasUnit "mmHg" ;
     clin:hasSNOMEDCode "271649006" ;
     common:hasStateInstance common:Unknown ;
@@ -93,6 +99,7 @@
     common:measuredByMetric :ABP_Systolic_Metric .
 
 :ABP_Diastolic_Property a clin:PhysiologicalProperty ;
+    rdfs:label "ABP Diastolic" ;
     clin:hasUnit "mmHg" ;
     clin:hasSNOMEDCode "271650006" ;
     common:hasStateInstance common:Unknown ;
@@ -100,6 +107,7 @@
     common:measuredByMetric :ABP_Diastolic_Metric .
 
 :ABP_Mean_Property a clin:PhysiologicalProperty ;
+    rdfs:label "ABP Mean" ;
     clin:hasUnit "mmHg" ;
     clin:hasSNOMEDCode "271651005" ;
     common:hasStateInstance common:Unknown ;
@@ -107,6 +115,7 @@
     common:measuredByMetric :ABP_Mean_Metric .
 
 :Alveolar_CarbonDioxide_Property a clin:PhysiologicalProperty ;
+    rdfs:label "Alveolar Carbon Dioxide" ;
     clin:hasUnit "mmHg" ;
     clin:hasSNOMEDCode "271650006" ;
     common:hasStateInstance common:Unknown ;
@@ -114,13 +123,16 @@
     common:measuredByMetric :EtCO2_Metric .
 
 :Cardiac_Contractile_Frequency_Property a clin:PhysiologicalProperty ;
+    rdfs:label "Cardiac Contractile Frequency" ;
     clin:hasUnit "bpm" ;
     clin:hasSNOMEDCode "364075005" ;
     common:hasStateInstance common:Unknown ;
-    clin:partOfProcess :Cardiac_Contraction_Process ;
-    common:measuredByMetric :PulseRate_Metric .
+    clin:partOfProcess :Cardiac_Rate_Process ;        ## moved from Cardiac_Contraction_Process
+    common:measuredByMetric :PulseRate_Metric ,
+                            :ElectricHeartRate_Metric . ## ECG-derived heart rate (e.g. Asystolie)
 
 :Pulmonary_Ventilation_Property a clin:PhysiologicalProperty ;
+    rdfs:label "Pulmonary Ventilation" ;
     clin:hasUnit "breaths/min" ;
     clin:hasSNOMEDCode "86290005" ;
     common:hasStateInstance common:Unknown ;

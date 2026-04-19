@@ -1,0 +1,106 @@
+# ============================================================
+# PR-CF — Priority Recalculation: Cardiac Failure Co-occurrence
+# ============================================================
+# Detects concurrent physiological compromise that indicates:
+#
+#   A) Low heart rate (or worse: asystole)
+#      → cardiac output is critically reduced
+#   B) Low blood pressure (any ABP component, any emitted priority)
+#      → end-organ perfusion pressure is insufficient
+#
+# Co-occurrence of A + B within a short window is a recognised pattern
+# of cardiogenic shock / cardiac pump failure and warrants escalation
+# of the emitted priority of the flagged alarm rows.
+#
+# ─── Matching Strategy (generic) ─────────────────────────────────────
+# Alarm types are NOT matched by individual ACD IRI (e.g. inst:ACD_Alarm_7).
+# Instead each alarm is classified by tracing:
+#
+#   ACD → requiresCondition → PhysiologicalValueCondition
+#       → aboutEntity (metric)
+#       ← measuredByMetric ← PhysiologicalProperty
+#       → partOfProcess → PhysiologicalProcess
+#
+# The discriminating (process, value) pairs are:
+#
+#   A: partOfProcess = inst:Cardiac_Rate_Process
+#      hasValue      = common:LowLimitViolation       (e.g. Pols laag)
+#                    | common:AsystoleInterpretation  (e.g. Asystolie)
+#      Cardiac_Rate_Process is a dedicated sub-process for cardiac pump
+#      frequency, split from Cardiac_Contraction_Process which retains the
+#      ST-segment / electrical depolarisation properties.  This isolation
+#      allows LowLimitViolation to be used without catching ST alarms.
+#      ElectricHeartRate_Metric is linked to Cardiac_Contractile_Frequency_
+#      Property → Cardiac_Rate_Process so the asystole path is also resolved
+#      via the generic metric bridge.
+#
+#   B: partOfProcess = inst:Arterial_Perfusion_Process
+#      hasValue      = common:LowLimitViolation
+#      → covers ABP systolic, diastolic, and mean low alarms.
+#        Captures all ABP variants regardless of emitted priority.
+#
+# Any new alarm added to the ontology that links to these processes
+# via the metric bridge is automatically included — no query edits needed.
+#
+# ─── Output ───────────────────────────────────────────────────────────
+# Returns all valid (?aLabel, ?bLabel) pairs.
+# Python detects per-patient concurrent A + B rows within a configurable
+# co-occurrence time window (e.g. 3600 s).
+# ============================================================
+
+PREFIX dev:    <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
+PREFIX clin:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#>
+PREFIX inst:   <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?aLabel ?bLabel
+WHERE {
+
+  # ── A: Low heart rate or asystole ────────────────────────────────────
+  # Any alarm requiring LowLimitViolation or AsystoleInterpretation on a
+  # metric that measures a property in the Cardiac Rate process.
+  # Cardiac_Rate_Process is distinct from Cardiac_Contraction_Process:
+  # it covers only pump-frequency properties (PulseRate_Metric,
+  # ElectricHeartRate_Metric), so LowLimitViolation here cannot match
+  # ST-segment alarms (which remain under Cardiac_Contraction_Process).
+  { ?alarmA a dev:AlertConditionDescription ;
+            dev:alarmMessageLabel ?aLabel ;
+            dev:requiresCondition ?condA .
+    ?condA a dev:PhysiologicalValueCondition ;
+           dev:aboutEntity ?metricA ;
+           dev:hasValue common:LowLimitViolation .
+    ?propA common:measuredByMetric ?metricA ;
+           clin:partOfProcess inst:Cardiac_Rate_Process .
+  }
+  UNION
+  { ?alarmA a dev:AlertConditionDescription ;
+            dev:alarmMessageLabel ?aLabel ;
+            dev:requiresCondition ?condA .
+    ?condA a dev:PhysiologicalValueCondition ;
+           dev:aboutEntity ?metricA ;
+           dev:hasValue common:AsystoleInterpretation .
+    ?propA common:measuredByMetric ?metricA ;
+           clin:partOfProcess inst:Cardiac_Rate_Process .
+  }
+
+  # ── B: Low blood pressure ──────────────────────────────────────────
+  # Any alarm requiring LowLimitViolation on a metric that measures a
+  # property in the Arterial Perfusion process.
+  # (covers: ABP systolic, diastolic, mean — and any future ABP metric)
+  # Emitted priority is not filtered: medium- and high-priority ABP low
+  # alarms are equally valid indicators of perfusion compromise.
+  ?alarmB a dev:AlertConditionDescription ;
+          dev:alarmMessageLabel ?bLabel ;
+          dev:requiresCondition ?condB .
+
+  ?condB a dev:PhysiologicalValueCondition ;
+         dev:aboutEntity ?metricB ;
+         dev:hasValue common:LowLimitViolation .
+
+  ?propB common:measuredByMetric ?metricB ;
+         clin:partOfProcess inst:Arterial_Perfusion_Process .
+
+  FILTER(?aLabel != ?bLabel)
+}
+ORDER BY ?aLabel ?bLabel

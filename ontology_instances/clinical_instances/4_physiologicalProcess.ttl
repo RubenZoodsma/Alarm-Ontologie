@@ -45,31 +45,46 @@
 # - Perfusion  
 
 :Pulmonary_Oxygenation_Process a clin:PhysiologicalProcess ;
-    clin:occursInOrgan :Lung ;
+    rdfs:label "Pulmonary Oxygenation" ;
+    clin:occursInOrgan :Lungs ;
     clin:producesProperty :Arterial_Oxygenation_Property ;
     clin:hasFunctionalState "Unknown" .
 
 :Pulmonary_Ventilation_Process a clin:PhysiologicalProcess ;
-    clin:occursInOrgan :Lung ;
+    rdfs:label "Pulmonary Ventilation" ;
+    clin:occursInOrgan :Lungs ;
     clin:producesProperty :Pulmonary_Ventilation_Property ;
     clin:hasFunctionalState "Unknown" .
 
 :Pulmonary_Diffusion_Process a clin:PhysiologicalProcess ;
-    clin:occursInOrgan :Lung ;
+    rdfs:label "Pulmonary Diffusion" ;
+    clin:occursInOrgan :Lungs ;
     clin:producesProperty :Alveolar_CarbonDioxide_Property, :Arterial_Oxygenation_Property ;
     clin:hasFunctionalState "Unknown" .
 
 :Cardiac_Contraction_Process a clin:PhysiologicalProcess ;
+    rdfs:label "Cardiac Contraction" ;
+    clin:occursInOrgan :Heart ;
+    clin:hasFunctionalState "Unknown" .
+
+## Sub-process capturing cardiac *rate* (mechanical pump frequency) separately from
+## cardiac electrical depolarisation (ECG/ST).  This split allows SPARQL queries to
+## target heart-rate alarms (Pols laag, Brady, Asystolie) without contaminating
+## cross-process matches with ST-segment alarms.
+:Cardiac_Rate_Process a clin:PhysiologicalProcess ;
+    rdfs:label "Cardiac Rate" ;
     clin:occursInOrgan :Heart ;
     clin:producesProperty :Cardiac_Contractile_Frequency_Property ;
     clin:hasFunctionalState "Unknown" .
 
 :Thermoregulation_Process a clin:PhysiologicalProcess ;
+    rdfs:label "Thermoregulation" ;
     clin:occursInOrgan :Skin ;
     clin:producesProperty :Temperature_Core_Property , :Temperature_Skin_Property ;
     clin:hasFunctionalState "Unknown" .
 
 :Arterial_Perfusion_Process a clin:PhysiologicalProcess ;
+    rdfs:label "Arterial Perfusion" ;
     clin:occursInOrgan :Heart ;
     clin:producesProperty :ABP_Systolic_Property , :ABP_Diastolic_Property, :ABP_Mean_Property ;
     clin:hasFunctionalState "Unknown" .
