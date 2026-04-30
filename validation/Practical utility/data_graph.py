@@ -38,11 +38,23 @@ ONTOLOGY_FILES = [
     REPO_ROOT / "ontology_core" / "alarmOnto_common.ttl",
     REPO_ROOT / "ontology_core" / "alarmOnto_clinical.ttl",
     REPO_ROOT / "ontology_core" / "alarmOnto_device.ttl",
-    # Clinical instances — required for organ-path queries (NAB-1 and later rules)
+    # Clinical instances
+    REPO_ROOT / "ontology_instances" / "clinical_instances" / "1_patient.ttl",
     REPO_ROOT / "ontology_instances" / "clinical_instances" / "2_physiologicalSystem.ttl",
     REPO_ROOT / "ontology_instances" / "clinical_instances" / "3_organ.ttl",
     REPO_ROOT / "ontology_instances" / "clinical_instances" / "4_physiologicalProcess.ttl",
     REPO_ROOT / "ontology_instances" / "clinical_instances" / "5_physiologicalProperty.ttl",
+    REPO_ROOT / "ontology_instances" / "clinical_instances" / "6_TherapeuticModalities.ttl",
+    # Device instances
+    REPO_ROOT / "ontology_instances" / "device_instances" / "1_physicalDevice.ttl",
+    REPO_ROOT / "ontology_instances" / "device_instances" / "2_sensorInterface.ttl",
+    REPO_ROOT / "ontology_instances" / "device_instances" / "3_sensor.ttl",
+    REPO_ROOT / "ontology_instances" / "device_instances" / "4_functionalUnit.ttl",
+    REPO_ROOT / "ontology_instances" / "device_instances" / "5_deviceChannel.ttl",
+    REPO_ROOT / "ontology_instances" / "device_instances" / "6_Metric.ttl",
+    REPO_ROOT / "ontology_instances" / "device_instances" / "7_measurementProcess.ttl",
+    REPO_ROOT / "ontology_instances" / "device_instances" / "8_signal.ttl",
+    REPO_ROOT / "ontology_instances" / "device_instances" / "9_measurementSite.ttl",
     # Alarm instances
     REPO_ROOT / "ontology_instances" / "alarm_instances" / "1_ACD_MonitorAlarms.ttl",
     REPO_ROOT / "ontology_instances" / "alarm_instances" / "2_ACS_MonitorAlarms.ttl",
@@ -78,7 +90,12 @@ df["alarm_eind"]  = pd.to_datetime(df["alarm_eind"],  format="mixed", errors="co
 # Strip trailing/leading whitespace that causes silent == mismatches
 df["conditie"] = df["conditie"].str.strip()
 df = df.sort_values(["patientID", "bed_naam", "alarm_start"]).reset_index(drop=True)
+
+## select only first 100 patients
+df = df[df["patientID"].isin(df["patientID"].unique()[:100])].reset_index(drop=True)
+
 N_TOTAL = len(df)
+
 
 # Derive the set of alarm labels that are modelled in the ontology, then
 # restrict the denominator used for %-calculations to only those rows.
@@ -500,11 +517,11 @@ RULES: list[Rule] = [
 # Change "ENABLED" / "DISABLED" here; the values are written back into RULES
 # so there is no need to scroll through the full registry above.
 _ACTIVE_STATUS: dict[str, str] = {
-    "FP-1":  "DISABLED",   # Signal-quality sensor masking
-    "FP-2":  "DISABLED",   # Sensor-malfunction invalidation
-    "NAB-1": "DISABLED",   # Organ-level priority dominance
-    "NAB-2": "DISABLED",   # Rapid alarm recurrence suppression
-    "PR-RA": "DISABLED",    # Respiratory arrest sequence escalation
+    "FP-1":  "ENABLED",   # Signal-quality sensor masking
+    "FP-2":  "ENABLED",   # Sensor-malfunction invalidation
+    "NAB-1": "ENABLED",   # Organ-level priority dominance
+    "NAB-2": "ENABLED",   # Rapid alarm recurrence suppression
+    "PR-RA": "ENABLED",    # Respiratory arrest sequence escalation
     "PR-CF": "ENABLED",    # Cardiac failure co-occurrence escalation
 }
 for _rule in RULES:

@@ -46,4 +46,4 @@
 :Datexahmedacom_Ventilator a dev:VentilationDevice ;
     dev:hasManufacturer "Datexahmedacom" ;
     dev:hasModelName "Unknown Model" .
-    ## Inclomplete
+    ## Incomplete

@@ -1,4 +1,5 @@
 @prefix : <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical#> .
+@prefix dev: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#> .
 @prefix common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#> .
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -13,7 +14,7 @@
 <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/clinical>
     a owl:Ontology ;
     rdfs:label "Alarm Ontology - Clinical Module" ;
-    owl:imports <./alarmOnto_common.ttl> .
+    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_common.ttl> .
 
 
 #################################################################
@@ -110,4 +111,26 @@
     rdfs:label "has functional state" ;
     rdfs:comment "Indicates the operational or health status of a clinical entity (e.g. Active, Insufficient, Unknown). Functional states are local and do not propagate upward through the taxonomy. Replaces the generic clin:hasState for all non-observation state assertions." .
 
+:hasConnectedDevice a owl:ObjectProperty ;
+    rdfs:domain :Patient ;
+    rdfs:range dev:PhysicalDevice ;
+    rdfs:label "has connected device" ;
+    rdfs:comment "Cross-domain link from Patient to a PhysicalDevice: indicates that a monitoring or therapy device is applied to / connected to the patient." .
 
+:hasConnectedSensor a owl:ObjectProperty ;
+    rdfs:domain :Patient ;
+    rdfs:range dev:Sensor ;
+    rdfs:label "has connected sensor" ;
+    rdfs:comment "Cross-domain link from Patient to a Sensor: indicates that a sensing element is physically attached to or placed on the patient." .
+
+:isSubjectOfTherapy a owl:ObjectProperty ;
+    rdfs:domain :Patient ;
+    rdfs:range :TherapeuticModality ;
+    rdfs:label "is subject of therapy" ;
+    rdfs:comment "Indicates that a patient is receiving a particular therapeutic modality (e.g. mechanical ventilation, oxygen therapy)." .
+
+:hasSupportModality a owl:ObjectProperty ;
+    rdfs:domain :TherapeuticModality ;
+    rdfs:range xsd:string ;
+    rdfs:label "has support mode" ;
+    rdfs:comment "Indicates the mode or settings of a therapeutic modality (e.g. Assist-Control mode for mechanical ventilation)." .

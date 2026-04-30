@@ -102,13 +102,19 @@
     dev:isProducedBy :ECG_Electrodes_Sensor ;   
     dev:inputToProcess :ECG_MeasurementProcess .
 
-:SkinTemp_Signal a dev:Signal ;
+:Temp_Signal a dev:Signal ;
+    common:hasQualityIndicator "Good" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:isProducedBy :Temperature_Sensor ;
+    dev:inputToProcess :Temp_MeasurementProcess .
+
+:SkinTemp_Signal a dev:Signal, :Temp_Signal ;
     common:hasQualityIndicator "Good" ;
     common:hasStateInstance common:Transmitting ;
     dev:isProducedBy :Skin_Temperature_Sensor ;
     dev:inputToProcess :SkinTemp_MeasurementProcess .
 
-:CoreTemp_Signal a dev:Signal ;
+:CoreTemp_Signal a dev:Signal, :Temp_Signal ;
     common:hasQualityIndicator "Good" ;
     common:hasStateInstance common:Transmitting ;
     dev:isProducedBy :Core_Temperature_Sensor ;
@@ -125,3 +131,10 @@
     common:hasStateInstance common:Transmitting ;
     dev:isProducedBy :Capnography_Sensor ;
     dev:inputToProcess :Capno_Waveform_MeasurementProcess .
+
+:ECG_SignalGroup a dev:SignalGroup ;
+    rdfs:label "ECG Signal Group" ;
+    rdfs:comment "Group aggregating all individual ECG lead signals (RA, RL, LA, LL, V1–V6). Used as the collective entity for conditions that apply to the entire ECG signal ensemble rather than a single lead (e.g. noise, silencing of ECG alarms)." ;
+    dev:hasComponent :ECG_RA_Signal , :ECG_RL_Signal , :ECG_LA_Signal , :ECG_LL_Signal ,
+                     :ECG_V1_Signal , :ECG_V2_Signal , :ECG_V3_Signal , :ECG_V4_Signal ,
+                     :ECG_V5_Signal , :ECG_V6_Signal .

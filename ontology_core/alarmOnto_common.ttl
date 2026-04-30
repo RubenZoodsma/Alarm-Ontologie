@@ -49,51 +49,41 @@
 # DATA PROPERTIES (SHARED)
 #################################################################
 
-:hasState a owl:DatatypeProperty ;
-    rdfs:domain :Entity ;
-    rdfs:range xsd:string ;
-    rdfs:label "has state" ;
-    rdfs:comment "Generic state marker (e.g. Enabled, Impaired, Active)." .
-
-:hasStateInstance a owl:ObjectProperty ;
+:hasMagnitudeState a owl:ObjectProperty ;
     rdfs:domain :Entity ;
     rdfs:range :State ;
-    rdfs:label "has state instance" ;
-    rdfs:comment "Links an entity to a specific state individual from the state vocabulary." .
+    rdfs:label "has magnitude state" ;
+    rdfs:comment "Indicates the magnitude/quantity state of a metric or physiological property (e.g. High, Low, Normal, Critical). Applies to both device metrics and clinical properties." .
 
-:hasActivationState a owl:DatatypeProperty ;
-    rdfs:domain dev:Metric ;
-    rdfs:range xsd:string ;
-    rdfs:label "has activation state" ;
-    rdfs:comment "Device-style activation state, e.g. On, Standby, Off." .
-
-:hasAvailabilityStatus a owl:DatatypeProperty ;
+:hasRateState a owl:ObjectProperty ;
     rdfs:domain :Entity ;
-    rdfs:range xsd:string ;
-    rdfs:label "has availability status" ;
-    rdfs:comment "Indicates if data/value is available." .
+    rdfs:range :State ;
+    rdfs:label "has rate state" ;
+    rdfs:comment "Indicates the rate/frequency state of a metric or physiological property (e.g. High, Low, Normal). Applies to rate-type metrics such as heart rate or respiratory rate." .
 
-:hasQualityIndicator a owl:DatatypeProperty ;
+:hasQualityIndicator a owl:ObjectProperty ;
     rdfs:domain dev:Signal ;
-    rdfs:range xsd:string ;
+    rdfs:range :QualityState ;
     rdfs:label "has quality indicator" ;
-    rdfs:comment "Quality of a signal (e.g. Good, Bad, Questionable)." .
+    rdfs:comment "Quality of a signal expressed as a named QualityState individual (e.g. common:Sufficient, common:Insufficient). Changed from DatatypeProperty to ObjectProperty to align with the QualityState class and its individuals." .
 
-:hasValue a owl:DatatypeProperty ;
-    rdfs:domain :Entity ;
-    rdfs:range xsd:decimal ;
-    rdfs:label "has value" ;
-    rdfs:comment "Numeric value for metrics or physiological properties." .
-
-:hasUnit a owl:DatatypeProperty ;
+:hasOperationalStatus a owl:DatatypeProperty ;
     rdfs:domain :Entity ;
     rdfs:range xsd:string ;
-    rdfs:label "has unit" .
+    rdfs:label "has operational status" ;
+    rdfs:comment "Operational status of an entity (e.g. Enabled, Disabled)." .
 
-:hasRange a owl:DatatypeProperty ;
+:hasFunctionalStatus a owl:DatatypeProperty ;
     rdfs:domain :Entity ;
     rdfs:range xsd:string ;
-    rdfs:label "has range" .
+    rdfs:label "has functional status" ;
+    rdfs:comment "Functional status of an entity (e.g. Normal Function, Hyper, Hypo)." .
+
+:hasObservationalStatus a owl:DatatypeProperty ;
+    rdfs:domain :Entity ;
+    rdfs:range xsd:string ;
+    rdfs:label "has observational status" ;
+    rdfs:comment "Observational status of an entity (e.g. Monitored, Not Monitored)." .
 
 :hasSNOMEDCode a owl:DatatypeProperty ;
     rdfs:domain clin:ClinicalEntity ;
@@ -110,92 +100,178 @@
 # SHARED STATE VOCABULARY
 #################################################################
 
+:OperationalState a :State ;
+    rdfs:label "Operational State" ;
+    rdfs:comment "States related to the operational status of a device or entity (e.g. Enabled, Disabled, Connected)." .
+
 # Operational States
-:Enabled a :State ;
+:Enabled a :OperationalState ;
     rdfs:label "Enabled" ;
     rdfs:comment "Entity is operational and active." .
 
-:Disabled a :State ;
+:Disabled a :OperationalState ;
     rdfs:label "Disabled" ;
     rdfs:comment "Entity is turned off or not operational." .
 
-:Standby a :State ;
+:Standby a :OperationalState ;
     rdfs:label "Standby" ;
     rdfs:comment "Entity is ready but not actively operating." .
 
-:Fault a :State ;
+:Fault a :OperationalState ;
     rdfs:label "Fault" ;
     rdfs:comment "Entity has detected an error condition." .
 
-# Limit violation interpretations
-:LowLimitViolation a :State ;
-    rdfs:label "Low Limit Violation" ;
-    rdfs:comment "Measured value is below the defined lower limit." .
-
-:HighLimitViolation a :State ;
-    rdfs:label "High Limit Violation" ;
-    rdfs:comment "Measured value is above the defined upper limit." .
-
-# Absent cycle interpretations
-:ApneaInterpretation a :State ;
-    rdfs:label "Apnea Interpretation" ;
-    rdfs:comment "Absence of breathing cycles detected." .
-
-:AsystoleInterpretation a :State ;
-    rdfs:label "Asystole Interpretation" ;
-    rdfs:comment "Absence of cardiac electrical activity detected." .
-
-# Rhythm interpretations
-
-:VentricularFibrillationInterpretation a :State ;
-    rdfs:label "Ventricular Fibrillation Interpretation" ;
-    rdfs:comment "Irregular and rapid heart rhythm detected." .
-
-:VentricularTachycardiaInterpretation a :State ;
-    rdfs:label "Ventricular Tachycardia Interpretation" ;
-    rdfs:comment "Fast heart rhythm originating from the ventricles detected." .
-
-# Rate interpretations
-:BradycardiaInterpretation a :State ;
-    rdfs:label "Bradycardia Interpretation" ;
-    rdfs:comment "Heart rate below normal limits detected." .
-
-:TachycardiaInterpretation a :State ;
-    rdfs:label "Tachycardia Interpretation" ;
-    rdfs:comment "Heart rate above normal limits detected." .
-
-# Activity States
-:Active a :State ;
-    rdfs:label "Active" ;
-    rdfs:comment "Currently active or triggered." .
-
-:Inactive a :State ;
-    rdfs:label "Inactive" ;
-    rdfs:comment "Currently not active or dormant." .
-
-# Connection States
-:Connected a :State ;
-    rdfs:label "Connected" ;
-    rdfs:comment "Device or sensor is properly connected." .
-
-:Disconnected a :State ;
+:Disconnected a :OperationalState ;
     rdfs:label "Disconnected" ;
-    rdfs:comment "Device or sensor is not connected." .
+    rdfs:comment "Entity (typically a sensor or device channel) is physically disconnected from the monitor or patient. Distinct from Disabled (software off) and Fault (error state)." .
 
-# Transmission States
-:Transmitting a :State ;
-    rdfs:label "Transmitting" ;
-    rdfs:comment "Signal or data is being transmitted." .
+:Error a :OperationalState ;
+    rdfs:label "Error" ;
+    rdfs:comment "Entity (typically a software module or device application) is in an error state due to a software or application fault. Distinct from Fault (hardware error) and Disconnected (physical absence)." .
 
-# Metric availability states
-:MetricAvailable a :State ;
-    rdfs:label "Metric Available" ;
-    rdfs:comment "Device is actively measuring or collecting data." .
 
-# Monitoring States
-:MonitoredState a :State ;
-    rdfs:label "Monitored State" ;
-    rdfs:comment "Entity is being actively monitored." .
+
+:MagnitudeState a :State ;
+    rdfs:label "Magnitude State" ;
+    rdfs:comment "States indicating the magnitude or level of a measurement (e.g. High, Low, Normal)." .
+
+:RateState a :State ;
+    rdfs:label "Rate State" ;
+    rdfs:comment "States indicating the rate or frequency of a measurement (e.g. High, Low, Normal)." .
+
+# Magnitude states — primary semantic values for hasMagnitudeState
+:VeryHigh a :MagnitudeState, :RateState ;
+    rdfs:label "Very High" ;
+    rdfs:comment "Value or level is significantly above the normal/reference range." .
+
+:High a :MagnitudeState, :RateState ;
+    rdfs:label "High" ;
+    rdfs:comment "Value or level is above the normal/reference range." .
+
+:Normal a :MagnitudeState, :RateState ;
+    rdfs:label "Normal" ;
+    rdfs:comment "Value or level is within the normal/reference range." .
+
+:Low a :MagnitudeState, :RateState, :PowerState ;
+    rdfs:label "Low" ;
+    rdfs:comment "Value or level is below the normal/reference range." .
+
+:VeryLow a :MagnitudeState, :RateState ;
+    rdfs:label "Very Low" ;
+
+    rdfs:comment "Value or level is significantly below the normal/reference range." .
+
+:Absent a :RateState ;
+    rdfs:label "Absent" ;
+    rdfs:comment "Rate or signal is completely absent — no detectable events (e.g. no heartbeats, no respiratory cycles). Represents the most extreme low rate state, beyond VeryLow." .
+
+:Abnormal a :MagnitudeState , :FunctionalState ;
+    rdfs:label "Abnormal" ;
+    rdfs:comment "Value or functional state deviates from the normal/reference range in an unspecified direction. Used when the alarm message does not distinguish between high and low deviation (e.g. 'HI/LO' alarms)." .
+
+:PowerState a :MagnitudeState ;
+    rdfs:label "Power State" ;
+    rdfs:comment "States indicating the power status of a device (e.g. On, Off)." .
+
+
+## Functional states - both for clinical and device-related functionality
+:FunctionalState a :State ;
+    rdfs:label "Functional State" ;
+    rdfs:comment "States indicating the functional status of a process or entity (e.g. Active, Hyper, Hypo)." .
+
+:CriticallyHypo a :FunctionalState ;
+    rdfs:label "Critically Hypo" ;
+    rdfs:comment "Process or entity is in a critically hypofunctional state (severely underactive/insufficient)." .
+
+:Hypo a :FunctionalState ;
+    rdfs:label "Hypo" ;
+    rdfs:comment "Process or entity is in a hypofunctional state (underactive/insufficient)." .
+
+:NormalFunction a :FunctionalState ;
+    rdfs:label "Normal Function" ;
+    rdfs:comment "Process or entity is functioning normally." .
+
+:Hyper a :FunctionalState ;
+    rdfs:label "Hyper" ;
+    rdfs:comment "Process or entity is in a hyperfunctional state (overactive/excessive)." .
+
+:CriticallyHyper a :FunctionalState ;
+    rdfs:label "Critically Hyper" ;
+    rdfs:comment "Process or entity is in a critically hyperfunctional state (severely overactive/excessive)." .
+
+:Arrest a :FunctionalState ;
+    rdfs:label "Arrest" ;
+    rdfs:comment "Process has completely ceased — total absence of function (e.g. cardiac arrest, respiratory arrest/apnea). Represents the most extreme hypofunctional state, beyond CriticallyHypo." .
+
+:RequiresVerification a :FunctionalState ;
+    rdfs:label "Requires Verification" ;
+    rdfs:comment "Entity (device, module, or configuration) is operational but has flagged a condition that requires manual verification or confirmation by the user before proceeding (e.g. changed settings, unconfirmed patient ID, SpeedPoint data mismatch)." .
+
+:RequiresConfirmation a :FunctionalState ;
+    rdfs:label "Requires Confirmation" ;
+    rdfs:comment "Entity (record, module, or configuration) requires explicit user confirmation before proceeding — stronger than RequiresVerification in that the user must actively confirm (e.g. patient identity record after unit transfer, settings after reset)." .
+
+:Silenced a :FunctionalState ;
+    rdfs:label "Silenced" ;
+    rdfs:comment "Alarms or alerts for this entity have been deliberately silenced/suspended by the user. The entity is still operational and measured, but alarm notifications have been turned off (e.g. ECG/arrhythmia alarms silenced)." .
+
+:CheckSettings a :FunctionalState ;
+    rdfs:label "Check Settings" ;
+    rdfs:comment "Device or module is operational but has detected a configuration issue or mismatch that requires the user to inspect and correct settings (e.g. app.geg. = application data missing; connected device settings not received). Weaker than RequiresVerification: the device prompts a check rather than blocking operation." .
+
+
+## monitoring states
+:AvailableState a :State ;
+    rdfs:label "Available State" ;
+    rdfs:comment "Entity is available: actively monitored." .
+
+# Monitoring states — primary semantic value for hasObservationState
+:Monitored a :AvailableState ;
+    rdfs:label "Monitored" ;
+    rdfs:comment "Entity is being actively observed and measured." .
+
+:NotMonitored a :AvailableState ;
+    rdfs:label "Not Monitored" ;
+    rdfs:comment "Entity is not being actively observed." .
+
+:Available a :AvailableState ;
+    rdfs:label "Available" ;
+    rdfs:comment "Entity is available for monitoring or observation." .
+
+
+## quality states
+:QualityState a :State ;
+    rdfs:label "Quality State" ;
+    rdfs:comment "States indicating the quality of a signal or measurement (e.g. Good, Bad, Questionable)." .
+
+:Insufficient a :QualityState ;
+    rdfs:label "Insufficient Quality" ;
+    rdfs:comment "Signal or measurement quality is insufficient for reliable interpretation." .
+
+:Artefact a :QualityState ;
+    rdfs:label "Artefact" ;
+    rdfs:comment "Signal quality is degraded by a motion or electrical artefact — a sub-type of insufficient quality. The measured waveform does not reflect true physiological origin." .
+
+:OutOfRange a :QualityState ;
+    rdfs:label "Out of Range" ;
+    rdfs:comment "Signal value is outside the measurable range of the sensor or transducer — a sub-type of insufficient quality. Common cause: catheter not zeroed, kinked line, or excessive pressure." .
+
+:NullingError a :QualityState ;
+    rdfs:label "Nulling Error" ;
+    rdfs:comment "Signal quality is compromised due to an incomplete or failed zeroing/nulling of the transducer — a sub-type of insufficient quality. Specifically applies to invasive pressure sensors (e.g. ABP transducer)." .
+
+:Calibrating a :QualityState ;
+    rdfs:label "Calibrating" ;
+    rdfs:comment "Signal is temporarily unavailable or unreliable because the sensor is performing an automatic calibration or baseline nulling procedure. A transient sub-type of insufficient quality that resolves when calibration completes (e.g. CO2 auto nulling)." .
+
+:Noisy a :QualityState ;
+    rdfs:label "Noisy" ;
+    rdfs:comment "Signal quality is degraded by excessive noise, typically due to poor sensor contact, interference, or patient movement. The measured waveform is excessively noisy and may not be reliably interpreted." .
+
+
+
+
+
 
 :AlertSoundType a owl:Class ;
     rdfs:subClassOf dev:AlertEntity ;

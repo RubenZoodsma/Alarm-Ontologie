@@ -12,7 +12,7 @@
 <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device>
     a owl:Ontology ;
     rdfs:label "Alarm Ontology - Device Module" ;
-    owl:imports <./alarmOnto_common.ttl> .
+    owl:imports <https://raw.githubusercontent.com/RubenZoodsma/Alarm-Ontologie/main/ontology_core/alarmOnto_common.ttl> .
 
 #################################################################
 # ALARM-ORIENTED CLASSES
@@ -50,12 +50,12 @@
 :SensorConnectivityCondition a owl:Class ;
     rdfs:subClassOf :AlertCondition ;
     rdfs:label "Sensor Connectivity Condition" ;
-    rdfs:comment "Condition that checks whether a sensor or interface is connected (hasOperationalState = Connected)." .
+    rdfs:comment "Condition that checks whether a sensor or interface is connected." .
 
 :MetricAvailabilityCondition a owl:Class ;
     rdfs:subClassOf :AlertCondition ;
     rdfs:label "Metric Availability Condition" ;
-    rdfs:comment "Condition that checks whether a metric is available/being measured (hasOperationalState = MetricAvailable)." .
+    rdfs:comment "Condition that checks whether a metric is available/being measured." .
 
 :DeviceOperationalCondition a owl:Class ;
     rdfs:subClassOf :AlertCondition ;
@@ -70,7 +70,7 @@
 :ObservationStateCondition a owl:Class ;
     rdfs:subClassOf :AlertCondition ;
     rdfs:label "Observation State Condition" ;
-    rdfs:comment "Condition that checks whether a clinical property is being observed (hasObservationState = Monitored)." .
+    rdfs:comment "Condition that checks whether a clinical property is being observed." .
 
 :MeasurementLocationCondition a owl:Class ;
     rdfs:subClassOf :AlertCondition ;
@@ -90,7 +90,7 @@
 :TherapyStateCondition a owl:Class ;
     rdfs:subClassOf :AlertCondition ;
     rdfs:label "Therapy State Condition" ;
-    rdfs:comment "Condition that checks the active therapy or support mode (hasSupportMode)." .
+    rdfs:comment "Condition that checks the active therapy or support mode (hasSupportModality)." .
 
 :AlertConditionDescription a owl:Class ;
     rdfs:subClassOf :AlertEntity ;
@@ -156,6 +156,11 @@
     rdfs:subClassOf :DeviceEntity ;
     rdfs:label "Signal" ;
     rdfs:comment "Raw or pre-processed data produced by a sensor." .
+
+:SignalGroup a owl:Class ;
+    rdfs:subClassOf :DeviceEntity ;
+    rdfs:label "Signal Group" ;
+    rdfs:comment "Grouping of related signals." .
 
 :MeasurementProcess a owl:Class ;
     rdfs:subClassOf :DeviceEntity ;
@@ -370,6 +375,7 @@
     rdfs:domain [ a owl:Class ;
         owl:unionOf ( :PhysicalDevice :Sensor :Metric :Signal :MeasurementProcess :DeviceChannel :SensorInterface :FunctionalUnit )
     ] ;
-    rdfs:range common:State ;
+    rdfs:range common:OperationalState ;
     rdfs:label "has operational state" ;
     rdfs:comment "Indicates the current operational status of a device-side entity (e.g. Connected, Active, Enabled, Disabled, Fault). Device-side counterpart to clin:hasFunctionalState. States are local and do not propagate through the device hierarchy." .
+

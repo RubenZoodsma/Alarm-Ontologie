@@ -69,3 +69,33 @@
     common:hasStateInstance common:Active ;
     dev:partOfDevice :PhilipsMonitor ;
     dev:hasDeviceChannel :Capno_Channel .
+
+:SpeedpointFU a dev:FunctionalUnit ;
+    dev:hasDescription "SpeedPoint Data Transfer Module" ;
+    rdfs:comment "Functional unit responsible for electronic patient data transfer (SpeedPoint interface) on the Philips Monitor. Handles patient-ID synchronisation and configuration verification between the monitor and the hospital information system." ;
+    common:hasStateInstance common:Active ;
+    dev:partOfDevice :PhilipsMonitor .
+
+:EC10Module a dev:FunctionalUnit ;
+    dev:hasDescription "EC10 ECG Cable/Measurement Module" ;
+    rdfs:comment "The EC10 is the ECG measurement cable and acquisition module on the Philips IntelliVue monitor. It connects ECG electrodes to the monitor and performs lead-level signal acquisition. Alarm fires when this module is physically disconnected." ;
+    common:hasStateInstance common:Active ;
+    dev:partOfDevice :PhilipsMonitor .
+
+:SettingsModule a dev:FunctionalUnit ;
+    dev:hasDescription "Monitor Settings/Configuration Module" ;
+    rdfs:comment "Functional unit representing the settings and configuration management subsystem of the Philips Monitor. Tracks whether the current configuration has been verified by the clinician after a change." ;
+    common:hasStateInstance common:Active ;
+    dev:partOfDevice :PhilipsMonitor .
+
+:PatientIdentityRecord a dev:FunctionalUnit ;
+    dev:hasDescription "Patient Identity Record" ;
+    rdfs:comment "Software component on the Philips Monitor that stores and manages the patient identity (patient ID, admission data). Requires explicit confirmation after a patient transfer or manual ID entry — the alarm fires until the clinician confirms the identity matches the admitted patient." ;
+    common:hasStateInstance common:Active ;
+    dev:partOfDevice :PhilipsMonitor .
+
+:ExternalControllerModule a dev:FunctionalUnit ;
+    dev:hasDescription "External Controller Interface Module" ;
+    rdfs:comment "Functional unit on the Philips Monitor managing the external controller (Ext CNTR) interface — handles communication and configuration between the monitor and an external control device or central station. Alarm fires when a configuration error is detected on this interface." ;
+    common:hasStateInstance common:Active ;
+    dev:partOfDevice :PhilipsMonitor .

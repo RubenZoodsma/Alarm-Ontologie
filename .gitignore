@@ -4,3 +4,6 @@
 **/Methodology/*
 **/analysis/*
 *.png
+**/documentation/*
+*.md
+*.py

@@ -87,12 +87,17 @@
     rdfs:comment "ECG electrode sensor for the V6 position." ;
     dev:ProducesSignal :ECG_V6_Signal .
 
-:SkinTemperature_Probe_Sensor a dev:Sensor ;
+:Temperature_Sensor a dev:Sensor ;
+    rdfs:label "Temperature Sensor Group" ;
+    rdfs:comment "An undefined temperature sensor." ;
+    dev:ProducesSignal :Temp_Signal .
+
+:SkinTemperature_Probe_Sensor a dev:Sensor, :Temperature_Sensor ;
     rdfs:label "Skin Temperature Probe Sensor" ;
     rdfs:comment "Sensor for measuring skin temperature." ;
     dev:ProducesSignal :SkinTemp_Signal .
 
-:CoreTemperature_Probe_Sensor a dev:Sensor ;
+:CoreTemperature_Probe_Sensor a dev:Sensor, :Temperature_Sensor ;
     rdfs:label "Core Temperature Probe Sensor" ;
     rdfs:comment "Sensor for measuring core body temperature." ;
     dev:ProducesSignal :CoreTemp_Signal .
@@ -106,3 +111,17 @@
     rdfs:label "Capnography CO2 Sensor" ;
     rdfs:comment "Sensor for measuring end-tidal CO2 levels." ;
     dev:ProducesSignal :Capno_Waveform_Signal .
+
+
+
+## Sensor groups for organizational purposes
+:ECG_SensorGroup a dev:SensorGroup ;
+    rdfs:label "ECG Sensor Group" ;
+    rdfs:comment "Group representing the collection of ECG electrode sensors." ;
+    dev:hasComponent :ECG_LA_Sensor , :ECG_LL_Sensor , :ECG_RA_Sensor , :ECG_RL_Sensor , :ECG_V1_Sensor , :ECG_V2_Sensor , :ECG_V3_Sensor , :ECG_V4_Sensor , :ECG_V5_Sensor , :ECG_V6_Sensor .
+
+:tcCapno_Sensor a dev:Sensor ;
+    rdfs:label "Transcutaneous Capnography Sensor" ;
+    rdfs:comment "Electrochemical sensor placed on the skin for continuous transcutaneous measurement of partial CO2 pressure (tcpCO2). Used with the Philips Monitor (SDM module). Requires periodic calibration and heating of the measurement site." ;
+    dev:ProducesSignal :tcpCO2_Signal .
+

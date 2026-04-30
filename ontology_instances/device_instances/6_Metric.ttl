@@ -53,6 +53,13 @@
     common:hasStateInstance common:Transmitting ;
     dev:generatedByProcess :ECG_Waveform_MeasurementProcess .
 
+:Temp_Metric a dev:Metric ;
+    dev:hasMDCCode "MDC_TEMP" ;
+    common:hasUnit "°C" ;
+    dev:hasLabel "Body Temperature" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:generatedByProcess :Temp_MeasurementProcess .
+
 :Skin_Temp_Metric a dev:Metric ;
     dev:hasMDCCode "MDC_TEMP_SKIN" ;
     common:hasUnit "°C" ;
@@ -67,12 +74,20 @@
     common:hasStateInstance common:Transmitting ;
     dev:generatedByProcess :CoreTemp_MeasurementProcess .
 
-:PulseRate_Metric a dev:Metric ;
+:PulsatileHeartRate_Metric a dev:Metric ;
     dev:hasMDCCode "MDC_PULS_OXIM_PULS_RATE" ;
     common:hasUnit "bpm" ;
-    dev:hasLabel "Pulse Rate" ;
+    dev:hasLabel "Pulsatile Heart Rate" ;
     common:hasStateInstance common:Transmitting ;
     dev:generatedByProcess :PulseOximetry_MeasurementProcess .
+
+:ElectricHeartRate_Metric a dev:Metric ;
+    dev:hasMDCCode "MDC_ECG_HEART_RATE" ;
+    common:hasUnit "bpm" ;
+    dev:hasLabel "Electric Heart Rate" ;
+    rdfs:comment "ECG-derived heart rate metric. Computed from the RR interval of the ECG waveform. Used for asystole detection (absent electrical activity) as distinct from pulse-oximetry-derived pulse rate." ;
+    common:hasStateInstance common:Transmitting ;
+    dev:generatedByProcess :ECG_Waveform_MeasurementProcess .
 
 :ABP_Systolic_Metric a dev:Metric ;
     dev:hasMDCCode "MDC_PRESS_BLD_ART_ABP_SYSTOLIC" ;
@@ -108,4 +123,23 @@
     dev:hasLabel "Respiratory Rate" ;
     common:hasStateInstance common:Transmitting ;
     dev:generatedByProcess :ECG_Waveform_MeasurementProcess .
+
+
+## Groupings of metrices for organizational purposes.
+
+:ABP_MetricGroup a dev:MetricGroup ;
+    dev:hasLabel "ABP Metric Group" ;
+    dev:hasComponent :ABP_Systolic_Metric , :ABP_Mean_Metric , :ABP_Diastolic_Metric .
+
+:tcpCO2_Metric a dev:Metric ;
+    dev:hasMDCCode "MDC_PRESS_AWAY_CO2_EXP" ;
+    common:hasUnit "mmHg" ;
+    dev:hasLabel "Transcutaneous CO2" ;
+    common:hasStateInstance common:Transmitting ;
+    dev:generatedByProcess :tcpCO2_MeasurementProcess .
+
+:CO2_MetricGroup a dev:MetricGroup ;
+    dev:hasLabel "CO2 Metric Group" ;
+    rdfs:comment "Group encompassing all CO2-related metrics (EtCO2 and tcpCO2). Allows conditions and alarms to reference CO2 monitoring in general without specifying the measurement modality." ;
+    dev:hasComponent :EtCO2_Metric , :tcpCO2_Metric .
 

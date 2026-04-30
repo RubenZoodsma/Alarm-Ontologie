@@ -22,766 +22,1582 @@
 # Organized by provenance: Asserted (explicit requirements) vs Inferred (derived knowledge)
 #######################################################################
 
+
+###################
+# Condition blueprint:
+## :<name of the condition instance>
+##    a dev:AlertCondition , <specific condition type> ;
+##    rdfs:label "<Human-readable label>" ;
+##    rdfs:comment "<Detailed description of the condition and its clinical interpretation>" ;
+##    dev:aboutEntity :<technical entity> ;
+##    dev:onAttribute :<specific attribute of the entity> ;
+##    dev:hasValue <specific value that the attribute must have for the condition to be true> .
+
+
 #######################################################################
-# ASSERTED CONDITIONS
-# Explicit entity-attribute-value requirements for alarm activation
+# ALARM 1 | PHILIPSMONITOR - ?? SpO2l hoog
+# ALARM 2 | PHILIPSMONITOR - ?? SpO2po hoog
+# (shared conditions listed once; alarm-specific conditions labelled)
 #######################################################################
 
-# ABP (Arterial Blood Pressure) Conditions
-:Cond_ABPMean_Metric_OperationalState_Available
-    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
-    rdfs:label "ABP Mean Metric Available" ;
-    rdfs:comment "Condition: ABP Mean metric is being measured and available" ;
-    dev:aboutEntity :ABP_Mean_Metric ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:MetricAvailable .
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
 
-:Cond_ABPMean_Metric_ValueInterpretation_HighLimitViolation
-    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
-    rdfs:label "ABP Mean High Limit Violation" ;
-    rdfs:comment "Condition: ABP Mean metric value exceeds high threshold" ;
-    dev:aboutEntity :ABP_Mean_Metric ;
-    dev:onAttribute dev:hasValueInterpretation ;
-    dev:hasValue common:HighLimitViolation .
-
-:Cond_ABP_Signal_QualityState_Insufficient
-    a dev:AlertCondition , dev:SignalQualityCondition ;
-    rdfs:label "ABP Signal Quality Insufficient" ;
-    rdfs:comment "Condition: ABP signal quality is insufficient for reliable measurements" ;
-    dev:aboutEntity :ABP_Waveform_Signal ;
-    dev:onAttribute dev:hasQualityState ;
-    dev:hasValue :Insufficient .
-
-:Cond_ArterialBloodPressureSensor_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "ABP Sensor Connected" ;
-    rdfs:comment "Condition: Arterial blood pressure sensor is connected" ;
-    dev:aboutEntity :ABP_Transducer_Sensor ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
-
-# Battery Conditions
-:Cond_BatteryFunctionalUnit_FunctionalState_Enabled
+:Cond_PhilipsMonitor_OperationalState_Enabled
     a dev:AlertCondition , dev:DeviceOperationalCondition ;
-    rdfs:label "Battery Unit Enabled" ;
-    rdfs:comment "Condition: Battery functional unit is enabled" ;
-    dev:aboutEntity :Battery_Module ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Active .
-
-:Cond_BatteryFunctionalUnit_PowerState_Low
-    a dev:AlertCondition , dev:PowerStateCondition ;
-    rdfs:label "Battery Power Low" ;
-    rdfs:comment "Condition: Battery functional unit power level is low" ;
-    dev:aboutEntity :Battery_Module ;
-    dev:onAttribute dev:hasPowerState ;
-    dev:hasValue :Low .
-
-# Capnography Conditions  
-:Cond_CapnographySensor_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "Capnography Sensor Connected" ;
-    rdfs:comment "Condition: Capnography sensor is connected" ;
-    dev:aboutEntity :Capnography_Sensor ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
-
-# Temperature Conditions
-:Cond_CoreTempMetric_OperationalState_Available
-    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
-    rdfs:label "Core Temperature Metric Available" ;
-    rdfs:comment "Condition: Core temperature metric is being measured and available" ;
-    dev:aboutEntity :Core_Temp_Metric ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:MetricAvailable .
-
-:Cond_CoreTempMetric_ValueInterpretation_HighLimitViolation
-    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
-    rdfs:label "Core Temperature High Limit Violation" ;
-    rdfs:comment "Condition: Core temperature metric value exceeds high threshold" ;
-    dev:aboutEntity :Core_Temp_Metric ;
-    dev:onAttribute dev:hasValueInterpretation ;
-    dev:hasValue common:HighLimitViolation .
-
-:Cond_CoreTemperatureSensor_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "Core Temperature Sensor Connected" ;
-    rdfs:comment "Condition: Core temperature sensor is connected" ;
-    dev:aboutEntity :CoreTemperature_Probe_Sensor ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
-
-# ECG Conditions
-:Cond_ECGLLSensor_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "ECG LL Sensor Connected" ;
-    rdfs:comment "Condition: ECG LL (Left Leg) sensor is connected" ;
-    dev:aboutEntity :ECG_LL_Sensor ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
-
-:Cond_ECGRASensor_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "ECG RA Sensor Connected" ;
-    rdfs:comment "Condition: ECG RA (Right Arm) sensor is connected" ;
-    dev:aboutEntity :ECG_RA_Sensor ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
-
-:Cond_ECGV1Sensor_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "ECG V1 Sensor Connected" ;
-    rdfs:comment "Condition: ECG V1 precordial sensor is connected" ;
-    dev:aboutEntity :ECG_V1_Sensor ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
-
-:Cond_ECGV2Sensor_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "ECG V2 Sensor Connected" ;
-    rdfs:comment "Condition: ECG V2 precordial sensor is connected" ;
-    dev:aboutEntity :ECG_V2_Sensor ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
-
-:Cond_ECGV3Sensor_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "ECG V3 Sensor Connected" ;
-    rdfs:comment "Condition: ECG V3 precordial sensor is connected" ;
-    dev:aboutEntity :ECG_V3_Sensor ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
-
-:Cond_ECGV4Sensor_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "ECG V4 Sensor Connected" ;
-    rdfs:comment "Condition: ECG V4 precordial sensor is connected" ;
-    dev:aboutEntity :ECG_V4_Sensor ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
-
-:Cond_ECGV5Sensor_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "ECG V5 Sensor Connected" ;
-    rdfs:comment "Condition: ECG V5 precordial sensor is connected" ;
-    dev:aboutEntity :ECG_V5_Sensor ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
-
-:Cond_ECGV6Sensor_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "ECG V6 Sensor Connected" ;
-    rdfs:comment "Condition: ECG V6 precordial sensor is connected" ;
-    dev:aboutEntity :ECG_V6_Sensor ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
-
-# EtCO2 Conditions
-:Cond_EtCO2Metric_OperationalState_Available
-    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
-    rdfs:label "EtCO2 Metric Available" ;
-    rdfs:comment "Condition: End-tidal CO2 metric is being measured and available" ;
-    dev:aboutEntity :EtCO2_Metric ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:MetricAvailable .
-
-:Cond_EtCO2Metric_ValueInterpretation_LowLimitViolation
-    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
-    rdfs:label "EtCO2 Low Limit Violation" ;
-    rdfs:comment "Condition: End-tidal CO2 metric value below low threshold" ;
-    dev:aboutEntity :EtCO2_Metric ;
-    dev:onAttribute dev:hasValueInterpretation ;
-    dev:hasValue common:LowLimitViolation .
-
-# Philips Monitor Condition
-:Cond_PhilipsMonitor_FunctionalState_Enabled
-    a dev:AlertCondition , dev:DeviceOperationalCondition ;
-    rdfs:label "Philips Monitor Enabled" ;
-    rdfs:comment "Condition: Philips Monitor is enabled and operational" ;
+    rdfs:label "Condition: PhilipsMonitor hasOperationalState Enabled" ;
+    rdfs:comment "The Philips Monitor is powered on and in an enabled/active operational state. Required by all Philips Monitor alarms." ;
     dev:aboutEntity :PhilipsMonitor ;
     dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Active .
+    dev:hasValue common:Enabled .
 
-# Pulse Oximetry Conditions
-:Cond_PulseOximetrySensor_FunctionalState_Connected
+:Cond_PulseOximetrySensor_OperationalState_Enabled
     a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "Pulse Oximetry Sensor Connected" ;
-    rdfs:comment "Condition: Pulse oximetry sensor is connected" ;
+    rdfs:label "Condition: PulseOximetrySensor hasOperationalState Enabled" ;
+    rdfs:comment "The pulse oximetry sensor probe is physically connected and recognised by the monitor." ;
     dev:aboutEntity :Pulse_Oximeter_Sensor ;
     dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
+    dev:hasValue common:Enabled .
 
-:Cond_PulseOximetrySensor_MeasurementLocation_Extremity
+:Cond_SpO2Metric_OperationalState_Enabled
+    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
+    rdfs:label "Condition: SpO2Metric hasOperationalState Enabled" ;
+    rdfs:comment "The SpO2 metric is actively being measured and its value is available for alarm evaluation." ;
+    dev:aboutEntity :SpO2_Metric ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+## Alarm 1 specific — left-side probe placement
+:Cond_PulseOximetrySensor_MeasurementLocation_LeftSide
     a dev:AlertCondition , dev:MeasurementLocationCondition ;
-    rdfs:label "Pulse Oximetry Location Extremity" ;
-    rdfs:comment "Condition: Pulse oximetry sensor measurement location is extremity" ;
+    rdfs:label "Condition: PulseOximetrySensor hasMeasurementSite LeftHand" ;
+    rdfs:comment "The pulse oximetry sensor is placed on the left side (left hand). Mapped to :LeftHand — the closest defined MeasurementSite instance. Distinguishes SpO2l (left) from SpO2r (right) and SpO2po (post-ductal) measurements." ;
     dev:aboutEntity :Pulse_Oximeter_Sensor ;
     dev:onAttribute dev:hasMeasurementSite ;
-    dev:hasValue :Extremity .
+    dev:hasValue :LeftSided .
 
-:Cond_PulseOximetrySensor_MeasurementLocation_Left
-    a dev:AlertCondition , dev:MeasurementLocationCondition ;
-    rdfs:label "Pulse Oximetry Location Left" ;
-    rdfs:comment "Condition: Pulse oximetry sensor measurement location is left side" ;
-    dev:aboutEntity :Pulse_Oximeter_Sensor ;
-    dev:onAttribute dev:hasMeasurementSite ;
-    dev:hasValue :Left .
-
+## Alarm 2 specific — post-ductal probe placement
 :Cond_PulseOximetrySensor_MeasurementLocation_postDuctal
     a dev:AlertCondition , dev:MeasurementLocationCondition ;
-    rdfs:label "Pulse Oximetry Location Post-ductal" ;
-    rdfs:comment "Condition: Pulse oximetry sensor measurement location is post-ductal" ;
+    rdfs:label "Condition: PulseOximetrySensor hasMeasurementSite PostDuctal" ;
+    rdfs:comment "The pulse oximetry sensor is placed at a post-ductal site (e.g. left foot or umbilical area), enabling comparison with pre-ductal SpO2 for detection of ductal circulatory shunting." ;
     dev:aboutEntity :Pulse_Oximeter_Sensor ;
     dev:onAttribute dev:hasMeasurementSite ;
-    dev:hasValue :postDuctal .
+    dev:hasValue :PostDuctal .
 
-# Pulse Rate Conditions
-:Cond_PulseRateMetric_OperationalState_Available
-    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
-    rdfs:label "Pulse Rate Metric Available" ;
-    rdfs:comment "Condition: Pulse rate metric is being measured and available" ;
-    dev:aboutEntity :PulseRate_Metric ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:MetricAvailable .
-
-:Cond_PulseRateMetric_ValueInterpretation_Bradycardia
+:Cond_SpO2Metric_MagnitudeState_High
     a dev:AlertCondition , dev:PhysiologicalValueCondition ;
-    rdfs:label "Pulse Rate Bradycardia" ;
-    rdfs:comment "Condition: Pulse rate metric indicates bradycardia" ;
-    dev:aboutEntity :PulseRate_Metric ;
-    dev:onAttribute dev:hasValueInterpretation ;
-    dev:hasValue common:BradycardiaInterpretation .
-
-:Cond_PulseRateMetric_ValueInterpretation_HighLimitViolation
-    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
-    rdfs:label "Pulse Rate High Limit Violation" ;
-    rdfs:comment "Condition: Pulse rate metric value exceeds high threshold" ;
-    dev:aboutEntity :PulseRate_Metric ;
-    dev:onAttribute dev:hasValueInterpretation ;
-    dev:hasValue common:HighLimitViolation .
-
-# Skin Temperature Conditions
-:Cond_SkinTempMetric_OperationalState_Available
-    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
-    rdfs:label "Skin Temperature Metric Available" ;
-    rdfs:comment "Condition: Skin temperature metric is being measured and available" ;
-    dev:aboutEntity :Skin_Temp_Metric ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:MetricAvailable .
-
-:Cond_SkinTempMetric_Metric_ValueInterpretation_LowLimitViolation
-    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
-    rdfs:label "Skin Temperature Low Limit Violation" ;
-    rdfs:comment "Condition: Skin temperature metric value below low threshold" ;
-    dev:aboutEntity :Skin_Temp_Metric ;
-    dev:onAttribute dev:hasValueInterpretation ;
-    dev:hasValue common:LowLimitViolation .
-
-:Cond_SkinTemperatureSensor_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "Skin Temperature Sensor Connected" ;
-    rdfs:comment "Condition: Skin temperature sensor is connected" ;
-    dev:aboutEntity :SkinTemperature_Probe_Sensor ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
-
-# SpO2 Conditions
-:Cond_SpO2Metric_OperationalState_Available
-    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
-    rdfs:label "SpO2 Metric Available" ;
-    rdfs:comment "Condition: SpO2 metric is being measured and available" ;
+    rdfs:label "Condition: SpO2Metric hasMagnitudeState High" ;
+    rdfs:comment "The SpO2 metric value is above the normal range (hyperoxaemia). Device-side epistemic representation of the alarm trigger." ;
     dev:aboutEntity :SpO2_Metric ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:MetricAvailable .
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:High .
 
-:Cond_SpO2Metric_ValueInterpretation_HighLimitViolation
-    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
-    rdfs:label "SpO2 High Limit Violation" ;
-    rdfs:comment "Condition: SpO2 metric value exceeds high threshold" ;
-    dev:aboutEntity :SpO2_Metric ;
-    dev:onAttribute dev:hasValueInterpretation ;
-    dev:hasValue common:HighLimitViolation .
+# ── IMPLIED / INFERRED CONDITIONS ────────────────────────────────────
 
-:Cond_SpO2Metric_ValueInterpretation_LowLimitViolation
-    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
-    rdfs:label "SpO2 Low Limit Violation" ;
-    rdfs:comment "Condition: SpO2 metric value below low threshold" ;
-    dev:aboutEntity :SpO2_Metric ;
-    dev:onAttribute dev:hasValueInterpretation ;
-    dev:hasValue common:LowLimitViolation .
-
-# ST Segment Conditions
-:Cond_STII_Metric_OperationalState_Available
-    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
-    rdfs:label "ST-II Metric Available" ;
-    rdfs:comment "Condition: ST-II metric is being measured/calculated and available" ;
-    dev:aboutEntity :ST_II_Metric ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:MetricAvailable .
-
-:Cond_STII_Metric_ValueInterpretation_LowLimitViolation
-    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
-    rdfs:label "ST-II Low Limit Violation" ;
-    rdfs:comment "Condition: ST-II metric value below low threshold" ;
-    dev:aboutEntity :ST_II_Metric ;
-    dev:onAttribute dev:hasValueInterpretation ;
-    dev:hasValue common:LowLimitViolation .
-
-:Cond_STV_Metric_OperationalState_Available
-    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
-    rdfs:label "ST-V Metric Available" ;
-    rdfs:comment "Condition: ST-V metric is being measured/calculated and available" ;
-    dev:aboutEntity :ST_V_Metric ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:MetricAvailable .
-
-:Cond_STV_Metric_ValueInterpretation_HighLimitViolation
-    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
-    rdfs:label "ST-V High Limit Violation" ;
-    rdfs:comment "Condition: ST-V metric value exceeds high threshold" ;
-    dev:aboutEntity :ST_V_Metric ;
-    dev:onAttribute dev:hasValueInterpretation ;
-    dev:hasValue common:HighLimitViolation .
-
-
-#######################################################################
-# INFERRED CONDITIONS  
-# Derived knowledge that logically follows from asserted conditions and network reasoning
-#######################################################################
-
-# Device Channel Conditions (Infrastructure)
-:Cond_ABPDeviceChannel_FunctionalState_Enabled
-    a dev:AlertCondition , dev:DeviceOperationalCondition ;
-    rdfs:label "ABP Device Channel Enabled" ;
-    rdfs:comment "Inferred: ABP device channel is enabled (from connected sensor)" ;
-    dev:aboutEntity :ABP_Channel ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Active .
-
-:Cond_CoreTemperatureDeviceChannel_FunctionalState_Enabled
-    a dev:AlertCondition , dev:DeviceOperationalCondition ;
-    rdfs:label "Core Temperature Channel Enabled" ;
-    rdfs:comment "Inferred: Core temperature device channel is enabled" ;
-    dev:aboutEntity :Core_Temp_Channel ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Active .
-
-:Cond_EtCO2DeviceChannel_FunctionalState_Enabled
-    a dev:AlertCondition , dev:DeviceOperationalCondition ;
-    rdfs:label "EtCO2 Device Channel Enabled" ;
-    rdfs:comment "Inferred: EtCO2 device channel is enabled" ;
-    dev:aboutEntity :EtCO2_Channel ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Active .
-
-:Cond_PulseRateDeviceChannel_FunctionalState_Enabled
-    a dev:AlertCondition , dev:DeviceOperationalCondition ;
-    rdfs:label "Pulse Rate Channel Enabled" ;
-    rdfs:comment "Inferred: Pulse rate device channel is enabled" ;
-    dev:aboutEntity :PulseRate_Channel ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Active .
-
-:Cond_SkinTemperatureDeviceChannel_FunctionalState_Enabled
-    a dev:AlertCondition , dev:DeviceOperationalCondition ;
-    rdfs:label "Skin Temperature Channel Enabled" ;
-    rdfs:comment "Inferred: Skin temperature device channel is enabled" ;
-    dev:aboutEntity :Skin_Temp_Channel ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Active .
-
-:Cond_SpO2DeviceChannel_FunctionalState_Enabled
-    a dev:AlertCondition , dev:DeviceOperationalCondition ;
-    rdfs:label "SpO2 Device Channel Enabled" ;
-    rdfs:comment "Inferred: SpO2 device channel is enabled" ;
-    dev:aboutEntity :SpO2_Channel ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Active .
-
-:Cond_STIIDeviceChannel_FunctionalState_Enabled
-    a dev:AlertCondition , dev:DeviceOperationalCondition ;
-    rdfs:label "ST-II Device Channel Enabled" ;
-    rdfs:comment "Inferred: ST-II device channel is enabled" ;
-    dev:aboutEntity :ST_II_Channel ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Active .
-
-:Cond_STVDeviceChannel_FunctionalState_Enabled
-    a dev:AlertCondition , dev:DeviceOperationalCondition ;
-    rdfs:label "ST-V Device Channel Enabled" ;
-    rdfs:comment "Inferred: ST-V device channel is enabled" ;
-    dev:aboutEntity :ST_V_Channel ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Active .
-
-# Sensor Interface Conditions (Connectivity)
-:Cond_ABPSensorInterface_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "ABP Sensor Interface Connected" ;
-    rdfs:comment "Inferred: ABP sensor interface is connected" ;
-    dev:aboutEntity :IBP_Transducer_Interface ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
-
-:Cond_ECGInterface_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "ECG Interface Connected" ;
-    rdfs:comment "Inferred: ECG interface is connected (alternative form)" ;
-    dev:aboutEntity :ECG_Interface ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue :Connected .
-
-:Cond_PulseOximeterInterfaceConnected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "Pulse Oximeter Interface Connected" ;
-    rdfs:comment "Inferred: Pulse oximeter interface is connected" ;
-    dev:aboutEntity :PulseOximeter_Interface ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue :Connected .
-
-:Cond_PulseOximeterSensorInterface_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "Pulse Oximeter Interface Connected" ;
-    rdfs:comment "Inferred: Pulse oximeter sensor interface is connected (alternative form)" ;
-    dev:aboutEntity :PulseOximeter_Interface ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue :Connected .
-
-:Cond_SkinTemperatureSensorInterface_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "Skin Temperature Interface Connected" ;
-    rdfs:comment "Inferred: Skin temperature sensor interface is connected" ;
-    dev:aboutEntity :SkinTemperature_Probe_Interface ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
-
-:Cond_CoreTemperatureSensorInterface_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "Core Temperature Sensor Interface Connected" ;
-    rdfs:comment "Inferred: Core temperature sensor interface is connected" ;
-    dev:aboutEntity :CoreTemperature_Probe_Interface ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
-
-# Measurement Location Conditions
-:Cond_ABPSensor_MeasurementLocation_DistalRadialArtery
-    a dev:AlertCondition , dev:MeasurementLocationCondition ;
-    rdfs:label "ABP Location Distal Radial Artery" ;
-    rdfs:comment "Inferred: ABP sensor measurement location is distal radial artery" ;
-    dev:aboutEntity :ABP_Transducer_Sensor ;
-    dev:onAttribute dev:hasMeasurementSite ;
-    dev:hasValue :DistalRadialArtery .
-
-:Cond_EtCO2Sensor_MeasurementLocation_TerminalAirway
-    a dev:AlertCondition , dev:MeasurementLocationCondition ;
-    rdfs:label "EtCO2 Location Terminal Airway" ;
-    rdfs:comment "Inferred: EtCO2 sensor measurement location is terminal airway" ;
-    dev:aboutEntity :Capnography_Sensor ;
-    dev:onAttribute dev:hasMeasurementSite ;
-    dev:hasValue :TerminalAirway .
-
-# Patient-Device Connection Conditions (Clinical Network)
 :Cond_Patient_HasConnectedDevice_PhilipsMonitor
     a dev:AlertCondition , dev:PatientConnectivityCondition ;
-    rdfs:label "Patient Connected to Philips Monitor" ;
-    rdfs:comment "Inferred: Patient has connected Philips Monitor device" ;
+    rdfs:label "Condition: Patient hasConnectedDevice PhilipsMonitor" ;
+    rdfs:comment "Inferred from device being enabled: the patient is connected to (monitored by) the Philips Monitor. Property clin:hasConnectedDevice is the intended cross-domain link from Patient to PhysicalDevice." ;
     dev:aboutEntity :Patient ;
     dev:onAttribute clin:hasConnectedDevice ;
     dev:hasValue :PhilipsMonitor .
 
-:Cond_Patient_HasConnectedDevice_Ventilator
-    a dev:AlertCondition , dev:PatientConnectivityCondition ;
-    rdfs:label "Patient Connected to Ventilator" ;
-    rdfs:comment "Inferred: Patient has connected ventilator device" ;
-    dev:aboutEntity :Patient ;
-    dev:onAttribute clin:hasConnectedDevice ;
-    dev:hasValue :VentilatorDevice .
-
-# Patient-Sensor Connection Conditions
-:Cond_Patient_HasConnectedSensor_ABPtransducer
-    a dev:AlertCondition , dev:PatientConnectivityCondition ;
-    rdfs:label "Patient Connected ABP Transducer" ;
-    rdfs:comment "Inferred: Patient has connected ABP transducer sensor" ;
-    dev:aboutEntity :Patient ;
-    dev:onAttribute clin:hasConnectedSensor ;
-    dev:hasValue :ABP_Transducer_Sensor .
-
-:Cond_Patient_HasConnectedSensor_Capnography
-    a dev:AlertCondition , dev:PatientConnectivityCondition ;
-    rdfs:label "Patient Connected Capnography" ;
-    rdfs:comment "Inferred: Patient has connected capnography sensor" ;
-    dev:aboutEntity :Patient ;
-    dev:onAttribute clin:hasConnectedSensor ;
-    dev:hasValue :Capnography_Sensor .
-
-:Cond_Patient_HasConnectedSensor_CoreTempSensor
-    a dev:AlertCondition , dev:PatientConnectivityCondition ;
-    rdfs:label "Patient Connected Core Temperature" ;
-    rdfs:comment "Inferred: Patient has connected core temperature sensor" ;
-    dev:aboutEntity :Patient ;
-    dev:onAttribute clin:hasConnectedSensor ;
-    dev:hasValue :CoreTemperature_Probe_Sensor .
-
-:Cond_Patient_HasConnectedSensor_ECG
-    a dev:AlertCondition , dev:PatientConnectivityCondition ;
-    rdfs:label "Patient Connected ECG" ;
-    rdfs:comment "Inferred: Patient has connected ECG sensors" ;
-    dev:aboutEntity :Patient ;
-    dev:onAttribute clin:hasConnectedSensor ;
-    dev:hasValue :ECG_RA_Sensor, :ECG_LA_Sensor, :ECG_LL_Sensor, :ECG_RL_Sensor, :ECG_V1_Sensor, :ECG_V2_Sensor, :ECG_V3_Sensor, :ECG_V4_Sensor, :ECG_V5_Sensor, :ECG_V6_Sensor .
-
 :Cond_Patient_HasConnectedSensor_PulseOximetry
     a dev:AlertCondition , dev:PatientConnectivityCondition ;
-    rdfs:label "Patient Connected Pulse Oximetry" ;
-    rdfs:comment "Inferred: Patient has connected pulse oximetry sensor" ;
+    rdfs:label "Condition: Patient hasConnectedSensor PulseOximetrySensor" ;
+    rdfs:comment "Inferred from sensor connectivity: the patient has a pulse oximetry probe applied. Property clin:hasConnectedSensor is the intended cross-domain link from Patient to Sensor." ;
     dev:aboutEntity :Patient ;
     dev:onAttribute clin:hasConnectedSensor ;
     dev:hasValue :Pulse_Oximeter_Sensor .
 
+:Cond_SaO2Property_ObservationState_Monitored
+    a dev:AlertCondition , dev:ObservationStateCondition ;
+    rdfs:label "Condition: Arterial_Oxygenation_Property hasObservationState Monitored" ;
+    rdfs:comment "Inferred from SpO2 metric availability: the clinical arterial oxygenation property (SaO2) is being actively observed. Triggers upward propagation of Monitored to the parent process and organ via property chain axioms." ;
+    dev:aboutEntity :Arterial_Oxygenation_Property ;
+    dev:onAttribute clin:hasObservationState ;
+    dev:hasValue common:Monitored .
+
+:Cond_SaO2Property_MagnitudeState_High
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Arterial_Oxygenation_Property hasMagnitudeState High" ;
+    rdfs:comment "Ontological interpretation of the SpO2 metric being high: the clinical SaO2 physiological property is in an elevated state. Represents hyperoxaemia at the clinical property level." ;
+    dev:aboutEntity :Arterial_Oxygenation_Property ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:High .
+
+:Cond_PulmonaryOxygenation_FunctionalState_Hyper
+    a dev:AlertCondition ;
+    rdfs:label "Condition: Pulmonary_Oxygenation_Process hasFunctionalState Hyper" ;
+    rdfs:comment "Inferred from elevated SaO2: the pulmonary oxygenation process is in a hyperfunctional state (excessive oxygenation)." ;
+    dev:aboutEntity :Pulmonary_Oxygenation_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Hyper .
+
+
+#######################################################################
+# ALARM 3 | PHILIPSMONITOR - ?? ST-II laag
+# ALARM 4 | PHILIPSMONITOR - ?? ST-V hoog g
+# (PhilipsMonitor/Patient-device conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_ECGSensorGroup_OperationalState_Enabled
+    a dev:AlertCondition , dev:SensorConnectivityCondition ;
+    rdfs:label "Condition: ECG_SensorGroup hasOperationalState Enabled" ;
+    rdfs:comment "The ECG sensor group (aggregating all ECG lead electrodes) is connected and functional. Represented by :ECG_SensorGroup, the SensorGroup that groups all ECG leads." ;
+    dev:aboutEntity :ECG_SensorGroup ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+## Alarm 3 specific — ST-II metric
+:Cond_STII_Metric_OperationalState_Enabled
+    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
+    rdfs:label "Condition: ST_II_Metric hasOperationalState Enabled" ;
+    rdfs:comment "The ST-II metric (ST-segment deviation in lead II) is actively being calculated and its value is available." ;
+    dev:aboutEntity :ST_II_Metric ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_STII_Metric_MagnitudeState_low
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: ST_II_Metric hasMagnitudeState Low" ;
+    rdfs:comment "The ST-II metric value is below the normal range (ST-segment depression in lead II). Device-side epistemic representation of the alarm trigger." ;
+    dev:aboutEntity :ST_II_Metric ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:Low .
+
+## Alarm 4 specific — ST-V metric
+:Cond_STV_Metric_OperationalState_Enabled
+    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
+    rdfs:label "Condition: ST_V_Metric hasOperationalState Enabled" ;
+    rdfs:comment "The ST-V metric (ST-segment deviation in lead V) is actively being calculated and its value is available." ;
+    dev:aboutEntity :ST_V_Metric ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_STV_Metric_MagnitudeState_High
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: ST_V_Metric hasMagnitudeState High" ;
+    rdfs:comment "The ST-V metric value is above the normal range (ST-segment elevation in lead V). Device-side epistemic representation of the alarm trigger." ;
+    dev:aboutEntity :ST_V_Metric ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:High .
+
+# ── IMPLIED / INFERRED CONDITIONS ────────────────────────────────────
+
+:Cond_Patient_HasConnectedSensor_ECGSensor
+    a dev:AlertCondition , dev:PatientConnectivityCondition ;
+    rdfs:label "Condition: Patient hasConnectedSensor ECG_SensorGroup" ;
+    rdfs:comment "Inferred from ECG sensor connectivity: the patient has ECG electrodes applied. Represented as the ECG_SensorGroup rather than individual leads." ;
+    dev:aboutEntity :Patient ;
+    dev:onAttribute clin:hasConnectedSensor ;
+    dev:hasValue :ECG_SensorGroup .
+
+:Cond_CardiacDepolarizationProperty_ObservationState_Monitored
+    a dev:AlertCondition , dev:ObservationStateCondition ;
+    rdfs:label "Condition: Cardiac_Electrical_Depolarization_Property hasObservationState Monitored" ;
+    rdfs:comment "Inferred from ST metric availability: the cardiac electrical depolarisation property is being actively observed via ST-segment analysis." ;
+    dev:aboutEntity :Cardiac_Electrical_Depolarization_Property ;
+    dev:onAttribute clin:hasObservationState ;
+    dev:hasValue common:Monitored .
+
+## Alarm 3 specific — ST-II low → depolarisation low
+:Cond_CardiacDepolarizationProperty_MagnitudeState_low
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Cardiac_Electrical_Depolarization_Property hasMagnitudeState Low" ;
+    rdfs:comment "Ontological interpretation of ST-II being low: the cardiac depolarisation property is in a low/deviant state (ST-segment depression). Note: interpretation of a single-lead deviation is clinically limited; process-level inference is intentionally withheld." ;
+    dev:aboutEntity :Cardiac_Electrical_Depolarization_Property ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:Low .
+
+## Alarm 4 specific — ST-V high → depolarisation high
+:Cond_CardiacDepolarizationProperty_MagnitudeState_High
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Cardiac_Electrical_Depolarization_Property hasMagnitudeState High" ;
+    rdfs:comment "Ontological interpretation of ST-V being high: the cardiac depolarisation property is in a high/deviant state (ST-segment elevation). Note: interpretation of a single-lead deviation is clinically limited; process-level inference is intentionally withheld." ;
+    dev:aboutEntity :Cardiac_Electrical_Depolarization_Property ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:High .
+
+
+#######################################################################
+# ALARM 5 | PHILIPSMONITOR - ?? Thuid laag  (skin temperature low)
+# (PhilipsMonitor/Patient-device conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_SkinTemperatureSensor_OperationalState_Enabled
+    a dev:AlertCondition , dev:SensorConnectivityCondition ;
+    rdfs:label "Condition: SkinTemperature_Probe_Sensor hasOperationalState Enabled" ;
+    rdfs:comment "The skin temperature probe is physically connected and recognised by the monitor." ;
+    dev:aboutEntity :SkinTemperature_Probe_Sensor ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_SkinTempMetric_OperationalState_Enabled
+    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
+    rdfs:label "Condition: Skin_Temp_Metric hasOperationalState Enabled" ;
+    rdfs:comment "The skin temperature metric is actively being measured and its value is available for alarm evaluation." ;
+    dev:aboutEntity :Skin_Temp_Metric ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_SkinTempMetric_MagnitudeState_low
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Skin_Temp_Metric hasMagnitudeState Low" ;
+    rdfs:comment "The skin temperature metric value is below the normal range (hypothermic skin temperature). Device-side epistemic representation of the alarm trigger." ;
+    dev:aboutEntity :Skin_Temp_Metric ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:Low .
+
+# ── IMPLIED / INFERRED CONDITIONS ────────────────────────────────────
+
 :Cond_Patient_HasConnectedSensor_SkinTempSensor
     a dev:AlertCondition , dev:PatientConnectivityCondition ;
-    rdfs:label "Patient Connected Skin Temperature" ;
-    rdfs:comment "Inferred: Patient has connected skin temperature sensor" ;
+    rdfs:label "Condition: Patient hasConnectedSensor SkinTemperature_Probe_Sensor" ;
+    rdfs:comment "Inferred from sensor connectivity: the patient has a skin temperature probe applied." ;
     dev:aboutEntity :Patient ;
     dev:onAttribute clin:hasConnectedSensor ;
     dev:hasValue :SkinTemperature_Probe_Sensor .
 
-# Clinical Property Observation Conditions
-:Cond_AlveolarCO2Property_ObservationState_Monitored
+:Cond_SkinTemperatureProperty_ObservationState_Monitored
     a dev:AlertCondition , dev:ObservationStateCondition ;
-    rdfs:label "Alveolar CO2 Monitored" ;
-    rdfs:comment "Inferred: Alveolar CO2 property is being monitored" ;
-    dev:aboutEntity :Alveolar_CarbonDioxide_Property ;
+    rdfs:label "Condition: Temperature_Skin_Property hasObservationState Monitored" ;
+    rdfs:comment "Inferred from skin temperature metric availability: the clinical skin temperature physiological property is being actively observed." ;
+    dev:aboutEntity :Temperature_Skin_Property ;
     dev:onAttribute clin:hasObservationState ;
-    dev:hasValue common:MonitoredState .
+    dev:hasValue common:Monitored .
 
-:Cond_ArterialBloodPressureProperty_ObservationState_Monitored
-    a dev:AlertCondition , dev:ObservationStateCondition ;
-    rdfs:label "Arterial Blood Pressure Monitored" ;
-    rdfs:comment "Inferred: Arterial blood pressure property is being monitored" ;
-    dev:aboutEntity :ABP_Systolic_Property, :ABP_Diastolic_Property, :ABP_Mean_Property ;
-    dev:onAttribute clin:hasObservationState ;
-    dev:hasValue common:MonitoredState .
+:Cond_SkinTemperatureProperty_MagnitudeState_low
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Temperature_Skin_Property hasMagnitudeState Low" ;
+    rdfs:comment "Ontological interpretation of the skin temperature metric being low: the clinical skin temperature physiological property is in a low/deviant state." ;
+    dev:aboutEntity :Temperature_Skin_Property ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:Low .
 
-:Cond_BodyTemperatureProperty_ObservationState_Monitored
-    a dev:AlertCondition , dev:ObservationStateCondition ;
-    rdfs:label "Body Temperature Monitored" ;
-    rdfs:comment "Inferred: Body temperature property is being monitored" ;
-    dev:aboutEntity :Body_Temperature_Property ;
-    dev:onAttribute clin:hasObservationState ;
-    dev:hasValue common:MonitoredState .
+:Cond_CutaneousThermoregulation_FunctionalState_Hypo
+    a dev:AlertCondition ;
+    rdfs:label "Condition: Thermoregulation_Process hasFunctionalState Hypo" ;
+    rdfs:comment "Inferred from low skin temperature: the thermoregulation process is in a hypofunctional state (insufficient cutaneous thermal regulation). Note: mapped to :Thermoregulation_Process as no separate cutaneous sub-process instance exists." ;
+    dev:aboutEntity :Thermoregulation_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Hypo .
 
-:Cond_CardiacDepolarizationProperty_ObservationState_Monitored
+
+#######################################################################
+# ALARM 6 | PHILIPSMONITOR - ?? Tkern hoog  (core temperature high)
+# (PhilipsMonitor/Patient-device conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_CoreTemperatureSensor_OperationalState_Enabled
+    a dev:AlertCondition , dev:SensorConnectivityCondition ;
+    rdfs:label "Condition: CoreTemperature_Probe_Sensor hasOperationalState Enabled" ;
+    rdfs:comment "The core temperature probe is physically connected and recognised by the monitor." ;
+    dev:aboutEntity :CoreTemperature_Probe_Sensor ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_CoreTempMetric_OperationalState_Enabled
+    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
+    rdfs:label "Condition: Core_Temp_Metric hasOperationalState Enabled" ;
+    rdfs:comment "The core temperature metric is actively being measured and its value is available for alarm evaluation." ;
+    dev:aboutEntity :Core_Temp_Metric ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_CoreTempMetric_MagnitudeState_High
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Core_Temp_Metric hasMagnitudeState High" ;
+    rdfs:comment "The core temperature metric value is above the normal range (hyperthermia). Device-side epistemic representation of the alarm trigger." ;
+    dev:aboutEntity :Core_Temp_Metric ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:High .
+
+# ── IMPLIED / INFERRED CONDITIONS ────────────────────────────────────
+
+:Cond_Patient_HasConnectedSensor_CoreTempSensor
+    a dev:AlertCondition , dev:PatientConnectivityCondition ;
+    rdfs:label "Condition: Patient hasConnectedSensor CoreTemperature_Probe_Sensor" ;
+    rdfs:comment "Inferred from sensor connectivity: the patient has a core temperature probe applied." ;
+    dev:aboutEntity :Patient ;
+    dev:onAttribute clin:hasConnectedSensor ;
+    dev:hasValue :CoreTemperature_Probe_Sensor .
+
+:Cond_CoreTemperatureProperty_ObservationState_Monitored
     a dev:AlertCondition , dev:ObservationStateCondition ;
-    rdfs:label "Cardiac Depolarization Monitored" ;
-    rdfs:comment "Inferred: Cardiac depolarization property is being monitored" ;
-    dev:aboutEntity :Cardiac_Electrical_Depolarization_Property ;
+    rdfs:label "Condition: Temperature_Core_Property hasObservationState Monitored" ;
+    rdfs:comment "Inferred from core temperature metric availability: the clinical core temperature physiological property is being actively observed." ;
+    dev:aboutEntity :Temperature_Core_Property ;
     dev:onAttribute clin:hasObservationState ;
-    dev:hasValue :MonitoredState .
+    dev:hasValue common:Monitored .
+
+:Cond_CoreTemperatureProperty_MagnitudeState_High
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Temperature_Core_Property hasMagnitudeState High" ;
+    rdfs:comment "Ontological interpretation of the core temperature metric being high: the clinical core temperature physiological property is in an elevated state (hyperthermia)." ;
+    dev:aboutEntity :Temperature_Core_Property ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:High .
+
+:Cond_CoreThermoRegulation_FunctionalState_Hyper
+    a dev:AlertCondition ;
+    rdfs:label "Condition: Thermoregulation_Process hasFunctionalState Hyper" ;
+    rdfs:comment "Inferred from high core temperature: the thermoregulation process is in a hyperfunctional state (excessive heat production or insufficient heat dissipation). Note: mapped to :Thermoregulation_Process as no separate core sub-process instance exists." ;
+    dev:aboutEntity :Thermoregulation_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Hyper .
+
+
+#######################################################################
+# ALARM 7 | PHILIPSMONITOR - ??? Brady (pols)  (bradycardia - low pulse rate)
+# (PhilipsMonitor/PulseOximetrySensor/Patient-device conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_PulseRateMetric_OperationalState_Enabled
+    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
+    rdfs:label "Condition: PulsatileHeartRate_Metric hasOperationalState Enabled" ;
+    rdfs:comment "The pulse rate metric (derived from pulse oximetry) is actively being measured and its value is available for alarm evaluation." ;
+    dev:aboutEntity :PulsatileHeartRate_Metric ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_PulseRateMetric_RateState_low
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: PulsatileHeartRate_Metric hasRateState Low" ;
+    rdfs:comment "The pulse rate metric value is below the normal range (bradycardia). Device-side epistemic representation of the alarm trigger." ;
+    dev:aboutEntity :PulsatileHeartRate_Metric ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:Low .
+
+# ── IMPLIED / INFERRED CONDITIONS ────────────────────────────────────
 
 :Cond_PulsatileHeartRateProperty_ObservationState_Monitored
     a dev:AlertCondition , dev:ObservationStateCondition ;
-    rdfs:label "Pulsatile Heart Rate Monitored" ;
-    rdfs:comment "Inferred: Pulsatile heart rate property is being monitored" ;
+    rdfs:label "Condition: Cardiac_Contractile_Frequency_Property hasObservationState Monitored" ;
+    rdfs:comment "Inferred from pulse rate metric availability: the clinical pulsatile heart rate property (cardiac contractile frequency) is being actively observed." ;
     dev:aboutEntity :Cardiac_Contractile_Frequency_Property ;
     dev:onAttribute clin:hasObservationState ;
-    dev:hasValue :MonitoredState .
+    dev:hasValue common:Monitored .
 
-:Cond_SaO2Property_ObservationState_Monitored
+:Cond_PulsatileHeartRateProperty_RateState_low
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Cardiac_Contractile_Frequency_Property hasRateState Low" ;
+    rdfs:comment "Ontological interpretation of the pulse rate metric being low: the clinical pulsatile heart rate property is in a low/deviant state (bradycardia)." ;
+    dev:aboutEntity :Cardiac_Contractile_Frequency_Property ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:Low .
+
+:Cond_CardiacRateProcess_FunctionalState_Hypo
+    a dev:AlertCondition ;
+    rdfs:label "Condition: Cardiac_Rate_Process hasFunctionalState Hypo" ;
+    rdfs:comment "Inferred from low pulse rate: the cardiac rate process is in a hypofunctional state (insufficient contractile frequency — bradycardia). Mapped to :Cardiac_Rate_Process; consider :Cardiac_Contraction_Process for contraction-specific inferrals." ;
+    dev:aboutEntity :Cardiac_Rate_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Hypo .
+
+
+#######################################################################
+# ALARM 8 | PHILIPSMONITOR - ABP slecht signaal  (ABP poor signal quality — technical)
+# ALARM 9 | PHILIPSMONITOR - ABPm hoog  (ABP mean high)
+# (PhilipsMonitor/Patient-device conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_ArterialBloodPressureSensor_OperationalState_Enabled
+    a dev:AlertCondition , dev:SensorConnectivityCondition ;
+    rdfs:label "Condition: ABP_Transducer_Sensor hasOperationalState Enabled" ;
+    rdfs:comment "The arterial blood pressure transducer is physically connected and recognised by the monitor." ;
+    dev:aboutEntity :ABP_Transducer_Sensor ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_ABPMetricGroup_OperationalState_Enabled
+    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
+    rdfs:label "Condition: ABP_MetricGroup hasOperationalState Enabled" ;
+    rdfs:comment "The ABP metric group (covering systolic, diastolic, and mean ABP metrics) is actively being measured. Enables transitive linking to individual ABP metric components." ;
+    dev:aboutEntity :ABP_MetricGroup ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+## Alarm 8 specific — signal quality insufficient
+:Cond_ABP_Signal_QualityState_Insufficient
+    a dev:AlertCondition , dev:SignalQualityCondition ;
+    rdfs:label "Condition: ABP_Waveform_Signal hasQualityIndicator Insufficient" ;
+    rdfs:comment "The ABP waveform signal quality is insufficient for reliable measurement. Device-side epistemic representation of the alarm trigger. NOTE: dev:hasValue references common:Insufficient — a signal quality state individual to be defined in alarmOnto_common.ttl." ;
+    dev:aboutEntity :ABP_Waveform_Signal ;
+    dev:onAttribute common:hasQualityIndicator ;
+    dev:hasValue common:Insufficient .
+
+## Alarm 9 specific — ABP mean metric high
+:Cond_ABPMean_Metric_OperationalState_Enabled
+    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
+    rdfs:label "Condition: ABP_Mean_Metric hasOperationalState Enabled" ;
+    rdfs:comment "The ABP mean metric is actively being measured and its value is available for alarm evaluation." ;
+    dev:aboutEntity :ABP_Mean_Metric ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_ABPMean_Metric_MagnitudeState_High
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: ABP_Mean_Metric hasMagnitudeState High" ;
+    rdfs:comment "The ABP mean metric value is above the normal range (hypertension). Device-side epistemic representation of the alarm trigger." ;
+    dev:aboutEntity :ABP_Mean_Metric ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:High .
+
+# ── IMPLIED / INFERRED CONDITIONS ────────────────────────────────────
+
+:Cond_Patient_HasConnectedSensor_ABPtransducer
+    a dev:AlertCondition , dev:PatientConnectivityCondition ;
+    rdfs:label "Condition: Patient hasConnectedSensor ABP_Transducer_Sensor" ;
+    rdfs:comment "Inferred from sensor connectivity: the patient has an arterial blood pressure transducer applied (intra-arterial catheter)." ;
+    dev:aboutEntity :Patient ;
+    dev:onAttribute clin:hasConnectedSensor ;
+    dev:hasValue :ABP_Transducer_Sensor .
+
+:Cond_ArterialBloodPressureProperty_ObservationState_Monitored
     a dev:AlertCondition , dev:ObservationStateCondition ;
-    rdfs:label "Arterial Oxygen Saturation Monitored" ;
-    rdfs:comment "Inferred: Arterial oxygen saturation property is being monitored" ;
+    rdfs:label "Condition: ABP_Mean_Property hasObservationState Monitored" ;
+    rdfs:comment "Inferred from ABP metric group availability: arterial blood pressure is being actively observed. Linked to :ABP_Mean_Property as the representative individual; ideally a composite ABP property group would be used." ;
+    dev:aboutEntity :ABP_Mean_Property ;
+    dev:onAttribute clin:hasObservationState ;
+    dev:hasValue common:Monitored .
+
+:Cond_ArterialBloodPressureMeanProperty_MagnitudeState_High
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: ABP_Mean_Property hasMagnitudeState High" ;
+    rdfs:comment "Ontological interpretation of the ABP mean metric being high: the clinical ABP mean physiological property is in an elevated state (hypertension)." ;
+    dev:aboutEntity :ABP_Mean_Property ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:High .
+
+:Cond_ArterialPressureRegulation_FunctionalState_Hyper
+    a dev:AlertCondition ;
+    rdfs:label "Condition: Arterial_Perfusion_Process hasFunctionalState Hyper" ;
+    rdfs:comment "Inferred from elevated ABP mean: the arterial perfusion process is in a hyperfunctional state (excessive arterial pressure — hypertension). Mapped to :Arterial_Perfusion_Process as the closest available process instance." ;
+    dev:aboutEntity :Arterial_Perfusion_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Hyper .
+
+
+#######################################################################
+# ALARM 10 | PHILIPSMONITOR - BATTERY LOW  (technical)
+# (PhilipsMonitor/Patient-device conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_BatteryFunctionalUnit_OperationalState_Enabled
+    a dev:AlertCondition , dev:DeviceOperationalCondition ;
+    rdfs:label "Condition: Battery_Module hasOperationalState Enabled" ;
+    rdfs:comment "The monitor's battery functional unit is operational (device is running on battery power). Required for the battery low alarm to be evaluable." ;
+    dev:aboutEntity :Battery_Module ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_BatteryFunctionalUnit_PowerState_Low
+    a dev:AlertCondition , dev:PowerStateCondition ;
+    rdfs:label "Condition: Battery_Module hasPowerState Low" ;
+    rdfs:comment "The battery module's power level is low (charge below operational threshold). Uses dev:hasPowerState with common:Low as the magnitude value. NOTE: dev:hasPowerState should be defined in alarmOnto_device.ttl." ;
+    dev:aboutEntity :Battery_Module ;
+    dev:onAttribute dev:hasPowerState ;
+    dev:hasValue common:Low .
+
+
+#######################################################################
+# ALARM 11 | PHILIPSMONITOR - Pols hoog  (tachycardia - high pulse rate)
+# (PhilipsMonitor/PulseOximetrySensor/Patient/PulseRateMetric conditions shared with alarm 7)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_PulseRateMetric_RateState_High
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: PulsatileHeartRate_Metric hasRateState High" ;
+    rdfs:comment "The pulse rate metric value is above the normal range (tachycardia). Device-side epistemic representation of the alarm trigger." ;
+    dev:aboutEntity :PulsatileHeartRate_Metric ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:High .
+
+# ── IMPLIED / INFERRED CONDITIONS ────────────────────────────────────
+
+:Cond_PulsatileHeartRateProperty_RateState_High
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Cardiac_Contractile_Frequency_Property hasRateState High" ;
+    rdfs:comment "Ontological interpretation of the pulse rate metric being high: the clinical pulsatile heart rate property is in a high/deviant state (tachycardia)." ;
+    dev:aboutEntity :Cardiac_Contractile_Frequency_Property ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:High .
+
+:Cond_CardiacContractionProcess_FunctionalState_Hyper
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Cardiac_Contraction_Process hasFunctionalState Hyper" ;
+    rdfs:comment "Name variant of :Cond_CardiacContraction_FunctionalState_Hyper used in alarms referencing the longer 'Process' suffix. Same semantics: cardiac contraction process is hyperfunctional (tachycardia)." ;
+    dev:aboutEntity :Cardiac_Contraction_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Hyper .
+
+
+#######################################################################
+# ALARM 13 | PHILIPSMONITOR - SpO2 laag  (SpO2 low — hypoxaemia)
+# (PhilipsMonitor/PulseOximetrySensor/SpO2Metric/Patient conditions shared with alarms 1-2)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_SpO2Metric_MagnitudeState_low
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: SpO2_Metric hasMagnitudeState Low" ;
+    rdfs:comment "The SpO2 metric value is below the normal range (hypoxaemia). Device-side epistemic representation of the alarm trigger." ;
+    dev:aboutEntity :SpO2_Metric ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:Low .
+
+# ── IMPLIED / INFERRED CONDITIONS ────────────────────────────────────
+
+:Cond_SaO2Property_MagnitudeState_low
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Arterial_Oxygenation_Property hasMagnitudeState Low" ;
+    rdfs:comment "Ontological interpretation of the SpO2 metric being low: the clinical arterial oxygenation property (SaO2) is in a low/deviant state (hypoxaemia)." ;
     dev:aboutEntity :Arterial_Oxygenation_Property ;
-    dev:onAttribute clin:hasObservationState ;
-    dev:hasValue :MonitoredState .
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:Low .
 
-:Cond_SkinTemperatureProperty_ObservationState_Monitored
+:Cond_PulmonaryOxygenation_FunctionalState_Hypo
+    a dev:AlertCondition ;
+    rdfs:label "Condition: Pulmonary_Oxygenation_Process hasFunctionalState Hypo" ;
+    rdfs:comment "Inferred from low SaO2: the pulmonary oxygenation process is in a hypofunctional state (insufficient oxygenation)." ;
+    dev:aboutEntity :Pulmonary_Oxygenation_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Hypo .
+
+
+#######################################################################
+# ALARM 14 | PHILIPSMONITOR - EtCO2 laag  (end-tidal CO2 low)
+# ALARM 15 | PHILIPSMONITOR - ABPm laag  (ABP mean low)
+# (PhilipsMonitor/Patient-device conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_CapnographySensor_OperationalState_Enabled
+    a dev:AlertCondition , dev:SensorConnectivityCondition ;
+    rdfs:label "Condition: Capnography_Sensor hasOperationalState Enabled" ;
+    rdfs:comment "The capnography sensor is physically connected and recognised by the monitor." ;
+    dev:aboutEntity :Capnography_Sensor ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_EtCO2Metric_OperationalState_Enabled
+    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
+    rdfs:label "Condition: EtCO2_Metric hasOperationalState Enabled" ;
+    rdfs:comment "The end-tidal CO2 metric is actively being measured and its value is available for alarm evaluation." ;
+    dev:aboutEntity :EtCO2_Metric ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_CapnographySensor_MeasurementLocation_TerminalAirway
+    a dev:AlertCondition , dev:MeasurementLocationCondition ;
+    rdfs:label "Condition: Capnography_Sensor hasMeasurementSite TerminalAirway" ;
+    rdfs:comment "The capnography sensor is placed at the terminal airway (endotracheal tube or proximal airway adapter), enabling end-tidal CO2 sampling. NOTE: :TerminalAirway measurement site instance should be added to 9_measurementSite.ttl." ;
+    dev:aboutEntity :Capnography_Sensor ;
+    dev:onAttribute dev:hasMeasurementSite ;
+    dev:hasValue :TerminalAirway .
+
+:Cond_EtCO2Metric_MagnitudeState_low
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: EtCO2_Metric hasMagnitudeState Low" ;
+    rdfs:comment "The end-tidal CO2 metric value is below the normal range (hypocapnia). Device-side epistemic representation of the alarm trigger." ;
+    dev:aboutEntity :EtCO2_Metric ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:Low .
+
+## Alarm 15 specific — ABP mean low
+:Cond_ABPMean_Metric_MagnitudeState_low
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: ABP_Mean_Metric hasMagnitudeState Low" ;
+    rdfs:comment "The ABP mean metric value is below the normal range (hypotension). Device-side epistemic representation of the alarm trigger." ;
+    dev:aboutEntity :ABP_Mean_Metric ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:Low .
+
+# ── IMPLIED / INFERRED CONDITIONS ────────────────────────────────────
+
+:Cond_Patient_HasConnectedDevice_Ventilator
+    a dev:AlertCondition , dev:PatientConnectivityCondition ;
+    rdfs:label "Condition: Patient hasConnectedDevice VentilationDevice" ;
+    rdfs:comment "Inferred from EtCO2 alarm context: the patient is connected to a mechanical ventilator. Property clin:hasConnectedDevice is the cross-domain link from Patient to PhysicalDevice." ;
+    dev:aboutEntity :Patient ;
+    dev:onAttribute clin:hasConnectedDevice ;
+    dev:hasValue dev:VentilationDevice .
+
+:Cond_Patient_HasConnectedSensor_Capnography
+    a dev:AlertCondition , dev:PatientConnectivityCondition ;
+    rdfs:label "Condition: Patient hasConnectedSensor Capnography_Sensor" ;
+    rdfs:comment "Inferred from sensor connectivity: the patient has a capnography sensor applied at the terminal airway." ;
+    dev:aboutEntity :Patient ;
+    dev:onAttribute clin:hasConnectedSensor ;
+    dev:hasValue :Capnography_Sensor .
+
+:Cond_AlveolarCO2Property_ObservationState_Monitored
     a dev:AlertCondition , dev:ObservationStateCondition ;
-    rdfs:label "Skin Temperature Monitored" ;
-    rdfs:comment "Inferred: Skin temperature property is being monitored" ;
-    dev:aboutEntity :Temperature_Skin_Property ;
+    rdfs:label "Condition: Alveolar_CarbonDioxide_Property hasObservationState Monitored" ;
+    rdfs:comment "Inferred from EtCO2 metric availability: the clinical alveolar CO2 physiological property is being actively observed." ;
+    dev:aboutEntity :Alveolar_CarbonDioxide_Property ;
     dev:onAttribute clin:hasObservationState ;
-    dev:hasValue :MonitoredState .
+    dev:hasValue common:Monitored .
 
-:Cond_PulmVentilationProcess_SupportMode_ExternalInvasiveSupport
+:Cond_PulmonarySystem_SubjectOfTherapy_MechanicalVentilation
     a dev:AlertCondition , dev:TherapyStateCondition ;
-    rdfs:label "Pulmonary Ventilation External Invasive Support" ;
-    rdfs:comment "Inferred: Pulmonary ventilation process is in external invasive support mode" ;
+    rdfs:label "Condition: Pulmonary_System isSubjectOfTherapy Mechanical_Ventilation" ;
+    rdfs:comment "Inferred from ventilator connectivity: the pulmonary system is subject to mechanical ventilation therapy. NOTE: clin:isSubjectOfTherapy should be defined in alarmOnto_clinical.ttl." ;
+    dev:aboutEntity :Pulmonary_System ;
+    dev:onAttribute clin:isSubjectOfTherapy ;
+    dev:hasValue :Mechanical_Ventilation .
+
+:Cond_PulmVentilationProcess_SupportModality_ExternalInvasiveSupport
+    a dev:AlertCondition , dev:TherapyStateCondition ;
+    rdfs:label "Condition: Pulmonary_Ventilation_Process hasSupportModality ExternalInvasiveSupport" ;
+    rdfs:comment "Inferred from ventilator connectivity: the pulmonary ventilation process is supported by external invasive mechanical ventilation (e.g. endotracheal intubation + ventilator). NOTE: clin:hasSupportModality and :ExternalInvasiveSupport should be defined in alarmOnto_clinical.ttl and a suitable instances file respectively." ;
     dev:aboutEntity :Pulmonary_Ventilation_Process ;
-    dev:onAttribute clin:hasSupportMode ;
+    dev:onAttribute clin:hasSupportModality ;
     dev:hasValue :ExternalInvasiveSupport .
 
-:Cond_ABPMean_Metric_ValueInterpretation_LowLimitViolation
+:Cond_AlveolarCO2Property_MagnitudeState_low
     a dev:AlertCondition , dev:PhysiologicalValueCondition ;
-    rdfs:label "ABP Mean Low Limit Violation" ;
-    rdfs:comment "Inferred: ABP Mean metric value below low threshold" ;
-    dev:aboutEntity :ABP_Mean_Metric ;
-    dev:onAttribute dev:hasValueInterpretation ;
-    dev:hasValue common:LowLimitViolation .
+    rdfs:label "Condition: Alveolar_CarbonDioxide_Property hasMagnitudeState Low" ;
+    rdfs:comment "Ontological interpretation of the EtCO2 metric being low: the clinical alveolar CO2 physiological property is in a low/deviant state (hypocapnia)." ;
+    dev:aboutEntity :Alveolar_CarbonDioxide_Property ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:Low .
+
+:Cond_PulmonaryCO2Diffusion_FunctionalState_Hyper
+    a dev:AlertCondition ;
+    rdfs:label "Condition: PulmonaryCO2_Diffusion_Process hasFunctionalState Hyper" ;
+    rdfs:comment "Inferred from low EtCO2: the pulmonary CO2 diffusion process is in a hyperfunctional state (excessive CO2 washout — hypocapnia). Mapped to :PulmonaryCO2_Diffusion_Process as the closest available process instance; a dedicated CO2 elimination sub-process instance would be more precise." ;
+    dev:aboutEntity :PulmonaryCO2_Diffusion_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Hyper .
+
+## Alarm 15 specific — ABP mean low inferred conditions
+:Cond_ArterialBloodPressureMeanProperty_MagnitudeState_low
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: ABP_Mean_Property hasMagnitudeState Low" ;
+    rdfs:comment "Ontological interpretation of the ABP mean metric being low: the clinical ABP mean physiological property is in a low/deviant state (hypotension)." ;
+    dev:aboutEntity :ABP_Mean_Property ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:Low .
+
+:Cond_ArterialPressureRegulation_FunctionalState_Hypo
+    a dev:AlertCondition ;
+    rdfs:label "Condition: Arterial_Perfusion_Process hasFunctionalState Hypo" ;
+    rdfs:comment "Inferred from low ABP mean: the arterial perfusion process is in a hypofunctional state (insufficient arterial pressure — hypotension). Mapped to :Arterial_Perfusion_Process as the closest available process instance." ;
+    dev:aboutEntity :Arterial_Perfusion_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Hypo .
+
+
+#######################################################################
+# ALARM 16 | PHILIPSMONITOR - SpO2 geen pols  (no pulse detected — technical)
+# (PhilipsMonitor/PulseOximetrySensor/Patient conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
 
 :Cond_SpO2Signal_QualityState_Insufficient
     a dev:AlertCondition , dev:SignalQualityCondition ;
-    rdfs:label "SpO2 Low Signal Quality" ;
-    rdfs:comment "Inferred: SpO2 metric value indicates low signal quality" ;
+    rdfs:label "Condition: PulseOximetry_Signal hasQualityIndicator Insufficient" ;
+    rdfs:comment "The SpO2/pulse oximetry signal quality is insufficient — no recognisable pulse waveform detected. Device-side epistemic representation of the alarm trigger." ;
     dev:aboutEntity :PulseOximetry_Signal ;
-    dev:onAttribute dev:hasQualityState ;
-    dev:hasValue :Insufficient .
-    
+    dev:onAttribute common:hasQualityIndicator ;
+    dev:hasValue common:Insufficient .
+
+
 #######################################################################
-# NEW CONDITIONS — Alarms 17-27 (added 7 April 2026)
+# ALARM 17 | PHILIPSMONITOR - ?? SpO2r hoog  (right-sided SpO2 high)
+# (PhilipsMonitor/PulseOximetrySensor/SpO2Metric/Patient/SaO2/PulmOxygenation conditions shared with alarms 1-2)
 #######################################################################
 
-# ── SpO2 right-sided measurement location ────────────────────────────
-:Cond_PulseOximetrySensor_MeasurementLocation_rightSided
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_PulseOximetrySensor_MeasurementLocation_right
     a dev:AlertCondition , dev:MeasurementLocationCondition ;
-    rdfs:label "Pulse Oximetry Sensor Measurement Location Right Sided" ;
-    rdfs:comment "Condition: Pulse oximetry sensor is placed on the right side (pre-ductal or right extremity)" ;
-    dev:aboutEntity :PulseOximetry_Sensor ;
+    rdfs:label "Condition: PulseOximetrySensor hasMeasurementSite RightSided" ;
+    rdfs:comment "The pulse oximetry sensor is placed on the right side (right hand). Mapped to :RightSided — the closest defined MeasurementSite instance. Distinguishes SpO2r (right) from SpO2l (left) and SpO2po (post-ductal) measurements." ;
+    dev:aboutEntity :Pulse_Oximeter_Sensor ;
     dev:onAttribute dev:hasMeasurementSite ;
     dev:hasValue :RightSided .
 
-# ── Temperature sensor / metric (Alarm 18) ───────────────────────────
-:Cond_TemperatureSensor_FunctionalState_Connected
+
+#######################################################################
+# ALARM 18 | PHILIPSMONITOR - ?? Temp hoog  (generic body temperature high)
+# (PhilipsMonitor/Patient conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_TemperatureSensor_OperationalState_Enabled
     a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "Temperature Sensor Connected" ;
-    rdfs:comment "Condition: A temperature sensor (skin or core) is connected" ;
+    rdfs:label "Condition: Temperature_Sensor hasOperationalState Enabled" ;
+    rdfs:comment "A generic temperature sensor is physically connected and recognised by the monitor. :Temperature_Sensor is defined in 3_sensor.ttl as the parent sensor individual for SkinTemperature_Probe_Sensor and CoreTemperature_Probe_Sensor." ;
     dev:aboutEntity :Temperature_Sensor ;
     dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
+    dev:hasValue common:Enabled .
 
-:Cond_TemperatureMetric_OperationalState_Available
+:Cond_TempMetric_OperationalState_Enabled
     a dev:AlertCondition , dev:MetricAvailabilityCondition ;
-    rdfs:label "Temperature Metric Available" ;
-    rdfs:comment "Condition: A temperature metric is being measured and available" ;
-    dev:aboutEntity :Temperature_Metric ;
+    rdfs:label "Condition: Temp_Metric hasOperationalState Enabled" ;
+    rdfs:comment "A generic temperature metric is actively being measured and its value is available for alarm evaluation. :Temp_Metric is defined in 6_Metric.ttl as the generic body temperature metric (MDC_TEMP), parent of Skin_Temp_Metric and Core_Temp_Metric." ;
+    dev:aboutEntity :Temp_Metric ;
     dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:MetricAvailable .
+    dev:hasValue common:Enabled .
 
-:Cond_TemperatureMetric_ValueInterpretation_HighLimitViolation
+:Cond_TempMetric_MagnitudeState_High
     a dev:AlertCondition , dev:PhysiologicalValueCondition ;
-    rdfs:label "Temperature High Limit Violation" ;
-    rdfs:comment "Condition: Temperature metric value exceeds the high threshold" ;
-    dev:aboutEntity :Temperature_Metric ;
-    dev:onAttribute dev:hasValueInterpretation ;
-    dev:hasValue common:HighLimitViolation .
+    rdfs:label "Condition: Temp_Metric hasMagnitudeState High" ;
+    rdfs:comment "The generic temperature metric value is above the normal range (hyperthermia). Device-side epistemic representation of the alarm trigger. :Temp_Metric is defined in 6_Metric.ttl." ;
+    dev:aboutEntity :Temp_Metric ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:High .
 
-:Cond_Patient_HasConnectedSensor_Temperature
+# ── IMPLIED / INFERRED CONDITIONS ────────────────────────────────────
+
+:Cond_Patient_HasConnectedSensor_TemperatureSensor
     a dev:AlertCondition , dev:PatientConnectivityCondition ;
-    rdfs:label "Patient Has Connected Temperature Sensor" ;
-    rdfs:comment "Condition: Patient has a temperature sensor connected" ;
+    rdfs:label "Condition: Patient hasConnectedSensor Temperature_Sensor" ;
+    rdfs:comment "Inferred from sensor connectivity: the patient has a generic temperature sensor applied. :Temperature_Sensor is the generic temperature sensor individual in 3_sensor.ttl." ;
     dev:aboutEntity :Patient ;
     dev:onAttribute clin:hasConnectedSensor ;
     dev:hasValue :Temperature_Sensor .
 
-:Cond_BodyTemperatureProcess_FunctionalState_Elevated
+:Cond_TemperatureProperty_ObservationState_Monitored
     a dev:AlertCondition , dev:ObservationStateCondition ;
-    rdfs:label "Body Temperature Process Elevated" ;
-    rdfs:comment "Condition: The body temperature regulatory process is in an elevated state" ;
-    dev:aboutEntity :BodyTemperatureRegulation_Process ;
-    dev:onAttribute clin:hasFunctionalState ;
-    dev:hasValue :Elevated .
-
-# ── EtCO2 high limit (Alarm 19) ──────────────────────────────────────
-:Cond_EtCO2Metric_ValueInterpretation_HighLimitViolation
-    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
-    rdfs:label "EtCO2 High Limit Violation" ;
-    rdfs:comment "Condition: End-tidal CO2 metric value exceeds the high threshold" ;
-    dev:aboutEntity :EtCO2_Metric ;
-    dev:onAttribute dev:hasValueInterpretation ;
-    dev:hasValue common:HighLimitViolation .
-
-# ── imCO2 metric / value (Alarm 20) ──────────────────────────────────
-:Cond_imCO2Metric_OperationalState_Available
-    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
-    rdfs:label "imCO2 Metric Available" ;
-    rdfs:comment "Condition: Inspired minimum CO2 metric is being measured and available" ;
-    dev:aboutEntity :imCO2_Metric ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:MetricAvailable .
-
-:Cond_imCO2Metric_ValueInterpretation_HighLimitViolation
-    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
-    rdfs:label "imCO2 High Limit Violation" ;
-    rdfs:comment "Condition: Inspired minimum CO2 metric value exceeds the high threshold" ;
-    dev:aboutEntity :imCO2_Metric ;
-    dev:onAttribute dev:hasValueInterpretation ;
-    dev:hasValue common:HighLimitViolation .
-
-# ── Capnography sensor interface (implied, missing) ───────────────────
-:Cond_CapnographySensorInterface_FunctionalState_Connected
-    a dev:AlertCondition , dev:SensorConnectivityCondition ;
-    rdfs:label "Capnography Sensor Interface Connected" ;
-    rdfs:comment "Condition: The capnography sensor interface is connected" ;
-    dev:aboutEntity :Capnography_SensorInterface ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:Connected .
-
-# ── Pulmonary system therapy (implied, missing) ───────────────────────
-:Cond_PulmonarySystem_SubjectOfTherapy_MechanicalVentilation
-    a dev:AlertCondition , dev:TherapyStateCondition ;
-    rdfs:label "Pulmonary System Subject of Mechanical Ventilation" ;
-    rdfs:comment "Condition: The pulmonary system is the subject of mechanical ventilation therapy" ;
-    dev:aboutEntity :PulmonarySystem ;
-    dev:onAttribute clin:hasSupportMode ;
-    dev:hasValue :MechanicalVentilation .
-
-# ── ABP signal / sensor fault conditions (Alarms 22-27) ──────────────
-:Cond_ABP_Signal_OperationalState_Available
-    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
-    rdfs:label "ABP Signal Operational State Available" ;
-    rdfs:comment "Condition: The ABP waveform signal is active and available for analysis" ;
-    dev:aboutEntity :ABP_Waveform_Signal ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue common:MetricAvailable .
-
-:Cond_ABP_Signal_QualityState_Artefact
-    a dev:AlertCondition , dev:SignalQualityCondition ;
-    rdfs:label "ABP Signal Quality Artefact" ;
-    rdfs:comment "Condition: ABP signal quality is degraded due to detected artefact" ;
-    dev:aboutEntity :ABP_Waveform_Signal ;
-    dev:onAttribute dev:hasQualityState ;
-    dev:hasValue :Artefact .
-
-:Cond_ABP_Signal_QualityState_OutOfRange
-    a dev:AlertCondition , dev:SignalQualityCondition ;
-    rdfs:label "ABP Signal Quality Out Of Range" ;
-    rdfs:comment "Condition: ABP signal value is outside the measurable range of the transducer" ;
-    dev:aboutEntity :ABP_Waveform_Signal ;
-    dev:onAttribute dev:hasQualityState ;
-    dev:hasValue :OutOfRange .
-
-:Cond_ABP_Sensor_Malfunctioning
-    a dev:AlertCondition , dev:SensorFaultCondition ;
-    rdfs:label "ABP Sensor Malfunctioning" ;
-    rdfs:comment "Condition: ABP transducer sensor is malfunctioning, disconnected, or not found" ;
-    dev:aboutEntity :ABP_Transducer_Sensor ;
-    dev:onAttribute dev:hasOperationalState ;
-    dev:hasValue :Fault .
-
-:Cond_ArterialBloodPressureProcess_ObservationState_Monitored
-    a dev:AlertCondition , dev:ObservationStateCondition ;
-    rdfs:label "Arterial Blood Pressure Process Monitored" ;
-    rdfs:comment "Condition: The arterial blood pressure measurement process is being observed/monitored" ;
-    dev:aboutEntity :ArterialBloodPressure_MeasurementProcess ;
+    rdfs:label "Condition: Body_Temperature_Property hasObservationState Monitored" ;
+    rdfs:comment "Inferred from generic temperature metric availability: the clinical body temperature physiological property is being actively observed." ;
+    dev:aboutEntity :Body_Temperature_Property ;
     dev:onAttribute clin:hasObservationState ;
     dev:hasValue common:Monitored .
 
-# ── Pulse rate low limit (Alarm 12, missing) ─────────────────────────
-:Cond_PulseRateMetric_ValueInterpretation_LowLimitViolation
+:Cond_TemperatureProperty_MagnitudeState_High
     a dev:AlertCondition , dev:PhysiologicalValueCondition ;
-    rdfs:label "Pulse Rate Low Limit Violation" ;
-    rdfs:comment "Condition: Pulse rate metric value falls below the low threshold" ;
-    dev:aboutEntity :PulseRate_Metric ;
-    dev:onAttribute dev:hasValueInterpretation ;
-    dev:hasValue common:LowLimitViolation .
+    rdfs:label "Condition: Body_Temperature_Property hasMagnitudeState High" ;
+    rdfs:comment "Ontological interpretation of the generic temperature metric being high: the clinical body temperature physiological property is in an elevated state (hyperthermia)." ;
+    dev:aboutEntity :Body_Temperature_Property ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:High .
 
-# ── Electric heart rate absent / asystole (Alarm 33) ──────────────────
-# Was a dangling reference in 1_ACD_MonitorAlarms.ttl — defined here so the
-# metric→property→process chain can be traversed generically by SPARQL.
-:Cond_ElectricHeartRateMetric_ValueInterpretation_absentRateInterpretation
+:Cond_ThermoRegulation_FunctionalState_Hyper
+    a dev:AlertCondition ;
+    rdfs:label "Condition: Thermoregulation_Process hasFunctionalState Hyper" ;
+    rdfs:comment "Inferred from elevated body temperature: the thermoregulation process is in a hyperfunctional state (excessive heat production or insufficient heat dissipation — hyperthermia). Mapped to :Thermoregulation_Process." ;
+    dev:aboutEntity :Thermoregulation_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Hyper .
+
+
+#######################################################################
+# ALARM 19 | PHILIPSMONITOR - ?? etCO2 hoog  (end-tidal CO2 high — hypercapnia)
+# ALARM 20 | PHILIPSMONITOR - ?? imCO2 hoog  (inspiratory CO2 high — rebreathing)
+# (PhilipsMonitor/Capnography/Ventilator/Patient/PulmonarySystem conditions shared with alarm 14)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_EtCO2Metric_MagnitudeState_High
     a dev:AlertCondition , dev:PhysiologicalValueCondition ;
-    rdfs:label "Electric Heart Rate Absent (Asystole)" ;
-    rdfs:comment "Condition: ECG-derived heart rate is absent, indicating asystole" ;
+    rdfs:label "Condition: EtCO2_Metric hasMagnitudeState High" ;
+    rdfs:comment "The end-tidal CO2 metric value is above the normal range (hypercapnia). Device-side epistemic representation of the alarm trigger." ;
+    dev:aboutEntity :EtCO2_Metric ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:High .
+
+# ── IMPLIED / INFERRED CONDITIONS ────────────────────────────────────
+
+:Cond_AlveolarCO2Property_MagnitudeState_High
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Alveolar_CarbonDioxide_Property hasMagnitudeState High" ;
+    rdfs:comment "Ontological interpretation of the EtCO2 metric being high: the clinical alveolar CO2 physiological property is in an elevated state (hypercapnia)." ;
+    dev:aboutEntity :Alveolar_CarbonDioxide_Property ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:High .
+
+:Cond_PulmonaryCO2Diffusion_FunctionalState_Hypo
+    a dev:AlertCondition ;
+    rdfs:label "Condition: PulmonaryCO2_Diffusion_Process hasFunctionalState Hypo" ;
+    rdfs:comment "Inferred from high EtCO2: the pulmonary CO2 diffusion process is in a hypofunctional state (insufficient CO2 washout — hypercapnia). Mapped to :PulmonaryCO2_Diffusion_Process as the closest available process instance; a dedicated CO2 diffusion sub-process instance would be more precise." ;
+    dev:aboutEntity :PulmonaryCO2_Diffusion_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Hypo .
+
+
+#######################################################################
+# ALARM 21 | PHILIPSMONITOR - ??SDM HI/LO tcpCO2  (transcutaneous pCO2 abnormal)
+# (PhilipsMonitor/Ventilator/Patient/PulmonarySystem/SupportModality conditions shared with alarm 14)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_tcCapnoSensor_OperationalState_Enabled
+    a dev:AlertCondition , dev:SensorConnectivityCondition ;
+    rdfs:label "Condition: tcCapnoSensor hasOperationalState Enabled" ;
+    rdfs:comment "The transcutaneous capnography sensor (SDM module) is physically connected and recognised by the monitor." ;
+    dev:aboutEntity :tcCapno_Sensor ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_tcpCO2Metric_OperationalState_Enabled
+    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
+    rdfs:label "Condition: tcpCO2_Metric hasOperationalState Enabled" ;
+    rdfs:comment "The transcutaneous pCO2 metric is actively being measured and its value is available for alarm evaluation." ;
+    dev:aboutEntity :tcpCO2_Metric ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_tcCapnoSensor_MeasurementLocation_Cutaneous
+    a dev:AlertCondition , dev:MeasurementLocationCondition ;
+    rdfs:label "Condition: tcCapnoSensor hasMeasurementSite Cutaneous" ;
+    rdfs:comment "The transcutaneous capnography sensor is placed on the skin surface (cutaneous placement), as required for transcutaneous CO2 monitoring." ;
+    dev:aboutEntity :tcCapno_Sensor ;
+    dev:onAttribute dev:hasMeasurementSite ;
+    dev:hasValue :Cutaneous .
+
+:Cond_CO2Metric_MagnitudeState_abnormal
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: tcpCO2_Metric hasMagnitudeState Abnormal" ;
+    rdfs:comment "The transcutaneous CO2 metric value is outside the normal range in an unspecified direction (HI or LO). Mapped to :tcpCO2_Metric as the specific entity in the alarm 21 context. The condition name uses CO2Metric generically — CO2_MetricGroup groups both EtCO2_Metric and tcpCO2_Metric for transitivity." ;
+    dev:aboutEntity :tcpCO2_Metric ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:Abnormal .
+
+# ── IMPLIED / INFERRED CONDITIONS ────────────────────────────────────
+
+:Cond_Patient_HasConnectedSensor_tcCapnoSensor
+    a dev:AlertCondition , dev:PatientConnectivityCondition ;
+    rdfs:label "Condition: Patient hasConnectedSensor tcCapnoSensor" ;
+    rdfs:comment "Inferred from sensor connectivity: the patient has a transcutaneous capnography sensor applied to the skin." ;
+    dev:aboutEntity :Patient ;
+    dev:onAttribute clin:hasConnectedSensor ;
+    dev:hasValue :tcCapno_Sensor .
+
+:Cond_pCO2Property_ObservationState_Monitored
+    a dev:AlertCondition , dev:ObservationStateCondition ;
+    rdfs:label "Condition: Transcutaneous_CO2_Property hasObservationState Monitored" ;
+    rdfs:comment "Inferred from tcpCO2 metric availability: the clinical transcutaneous CO2 physiological property is being actively observed." ;
+    dev:aboutEntity :Transcutaneous_CO2_Property ;
+    dev:onAttribute clin:hasObservationState ;
+    dev:hasValue common:Monitored .
+
+:Cond_pCO2Property_MagnitudeState_abnormal
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Transcutaneous_CO2_Property hasMagnitudeState Abnormal" ;
+    rdfs:comment "Ontological interpretation of the tcpCO2 metric being abnormal: the clinical transcutaneous CO2 physiological property deviates from the normal range in an unspecified direction (hypercapnia or hypocapnia)." ;
+    dev:aboutEntity :Transcutaneous_CO2_Property ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:Abnormal .
+
+:Cond_PulmonaryCO2Diffusion_FunctionalState_abnormal
+    a dev:AlertCondition ;
+    rdfs:label "Condition: Pulmonary_CO2_Diffusion_Process hasFunctionalState Abnormal" ;
+    rdfs:comment "Inferred from abnormal tcpCO2: the pulmonary CO2 diffusion process is in an abnormal functional state — direction unspecified (hypercapnia = Hypo function, hypocapnia = Hyper function). Mapped to :Pulmonary_CO2_Diffusion_Process as the closest available process instance." ;
+    dev:aboutEntity :PulmonaryCO2_Diffusion_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Abnormal .
+
+
+#######################################################################
+# ALARM 22 | PHILIPSMONITOR - ABP artefact  (ABP signal artefact — technical)
+# ALARM 23 | PHILIPSMONITOR - ABP buiten bereik  (ABP out of range — technical)
+# ALARM 24 | PHILIPSMONITOR - ABP contr.nulling  (ABP nulling error — technical)
+# (PhilipsMonitor/ABPSensor/ABPMetricGroup/Patient conditions shared with alarms 8-9)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_ABP_Signal_QualityState_Artefact
+    a dev:AlertCondition , dev:SignalQualityCondition ;
+    rdfs:label "Condition: ABP_Waveform_Signal hasQualityIndicator Artefact" ;
+    rdfs:comment "The ABP waveform signal is contaminated by a motion or electrical artefact — a sub-type of insufficient quality. The waveform does not reflect true arterial pressure." ;
+    dev:aboutEntity :ABP_Waveform_Signal ;
+    dev:onAttribute common:hasQualityIndicator ;
+    dev:hasValue common:Artefact .
+
+:Cond_ABP_Signal_QualityState_outOfRange
+    a dev:AlertCondition , dev:SignalQualityCondition ;
+    rdfs:label "Condition: ABP_Waveform_Signal hasQualityIndicator OutOfRange" ;
+    rdfs:comment "The ABP waveform signal value is outside the measurable range of the transducer — a sub-type of insufficient quality. Common cause: kinked line, positional change exceeding offset range, or extreme pressure." ;
+    dev:aboutEntity :ABP_Waveform_Signal ;
+    dev:onAttribute common:hasQualityIndicator ;
+    dev:hasValue common:OutOfRange .
+
+:Cond_ABP_Signal_QualityState_nullingError
+    a dev:AlertCondition , dev:SignalQualityCondition ;
+    rdfs:label "Condition: ABP_Waveform_Signal hasQualityIndicator NullingError" ;
+    rdfs:comment "The ABP transducer has not been properly zeroed/nulled — a sub-type of insufficient quality. The measured values are offset by the residual reference pressure." ;
+    dev:aboutEntity :ABP_Waveform_Signal ;
+    dev:onAttribute common:hasQualityIndicator ;
+    dev:hasValue common:NullingError .
+
+
+#######################################################################
+# ALARM 25 | PHILIPSMONITOR - ABP geen transducer  (ABP transducer missing/malfunction)
+# (PhilipsMonitor/Patient conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_ABPSensor_FunctionalState_Malfunction
+    a dev:AlertCondition , dev:SensorConnectivityCondition ;
+    rdfs:label "Condition: ABP_Transducer_Sensor hasOperationalState Fault" ;
+    rdfs:comment "The ABP transducer sensor is absent, disconnected, or in a fault state — the monitor cannot detect a valid transducer. Represented as dev:hasOperationalState common:Fault (the closest OperationalState to 'malfunction/missing transducer')." ;
+    dev:aboutEntity :ABP_Transducer_Sensor ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Fault .
+
+
+#######################################################################
+# ALARM 26 | PHILIPSMONITOR - ABP losgeraakt  (ABP line disconnected)
+# ALARM 28 | PHILIPSMONITOR - ABP uit gedaan  (ABP disabled/turned off)
+# (PhilipsMonitor/Patient conditions shared with alarms 22-25)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_ArterialBloodPressureSensor_OperationalState_Disconnected
+    a dev:AlertCondition , dev:SensorConnectivityCondition ;
+    rdfs:label "Condition: ABP_Transducer_Sensor hasOperationalState Disconnected" ;
+    rdfs:comment "The ABP transducer sensor has been physically disconnected from the monitoring line or patient. The monitor detects absence of the sensor. Used for both alarm 26 (ABP losgeraakt — accidental disconnect) and alarm 28 (ABP uit gedaan — intentional disconnect/disable)." ;
+    dev:aboutEntity :ABP_Transducer_Sensor ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Disconnected .
+
+
+#######################################################################
+# ALARM 31 | PHILIPSMONITOR - Apneu  (apnea — respiratory arrest)
+# ALARM 33 | PHILIPSMONITOR - Asystolie  (asystole — cardiac arrest)
+# (PhilipsMonitor/Patient conditions shared with earlier alarms)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_ECGsensor_OperationalState_Enabled
+    a dev:AlertCondition , dev:SensorConnectivityCondition ;
+    rdfs:label "Condition: ECG_SensorGroup hasOperationalState Enabled" ;
+    rdfs:comment "The ECG sensor group is connected and functional. Name variant of :Cond_ECGSensorGroup_OperationalState_Enabled used in alarms 31 and 33." ;
+    dev:aboutEntity :ECG_SensorGroup ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_RespRateMetric_OperationalState_Enabled
+    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
+    rdfs:label "Condition: RespiratoryRate_Metric hasOperationalState Enabled" ;
+    rdfs:comment "The respiratory rate metric (derived from the ECG impedance waveform) is actively being measured and available for alarm evaluation." ;
+    dev:aboutEntity :RespiratoryRate_Metric ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_ElectricHeartRateMetric_OperationalState_Enabled
+    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
+    rdfs:label "Condition: ElectricHeartRate_Metric hasOperationalState Enabled" ;
+    rdfs:comment "The ECG-derived electric heart rate metric is actively being measured and available for alarm evaluation." ;
     dev:aboutEntity :ElectricHeartRate_Metric ;
-    dev:onAttribute dev:hasValueInterpretation ;
-    dev:hasValue common:AsystoleInterpretation .
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_RespRateMetric_RateState_absent
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: RespiratoryRate_Metric hasRateState Absent" ;
+    rdfs:comment "The respiratory rate metric shows no detectable respiratory cycles — apnea. Device-side epistemic representation of the alarm trigger." ;
+    dev:aboutEntity :RespiratoryRate_Metric ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:Absent .
+
+:Cond_ElectricHeartRateMetric_RateState_absent
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: ElectricHeartRate_Metric hasRateState Absent" ;
+    rdfs:comment "The ECG-derived heart rate metric shows no detectable electrical depolarisation events — asystole. Device-side epistemic representation of the alarm trigger." ;
+    dev:aboutEntity :ElectricHeartRate_Metric ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:Absent .
+
+# ── IMPLIED / INFERRED CONDITIONS ────────────────────────────────────
+
+:Cond_RespiratoryRateProperty_ObservationState_Monitored
+    a dev:AlertCondition , dev:ObservationStateCondition ;
+    rdfs:label "Condition: Pulmonary_Ventilation_Property hasObservationState Monitored" ;
+    rdfs:comment "Inferred from respiratory rate metric availability: the pulmonary ventilation physiological property is being actively observed. Mapped to :Pulmonary_Ventilation_Property (respiratory rate is a proxy measure of ventilation)." ;
+    dev:aboutEntity :Pulmonary_Ventilation_Property ;
+    dev:onAttribute clin:hasObservationState ;
+    dev:hasValue common:Monitored .
+
+:Cond_RespiratoryRateProperty_RateState_absent
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Pulmonary_Ventilation_Property hasRateState Absent" ;
+    rdfs:comment "Ontological interpretation of absent respiratory rate: the pulmonary ventilation physiological property has no detectable respiratory events (apnea)." ;
+    dev:aboutEntity :Pulmonary_Ventilation_Property ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:Absent .
+
+:Cond_ElectricHeartRateProperty_ObservationState_Monitored
+    a dev:AlertCondition , dev:ObservationStateCondition ;
+    rdfs:label "Condition: ElectricHeartRate_Property hasObservationState Monitored" ;
+    rdfs:comment "Inferred from ECG-derived heart rate metric availability: the electric heart rate physiological property is being actively observed." ;
+    dev:aboutEntity :ElectricHeartRate_Property ;
+    dev:onAttribute clin:hasObservationState ;
+    dev:hasValue common:Monitored .
+
+:Cond_ElectricHeartRateProperty_RateState_absent
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: ElectricHeartRate_Property hasRateState Absent" ;
+    rdfs:comment "Ontological interpretation of absent ECG-derived heart rate: no electrical depolarisation events are detectable (asystole)." ;
+    dev:aboutEntity :ElectricHeartRate_Property ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:Absent .
+
+:Cond_PulmonaryVentilationProcess_FunctionalState_Arrest
+    a dev:AlertCondition ;
+    rdfs:label "Condition: Pulmonary_Ventilation_Process hasFunctionalState Arrest" ;
+    rdfs:comment "Inferred from absent respiratory rate: the pulmonary ventilation process has completely ceased (respiratory arrest / apnea). Mapped to :Pulmonary_Ventilation_Process." ;
+    dev:aboutEntity :Pulmonary_Ventilation_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Arrest .
+
+:Cond_CardiacRateProcess_FunctionalState_Arrest
+    a dev:AlertCondition ;
+    rdfs:label "Condition: Cardiac_Rate_Process hasFunctionalState Arrest" ;
+    rdfs:comment "Inferred from absent ECG-derived heart rate: the cardiac rate process has completely ceased (cardiac arrest / asystole). Mapped to :Cardiac_Rate_Process." ;
+    dev:aboutEntity :Cardiac_Rate_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Arrest .
+
+
+#######################################################################
+# ALARM 32 | PHILIPSMONITOR - App. contr.  (application controller error)
+# (Patient/PhilipsMonitor conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_PhilipsMonitor_OperationalState_Error
+    a dev:AlertCondition , dev:DeviceOperationalCondition ;
+    rdfs:label "Condition: PhilipsMonitor hasOperationalState Error" ;
+    rdfs:comment "The Philips Monitor application controller has encountered a software error. Represents a device-level application fault (distinct from a hardware Fault or sensor Disconnected state)." ;
+    dev:aboutEntity :PhilipsMonitor ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Error .
+
+
+#######################################################################
+# ALARM 34 | PHILIPSMONITOR - CO2 auto nulling  (capnography auto-calibration)
+# ALARM 35 | PHILIPSMONITOR - CO2 ctr adapter er  (capnography adapter error)
+# (PhilipsMonitor/Capnography/Ventilator/Patient conditions shared with alarm 14)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_CO2Metric_OperationalState_Enabled
+    a dev:AlertCondition , dev:MetricAvailabilityCondition ;
+    rdfs:label "Condition: CO2_MetricGroup hasOperationalState Enabled" ;
+    rdfs:comment "At least one CO2 metric (EtCO2 or tcpCO2) is actively being measured. Represented by :CO2_MetricGroup — links transitively to :EtCO2_Metric and :tcpCO2_Metric." ;
+    dev:aboutEntity :CO2_MetricGroup ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_CapnoSignal_qualityState_calibrating
+    a dev:AlertCondition , dev:SignalQualityCondition ;
+    rdfs:label "Condition: Capno_Waveform_Signal hasQualityIndicator Calibrating" ;
+    rdfs:comment "The capnography waveform signal is temporarily unavailable because the sensor is performing an automatic baseline nulling/calibration. A transient signal quality state that resolves when calibration completes." ;
+    dev:aboutEntity :Capno_Waveform_Signal ;
+    dev:onAttribute common:hasQualityIndicator ;
+    dev:hasValue common:Calibrating .
+
+:Cond_CapnographySensor_FunctionalState_Malfunction
+    a dev:AlertCondition , dev:SensorConnectivityCondition ;
+    rdfs:label "Condition: Capnography_Sensor hasOperationalState Fault" ;
+    rdfs:comment "The capnography sensor adapter has failed or is missing — the monitor cannot communicate with the CO2 measurement module (e.g. broken airway adapter, incompatible adapter type). Represented as dev:hasOperationalState common:Fault." ;
+    dev:aboutEntity :Capnography_Sensor ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Fault .
+
+# ── IMPLIED / INFERRED CONDITIONS ────────────────────────────────────
+
+:Cond_CO2Property_ObservationState_Monitored
+    a dev:AlertCondition , dev:ObservationStateCondition ;
+    rdfs:label "Condition: CO2_Property hasObservationState Monitored" ;
+    rdfs:comment "Inferred from CO2 metric group availability: the clinical CO2 physiological property is being actively observed (regardless of whether EtCO2 or tcpCO2 modality). Mapped to :CO2_Property — the generic superclass property for all CO2 measurements." ;
+    dev:aboutEntity :CO2_Property ;
+    dev:onAttribute clin:hasObservationState ;
+    dev:hasValue common:Monitored .
+
+
+#######################################################################
+# ALARM 36 | PHILIPSMONITOR - CO2 geen sensor or  (capnography sensor disconnected)
+# (PhilipsMonitor/Patient conditions shared with alarms 34-35)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_CapnographySensor_OperationalState_Disconnected
+    a dev:AlertCondition , dev:SensorConnectivityCondition ;
+    rdfs:label "Condition: Capnography_Sensor hasOperationalState Disconnected" ;
+    rdfs:comment "The capnography sensor is physically absent or disconnected — the monitor detects no CO2 sensor on the airway circuit. Distinct from Fault (sensor present but erroring) and Calibrating (sensor present but warming up)." ;
+    dev:aboutEntity :Capnography_Sensor ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Disconnected .
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_CapnoSignal_qualityState_insufficient
+    a dev:AlertCondition , dev:SignalQualityCondition ;
+    rdfs:label "Condition: Capno_Waveform_Signal hasQualityIndicator Insufficient" ;
+    rdfs:comment "The capnography waveform signal quality is insufficient — the waveform is present but outside the measurable scale range (CO2 wzig schaal l: scale change warning). A generic insufficient quality state for the capnography signal." ;
+    dev:aboutEntity :Capno_Waveform_Signal ;
+    dev:onAttribute common:hasQualityIndicator ;
+    dev:hasValue common:Insufficient .
+
+
+#######################################################################
+# ALARM 39 | PHILIPSMONITOR - Contr. Instellingen  (settings require verification)
+# (PhilipsMonitor/Patient conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_PhilipsMonitor_FunctionalState_RequiresVerification
+    a dev:AlertCondition , dev:DeviceOperationalCondition ;
+    rdfs:label "Condition: PhilipsMonitor hasOperationalState RequiresVerification" ;
+    rdfs:comment "The Philips Monitor configuration or settings have changed and require manual verification by the user. Represented as dev:hasOperationalState common:RequiresVerification — a functional state flagging that the device is operational but awaiting confirmation." ;
+    dev:aboutEntity :PhilipsMonitor ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:RequiresVerification .
+
+
+#######################################################################
+# ALARM 40 | PHILIPSMONITOR - Contr. SpeedPoint  (SpeedPoint module requires verification)
+# (PhilipsMonitor/Patient conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_SpeedpointFunctionalUnit_OperationalState_Enabled
+    a dev:AlertCondition , dev:DeviceOperationalCondition ;
+    rdfs:label "Condition: SpeedpointFU hasOperationalState Enabled" ;
+    rdfs:comment "The SpeedPoint data-transfer functional unit is present and operational on the Philips Monitor." ;
+    dev:aboutEntity :SpeedpointFU ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_SpeedPointModule_FunctionalState_RequiresVerification
+    a dev:AlertCondition , dev:DeviceOperationalCondition ;
+    rdfs:label "Condition: SpeedpointFU hasFunctionalState RequiresVerification" ;
+    rdfs:comment "The SpeedPoint data-transfer module has flagged a data mismatch or configuration inconsistency that requires manual verification (e.g. patient-ID conflict between monitor and HIS). Represented as dev:hasFunctionalState common:RequiresVerification." ;
+    dev:aboutEntity :SpeedpointFU ;
+    dev:onAttribute dev:hasFunctionalState ;
+    dev:hasValue common:RequiresVerification .
+
+
+#######################################################################
+# ALARM 41 | PHILIPSMONITOR - Control. pat-ID  (patient ID requires confirmation)
+# (PhilipsMonitor condition shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_SettingsModule_FunctionalState_RequiresConfirmation
+    a dev:AlertCondition , dev:DeviceOperationalCondition ;
+    rdfs:label "Condition: SettingsModule hasFunctionalState RequiresConfirmation" ;
+    rdfs:comment "The monitor settings/configuration module requires explicit user confirmation — a configuration change has occurred (e.g. after patient transfer or reset) and the clinician must actively confirm the settings. Distinct from RequiresVerification (passive flag) in that the monitor blocks normal operation until confirmed." ;
+    dev:aboutEntity :SettingsModule ;
+    dev:onAttribute dev:hasFunctionalState ;
+    dev:hasValue common:RequiresConfirmation .
+
+:Cond_PatientIdentityRecord_FunctionalState_RequiresConfirmation
+    a dev:AlertCondition , dev:DeviceOperationalCondition ;
+    rdfs:label "Condition: PatientIdentityRecord hasFunctionalState RequiresConfirmation" ;
+    rdfs:comment "The patient identity record stored on the monitor requires explicit confirmation — the clinician must verify that the patient ID on the monitor matches the admitted patient. Triggered after patient transfer between units or manual ID entry." ;
+    dev:aboutEntity :PatientIdentityRecord ;
+    dev:onAttribute dev:hasFunctionalState ;
+    dev:hasValue common:RequiresConfirmation .
+
+
+#######################################################################
+# ALARM 42 | PHILIPSMONITOR - Delta SpO2 contr. bron  (SpO2 source quality check)
+# (PhilipsMonitor/Patient/PulseOximetry conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_SpO2Metric_MagnitudeState_verylow
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: SpO2_Metric hasMagnitudeState VeryLow" ;
+    rdfs:comment "The SpO2 metric value is very low — the device-level signal interpretation yields a critically reduced oxygen saturation reading. Epistemic (device-level) counterpart to the clinical Cond_SaO2Property_MagnitudeState_verylow." ;
+    dev:aboutEntity :SpO2_Metric ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:VeryLow .
+
+
+#######################################################################
+# ALARM 43 | PHILIPSMONITOR - Desaturatie  (SpO2 critically low — desaturation)
+# (PhilipsMonitor/Patient/PulseOximetry/SpO2Metric conditions shared with above)
+#######################################################################
+
+# ── IMPLIED CONDITIONS ───────────────────────────────────────────────
+
+:Cond_SaO2Property_MagnitudeState_verylow
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Arterial_Oxygenation_Property hasMagnitudeState VeryLow" ;
+    rdfs:comment "The arterial oxygen saturation (SaO2, measured as SpO2) is very low — the physiological property representing oxygenation is critically reduced. Ontological translation of the device-level SpO2 metric to the clinical property :Arterial_Oxygenation_Property." ;
+    dev:aboutEntity :Arterial_Oxygenation_Property ;
+    dev:onAttribute common:hasMagnitudeState ;
+    dev:hasValue common:VeryLow .
+
+:Cond_PulmonaryOxygenation_FunctionalState_CriticallyHypo
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Pulmonary_Oxygenation_Process hasFunctionalState CriticallyHypo" ;
+    rdfs:comment "The pulmonary oxygenation process (gas exchange / O2 loading in the lung) is in a critically hypofunctional state — oxygenation is severely impaired. Inferred from very low SaO2: the process producing adequate arterial O2 saturation has critically failed." ;
+    dev:aboutEntity :Pulmonary_Oxygenation_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:CriticallyHypo .
+
+
+#######################################################################
+# ALARM 44 | PHILIPSMONITOR - EC10 ontkoppeld  (EC10 cable module disconnected)
+# (PhilipsMonitor condition shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_EC10Module_OperationalState_Disconnected
+    a dev:AlertCondition , dev:DeviceOperationalCondition ;
+    rdfs:label "Condition: EC10Module hasOperationalState Disconnected" ;
+    rdfs:comment "The EC10 ECG cable/measurement module is physically disconnected from the Philips Monitor. The EC10 is the hardware cable unit that connects ECG electrodes to the monitor — its absence prevents any ECG-derived measurements." ;
+    dev:aboutEntity :EC10Module ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Disconnected .
+
+
+#######################################################################
+# ALARM 45 | PHILIPSMONITOR - ECG alle leads los  (all ECG leads disconnected)
+# (PhilipsMonitor condition shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_ECGSensorGroup_OperationalState_Disconnected
+    a dev:AlertCondition , dev:SensorConnectivityCondition ;
+    rdfs:label "Condition: ECG_SensorGroup hasOperationalState Disconnected" ;
+    rdfs:comment "All ECG lead electrodes are disconnected from the patient. The entire ECG_SensorGroup (aggregating all ECG leads) has lost patient contact. Distinct from EC10 disconnection (cable absent) — here the cable is present but no electrode makes skin contact." ;
+    dev:aboutEntity :ECG_SensorGroup ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Disconnected .
+
+
+#######################################################################
+# ALARM 46 | PHILIPSMONITOR - ECG ruissignaal  (ECG signal noise)
+# (PhilipsMonitor/Patient/ECGSensorGroup conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_ECGSignalGroup_OperationalState_Enabled
+    a dev:AlertCondition , dev:SignalQualityCondition ;
+    rdfs:label "Condition: ECG_SignalGroup hasOperationalState Enabled" ;
+    rdfs:comment "The ECG signal group (aggregating all ECG lead signals) is active and transmitting — the ECG signal ensemble is being acquired and processed by the monitor." ;
+    dev:aboutEntity :ECG_SignalGroup ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Enabled .
+
+:Cond_ECGSignalGroup_QualityState_noise
+    a dev:AlertCondition , dev:SignalQualityCondition ;
+    rdfs:label "Condition: ECG_SignalGroup hasQualityIndicator Noise" ;
+    rdfs:comment "The ECG signal group quality is degraded by noise — the waveform ensemble is present but corrupted by electrical or movement interference such that arrhythmia analysis is unreliable. Triggers the 'ECG ruissignaal' advisory alarm." ;
+    dev:aboutEntity :ECG_SignalGroup ;
+    dev:onAttribute common:hasQualityIndicator ;
+    dev:hasValue common:Noisy .
+
+
+#######################################################################
+# ALARM 47 | PHILIPSMONITOR - ECG/arr-alrmn uit  (ECG/arrhythmia alarms silenced)
+# (PhilipsMonitor/Patient/ECGSensorGroup conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_ECGSignalGroup_FunctionalState_Silenced
+    a dev:AlertCondition , dev:DeviceOperationalCondition ;
+    rdfs:label "Condition: ECG_SignalGroup hasFunctionalState Silenced" ;
+    rdfs:comment "ECG and arrhythmia alarms have been deliberately silenced on the monitor. The ECG signal group is still acquired and processed, but alarm notifications have been suspended. This is a safety-critical state: the monitor alerts the user that arrhythmia alarms are off." ;
+    dev:aboutEntity :ECG_SignalGroup ;
+    dev:onAttribute dev:hasFunctionalState ;
+    dev:hasValue common:Silenced .
+
+
+#######################################################################
+# ALARM 48 | PHILIPSMONITOR - Ext CNTR CONFIG  (external controller configuration error)
+# (PhilipsMonitor condition shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_ExternalControllerModule_ConfigurationState_Error
+    a dev:AlertCondition , dev:DeviceOperationalCondition ;
+    rdfs:label "Condition: ExternalControllerModule hasOperationalState Error" ;
+    rdfs:comment "The external controller interface module on the Philips Monitor has detected a configuration error — a mismatch or incompatibility in the configuration between the monitor and the connected external control device (e.g. central station, telemetry gateway). Represented as dev:hasOperationalState common:Error." ;
+    dev:aboutEntity :ExternalControllerModule ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Error .
+
+
+#######################################################################
+# ALARM 49 | PHILIPSMONITOR - Extr. lage hartfreq.  (extremely low heart rate)
+# (PhilipsMonitor/Patient/ECGSensor/ElectricHeartRateMetric conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_ElectricHeartRateMetric_RateState_veryLow
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: ElectricHeartRate_Metric hasRateState VeryLow" ;
+    rdfs:comment "The electric heart rate metric value is extremely low — the device-level ECG-derived heart rate is critically below threshold. Epistemic (device-level) counterpart to the clinical Cond_ElectricHeartRateProperty_RateState_veryLow." ;
+    dev:aboutEntity :ElectricHeartRate_Metric ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:VeryLow .
+
+# ── IMPLIED CONDITIONS ───────────────────────────────────────────────
+
+:Cond_ElectricHeartRateProperty_RateState_veryLow
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: ElectricHeartRate_Property hasRateState VeryLow" ;
+    rdfs:comment "The electric heart rate physiological property is very low — the ECG-derived cardiac electrical depolarisation frequency is critically reduced. Ontological translation of the device-level metric to the clinical property :ElectricHeartRate_Property." ;
+    dev:aboutEntity :ElectricHeartRate_Property ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:VeryLow .
+
+:Cond_CardiacContractionProcess_FunctionalState_CriticallyHypo
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Cardiac_Contraction_Process hasFunctionalState CriticallyHypo" ;
+    rdfs:comment "The cardiac contraction process is in a critically hypofunctional state — the heart rate is so low that cardiac output is critically compromised (extreme bradycardia approaching arrest). Inferred from very low electric heart rate: the rate-generating process has critically slowed." ;
+    dev:aboutEntity :Cardiac_Contraction_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:CriticallyHypo .
+
+
+#######################################################################
+# ALARM 50 | PHILIPSMONITOR - Extreme Tachy  (extremely high heart rate)
+# (PhilipsMonitor/Patient/ECGSensor/ElectricHeartRateMetric conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_ElectricHeartRateMetric_RateState_veryHigh
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: ElectricHeartRate_Metric hasRateState VeryHigh" ;
+    rdfs:comment "The electric heart rate metric value is extremely high — the device-level ECG-derived heart rate is critically above threshold. Epistemic (device-level) counterpart to the clinical Cond_ElectricHeartRateProperty_RateState_veryHigh." ;
+    dev:aboutEntity :ElectricHeartRate_Metric ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:VeryHigh .
+
+# ── IMPLIED CONDITIONS ───────────────────────────────────────────────
+
+:Cond_ElectricHeartRateProperty_RateState_veryHigh
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: ElectricHeartRate_Property hasRateState VeryHigh" ;
+    rdfs:comment "The electric heart rate physiological property is very high — the ECG-derived cardiac electrical depolarisation frequency is critically elevated. Ontological translation of the device-level metric to the clinical property :ElectricHeartRate_Property." ;
+    dev:aboutEntity :ElectricHeartRate_Property ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:VeryHigh .
+
+:Cond_CardiacContractionProcess_FunctionalState_CriticallyHyper
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Cardiac_Contraction_Process hasFunctionalState CriticallyHyper" ;
+    rdfs:comment "The cardiac contraction process is in a critically hyperfunctional state — the heart rate is so high that cardiac output is critically compromised (extreme tachycardia: insufficient ventricular filling time). Inferred from very high electric heart rate." ;
+    dev:aboutEntity :Cardiac_Contraction_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:CriticallyHyper .
+
+
+#######################################################################
+# ALARM 51 | PHILIPSMONITOR - F elektrode los  (foot/LL ECG electrode disconnected)
+# (PhilipsMonitor condition shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_ECGFElectrode_OperationalState_Disconnected
+    a dev:AlertCondition , dev:SensorConnectivityCondition ;
+    rdfs:label "Condition: ECG_LL_Sensor (F electrode) hasOperationalState Disconnected" ;
+    rdfs:comment "The ECG F (foot) electrode is disconnected. In the Philips IntelliVue labelling system, the 'F' electrode corresponds to the left leg (LL) electrode of the standard 5-lead placement. Mapped to :ECG_LL_Sensor." ;
+    dev:aboutEntity :ECG_LL_Sensor ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Disconnected .
+
+# ── IMPLIED CONDITIONS ───────────────────────────────────────────────
+
+:Cond_Patient_HasConnectedSensor_ECGFSensor
+    a dev:AlertCondition , dev:PatientConnectivityCondition ;
+    rdfs:label "Condition: Patient hasConnectedSensor ECG_LL_Sensor (F electrode)" ;
+    rdfs:comment "Inferred patient connectivity: the patient had the ECG F (foot/LL) electrode applied. Name variant for the F-electrode specific implied condition in alarm 51." ;
+    dev:aboutEntity :Patient ;
+    dev:onAttribute clin:hasConnectedSensor ;
+    dev:hasValue :ECG_LL_Sensor .
+
+
+#######################################################################
+# ALARM 52 | PHILIPSMONITOR - Geen app.geg.  (no application data / settings check)
+# (PhilipsMonitor/Patient conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_PhilipsMonitor_FunctionalState_CheckSettings
+    a dev:AlertCondition , dev:DeviceOperationalCondition ;
+    rdfs:label "Condition: PhilipsMonitor hasFunctionalState CheckSettings" ;
+    rdfs:comment "The Philips Monitor has not received application/configuration data from a connected device or network (geen app.geg. = no application data). The monitor signals that the user must inspect and correct the settings. Represented as dev:hasFunctionalState common:CheckSettings." ;
+    dev:aboutEntity :PhilipsMonitor ;
+    dev:onAttribute dev:hasFunctionalState ;
+    dev:hasValue common:CheckSettings .
+
+
+#######################################################################
+# ALARM 53 | PHILIPSMONITOR - HF hoog  (heart rate high)
+# (PhilipsMonitor/Patient/ECGSensor/ElectricHeartRateMetric conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_ElectricHeartRateMetric_RateState_High
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: ElectricHeartRate_Metric hasRateState High" ;
+    rdfs:comment "The electric heart rate metric value is high — the device-level ECG-derived heart rate exceeds the upper alarm threshold (tachycardia). Epistemic (device-level) counterpart to the clinical Cond_ElectricHeartRateProperty_RateState_High." ;
+    dev:aboutEntity :ElectricHeartRate_Metric ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:High .
+
+# ── IMPLIED CONDITIONS ───────────────────────────────────────────────
+
+:Cond_ElectricHeartRateProperty_RateState_High
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: ElectricHeartRate_Property hasRateState High" ;
+    rdfs:comment "The electric heart rate physiological property is high — the ECG-derived cardiac electrical depolarisation frequency exceeds the upper threshold (tachycardia). Ontological translation of the device-level metric to the clinical property :ElectricHeartRate_Property." ;
+    dev:aboutEntity :ElectricHeartRate_Property ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:High .
+
+:Cond_CardiacRateProcess_FunctionalState_Hyper
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Cardiac_Rate_Process hasFunctionalState Hyper" ;
+    rdfs:comment "The cardiac rate process is hyperfunctional — the heart rate is elevated above threshold (tachycardia). Inferred from high electric heart rate: the cardiac rate-generating process is overactive." ;
+    dev:aboutEntity :Cardiac_Rate_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Hyper .
+
+
+#######################################################################
+# ALARM 54 | PHILIPSMONITOR - L elektrode los  (left arm/LA ECG electrode disconnected)
+# (PhilipsMonitor condition shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_ECGL_Electrode_OperationalState_Disconnected
+    a dev:AlertCondition , dev:SensorConnectivityCondition ;
+    rdfs:label "Condition: ECG_LA_Sensor (L electrode) hasOperationalState Disconnected" ;
+    rdfs:comment "The ECG L (left arm) electrode is disconnected. In the Philips IntelliVue labelling system, the 'L' electrode corresponds to the left arm (LA) electrode of the standard 5-lead placement. Mapped to :ECG_LA_Sensor." ;
+    dev:aboutEntity :ECG_LA_Sensor ;
+    dev:onAttribute dev:hasOperationalState ;
+    dev:hasValue common:Disconnected .
+
+# ── IMPLIED CONDITIONS ───────────────────────────────────────────────
+
+:Cond_Patient_HasConnectedSensor_ECGLSensor
+    a dev:AlertCondition , dev:PatientConnectivityCondition ;
+    rdfs:label "Condition: Patient hasConnectedSensor ECG_LA_Sensor (L electrode)" ;
+    rdfs:comment "Inferred patient connectivity: the patient had the ECG L (left arm/LA) electrode applied. Name variant for the L-electrode specific implied condition in alarm 54." ;
+    dev:aboutEntity :Patient ;
+    dev:onAttribute clin:hasConnectedSensor ;
+    dev:hasValue :ECG_LA_Sensor .
+
+
+#######################################################################
+# ALARM 55 | PHILIPSMONITOR - Lage ademfreq.  (low respiratory rate)
+# (PhilipsMonitor/Patient/ECGSensor conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_RespRateMetric_RateState_low
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: RespiratoryRate_Metric hasRateState Low" ;
+    rdfs:comment "The respiratory rate metric value is low — the device-level impedance-derived respiratory rate is below the lower alarm threshold (bradypnea). Epistemic (device-level) counterpart to the clinical Cond_RespiratoryRateProperty_RateState_low." ;
+    dev:aboutEntity :RespiratoryRate_Metric ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:Low .
+
+# ── IMPLIED CONDITIONS ───────────────────────────────────────────────
+
+:Cond_RespiratoryRateProperty_RateState_low
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Pulmonary_Ventilation_Property hasRateState Low" ;
+    rdfs:comment "The pulmonary ventilation (respiratory rate) physiological property is low — the respiratory rate is below threshold (bradypnea). Ontological translation of the device metric to the clinical property :Pulmonary_Ventilation_Property." ;
+    dev:aboutEntity :Pulmonary_Ventilation_Property ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:Low .
+
+:Cond_PulmonaryVentilationProcess_FunctionalState_Hypo
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Pulmonary_Ventilation_Process hasFunctionalState Hypo" ;
+    rdfs:comment "The pulmonary ventilation process is hypofunctional — the respiratory rate is below threshold, indicating insufficient ventilatory effort (bradypnea). Inferred from low respiratory rate." ;
+    dev:aboutEntity :Pulmonary_Ventilation_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Hypo .
+
+
+#######################################################################
+# ALARM 56 | PHILIPSMONITOR - Lage hartfreq.  (low heart rate / bradycardia)
+# (PhilipsMonitor/Patient/ECGSensor/ElectricHeartRateMetric conditions shared with above)
+#######################################################################
+
+# ── ASSERTED CONDITIONS ──────────────────────────────────────────────
+
+:Cond_ElectricHeartRateMetric_RateState_low
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: ElectricHeartRate_Metric hasRateState Low" ;
+    rdfs:comment "The electric heart rate metric value is low — the device-level ECG-derived heart rate is below the lower alarm threshold (bradycardia). Epistemic (device-level) counterpart to the clinical Cond_ElectricHeartRateProperty_RateState_low." ;
+    dev:aboutEntity :ElectricHeartRate_Metric ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:Low .
+
+# ── IMPLIED CONDITIONS ───────────────────────────────────────────────
+
+:Cond_ElectricHeartRateProperty_RateState_low
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: ElectricHeartRate_Property hasRateState Low" ;
+    rdfs:comment "The electric heart rate physiological property is low — the ECG-derived cardiac electrical depolarisation frequency is below threshold (bradycardia). Ontological translation of the device-level metric to the clinical property :ElectricHeartRate_Property." ;
+    dev:aboutEntity :ElectricHeartRate_Property ;
+    dev:onAttribute common:hasRateState ;
+    dev:hasValue common:Low .
+
+:Cond_CardiacContractionProcess_FunctionalState_Hypo
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Cardiac_Contraction_Process hasFunctionalState Hypo" ;
+    rdfs:comment "The cardiac contraction process is hypofunctional — the heart rate is below threshold (bradycardia). Inferred from low electric heart rate: the cardiac rate-generating process is underactive." ;
+    dev:aboutEntity :Cardiac_Contraction_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Hypo .
+
+:Cond_CardiacContraction_FunctionalState_Hypo
+    a dev:AlertCondition , dev:PhysiologicalValueCondition ;
+    rdfs:label "Condition: Cardiac_Contraction_Process hasFunctionalState Hypo" ;
+    rdfs:comment "Name variant of :Cond_CardiacContractionProcess_FunctionalState_Hypo used in earlier alarms referencing the shorter 'Contraction' suffix. Same semantics: cardiac contraction process is hypofunctional (bradycardia)." ;
+    dev:aboutEntity :Cardiac_Contraction_Process ;
+    dev:onAttribute clin:hasFunctionalState ;
+    dev:hasValue common:Hypo .
+

@@ -44,12 +44,6 @@
 # - Ventilation
 # - Perfusion  
 
-:Pulmonary_Oxygenation_Process a clin:PhysiologicalProcess ;
-    rdfs:label "Pulmonary Oxygenation" ;
-    clin:occursInOrgan :Lungs ;
-    clin:producesProperty :Arterial_Oxygenation_Property ;
-    clin:hasFunctionalState "Unknown" .
-
 :Pulmonary_Ventilation_Process a clin:PhysiologicalProcess ;
     rdfs:label "Pulmonary Ventilation" ;
     clin:occursInOrgan :Lungs ;
@@ -59,7 +53,18 @@
 :Pulmonary_Diffusion_Process a clin:PhysiologicalProcess ;
     rdfs:label "Pulmonary Diffusion" ;
     clin:occursInOrgan :Lungs ;
-    clin:producesProperty :Alveolar_CarbonDioxide_Property, :Arterial_Oxygenation_Property ;
+    clin:hasFunctionalState "Unknown" .
+
+:Pulmonary_Oxygenation_Process a clin:Pulmonary_Diffusion_Process ;
+    rdfs:label "Pulmonary Oxygenation" ;
+    clin:occursInOrgan :Lungs ;
+    clin:producesProperty :Arterial_Oxygenation_Property ;
+    clin:hasFunctionalState "Unknown" .
+
+:PulmonaryCO2_Diffusion_Process a clin:Pulmonary_Diffusion_Process ;
+    rdfs:label "Pulmonary CO2 Diffusion" ;
+    clin:occursInOrgan :Lungs ;
+    clin:producesProperty :Alveolar_CarbonDioxide_Property ;
     clin:hasFunctionalState "Unknown" .
 
 :Cardiac_Contraction_Process a clin:PhysiologicalProcess ;

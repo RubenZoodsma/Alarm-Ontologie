@@ -137,3 +137,28 @@
     clin:hasSNOMEDCode "86290005" ;
     common:hasStateInstance common:Unknown ;
     common:measuredByMetric :RespiratoryRate_Metric .
+
+:Transcutaneous_CO2_Property a clin:PhysiologicalProperty ;
+    rdfs:label "Transcutaneous CO2" ;
+    clin:hasUnit "mmHg" ;
+    clin:hasSNOMEDCode "250750003" ;
+    rdfs:comment "Partial pressure of CO2 measured transcutaneously through the skin. Reflects arterial/tissue pCO2 and is used as a non-invasive proxy for arterial CO2. Distinct from alveolar EtCO2; both reflect pulmonary CO2 elimination." ;
+    common:hasStateInstance common:Unknown ;
+    clin:partOfProcess :Pulmonary_Diffusion_Process ;
+    common:measuredByMetric :tcpCO2_Metric .
+
+:CO2_Property a clin:PhysiologicalProperty ;
+    rdfs:label "CO2 Property" ;
+    rdfs:comment "Generic superclass property representing any CO2 measurement (alveolar EtCO2 or transcutaneous tcpCO2). Used in conditions where the alarm applies to CO2 monitoring regardless of modality (e.g. CO2 auto nulling, CO2 adapter error alarms). Sub-types: :Alveolar_CarbonDioxide_Property, :Transcutaneous_CO2_Property." ;
+    clin:hasUnit "mmHg" ;
+    common:hasStateInstance common:Unknown ;
+    clin:partOfProcess :Pulmonary_Diffusion_Process .
+
+:ElectricHeartRate_Property a clin:PhysiologicalProperty ;
+    rdfs:label "Electric Heart Rate" ;
+    rdfs:comment "ECG-derived cardiac rate: the frequency of electrical depolarisation events as measured from the ECG waveform. Sub-type of :Cardiac_Contractile_Frequency_Property, specifically reflecting electrophysiological activity rather than mechanical pulse. Used for asystole detection." ;
+    clin:hasUnit "bpm" ;
+    clin:hasSNOMEDCode "364075005" ;
+    common:hasStateInstance common:Unknown ;
+    clin:partOfProcess :Cardiac_Rate_Process ;
+    common:measuredByMetric :ElectricHeartRate_Metric .

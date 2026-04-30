@@ -1,37 +1,39 @@
 
 PREFIX inst: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/instances#>
 PREFIX dev:  <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/device#>
+PREFIX common: <https://github.com/RubenZoodsma/Alarm-Ontologie/ontology/common#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 # FP-2 — Sensor-malfunction suppression
-# Returns every (malfunction-trigger alarm, target alarm) pair that shares a
-# SensorConnectivityCondition.  The Python rule uses these pairs to suppress
-# any target alarm whose alarm_start falls within the malfunction window
-# (malfunction alarm_start … alarm_eind + 30 s grace period).
-# Both physiological AND technical target alarms are included.
+# Returns every (malfunction-trigger alarm, target alarm) pair that refers to the
+# same sensor entity.
+#
+# Trigger: a technical alarm that requiresCondition a SensorConnectivityCondition
+#          whose dev:hasValue is common:Disconnected, identifying sensor entity ?sensorEnt.
+# Target:  any other alarm that requiresCondition any condition about the same
+#          ?sensorEnt — i.e. any alarm that depends on that sensor being connected.
+#
+# The Python rule uses these pairs to suppress target alarms whose alarm_start
+# falls within the malfunction window (malfunction alarm_start … alarm_eind + 30 s).
 
-SELECT DISTINCT ?malfLabel ?targetLabel ?sharedSensorCond
+SELECT DISTINCT ?malfLabel ?targetLabel ?sensorEnt
 WHERE {
-    # --- malfunction alarm: technical alarm that requires a SensorFaultCondition ---
+    # --- malfunction alarm: requires a Disconnected SensorConnectivityCondition ---
     ?malfACD a dev:AlertConditionDescription ;
              dev:alarmCategory inst:technicalAlarmGroup ;
              dev:alarmMessageLabel ?malfLabel ;
-             dev:requiresCondition ?sharedSensorCond ;
-             dev:requiresCondition ?faultCond .
+             dev:requiresCondition ?disconnCond .
 
-    # sharedSensorCond must be a SensorConnectivityCondition (semantic class)
-    ?sharedSensorCond a ?connType .
-    ?connType rdfs:subClassOf* dev:SensorConnectivityCondition .
+    ?disconnCond a dev:SensorConnectivityCondition ;
+                 dev:hasValue common:Disconnected ;
+                 dev:aboutEntity ?sensorEnt .
 
-    # faultCond must be a SensorFaultCondition (hardware fault / disconnection)
-    # — excludes pure signal-quality conditions (SignalQualityCondition)
-    ?faultCond a ?faultType .
-    ?faultType rdfs:subClassOf* dev:SensorFaultCondition .
+    # --- target alarm: requires any condition about the same sensor entity ---
+    ?targetCond dev:aboutEntity ?sensorEnt .
 
-    # --- any alarm (physiological OR technical) sharing the same sensor-connectivity condition ---
     ?targetACD a dev:AlertConditionDescription ;
                dev:alarmMessageLabel ?targetLabel ;
-               dev:requiresCondition ?sharedSensorCond .
+               dev:requiresCondition ?targetCond .
 
     # do not suppress the malfunction alarm itself
     FILTER(?malfACD != ?targetACD)

@@ -16,24 +16,6 @@
     rdfs:label "Alarm Condition Descriptions (ACD)" ;
     rdfs:comment "Defines AlertConditionDescription instances with explicit semantic requirements for alarm activation" .
 
-##### Initially included alarms: 
-# 1  | PHILIPSMONITOR - ?? SpO2l hoog	
-# 2  | PHILIPSMONITOR - ?? SpO2po hoog	
-# 3  | PHILIPSMONITOR - ?? ST-II laag	
-# 4  | PHILIPSMONITOR - ?? ST-V hoog g	
-# 5  | PHILIPSMONITOR - ?? Thuid laag	
-# 6  | PHILIPSMONITOR - ?? Tkern hoog	
-# 7  | PHILIPSMONITOR - ??? Brady (pols)	
-# 8  | PHILIPSMONITOR - ABP slecht signaal	
-# 9  | PHILIPSMONITOR - ABPm hoog 	
-# 10 | PHILIPSMONITOR - BATTERY LOW	
-# 11 | PHILIPSMONITOR - Pols hoog 	
-# 12 | PHILIPSMONITOR - Pols laag 	
-# 13 | PHILIPSMONITOR - SpO2 laag 	
-# 14 | PHILIPSMONITOR - EtCO2 laag
-
-
-
 #######################################################################
 # Alarm 1  | PHILIPSMONITOR - ?? SpO2l hoog	
 #######################################################################
@@ -50,18 +32,22 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_PulseOximetrySensor_FunctionalState_Connected ,       ## pulseOximeterSensor is connected
-        :Cond_SpO2Metric_OperationalState_Available ,               ## SpO2 metric is being measured
-        :Cond_SpO2Metric_ValueInterpretation_HighLimitViolation ,   ## SpO2_metric hasValueInterpretation = HighLimitViolation
-        :Cond_PulseOximetrySensor_MeasurementLocation_Left          ## pulseOximeterSensor hasMeasurementLocation = Left
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,             ## philipsMonitor is enabled
+        :Cond_PulseOximetrySensor_OperationalState_Enabled ,      ## pulseOximeterSensor is connected
+        :Cond_SpO2Metric_OperationalState_Enabled ,               ## SpO2 metric is being measured
+        :Cond_PulseOximetrySensor_MeasurementLocation_LeftSide ,    ## pulseOximeterSensor hasMeasurementLocation = Left
+        ## epistemic representation
+        :Cond_SpO2Metric_MagnitudeState_High                        ## SpO2_metric hasMagnitudeState = High (elevated value)  
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_PulseOximetry ,
         :Cond_SaO2Property_ObservationState_Monitored ,
-        :Cond_PulmOxygenation_FunctionalState_hyper
+        ## ontological interpretation of the epistemic representation
+        :Cond_SaO2Property_MagnitudeState_High ,                    ## SaO2Property hasMagnitudeState = High (elevated value)
+        :Cond_PulmonaryOxygenation_FunctionalState_Hyper            ## Pulmonary oxygenation process is in a hyperfunctional state 
+        ## organ- and organsystem level inferrals through inheritance / reasoning
         .
 
 :ACD_Alarm_2 ## PHILIPSMONITOR - ?? SpO2po hoog
@@ -76,22 +62,22 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_PulseOximetrySensor_FunctionalState_Connected ,       ## pulseOximeterSensor is connected
-        :Cond_SpO2Metric_OperationalState_Available ,              ## SpO2 metric is being measured
-        :Cond_SpO2Metric_ValueInterpretation_HighLimitViolation ,   ## SpO2_metric hasValueInterpretation = HighLimitViolation
-        :Cond_PulseOximetrySensor_MeasurementLocation_postDuctal    ## pulseOximeterSensor hasMeasurementLocation = postDuctal
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,             ## philipsMonitor is enabled
+        :Cond_PulseOximetrySensor_OperationalState_Enabled ,      ## pulseOximeterSensor is connected
+        :Cond_SpO2Metric_OperationalState_Enabled ,               ## SpO2 metric is being measured
+        :Cond_PulseOximetrySensor_MeasurementLocation_postDuctal ,   ## pulseOximeterSensor hasMeasurementLocation = postDuctal
+        ## epistemic representation
+        :Cond_SpO2Metric_MagnitudeState_High                        ## SpO2_metric hasMagnitudeState = High (elevated value)  
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Device-related inferrals
-        :Cond_PulseOximeterInterfaceConnected ,
-        :Cond_SpO2DeviceChannel_FunctionalState_Enabled ,
-        
-        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_PulseOximetry ,
-        :Cond_SaO2Property_ObservationState_Monitored
+        :Cond_SaO2Property_ObservationState_Monitored ,
+        ## ontological interpretation of the epistemic representation
+        :Cond_SaO2Property_MagnitudeState_High ,                    ## SaO2Property hasMagnitudeState = High (elevated value)
+        :Cond_PulmonaryOxygenation_FunctionalState_Hyper            ## Pulmonary oxygenation process is in a hyperfunctional state 
+        ## organ- and organsystem level inferrals through inheritance / reasoning
         .
 
 :ACD_Alarm_3 ## PHILIPSMONITOR - ?? ST-II laag
@@ -106,22 +92,21 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_ECGRASensor_FunctionalState_Connected ,          ## ECG RA sensor is connected
-        :Cond_ECGLLSensor_FunctionalState_Connected ,         ## ECG LL sensor is connected
-        :Cond_STII_Metric_OperationalState_Available ,             ## ST-II metric is being measured/calculated
-        :Cond_STII_Metric_ValueInterpretation_LowLimitViolation      ## ST-II_metric hasValueInterpretation = LowLimitViolation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_ECGSensorGroup_OperationalState_Enabled ,       ## ECG sensor group is connected
+        :Cond_STII_Metric_OperationalState_Enabled ,             ## ST-II metric is being measured/calculated
+         ## epistemic representation
+        :Cond_STII_Metric_MagnitudeState_low                        ## ST-II_metric hasMagnitudeState = Low (deviant value)  
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Device-related inferrals
-        :Cond_ECGInterface_FunctionalState_Connected ,
-        :Cond_STIIDeviceChannel_FunctionalState_Enabled ,
-        
-        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
-        :Cond_Patient_HasConnectedSensor_ECG ,
-        :Cond_CardiacDepolarizationProperty_ObservationState_Monitored
+        :Cond_Patient_HasConnectedSensor_ECGSensor ,
+        # ontological interpretation of the epistemic representation
+        ## PM: Check later - singular ST-segment deviations are not clinically interpretable in a uniform manner.
+        :Cond_CardiacDepolarizationProperty_ObservationState_Monitored , ## CardiacDepolarizationProperty is being monitored (e.g. via ST-segment analysis)
+        :Cond_CardiacDepolarizationProperty_MagnitudeState_low                     ## CardiacDepolarizationProperty hasMagnitudeState = Low (deviant value)
+        ## Influence of alarm 'ST-II' on process-level (cardiac contraction / depolarization) not made explicit. Interpretation of the alarm solely dependend on a single lead is not clinically feasible.
         .
 
 :ACD_Alarm_4 ## PHILIPSMONITOR - ?? ST-V hoog g
@@ -136,26 +121,21 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_ECGV1Sensor_FunctionalState_Connected ,          ## ECG V1 sensor is connected
-        :Cond_ECGV2Sensor_FunctionalState_Connected ,         ## ECG V2 sensor is connected
-        :Cond_ECGV3Sensor_FunctionalState_Connected ,         ## ECG V3 sensor is connected
-        :Cond_ECGV4Sensor_FunctionalState_Connected ,         ## ECG V4 sensor is connected
-        :Cond_ECGV5Sensor_FunctionalState_Connected ,         ## ECG V5 sensor is connected
-        :Cond_ECGV6Sensor_FunctionalState_Connected ,         ## ECG V6 sensor is connected
-        :Cond_STV_Metric_OperationalState_Available ,             ## ST-V metric is being measured/calculated
-        :Cond_STV_Metric_ValueInterpretation_HighLimitViolation      ## ST-V_metric hasValueInterpretation = HighLimitViolation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_ECGSensorGroup_OperationalState_Enabled ,       ## ECG sensor group is connected
+        :Cond_STV_Metric_OperationalState_Enabled ,             ## ST-V metric is being measured/calculated
+         ## epistemic representation
+        :Cond_STV_Metric_MagnitudeState_High                        ## ST-V_metric hasMagnitudeState = High (deviant value)  
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Device-related inferrals
-        :Cond_ECGInterface_FunctionalState_Connected ,
-        :Cond_STVDeviceChannel_FunctionalState_Enabled ,
-        
-        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
-        :Cond_Patient_HasConnectedSensor_ECG ,
-        :Cond_CardiacDepolarizationProperty_ObservationState_Monitored
+        :Cond_Patient_HasConnectedSensor_ECGSensor ,
+        # ontological interpretation of the epistemic representation
+        ## PM: Check later - singular ST-segment deviations are not clinically interpretable in a uniform manner.
+        :Cond_CardiacDepolarizationProperty_ObservationState_Monitored , ## CardiacDepolarizationProperty is being monitored (e.g. via ST-segment analysis)
+        :Cond_CardiacDepolarizationProperty_MagnitudeState_High                     ## CardiacDepolarizationProperty hasMagnitudeState = High (deviant value)
+        ## Influence of alarm 'ST-V' on process-level (cardiac contraction / depolarization) not made explicit. Interpretation of the alarm solely dependend on a single lead is not clinically feasible.
         .
 
 :ACD_Alarm_5 ## PHILIPSMONITOR - ?? Thuid laag
@@ -170,21 +150,19 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_SkinTemperatureSensor_FunctionalState_Connected ,       ## skin temperature sensor is connected
-        :Cond_SkinTempMetric_OperationalState_Available ,              ## SkinTemp metric is being measured
-        :Cond_SkinTempMetric_Metric_ValueInterpretation_LowLimitViolation      ## SkinTemp Metric hasValueInterpretation = LowLimitViolation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_SkinTemperatureSensor_OperationalState_Enabled ,       ## skin temperature sensor is connected
+        :Cond_SkinTempMetric_OperationalState_Enabled ,              ## SkinTemp metric is being measured
+        :Cond_SkinTempMetric_MagnitudeState_low                        ## SkinTemp_metric hasMagnitudeState = Low (deviant value)  
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Device-related inferrals
-        :Cond_SkinTemperatureSensorInterface_FunctionalState_Connected ,
-        :Cond_SkinTemperatureDeviceChannel_FunctionalState_Enabled ,
-        
-        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_SkinTempSensor ,
-        :Cond_SkinTemperatureProperty_ObservationState_Monitored
+        :Cond_SkinTemperatureProperty_ObservationState_Monitored ,
+        :Cond_SkinTemperatureProperty_MagnitudeState_low ,                    ## SkinTemperatureProperty hasMagnitudeState = Low (deviant value)
+        :Cond_CutaneousThermoregulation_FunctionalState_Hypo
+        ## NB: thermoregulation split into cutaneous and core sub-processes. 
         .
 
 :ACD_Alarm_6 ## PHILIPSMONITOR - ?? Tkern hoog
@@ -199,21 +177,19 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_CoreTemperatureSensor_FunctionalState_Connected ,       ## core temperature sensor is connected
-        :Cond_CoreTempMetric_OperationalState_Available ,              ## CoreTemp metric is being measured
-        :Cond_CoreTempMetric_ValueInterpretation_HighLimitViolation      ## CoreTemp Metric hasValueInterpretation = HighLimitViolation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_CoreTemperatureSensor_OperationalState_Enabled ,       ## core temperature sensor is connected
+        :Cond_CoreTempMetric_OperationalState_Enabled ,              ## CoreTemp metric is being measured
+        ## epistemic representation
+        :Cond_CoreTempMetric_MagnitudeState_High                        ## CoreTemp_metric hasMagnitudeState = High (elevated value)
         ;
     
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Device-related inferrals
-        :Cond_CoreTemperatureDeviceChannel_FunctionalState_Enabled ,
-        :Cond_CoreTemperatureSensorInterface_FunctionalState_Connected ,
-    
-        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_CoreTempSensor ,
-        :Cond_BodyTemperatureProperty_ObservationState_Monitored
+        :Cond_CoreTemperatureProperty_ObservationState_Monitored ,
+        :Cond_CoreTemperatureProperty_MagnitudeState_High ,                    ## CoreTemperatureProperty hasMagnitudeState = High (elevated value)
+        :Cond_CoreThermoRegulation_FunctionalState_Hyper
         .
 
 :ACD_Alarm_7 ## PHILIPSMONITOR - ??? Brady (pols)
@@ -228,21 +204,19 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_PulseOximetrySensor_FunctionalState_Connected ,       ## pulseOximeterSensor is connected
-        :Cond_PulseRateMetric_OperationalState_Available ,              ## PulseRate metric is being measured
-        :Cond_PulseRateMetric_ValueInterpretation_Bradycardia      ## PulseRate_metric hasValueInterpretation = Bradycardia
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_PulseOximetrySensor_OperationalState_Enabled ,       ## pulseOximeterSensor is connected
+        :Cond_PulseRateMetric_OperationalState_Enabled ,          ## PulseRate metric is being measured
+        # epistemic representation
+        :Cond_PulseRateMetric_RateState_low                     ## PulseRate_metric hasRateState = Low (deviant value)
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Device-related inferrals
-        :Cond_PulseRateDeviceChannel_FunctionalState_Enabled ,
-        :Cond_PulseOximeterSensorInterface_FunctionalState_Connected ,
-        
-        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_PulseOximetry ,
-        :Cond_PulsatileHeartRateProperty_ObservationState_Monitored
+        :Cond_PulsatileHeartRateProperty_ObservationState_Monitored ,
+        :Cond_PulsatileHeartRateProperty_RateState_low ,                    ## PulsatileHeartRateProperty hasRateState = Low (deviant value)
+        :Cond_CardiacRateProcess_FunctionalState_Hypo
         .
 
 :ACD_Alarm_8 ## PHILIPSMONITOR - ABP slecht signaal
@@ -257,21 +231,17 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_ArterialBloodPressureSensor_FunctionalState_Connected ,   ## arterialBloodPressureSensor is connected
-        :Cond_ABP_Signal_QualityState_Insufficient                       ## ABP metric is unavailable
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ArterialBloodPressureSensor_OperationalState_Enabled ,   ## arterialBloodPressureSensor is connected
+        :Cond_ABPMetricGroup_OperationalState_Enabled ,                ## ABP metrics are being measured -> link the group transitively to individual components (e.g. ABP mean, ABP systolic, ABP diastolic)
+         ## epistemic representation
+        :Cond_ABP_Signal_QualityState_Insufficient                       ## ABP metric with low signal quality
         ;
 
-    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Device-related inferrals
-        :Cond_ABPDeviceChannel_FunctionalState_Enabled ,
-        :Cond_ABPSensorInterface_FunctionalState_Connected ,
-        :Cond_ABPSensor_MeasurementLocation_DistalRadialArtery ,
-        
-        ## Clinical-related inferrals
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.       
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_ABPtransducer ,
-        :Cond_ArterialBloodPressureProperty_ObservationState_Monitored
+        :Cond_ArterialBloodPressureProperty_ObservationState_Monitored  ## link group, not a singular metric
         .
 
 :ACD_Alarm_9 ## PHILIPSMONITOR - ABPm hoog
@@ -286,22 +256,19 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_ArterialBloodPressureSensor_FunctionalState_Connected ,   ## arterialBloodPressureSensor is connected
-        :Cond_ABPMean_Metric_OperationalState_Available ,              ## ABP Mean metric is being measured
-        :Cond_ABPMean_Metric_ValueInterpretation_HighLimitViolation      ## ABP Mean metric hasValueInterpretation = HighLimitViolation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ArterialBloodPressureSensor_OperationalState_Enabled ,   ## arterialBloodPressureSensor is connected
+        :Cond_ABPMean_Metric_OperationalState_Enabled ,              ## ABP Mean metric is being measured
+        # epistemic representation
+        :Cond_ABPMean_Metric_MagnitudeState_High                        ## ABP Mean metric hasMagnitudeState = High (elevated value)
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Device-related inferrals
-        :Cond_ABPDeviceChannel_FunctionalState_Enabled ,
-        :Cond_ABPSensorInterface_FunctionalState_Connected ,
-        :Cond_ABPSensor_MeasurementLocation_DistalRadialArtery ,
-
-        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_ABPtransducer ,
-        :Cond_ArterialBloodPressureProperty_ObservationState_Monitored
+        :Cond_ArterialBloodPressureProperty_ObservationState_Monitored ,
+        :Cond_ArterialBloodPressureMeanProperty_MagnitudeState_High ,                    ## ArterialBloodPressureProperty hasMagnitudeState = High (elevated value)
+        :Cond_ArterialPressureRegulation_FunctionalState_Hyper
         .
 
 :ACD_Alarm_10 ## PHILIPSMONITOR - BATTERY LOW
@@ -316,13 +283,12 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_BatteryFunctionalUnit_FunctionalState_Enabled ,      ## batteryFunctionalUnit is enabled
-        :Cond_BatteryFunctionalUnit_PowerState_Low                       ## philipsMonitor hasBatteryState = Low
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_BatteryFunctionalUnit_OperationalState_Enabled ,       ## batteryFunctionalUnit is enabled
+        :Cond_BatteryFunctionalUnit_PowerState_Low                   ## philipsMonitor hasBatteryState = Low
         ;
     
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Device-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor
         .
 
@@ -338,22 +304,19 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_PulseOximetrySensor_FunctionalState_Connected ,       ## pulseOximeterSensor is connected
-        :Cond_PulseRateMetric_OperationalState_Available ,              ## PulseRate metric is being measured
-        :Cond_PulseRateMetric_ValueInterpretation_HighLimitViolation      ## PulseRate_metric hasValueInterpretation = HighLimitViolation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_PulseOximetrySensor_OperationalState_Enabled ,       ## pulseOximeterSensor is connected
+        :Cond_PulseRateMetric_OperationalState_Enabled ,              ## PulseRate metric is being measured
+        ## epistemic representation
+        :Cond_PulseRateMetric_RateState_High                     ## PulseRate_metric hasRateState = High (elevated value)
         ;
     
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Device-related inferrals
-        :Cond_PulseRateDeviceChannel_FunctionalState_Enabled ,
-        :Cond_PulseOximeterSensorInterface_FunctionalState_Connected ,
-        :Cond_PulseOximetrySensor_MeasurementLocation_Extremity ,
-
-        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_PulseOximetry ,
-        :Cond_PulsatileHeartRateProperty_ObservationState_Monitored
+        :Cond_PulsatileHeartRateProperty_ObservationState_Monitored ,
+        :Cond_PulsatileHeartRateProperty_RateState_High ,                    ## PulsatileHeartRateProperty hasRateState = High (elevated value)
+        :Cond_CardiacContractionProcess_FunctionalState_Hyper
         .
 
 :ACD_Alarm_12 ## PHILIPSMONITOR - Pols laag
@@ -368,22 +331,19 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_PulseOximetrySensor_FunctionalState_Connected ,       ## pulseOximeterSensor is connected
-        :Cond_PulseRateMetric_OperationalState_Available ,              ## PulseRate metric is being measured
-        :Cond_PulseRateMetric_ValueInterpretation_LowLimitViolation      ## PulseRate_metric hasValueInterpretation = LowLimitViolation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_PulseOximetrySensor_OperationalState_Enabled ,       ## pulseOximeterSensor is connected
+        :Cond_PulseRateMetric_OperationalState_Enabled ,              ## PulseRate metric is being measured
+        ## epistemic representation
+        :Cond_PulseRateMetric_RateState_low                     ## PulseRate_metric hasRateState = Low (decreased value)
         ;
-
+    
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Device-related inferrals
-        :Cond_PulseRateDeviceChannel_FunctionalState_Enabled ,
-        :Cond_PulseOximeterSensorInterface_FunctionalState_Connected ,
-        :Cond_PulseOximetrySensor_MeasurementLocation_Extremity ,
-
-        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_PulseOximetry ,
-        :Cond_PulsatileHeartRateProperty_ObservationState_Monitored
+        :Cond_PulsatileHeartRateProperty_ObservationState_Monitored ,
+        :Cond_PulsatileHeartRateProperty_RateState_low ,                    ## PulsatileHeartRateProperty hasRateState = Low (decreased value)
+        :Cond_CardiacContraction_FunctionalState_Hypo
         .
 
 :ACD_Alarm_13 ## PHILIPSMONITOR - SpO2 laag
@@ -398,21 +358,21 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_PulseOximetrySensor_FunctionalState_Connected ,       ## pulseOximeterSensor is connected
-        :Cond_SpO2Metric_OperationalState_Available ,              ## SpO2 metric is being measured
-        :Cond_SpO2Metric_ValueInterpretation_LowLimitViolation       ## SpO2_metric hasValueInterpretation = LowLimitViolation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_PulseOximetrySensor_OperationalState_Enabled ,       ## pulseOximeterSensor is connected
+        :Cond_SpO2Metric_OperationalState_Enabled ,              ## SpO2 metric is being measured
+        ## epistemic interpretation
+        :Cond_SpO2Metric_MagnitudeState_low                        ## SpO2_metric hasMagnitudeState = Low (deviant value) 
         ;
     
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Device-related inferrals
-        :Cond_PulseOximeterInterfaceConnected ,
-        :Cond_SpO2DeviceChannel_FunctionalState_Enabled ,
-
-        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_PulseOximetry ,
-        :Cond_SaO2Property_ObservationState_Monitored
+        :Cond_SaO2Property_ObservationState_Monitored ,
+        ## ontological interpretation of the epistemic representation
+        :Cond_SaO2Property_MagnitudeState_low ,                    ## SaO2Property hasMagnitudeState = Low (deviant value)
+        :Cond_PulmonaryOxygenation_FunctionalState_Hypo            ## Pulmonary oxygenation process is in a hypofunctional state 
+        ## organ- and organsystem level inferrals through inheritance / reasoning
         .
 
 :ACD_Alarm_14 ## PHILIPSMONITOR - EtCO2 laag
@@ -427,24 +387,25 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_CapnographySensor_FunctionalState_Connected ,       ## capnographySensor is connected
-        :Cond_EtCO2Metric_OperationalState_Available ,              ## EtCO2 metric is being measured
-        :Cond_EtCO2Metric_ValueInterpretation_LowLimitViolation       ## EtCO2_metric hasValueInterpretation = LowLimitViolation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_CapnographySensor_OperationalState_Enabled ,       ## capnographySensor is connected
+        :Cond_EtCO2Metric_OperationalState_Enabled ,              ## EtCO2 metric is being measured
+        :Cond_CapnographySensor_MeasurementLocation_TerminalAirway ,
+        ## epistemic representation
+        :Cond_EtCO2Metric_MagnitudeState_low                        ## EtCO2_metric hasMagnitudeState = Low (deviant value)
         ;
     
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Device-related inferrals
-        :Cond_CapnographySensorInterface_FunctionalState_Connected ,
-        :Cond_EtCO2DeviceChannel_FunctionalState_Enabled ,
-        :Cond_EtCO2Sensor_MeasurementLocation_TerminalAirway ,
         ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedDevice_Ventilator ,
         :Cond_Patient_HasConnectedSensor_Capnography ,
         :Cond_AlveolarCO2Property_ObservationState_Monitored ,
         :Cond_PulmonarySystem_SubjectOfTherapy_MechanicalVentilation ,
-        :Cond_PulmVentilationProcess_SupportMode_ExternalInvasiveSupport
+        :Cond_PulmVentilationProcess_SupportModality_ExternalInvasiveSupport ,
+        ## ontological interpretation of the epistemic representation
+        :Cond_AlveolarCO2Property_MagnitudeState_low ,                    ## AlveolarCO2Property hasMagnitudeState = Low (deviant value)
+        :Cond_PulmonaryCO2Diffusion_FunctionalState_Hyper               ## Pulmonary CO2 diffusion process is in a hyperfunctional state - note that 'co2Diffusion' as a process is a sub-class to 'pulmonary gas exchange' and modulated by other processes (e.g. ventilation, diffusion capacity).
         .
 
 
@@ -460,22 +421,19 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_ArterialBloodPressureSensor_FunctionalState_Connected ,   ## arterialBloodPressureSensor is connected
-        :Cond_ABPMean_Metric_OperationalState_Available ,              ## ABP Mean metric is being measured
-        :Cond_ABPMean_Metric_ValueInterpretation_LowLimitViolation      ## ABP Mean metric hasValueInterpretation = LowLimitViolation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ArterialBloodPressureSensor_OperationalState_Enabled ,   ## arterialBloodPressureSensor is connected
+        :Cond_ABPMean_Metric_OperationalState_Enabled ,              ## ABP Mean metric is being measured
+        # epistemic representation
+        :Cond_ABPMean_Metric_MagnitudeState_low                        ## ABP Mean metric hasMagnitudeState = Low (deviant value)
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Device-related inferrals
-        :Cond_ABPDeviceChannel_FunctionalState_Enabled ,
-        :Cond_ABPSensorInterface_FunctionalState_Connected ,
-        :Cond_ABPSensor_MeasurementLocation_DistalRadialArtery ,
-
-        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_ABPtransducer ,
-        :Cond_ArterialBloodPressureProperty_ObservationState_Monitored
+        :Cond_ArterialBloodPressureProperty_ObservationState_Monitored ,
+        :Cond_ArterialBloodPressureMeanProperty_MagnitudeState_low ,                    ## ArterialBloodPressureProperty hasMagnitudeState = Low (deviant value)
+        :Cond_ArterialPressureRegulation_FunctionalState_Hypo
         .
 
 :ACD_Alarm_16 ## PHILIPSMONITOR - SpO2 geen pols
@@ -490,26 +448,15 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_PulseOximetrySensor_FunctionalState_Connected ,       ## pulseOximeterSensor is connected
-        :Cond_SpO2Metric_OperationalState_Available ,              ## SpO2 metric is being measured
-        :Cond_SpO2Signal_QualityState_Insufficient ,    ## SpO2 sensor interpretation low signal quality
-        :Cond_PulseOximetrySensor_MeasurementLocation_Extremity    ## pulseOximeterSensor hasMeasurementLocation = Extremity
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_PulseOximetrySensor_OperationalState_Enabled ,       ## pulseOximeterSensor is connected
+        :Cond_SpO2Signal_QualityState_Insufficient                 ## SpO2 sensor interpretation low signal quality
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Device-related inferrals
-        :Cond_PulseOximeterInterfaceConnected ,
-        :Cond_SpO2DeviceChannel_FunctionalState_Enabled ,
-        
-        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
-        :Cond_Patient_HasConnectedSensor_PulseOximetry ,
-        :Cond_SaO2Property_ObservationState_Monitored
+        :Cond_Patient_HasConnectedSensor_PulseOximetry 
         .
-
-
-### Alarmen 7 April 2026 - Conditie_Unique_Values [1 - 25]
 
 #######################################################################
 # Alarm 17 | PHILIPSMONITOR - ?? SpO2r hoog
@@ -527,22 +474,22 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_PulseOximetrySensor_FunctionalState_Connected ,       ## pulseOximeterSensor is connected
-        :Cond_SpO2Metric_OperationalState_Available ,               ## SpO2 metric is being measured
-        :Cond_SpO2Metric_ValueInterpretation_HighLimitViolation ,   ## SpO2_metric hasValueInterpretation = HighLimitViolation
-        :Cond_PulseOximetrySensor_MeasurementLocation_rightSided    ## pulseOximeterSensor hasMeasurementLocation = right sided
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,             ## philipsMonitor is enabled
+        :Cond_PulseOximetrySensor_OperationalState_Enabled ,      ## pulseOximeterSensor is connected
+        :Cond_SpO2Metric_OperationalState_Enabled ,               ## SpO2 metric is being measured
+        :Cond_PulseOximetrySensor_MeasurementLocation_right ,   ## pulseOximeterSensor hasMeasurementLocation = right sided
+        ## epistemic representation
+        :Cond_SpO2Metric_MagnitudeState_High                        ## SpO2_metric hasMagnitudeState = High (elevated value)  
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Device-related inferrals
-        :Cond_PulseOximeterInterfaceConnected ,
-        :Cond_SpO2DeviceChannel_FunctionalState_Enabled ,
-        
-        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_PulseOximetry ,
-        :Cond_SaO2Property_ObservationState_Monitored
+        :Cond_SaO2Property_ObservationState_Monitored ,
+        ## ontological interpretation of the epistemic representation
+        :Cond_SaO2Property_MagnitudeState_High ,                    ## SaO2Property hasMagnitudeState = High (elevated value)
+        :Cond_PulmonaryOxygenation_FunctionalState_Hyper            ## Pulmonary oxygenation process is in a hyperfunctional state 
+        ## organ- and organsystem level inferrals through inheritance / reasoning
         .
 
 #######################################################################
@@ -560,17 +507,20 @@
     dev:alarmCategory :physiologicalAlarmGroup ;
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
-    dev:requiresCondition
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                    ## philipsMonitor is enabled
-        :Cond_TemperatureSensor_FunctionalState_Connected ,               ## temperature sensor is connected (location unknown);
-        :Cond_TemperatureMetric_OperationalState_Available ,              ## Temperature metric is being measured
-        :Cond_TemperatureMetric_ValueInterpretation_HighLimitViolation    ## Temperature_metric hasValue
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_TemperatureSensor_OperationalState_Enabled ,       ## temperature sensor is connected
+        :Cond_TempMetric_OperationalState_Enabled ,              ## Temp metric is being measured
+        ## epistemic representation
+        :Cond_TempMetric_MagnitudeState_High                        ## Temp_metric hasMagnitudeState = High (elevated value)
         ;
-    dev:impliesCondition
-        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,                 ## Patient has connected device PhilipsMonitor
-        :Cond_Patient_HasConnectedSensor_Temperature ,                    ## Patient has connected sensor Temperature
-        :Cond_BodyTemperatureProperty_ObservationState_Monitored ,         ## BodyTemperatureProperty is being monitored
-        :Cond_BodyTemperatureProcess_FunctionalState_Elevated             ## BodyTemperatureProcess hasFunctionalState = Elevated
+    
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_TemperatureSensor ,
+        :Cond_TemperatureProperty_ObservationState_Monitored ,
+        :Cond_TemperatureProperty_MagnitudeState_High ,                    ## TemperatureProperty hasMagnitudeState = High (elevated value)
+        :Cond_ThermoRegulation_FunctionalState_Hyper
         .
 
 #######################################################################
@@ -588,27 +538,34 @@
     dev:alarmCategory :physiologicalAlarmGroup ;
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
-    dev:requiresCondition
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                 ## philipsMonitor is enabled
-        :Cond_CapnographySensor_FunctionalState_Connected ,            ## capnographySensor is connected
-        :Cond_EtCO2Metric_OperationalState_Available ,                 ## EtCO2 metric is being measured
-        :Cond_EtCO2Metric_ValueInterpretation_HighLimitViolation       ## EtCO2_metric hasValueInterpretation = HighLimitViolation
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_CapnographySensor_OperationalState_Enabled ,       ## capnographySensor is connected
+        :Cond_EtCO2Metric_OperationalState_Enabled ,              ## EtCO2 metric is being measured
+        :Cond_CapnographySensor_MeasurementLocation_TerminalAirway ,
+        ## epistemic representation
+        :Cond_EtCO2Metric_MagnitudeState_High                        ## EtCO2_metric hasMagnitudeState = High (deviant value)
         ;
-
-    dev:impliesCondition
-        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,                 ## Patient has connected device PhilipsMonitor
-        :Cond_Patient_HasConnectedSensor_Capnography ,                    ## Patient has connected sensor Capnography
-        :Cond_AlveolarCO2Property_ObservationState_Monitored ,            ## AlveolarCO2Property is being monitored
-        :Cond_PulmonarySystem_SubjectOfTherapy_MechanicalVentilation ,    ## PulmonarySystem is subject of therapy Mechanical Ventilation
-        :Cond_PulmVentilationProcess_SupportMode_ExternalInvasiveSupport  ## PulmVentilationProcess hasSupportMode = External Invasive Support
-
+    
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Clinical-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedDevice_Ventilator ,
+        :Cond_Patient_HasConnectedSensor_Capnography ,
+        :Cond_AlveolarCO2Property_ObservationState_Monitored ,
+        :Cond_PulmonarySystem_SubjectOfTherapy_MechanicalVentilation ,
+        :Cond_PulmVentilationProcess_SupportModality_ExternalInvasiveSupport ,
+        ## ontological interpretation of the epistemic representation
+        :Cond_AlveolarCO2Property_MagnitudeState_High ,                    ## AlveolarCO2Property hasMagnitudeState = High (deviant value)
+        :Cond_PulmonaryCO2Diffusion_FunctionalState_Hypo               ## Pulmonary CO2 diffusion process is in a hypofunctional state - note that 'co2Diffusion' as a process is a sub-class to 'pulmonary gas exchange' and modulated by other processes (e.g. ventilation, diffusion capacity).
         .
 
 #######################################################################
 # Alarm 20 | PHILIPSMONITOR - ?? imCO2 hoog
 #######################################################################
 
-:ACD_Alarm_20 ## PHILIPSMONITOR - ?? imCO2 hoog
+:ACD_Alarm_20 ## PHILIPSMONITOR - ?? imCO2 hoog 
+    ## PM: Check m/ EK - is dit een klinisch alarm? Of een technische die iets zegt over influx vers zuurstof (rebreathing) of een sensor issue?
     a dev:AlertConditionDescription ;
     rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - ?? imCO2 hoog" ;
     rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - ?? imCO2 hoog'." ;
@@ -619,19 +576,26 @@
     dev:alarmCategory :physiologicalAlarmGroup ;
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
-    dev:requiresCondition
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                 ## philipsMonitor is enabled
-        :Cond_CapnographySensor_FunctionalState_Connected ,            ## capnographySensor is connected
-        :Cond_imCO2Metric_OperationalState_Available ,                 ## imCO2 metric is being measured
-        :Cond_imCO2Metric_ValueInterpretation_HighLimitViolation       ## imCO2_metric hasValueInterpretation = HighLimitViolation
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_CapnographySensor_OperationalState_Enabled ,       ## capnographySensor is connected
+        :Cond_EtCO2Metric_OperationalState_Enabled ,              ## EtCO2 metric is being measured
+        :Cond_CapnographySensor_MeasurementLocation_TerminalAirway ,
+        ## epistemic representation
+        :Cond_EtCO2Metric_MagnitudeState_High                        ## EtCO2_metric hasMagnitudeState = High (deviant value)
         ;
-
-    dev:impliesCondition
-        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,                 ## Patient has connected device PhilipsMonitor
-        :Cond_Patient_HasConnectedSensor_Capnography ,                    ## Patient has connected sensor Capnography
-        :Cond_AlveolarCO2Property_ObservationState_Monitored ,            ## AlveolarCO2Property is being monitored
-        :Cond_PulmonarySystem_SubjectOfTherapy_MechanicalVentilation ,    ## PulmonarySystem is subject of therapy Mechanical Ventilation
-        :Cond_PulmVentilationProcess_SupportMode_ExternalInvasiveSupport  ## PulmVentilationProcess hasSupportMode = External Invasive Support
+    
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Clinical-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedDevice_Ventilator ,
+        :Cond_Patient_HasConnectedSensor_Capnography ,
+        :Cond_AlveolarCO2Property_ObservationState_Monitored ,
+        :Cond_PulmonarySystem_SubjectOfTherapy_MechanicalVentilation ,
+        :Cond_PulmVentilationProcess_SupportModality_ExternalInvasiveSupport ,
+        ## ontological interpretation of the epistemic representation
+        :Cond_AlveolarCO2Property_MagnitudeState_High ,                    ## AlveolarCO2Property hasMagnitudeState = High (deviant value)
+        :Cond_PulmonaryCO2Diffusion_FunctionalState_Hypo               ## Pulmonary CO2 diffusion process is in a hypofunctional state - note that 'co2Diffusion' as a process is a sub-class to 'pulmonary gas exchange' and modulated by other processes (e.g. ventilation, diffusion capacity).
         .
 
 #######################################################################
@@ -647,9 +611,29 @@
     dev:emittedPriorityLevel :mediumPriority ;
     dev:alarmMessageLabel "PHILIPSMONITOR - ??SDM HI/LO tcpCO2" ;
     dev:alarmCategory :physiologicalAlarmGroup ;
-    dev:originatesFromPhysicalEntity :PhilipsMonitor .
-    ## TODO: fill in dev:requiresCondition and dev:impliesCondition
+    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_tcCapnoSensor_OperationalState_Enabled ,       ## capnographySensor is connected
+        :Cond_tcpCO2Metric_OperationalState_Enabled ,              ## transcutaneous pCO2 metric is being measured
+        :Cond_tcCapnoSensor_MeasurementLocation_Cutaneous ,
+        ## epistemic representation
+        :Cond_CO2Metric_MagnitudeState_abnormal                        ## EtCO2_metric hasMagnitudeState = Abnormal (unsure whether high or low based on alarm message alone)
+        ;
+    
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Clinical-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedDevice_Ventilator ,
+        :Cond_Patient_HasConnectedSensor_tcCapnoSensor ,
+        :Cond_pCO2Property_ObservationState_Monitored ,
+        :Cond_PulmonarySystem_SubjectOfTherapy_MechanicalVentilation ,
+        :Cond_PulmVentilationProcess_SupportModality_ExternalInvasiveSupport ,
+        ## ontological interpretation of the epistemic representation
+        :Cond_pCO2Property_MagnitudeState_abnormal ,                    ## AlveolarCO2Property hasMagnitudeState = Abnormal (unsure whether high or low based on alarm message alone)
+        :Cond_PulmonaryCO2Diffusion_FunctionalState_abnormal               ## Pulmonary CO2 diffusion process is in an abnormal state - note that 'co2Diffusion' as a process is a sub-class to 'pulmonary gas exchange' and modulated by other processes (e.g. ventilation, diffusion capacity).
+        .
 #######################################################################
 # Alarm 22 | PHILIPSMONITOR - ABP artefact
 #######################################################################
@@ -665,17 +649,18 @@
     dev:alarmCategory :technicalAlarmGroup ;
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
-    dev:requiresCondition
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_ArterialBloodPressureSensor_FunctionalState_Connected ,   ## arterialBloodPressureSensor is connected
-        :Cond_ABP_Signal_OperationalState_Available ,                   ## ABP metric is being measured
-        :Cond_ABP_Signal_QualityState_Artefact                          ## ABP metric is being interpreted as artefact
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ArterialBloodPressureSensor_OperationalState_Enabled ,   ## arterialBloodPressureSensor is connected
+        :Cond_ABPMetricGroup_OperationalState_Enabled ,                ## ABP metrics are being measured -> link the group transitively to individual components (e.g. ABP mean, ABP systolic, ABP diastolic)
+         ## epistemic representation
+        :Cond_ABP_Signal_QualityState_Artefact                       ## ABP metric with low signal quality due to artefact. Note that 'artefact' is a subclass for 'insufficient signal quality'
         ;
 
-    dev:impliesCondition
-        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,                 ## Patient has connected device PhilipsMonitor
-        :Cond_Patient_HasConnectedSensor_ABPtransducer ,                  ## Patient has connected ABP sensor
-        :Cond_ArterialBloodPressureProcess_ObservationState_Monitored    ## ArterialBloodPressureProperty is being monitored
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.       
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_ABPtransducer ,
+        :Cond_ArterialBloodPressureProperty_ObservationState_Monitored  ## link group, not a singular metric
         .
 
 #######################################################################
@@ -693,18 +678,18 @@
     dev:alarmCategory :technicalAlarmGroup ;
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
-
-    dev:requiresCondition
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_ArterialBloodPressureSensor_FunctionalState_Connected ,   ## arterialBloodPressureSensor is connected
-        :Cond_ABP_Signal_OperationalState_Available ,                   ## ABP metric is being measured
-        :Cond_ABP_Signal_QualityState_OutOfRange                          ## ABP metric is out of range
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ArterialBloodPressureSensor_OperationalState_Enabled ,   ## arterialBloodPressureSensor is connected
+        :Cond_ABPMetricGroup_OperationalState_Enabled ,                ## ABP metrics are being measured -> link the group transitively to individual components (e.g. ABP mean, ABP systolic, ABP diastolic)
+         ## epistemic representation
+        :Cond_ABP_Signal_QualityState_outOfRange                       ## ABP metric with low signal quality, note that 'outOfRange' is a subclass for 'insufficient signal quality'.
         ;
 
-    dev:impliesCondition
-        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,                 ## Patient has connected device PhilipsMonitor
-        :Cond_Patient_HasConnectedSensor_ABPtransducer ,                  ## Patient has connected ABP sensor
-        :Cond_ArterialBloodPressureProcess_ObservationState_Monitored    ## ArterialBloodPressureProperty is being monitored
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.       
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_ABPtransducer ,
+        :Cond_ArterialBloodPressureProperty_ObservationState_Monitored  ## link group, not a singular metric
         .
 
 #######################################################################
@@ -722,18 +707,18 @@
     dev:alarmCategory :technicalAlarmGroup ;
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
-
-    dev:requiresCondition
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_ArterialBloodPressureSensor_FunctionalState_Connected ,   ## arterialBloodPressureSensor is connected
-        :Cond_ABP_Signal_OperationalState_Available ,                   ## ABP metric is being measured
-        :Cond_ABP_Sensor_Malfunctioning                                 ## ABP sensor transducer error - malfunctioning
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ArterialBloodPressureSensor_OperationalState_Enabled ,   ## arterialBloodPressureSensor is connected
+        :Cond_ABPMetricGroup_OperationalState_Enabled ,                ## ABP metrics are being measured -> link the group transitively to individual components (e.g. ABP mean, ABP systolic, ABP diastolic)
+         ## epistemic representation
+        :Cond_ABP_Signal_QualityState_nullingError                       ## ABP metric with low signal quality, note that 'nullingError' is a subclass for 'insufficient signal quality'.
         ;
 
-    dev:impliesCondition
-        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,                 ## Patient has connected device PhilipsMonitor
-        :Cond_Patient_HasConnectedSensor_ABPtransducer ,                  ## Patient has connected ABP sensor
-        :Cond_ArterialBloodPressureProcess_ObservationState_Monitored    ## ArterialBloodPressureProperty is being monitored
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.       
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_ABPtransducer ,
+        :Cond_ArterialBloodPressureProperty_ObservationState_Monitored  ## link group, not a singular metric
         .
 
 #######################################################################
@@ -751,17 +736,16 @@
     dev:alarmCategory :technicalAlarmGroup ;
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
-    dev:requiresCondition
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_ArterialBloodPressureSensor_FunctionalState_Connected ,   ## arterialBloodPressureSensor is connected
-        :Cond_ABP_Signal_OperationalState_Available ,                   ## ABP metric is being measured
-        :Cond_ABP_Sensor_Malfunctioning                                 ## ABP sensor transducer error - not found
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ArterialBloodPressureSensor_OperationalState_Enabled ,   ## arterialBloodPressureSensor is connected
+         ## epistemic representation
+        :Cond_ABPSensor_FunctionalState_Malfunction                     ## ABP sensor is malfunctioning
         ;
 
-    dev:impliesCondition
-        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,                 ## Patient has connected device PhilipsMonitor
-        :Cond_Patient_HasConnectedSensor_ABPtransducer ,                  ## Patient has connected ABP sensor
-        :Cond_ArterialBloodPressureProcess_ObservationState_Monitored    ## ArterialBloodPressureProperty is being monitored
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.       
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_ABPtransducer 
         .
 
 #######################################################################
@@ -779,18 +763,18 @@
     dev:alarmCategory :technicalAlarmGroup ;
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
-    dev:requiresCondition
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_ArterialBloodPressureSensor_FunctionalState_Connected ,   ## arterialBloodPressureSensor is connected
-        :Cond_ABP_Signal_OperationalState_Available ,                   ## ABP metric is being measured
-        :Cond_ABP_Sensor_Malfunctioning                                 ## ABP sensor error - disconnected
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ArterialBloodPressureSensor_OperationalState_Enabled ,   ## arterialBloodPressureSensor is connected
+         ## epistemic representation
+        :Cond_ABPSensor_FunctionalState_Malfunction                     ## ABP sensor is malfunctioning
         ;
 
-    dev:impliesCondition
-        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,                 ## Patient has connected device PhilipsMonitor
-        :Cond_Patient_HasConnectedSensor_ABPtransducer ,                  ## Patient has connected ABP sensor
-        :Cond_ArterialBloodPressureProcess_ObservationState_Monitored    ## ArterialBloodPressureProperty is being monitored
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.       
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_ABPtransducer 
         .
+
 #######################################################################
 # Alarm 27 | PHILIPSMONITOR - ABP pulseert niet
 #######################################################################
@@ -806,23 +790,26 @@
     dev:alarmCategory :technicalAlarmGroup ;
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
-    dev:requiresCondition
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_ArterialBloodPressureSensor_FunctionalState_Connected ,   ## arterialBloodPressureSensor is connected
-        :Cond_ABP_Signal_OperationalState_Available ,                   ## ABP metric is being measured
-        :Cond_ABP_Signal_QualityState_Insufficient                      ## ABP signal error - no pulsatility
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ArterialBloodPressureSensor_OperationalState_Enabled ,   ## arterialBloodPressureSensor is connected
+        :Cond_ABPMetricGroup_OperationalState_Enabled ,                ## ABP metrics are being measured -> link the group transitively to individual components (e.g. ABP mean, ABP systolic, ABP diastolic)
+         ## epistemic representation
+        :Cond_ABP_Signal_QualityState_Insufficient                        ## ABP metric with low signal quality, due to reduced pulsatility
         ;
 
-    dev:impliesCondition
-        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,                 ## Patient has connected device PhilipsMonitor
-        :Cond_Patient_HasConnectedSensor_ABPtransducer ,                  ## Patient has connected ABP sensor
-        :Cond_ArterialBloodPressureProcess_ObservationState_Monitored    ## ArterialBloodPressureProperty is being monitored
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.       
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_ABPtransducer ,
+        :Cond_ArterialBloodPressureProperty_ObservationState_Monitored  ## link group, not a singular metric
         .
+
 #######################################################################
 # Alarm 28 | PHILIPSMONITOR - ABP uit gedaan
 #######################################################################
 
 :ACD_Alarm_28 ## PHILIPSMONITOR - ABP uit gedaan
+    ## PM: Check m/ EK - is dit een alarm voor het uitzetten van de alarmen? Of voor uitzetten van alle ABP metingen in zijn geheel -> Sensor eraf?
     a dev:AlertConditionDescription ;
     rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - ABP uit gedaan" ;
     rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - ABP uit gedaan'." ;
@@ -834,8 +821,8 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_ArterialBloodPressureSensor_FunctionalState_Disconnected   ## arterialBloodPressureSensor is disconnected
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ArterialBloodPressureSensor_OperationalState_Disconnected   ## arterialBloodPressureSensor is disconnected
         ;
 
     dev:impliesCondition
@@ -847,6 +834,7 @@
 #######################################################################
 
 :ACD_Alarm_29 ## PHILIPSMONITOR - ABP verkleinen
+    ## Check m/ EK: Wat is het verschil tussen 'ABP verkleinen' en 'ABP out of range' ?
     a dev:AlertConditionDescription ;
     rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - ABP verkleinen" ;
     rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - ABP verkleinen'." ;
@@ -857,21 +845,19 @@
     dev:alarmCategory :technicalAlarmGroup ;
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
-    dev:requiresCondition
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_ArterialBloodPressureSensor_FunctionalState_Connected ,   ## arterialBloodPressureSensor is connected
-        :Cond_ABP_Signal_OperationalState_Available ,                   ## ABP metric is being measured
-        ## CHeck: ValueInterpretation op welke metric? MAP / SAP / DAP ? 
-        :Cond_MAP_hasValueInterpration_High                        ## MAP metric hasValueInterpretation = HighLimitViolation
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ArterialBloodPressureSensor_OperationalState_Enabled ,   ## arterialBloodPressureSensor is connected
+        :Cond_ABPMetricGroup_OperationalState_Enabled ,                ## ABP metrics are being measured -> link the group transitively to individual components (e.g. ABP mean, ABP systolic, ABP diastolic)
+         ## epistemic representation
+        :Cond_ABP_Signal_QualityState_Insufficient                       ## ABP signal too high -> interpretation as low signal quality. 
         ;
 
-    dev:impliesCondition
-        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,                 ## Patient has connected device PhilipsMonitor
-        :Cond_Patient_HasConnectedSensor_ABPtransducer ,                  ## Patient has connected ABP sensor
-        :Cond_ArterialBloodPressureProcess_ObservationState_Monitored ,     ## ArterialBloodPressureProperty is being monitored
-        :Cond_ArterialBloodPressureProcess_FunctionalState_Elevated                ## ArterialMAPProperty hasFunctionalState = Elevated
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.       
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedSensor_ABPtransducer ,
+        :Cond_ArterialBloodPressureProperty_ObservationState_Monitored  ## link group, not a singular metric
         .
-    ## TODO: fill in dev:requiresCondition and dev:impliesCondition
 
 #######################################################################
 # Alarm 30 | PHILIPSMONITOR - ABPmLaag
@@ -889,24 +875,20 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_ArterialBloodPressureSensor_FunctionalState_Connected ,   ## arterialBloodPressureSensor is connected
-        :Cond_ABPMean_Metric_OperationalState_Available ,              ## ABP Mean metric is being measured
-        :Cond_ABPMean_Metric_ValueInterpretation_LowLimitViolation      ## ABP Mean metric hasValueInterpretation = LowLimitViolation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ArterialBloodPressureSensor_OperationalState_Enabled ,   ## arterialBloodPressureSensor is connected
+        :Cond_ABPMean_Metric_OperationalState_Enabled ,              ## ABP Mean metric is being measured
+        # epistemic representation
+        :Cond_ABPMean_Metric_MagnitudeState_low                        ## ABP Mean metric hasMagnitudeState = Low (deviant value)
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Device-related inferrals
-        :Cond_ABPDeviceChannel_FunctionalState_Enabled ,
-        :Cond_ABPSensorInterface_FunctionalState_Connected ,
-        :Cond_ABPSensor_MeasurementLocation_DistalRadialArtery ,
-
-        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_ABPtransducer ,
-        :Cond_ArterialBloodPressureProperty_ObservationState_Monitored
+        :Cond_ArterialBloodPressureProperty_ObservationState_Monitored ,
+        :Cond_ArterialBloodPressureMeanProperty_MagnitudeState_low ,                    ## ArterialBloodPressureProperty hasMagnitudeState = Low (deviant value)
+        :Cond_ArterialPressureRegulation_FunctionalState_Hypo
         .
-    ## TODO: review dev:requiresCondition and dev:impliesCondition
 
 #######################################################################
 # Alarm 31 | PHILIPSMONITOR - Apneu
@@ -924,17 +906,19 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_ECGsensor_FunctionalState_Connected ,                     ## ECG sensor is connected
-        :Cond_RespRateMetric_OperationalState_Available ,               ## Resp Rate metric is being measured
-        :Cond_RespRateMetric_ValueInterpretation_absentRateInterpretation      ## Resp Rate metric absent rate interpretation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ECGsensor_OperationalState_Enabled ,                     ## ECG sensor is connected
+        :Cond_RespRateMetric_OperationalState_Enabled ,                ## Resp Rate metric is being measured
+        ## epistemic representation
+        :Cond_RespRateMetric_RateState_absent                        ## Resp Rate metric has rate state = absent (no breaths detected)
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_ECGSensor ,
-        :Cond_RespiratoryRateProperty_ObservationState_Monitored 
+        :Cond_RespiratoryRateProperty_ObservationState_Monitored ,
+        :Cond_RespiratoryRateProperty_RateState_absent ,                    ## RespiratoryRateProperty has rate state = absent (no breaths detected)
+        :Cond_PulmonaryVentilationProcess_FunctionalState_Arrest 
         .
 
 
@@ -954,7 +938,7 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Error                    ## philipsMonitor is in error state
+        :Cond_PhilipsMonitor_OperationalState_Error                    ## philipsMonitor is in error state
      ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
@@ -978,10 +962,11 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_ECGsensor_FunctionalState_Connected ,                     ## ECG sensor is connected
-        :Cond_ElectricHeartRateMetric_OperationalState_Available ,               ## EHR metric is being measured
-        :Cond_ElectricHeartRateMetric_ValueInterpretation_absentRateInterpretation      ## EHR metric absent rate interpretation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ECGsensor_OperationalState_Enabled ,                     ## ECG sensor is connected
+        :Cond_ElectricHeartRateMetric_OperationalState_Enabled ,               ## EHR metric is being measured
+        ## epistemic representation
+        :Cond_ElectricHeartRateMetric_RateState_absent                        ## ElectricHeartRateMetric
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
@@ -989,7 +974,8 @@
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_ECGSensor ,
         :Cond_ElectricHeartRateProperty_ObservationState_Monitored ,
-        :Cond_CardiacContractionProcess_FunctionalState_CriticalLow ## CardiacContractionProcess hasFunctionalState = Critical Low
+        :Cond_ElectricHeartRateProperty_RateState_absent ,                    ## ElectricHeartRateProperty has rate state = absent (no heartbeats detected)
+        :Cond_CardiacRateProcess_FunctionalState_Arrest ## CardiacRateProcess hasFunctionalState = Critical Low
         .
 #######################################################################
 # Alarm 34 | PHILIPSMONITOR - CO2 auto nulling
@@ -1004,8 +990,27 @@
     dev:emittedPriorityLevel :mediumPriority ;
     dev:alarmMessageLabel "PHILIPSMONITOR - CO2 auto nulling" ;
     dev:alarmCategory :technicalAlarmGroup ;
-    dev:originatesFromPhysicalEntity :PhilipsMonitor .
-    ## TODO: fill in dev:requiresCondition and dev:impliesCondition
+    dev:originatesFromPhysicalEntity :PhilipsMonitor ;
+
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_CapnographySensor_OperationalState_Enabled ,       ## capnographySensor is connected
+        :Cond_CO2Metric_OperationalState_Enabled ,              ## CO2 metric is being measured , note that 'CO2Metric' is a group that includes both EtCO2 and tcCO2 metrics / link transitively to individual components if needed
+
+        ## epistemic representation
+        :Cond_CapnoSignal_qualityState_calibrating                        ## capnography sensor is in a state of auto nulling, a sub-class of 'insufficient signal quality' (albeit temporary, due to baseline recalibration)
+        ;
+    
+    dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Clinical-related inferrals
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
+        :Cond_Patient_HasConnectedDevice_Ventilator ,
+        :Cond_Patient_HasConnectedSensor_Capnography ,
+        :Cond_CO2Property_ObservationState_Monitored , ## CO2 property is superclass to alveolarCO2 / pCO2 properties
+        :Cond_PulmonarySystem_SubjectOfTherapy_MechanicalVentilation ,
+        :Cond_PulmVentilationProcess_SupportModality_ExternalInvasiveSupport 
+        .
+
 
 #######################################################################
 # Alarm 35 | PHILIPSMONITOR - CO2 ctr adapter er
@@ -1023,18 +1028,22 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_CapnoSensor_FunctionalState_Connected ,                     ## CO2 sensor is connected
-        :Cond_CapnoSensor_OperationalState_SensorMalfunction               ## CO2 sensor is malfunctioning
-        ;
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_CapnographySensor_OperationalState_Enabled ,       ## capnographySensor is connected
+        :Cond_CO2Metric_OperationalState_Enabled ,              ## CO2 metric is being measured , note that 'CO2Metric' is a group that includes both EtCO2 and tcCO2 metrics / link transitively to individual components if needed
 
+        ## epistemic representation
+        :Cond_CapnographySensor_FunctionalState_Malfunction                        ## capnography sensor is in a state of auto nulling, a sub-class of 'insufficient signal quality' (albeit temporary, due to baseline recalibration)
+        ;
+    
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
         ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
-        :Cond_Patient_HasConnectedSensor_CapnoSensor ,
-        :Cond_Patient_isSubjectToTherapy_MechanicalVentilation ,
-        :Cond_PulmonaryVentilationProcess_SupportMode_ExternalInvasiveSupport ,
-        :Cond_PulmonaryOxygenationProcess_SupportMode_ExternalInvasiveSupport
+        :Cond_Patient_HasConnectedDevice_Ventilator ,
+        :Cond_Patient_HasConnectedSensor_Capnography ,
+        :Cond_CO2Property_ObservationState_Monitored , ## CO2 property is superclass to alveolarCO2 / pCO2 properties
+        :Cond_PulmonarySystem_SubjectOfTherapy_MechanicalVentilation ,
+        :Cond_PulmVentilationProcess_SupportModality_ExternalInvasiveSupport 
         .
 
 #######################################################################
@@ -1053,18 +1062,13 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_CapnoSensor_FunctionalState_Connected ,                     ## CO2 sensor is connected
-        :Cond_CapnoSensor_OperationalState_SensorMalfunction               ## CO2 sensor is malfunctioning
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_CapnographySensor_OperationalState_Disconnected        ## capnographySensor is disconnected
         ;
-
+    
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
         ## Clinical-related inferrals
-        :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
-        :Cond_Patient_HasConnectedSensor_CapnoSensor ,
-        :Cond_Patient_isSubjectToTherapy_MechanicalVentilation ,
-        :Cond_PulmonaryVentilationProcess_SupportMode_ExternalInvasiveSupport ,
-        :Cond_PulmonaryOxygenationProcess_SupportMode_ExternalInvasiveSupport
+        :Cond_Patient_HasConnectedDevice_PhilipsMonitor 
         .
 #######################################################################
 # Alarm 37 | PHILIPSMONITOR - CO2 sens.opwarm
@@ -1081,24 +1085,25 @@
     dev:alarmCategory :technicalAlarmGroup ;
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
-   dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_CapnoSensor_FunctionalState_Connected ,                     ## CO2 sensor is connected
-        :Cond_CapnoSensor_OperationalState_SignalQuality               ## CO2 sensor quality low - warming up
-        ;
+    dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_CapnographySensor_OperationalState_Enabled ,       ## capnographySensor is connected
+        :Cond_CO2Metric_OperationalState_Enabled ,              ## CO2 metric is being measured , note that 'CO2Metric' is a group that includes both EtCO2 and tcCO2 metrics / link transitively to individual components if needed
 
+        ## epistemic representation
+        :Cond_CapnoSignal_qualityState_calibrating                        ## capnography sensor is warming up -> calibration in progress, a sub-class of 'insufficient signal quality' (albeit temporary, due to baseline recalibration)
+        ;
+    
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
         ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
-        :Cond_Patient_HasConnectedSensor_CapnoSensor ,
-        :Cond_Patient_isSubjectToTherapy_MechanicalVentilation ,
-        :Cond_PulmonaryVentilationProcess_SupportMode_ExternalInvasiveSupport ,
-        :Cond_PulmonaryOxygenationProcess_SupportMode_ExternalInvasiveSupport
+        :Cond_Patient_HasConnectedDevice_Ventilator ,
+        :Cond_Patient_HasConnectedSensor_Capnography ,
+        :Cond_CO2Property_ObservationState_Monitored , ## CO2 property is superclass to alveolarCO2 / pCO2 properties
+        :Cond_PulmonarySystem_SubjectOfTherapy_MechanicalVentilation ,
+        :Cond_PulmVentilationProcess_SupportModality_ExternalInvasiveSupport 
         .
 
-
-
-### Alarmen 13 April 2026 - Conditie_Unique_Values [38 - 57]
 
 #######################################################################
 # Alarm 38 | PHILIPSMONITOR - CO2 wzig schaal l
@@ -1116,17 +1121,22 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_CapnoSensor_FunctionalState_Connected ,               ## CO2 sensor is connected
-        :Cond_CapnoSensor_OperationalState_SignalQuality               ## CO2 sensor quality low - change of scale
-        ;
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_CapnographySensor_OperationalState_Enabled ,       ## capnographySensor is connected
+        :Cond_CO2Metric_OperationalState_Enabled ,              ## CO2 metric is being measured , note that 'CO2Metric' is a group that includes both EtCO2 and tcCO2 metrics / link transitively to individual components if needed
 
+        ## epistemic representation
+        :Cond_CapnoSignal_qualityState_insufficient                        ## capnography signal out of scale range -> 'insufficient signal quality' (albeit temporary, due to baseline recalibration)
+        ;
+    
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
+        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
-        :Cond_Patient_HasConnectedSensor_CapnoSensor ,
-        :Cond_Patient_isSubjectToTherapy_MechanicalVentilation ,
-        :Cond_PulmonaryVentilationProcess_SupportMode_ExternalInvasiveSupport ,
-        :Cond_PulmonaryOxygenationProcess_SupportMode_ExternalInvasiveSupport
+        :Cond_Patient_HasConnectedDevice_Ventilator ,
+        :Cond_Patient_HasConnectedSensor_Capnography ,
+        :Cond_CO2Property_ObservationState_Monitored , ## CO2 property is superclass to alveolarCO2 / pCO2 properties
+        :Cond_PulmonarySystem_SubjectOfTherapy_MechanicalVentilation ,
+        :Cond_PulmVentilationProcess_SupportModality_ExternalInvasiveSupport 
         .
 
 #######################################################################
@@ -1145,7 +1155,7 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                          ## philipsMonitor is enabled
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                          ## philipsMonitor is enabled
         :Cond_PhilipsMonitor_FunctionalState_RequiresVerification               ## monitor configuration requires verification
         ;
 
@@ -1169,7 +1179,8 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_SpeedpointFunctionalUnit_OperationalState_Enabled ,       ## Speedpoint FunctionalUnit is enabled
         :Cond_SpeedPointModule_FunctionalState_RequiresVerification ## SpeedPoint data-transfer module requires verification
         ;
 
@@ -1193,8 +1204,11 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                          ## philipsMonitor is enabled
-        :Cond_PatientID_FunctionalState_RequiresConfirmation                  ## patient identity record requires confirmation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                          ## philipsMonitor is enabled
+        ## Check: Doen we individual records transitively linked naar hoofd-module? 
+        :Cond_SettingsModule_FunctionalState_RequiresConfirmation ,              ## monitor settings module requires confirmation
+         ## epistemic representation
+        :Cond_PatientIdentityRecord_FunctionalState_RequiresConfirmation                  ## patient identity record requires confirmation
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
@@ -1217,15 +1231,14 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_PulseOximetrySensor_FunctionalState_Connected ,           ## pulseOximeterSensor is connected
-        :Cond_PulseOximetrySensor_SensorMalfunction                     ## pulseOximeterSensor malfunction - check source
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_PulseOximetrySensor_OperationalState_Enabled ,       ## pulseOximeterSensor is connected
+        :Cond_SpO2Signal_QualityState_Insufficient                 ## SpO2 sensor interpretation low signal quality
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
-        :Cond_Patient_HasConnectedSensor_PulseOximetry ,
-        :Cond_SaO2Property_ObservationState_Monitored
+        :Cond_Patient_HasConnectedSensor_PulseOximetry 
         .
 
 #######################################################################
@@ -1244,20 +1257,21 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_PulseOximetrySensor_FunctionalState_Connected ,       ## pulseOximeterSensor is connected
-        :Cond_SpO2Metric_OperationalState_Available ,               ## SpO2 metric is being measured
-        :Cond_SpO2Metric_ValueInterpretation_LowLimitViolation ,    ## SpO2_metric hasValueInterpretation = LowLimitViolation
-        :Cond_SpO2Metric_TrendInterpretation_RapidDesaturation      ## SpO2 trend interpreted as rapid desaturation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_PulseOximetrySensor_OperationalState_Enabled ,       ## pulseOximeterSensor is connected
+        :Cond_SpO2Metric_OperationalState_Enabled ,              ## SpO2 metric is being measured
+        ## epistemic interpretation
+        :Cond_SpO2Metric_MagnitudeState_verylow                        ## SpO2_metric hasMagnitudeState = Very Low (deviant value) 
         ;
-
+    
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        :Cond_PulseOximeterInterfaceConnected ,
-        :Cond_SpO2DeviceChannel_FunctionalState_Enabled ,
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_PulseOximetry ,
         :Cond_SaO2Property_ObservationState_Monitored ,
-        :Cond_PulmonaryOxygenationProcess_FunctionalState_Impaired
+        ## ontological interpretation of the epistemic representation
+        :Cond_SaO2Property_MagnitudeState_verylow ,                    ## SaO2Property hasMagnitudeState = Very Low (deviant value)
+        :Cond_PulmonaryOxygenation_FunctionalState_CriticallyHypo            ## Pulmonary oxygenation process is in a critically hypofunctional state 
+        ## organ- and organsystem level inferrals through inheritance / reasoning
         .
 
 #######################################################################
@@ -1276,8 +1290,8 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_EC10Module_FunctionalState_Disconnected               ## EC10 cable/measurement module disconnected
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_EC10Module_OperationalState_Disconnected               ## EC10 cable/measurement module disconnected
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
@@ -1300,8 +1314,8 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_ECGSensor_FunctionalState_AllLeadsDisconnected        ## all ECG electrodes are disconnected
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_ECGSensorGroup_OperationalState_Disconnected        ## all ECG electrodes are disconnected
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
@@ -1324,14 +1338,16 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_ECGsensor_FunctionalState_Connected ,                 ## ECG sensor is connected
-        :Cond_ECGSignal_QualityState_Noise                          ## ECG signal quality state = noise/interference
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_ECGSensorGroup_OperationalState_Enabled ,       ## ECG sensor group is connected
+        :Cond_ECGSignalGroup_OperationalState_Enabled ,             ## ECG signal group is being measured
+         ## epistemic representation
+        :Cond_ECGSignalGroup_QualityState_noise                        ## ECG signal group hasQualityState = Noise (deviant value)  | noise = subclass to 'insufficient signal quality'
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
-        :Cond_Patient_HasConnectedSensor_ECGSensor 
+        :Cond_Patient_HasConnectedSensor_ECGSensor
         .
 
 #######################################################################
@@ -1350,13 +1366,14 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                  ## philipsMonitor is enabled
-        :Cond_ECGArrhythmiaAlarms_FunctionalState_Disabled              ## ECG / arrhythmia alarm monitoring is disabled
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_ECGSensorGroup_OperationalState_Enabled ,           ## ECG sensor group is connected
+        :Cond_ECGSignalGroup_FunctionalState_Silenced              ## Alarms silenced - ECG signal group is in silenced state
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
-        :Cond_Patient_HasConnectedSensor_ECGSensor
+        :Cond_Patient_HasConnectedSensor_ECGSensor 
         .
 
 #######################################################################
@@ -1375,8 +1392,8 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,              ## philipsMonitor is enabled
-        :Cond_ExternalController_ConfigurationState_Error           ## external controller configuration error detected
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,              ## philipsMonitor is enabled
+        :Cond_ExternalControllerModule_ConfigurationState_Error           ## external controller configuration error detected - check configurations
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
@@ -1388,6 +1405,7 @@
 #######################################################################
 
 :ACD_Alarm_49 ## PHILIPSMONITOR - Extr. lage hartfreq.
+    # PM: Check m/ EK - komt dit uit ECG of uit pulse oximeter?
     a dev:AlertConditionDescription ;
     rdfs:label "AlertConditionDescription: Semantic definition of PHILIPSMONITOR - Extr. lage hartfreq." ;
     rdfs:comment "Explicit documentation of the latent conditions carried by 'PHILIPSMONITOR - Extr. lage hartfreq.'." ;
@@ -1399,18 +1417,20 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                                  ## philipsMonitor is enabled
-        :Cond_ECGsensor_FunctionalState_Connected ,                                     ## ECG sensor is connected
-        :Cond_ElectricHeartRateMetric_OperationalState_Available ,                      ## electric heart rate metric is being measured
-        :Cond_ElectricHeartRateMetric_ValueInterpretation_ExtremeLowLimitViolation      ## EHR metric hasValueInterpretation = ExtremeLowLimitViolation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ECGsensor_OperationalState_Enabled ,                     ## ECG sensor is connected
+        :Cond_ElectricHeartRateMetric_OperationalState_Enabled ,               ## EHR metric is being measured
+        ## epistemic representation
+        :Cond_ElectricHeartRateMetric_RateState_veryLow                        ## ElectricHeartRateMetric interpretation very low (deviant value)
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        :Cond_ECGInterface_FunctionalState_Connected ,
+        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_ECGSensor ,
         :Cond_ElectricHeartRateProperty_ObservationState_Monitored ,
-        :Cond_CardiacContractionProcess_FunctionalState_ExtremeLow
+        :Cond_ElectricHeartRateProperty_RateState_veryLow ,                    ## ElectricHeartRateProperty has rate state = very low (deviant value)
+        :Cond_CardiacContractionProcess_FunctionalState_CriticallyHypo                   ## CardiacContractionProcess hasFunctionalState = Hypofunctional state
         .
 
 #######################################################################
@@ -1429,18 +1449,20 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                                  ## philipsMonitor is enabled
-        :Cond_ECGsensor_FunctionalState_Connected ,                                     ## ECG sensor is connected
-        :Cond_ElectricHeartRateMetric_OperationalState_Available ,                      ## electric heart rate metric is being measured
-        :Cond_ElectricHeartRateMetric_ValueInterpretation_ExtremeHighLimitViolation     ## EHR metric hasValueInterpretation = ExtremeHighLimitViolation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ECGsensor_OperationalState_Enabled ,                     ## ECG sensor is connected
+        :Cond_ElectricHeartRateMetric_OperationalState_Enabled ,               ## EHR metric is being measured
+        ## epistemic representation
+        :Cond_ElectricHeartRateMetric_RateState_veryHigh                        ## ElectricHeartRateMetric interpretation very high (deviant value)
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        :Cond_ECGInterface_FunctionalState_Connected ,
+        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_ECGSensor ,
         :Cond_ElectricHeartRateProperty_ObservationState_Monitored ,
-        :Cond_CardiacContractionProcess_FunctionalState_ExtremeHigh
+        :Cond_ElectricHeartRateProperty_RateState_veryHigh ,                    ## ElectricHeartRateProperty has rate state = very high (deviant value)
+        :Cond_CardiacContractionProcess_FunctionalState_CriticallyHyper                   ## CardiacContractionProcess hasFunctionalState = Hyperfunctional state
         .
 
 #######################################################################
@@ -1459,14 +1481,13 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,          ## philipsMonitor is enabled
-        :Cond_ECGFElectrode_FunctionalState_Disconnected        ## ECG F (foot) electrode is disconnected
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,          ## philipsMonitor is enabled
+        :Cond_ECGFElectrode_OperationalState_Disconnected        ## ECG F (foot) electrode is disconnected
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        :Cond_ECGInterface_FunctionalState_Connected ,
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
-        :Cond_Patient_HasConnectedSensor_ECGSensor
+        :Cond_Patient_HasConnectedSensor_ECGFSensor
         .
 
 #######################################################################
@@ -1485,8 +1506,8 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,          ## philipsMonitor is enabled
-        :Cond_PhilipsMonitor_DataState_Unavailable              ## monitor application data is unavailable
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,          ## philipsMonitor is enabled
+        :Cond_PhilipsMonitor_FunctionalState_CheckSettings       ## connected device settings need to be checked. 
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
@@ -1509,18 +1530,20 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                              ## philipsMonitor is enabled
-        :Cond_ECGsensor_FunctionalState_Connected ,                                 ## ECG sensor is connected
-        :Cond_ElectricHeartRateMetric_OperationalState_Available ,                  ## electric heart rate metric is being measured
-        :Cond_ElectricHeartRateMetric_ValueInterpretation_HighLimitViolation        ## EHR metric hasValueInterpretation = HighLimitViolation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ECGsensor_OperationalState_Enabled ,                     ## ECG sensor is connected
+        :Cond_ElectricHeartRateMetric_OperationalState_Enabled ,               ## EHR metric is being measured
+        ## epistemic representation
+        :Cond_ElectricHeartRateMetric_RateState_High                        ## ElectricHeartRateMetric interpretation high (deviant value)
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        :Cond_ECGInterface_FunctionalState_Connected ,
+        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_ECGSensor ,
         :Cond_ElectricHeartRateProperty_ObservationState_Monitored ,
-        :Cond_CardiacContractionProcess_FunctionalState_Elevated
+        :Cond_ElectricHeartRateProperty_RateState_High ,                    ## ElectricHeartRateProperty has rate state = high (deviant value)
+        :Cond_CardiacContractionProcess_FunctionalState_Hyper                   ## CardiacContractionProcess hasFunctionalState = Hyperfunctional state
         .
 
 #######################################################################
@@ -1539,14 +1562,13 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,          ## philipsMonitor is enabled
-        :Cond_ECGLElectrode_FunctionalState_Disconnected        ## ECG L (left arm/leg) electrode is disconnected
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,          ## philipsMonitor is enabled
+        :Cond_ECGL_Electrode_OperationalState_Disconnected        ## ECG L electrode is disconnected
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        :Cond_ECGInterface_FunctionalState_Connected ,
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
-        :Cond_Patient_HasConnectedSensor_ECGSensor
+        :Cond_Patient_HasConnectedSensor_ECGLSensor
         .
 
 #######################################################################
@@ -1565,17 +1587,19 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                          ## philipsMonitor is enabled
-        :Cond_ECGsensor_FunctionalState_Connected ,                             ## ECG sensor is connected (impedance respiration)
-        :Cond_RespRateMetric_OperationalState_Available ,                       ## respiratory rate metric is being measured
-        :Cond_RespRateMetric_ValueInterpretation_LowLimitViolation              ## RespRate metric hasValueInterpretation = LowLimitViolation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ECGsensor_OperationalState_Enabled ,                     ## ECG sensor is connected
+        :Cond_RespRateMetric_OperationalState_Enabled ,                ## Resp Rate metric is being measured
+        ## epistemic representation
+        :Cond_RespRateMetric_RateState_low                       ## Resp Rate metric has rate state = low (no breaths detected)
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        :Cond_ECGInterface_FunctionalState_Connected ,
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_ECGSensor ,
-        :Cond_RespiratoryRateProperty_ObservationState_Monitored
+        :Cond_RespiratoryRateProperty_ObservationState_Monitored ,
+        :Cond_RespiratoryRateProperty_RateState_low ,                    ## RespiratoryRateProperty has rate state = low (no breaths detected)
+        :Cond_PulmonaryVentilationProcess_FunctionalState_Hypo                   ## PulmonaryVentilationProcess hasFunctionalState = Hypofunctional state 
         .
 
 #######################################################################
@@ -1594,16 +1618,18 @@
     dev:originatesFromPhysicalEntity :PhilipsMonitor ;
 
     dev:requiresCondition ## Asserted knowledge - explicitly/unambiguously stated as needed for the AlertConditionState to trigger
-        :Cond_PhilipsMonitor_FunctionalState_Enabled ,                          ## philipsMonitor is enabled
-        :Cond_ECGsensor_FunctionalState_Connected ,                             ## ECG sensor is connected
-        :Cond_ElectricHeartRateMetric_OperationalState_Available ,              ## electric heart rate metric is being measured
-        :Cond_ElectricHeartRateMetric_ValueInterpretation_LowLimitViolation     ## EHR metric hasValueInterpretation = LowLimitViolation
+        :Cond_PhilipsMonitor_OperationalState_Enabled ,                  ## philipsMonitor is enabled
+        :Cond_ECGsensor_OperationalState_Enabled ,                     ## ECG sensor is connected
+        :Cond_ElectricHeartRateMetric_OperationalState_Enabled ,               ## EHR metric is being measured
+        ## epistemic representation
+        :Cond_ElectricHeartRateMetric_RateState_low                        ## ElectricHeartRateMetric low (deviant value)
         ;
 
     dev:impliesCondition ## Inferred knowledge - logically follows from asserted conditions and network reasoning.
-        :Cond_ECGInterface_FunctionalState_Connected ,
+        ## Clinical-related inferrals
         :Cond_Patient_HasConnectedDevice_PhilipsMonitor ,
         :Cond_Patient_HasConnectedSensor_ECGSensor ,
         :Cond_ElectricHeartRateProperty_ObservationState_Monitored ,
-        :Cond_CardiacContractionProcess_FunctionalState_Low
+        :Cond_ElectricHeartRateProperty_RateState_low ,                    ## ElectricHeartRateProperty has rate state = low (deviant value)
+        :Cond_CardiacContractionProcess_FunctionalState_Hypo                 ## CardiacContractionProcess hasFunctionalState = Hypofunctional state
         .
