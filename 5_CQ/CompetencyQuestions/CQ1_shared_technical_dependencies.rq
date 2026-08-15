@@ -1,0 +1,30 @@
+# question: Which alarm messages depend on the same technical components or measurements for their generation?
+#
+# For every technical concept (device, sensor, component, signal, or metric
+# type) reachable from an archetype's message blueprint, group the archetypes
+# that reach it. A group with more than one archetype is two-or-more alarms
+# generated off the same underlying technical dependency, at whatever
+# granularity that dependency sits — a shared device model (e.g. every
+# PHILIPSMONITOR alarm), a shared sensor (e.g. PulseOximeter), or a shared
+# metric (e.g. Volume_Tidal).
+#
+# Runs against the ASSERTED graph only (no `reasoning: required` directive):
+# this asks what kg.ttl actually states an archetype depends on, not what a
+# reasoner can additionally derive (see cq_QA.py's module docstring — over
+# the OWL-RL closure every archetype also gains entailed superclass types
+# like mda:Device, which would flood this with meaningless broad matches).
+
+PREFIX mda: <http://example.org/model-device-alarm-knowledge#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?technicalConcept (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
+       (COUNT(DISTINCT ?a) AS ?matchCount) WHERE {
+  ?a a mda:AlarmType ; mda:hasLabel ?label .
+  ?a mda:hasMessage/mda:concernsPatient/mda:isMonitoredBy/(mda:hasSensor|mda:hasComponent|mda:producesSignal|mda:detectsMetric)* ?node .
+  ?node rdf:type ?technicalConcept .
+  ?technicalConcept a skos:Concept .
+}
+GROUP BY ?technicalConcept
+HAVING (COUNT(DISTINCT ?a) > 1)
+ORDER BY DESC(?matchCount) ?technicalConcept

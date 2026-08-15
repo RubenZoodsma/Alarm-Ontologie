@@ -1,0 +1,174 @@
+graph LR
+    n0["Metric_PhysiologicalMonitor_Infinity_Draeger_01_PulseOximeter_SpO2"]
+    n1["SaO2"]
+    n2["Alarm_MechanicalVentilator_Draeger_01_20260717T080000"]
+    n3["MedibusVerbindingVerbroken_Unknown"]
+    n4["PulmonaryOxygenation"]
+    n5["Lungs"]
+    n6["Device_PhysiologicalMonitor_Infinity_Draeger_01"]
+    n7["PhysiologicalMonitor_Infinity_Draeger"]
+    n8["Device_MechanicalVentilator_Draeger_01"]
+    n9["VentilationTherapy"]
+    n10["Device_MechanicalVentilator_ServoI_Getinge_01"]
+    n11["MechanicalVentilator_ServoI_Getinge"]
+    n12["Signal_MechanicalVentilator_ServoI_Getinge_01_PneumoTachograph_TerminalAirway_AirwayFlow_waveform"]
+    n13["AirwayFlow_waveform"]
+    n14["Alarm_MechanicalVentilator_ServoI_Getinge_01_20260717T080130"]
+    n15["Physiological"]
+    n16["Sensor_MechanicalVentilator_ServoI_Getinge_01_PneumoTachograph_TerminalAirway"]
+    n17["Device_MechanicalVentilator_Hulbus_LowensteinMedical_01"]
+    n18["MechanicalVentilator_Hulbus_LowensteinMedical"]
+    n19["Alarm_MechanicalVentilator_Hulbus_LowensteinMedical_01_20260717T080030"]
+    n20["Hoog"]
+    n21["Unknown"]
+    n22["Metric_MechanicalVentilator_ServoI_Getinge_01_PneumoTachograph_TerminalAirway_RespiratoryRate"]
+    n23["RespiratoryRate"]
+    n24["Component_MechanicalVentilator_Draeger_01_ConnectionUnit"]
+    n25["Disconnected"]
+    n26["Pulmonary"]
+    n27["SpO2"]
+    n28["Sensor_PhysiologicalMonitor_Infinity_Draeger_01_PulseOximeter"]
+    n29["Signal_PhysiologicalMonitor_Infinity_Draeger_01_PulseOximeter_PPG_waveform"]
+    n30["TerminalAirway"]
+    n31["Increased"]
+    n32["RespirationRate"]
+    n33["PulmonaryVentilation"]
+    n34["Decreased"]
+    n35["Msg_MechanicalVentilator_ServoI_Getinge_01_20260717T080130"]
+    n36["MechanicalVentilator_Draeger"]
+    n37["Alarm_PhysiologicalMonitor_Infinity_Draeger_01_20260717T080100"]
+    n38["Msg_PhysiologicalMonitor_Infinity_Draeger_01_20260717T080100"]
+    n39["Enabled"]
+    n40["Patient_johnDoe_01"]
+    n41["PulseOximeter"]
+    n42["Unknown"]
+    n43["Technical"]
+    n44["Hulbus345_Hoog"]
+    n45["Msg_MechanicalVentilator_Draeger_01_20260717T080000"]
+    n46["ServoiAdemfrequentieHoog_Unknown"]
+    n47["Msg_MechanicalVentilator_Hulbus_LowensteinMedical_01_20260717T080030"]
+    n48["PneumoTachograph"]
+    n49["PPG_waveform"]
+    n50["MonitorLageSpo2_Unknown"]
+    n51["ConnectionUnit"]
+    n0 -->|approximates| n1
+    n2 -->|isOfType| n3
+    n4 -->|presentIn| n5
+    n6 -->|type| n7
+    n8 -->|administers| n9
+    n10 -->|type| n11
+    n12 -->|type| n13
+    n14 -->|hasCategory| n15
+    n10 -->|hasSensor| n16
+    n17 -->|type| n18
+    n19 -->|hasPriority| n20
+    n19 -->|hasCategory| n21
+    n22 -->|type| n23
+    n8 -->|hasComponent| n24
+    n8 -->|hasOperationState| n25
+    n5 -->|organPartOfSystem| n26
+    n0 -->|type| n27
+    n28 -->|producesSignal| n29
+    n16 -->|hasAnatomicalPosition| n30
+    n22 -->|hasRate| n31
+    n32 -->|isPropertyOf| n33
+    n28 -->|detectsMetric| n0
+    n1 -->|isPropertyOf| n4
+    n0 -->|hasRate| n34
+    n14 -->|hasMessage| n35
+    n24 -->|hasOperationState| n25
+    n8 -->|type| n36
+    n37 -->|hasMessage| n38
+    n28 -->|hasSensorOperationState| n39
+    n38 -->|concernsPatient| n40
+    n28 -->|type| n41
+    n14 -->|hasPriority| n42
+    n2 -->|hasPriority| n42
+    n2 -->|hasCategory| n43
+    n24 -->|hasComponentOperationState| n25
+    n10 -->|administers| n9
+    n16 -->|detectsMetric| n22
+    n19 -->|isOfType| n44
+    n2 -->|hasMessage| n45
+    n45 -->|concernsPatient| n40
+    n14 -->|isOfType| n46
+    n16 -->|producesSignal| n12
+    n19 -->|hasMessage| n47
+    n28 -->|hasOperationState| n39
+    n16 -->|type| n48
+    n37 -->|hasCategory| n15
+    n22 -->|approximates| n32
+    n33 -->|presentIn| n5
+    n37 -->|hasPriority| n42
+    n9 -->|targetsProcess| n33
+    n29 -->|type| n49
+    n35 -->|concernsPatient| n40
+    n17 -->|administers| n9
+    n6 -->|hasSensor| n28
+    n37 -->|isOfType| n50
+    n47 -->|concernsPatient| n40
+    n6 -->|hasOperationState| n39
+    n24 -->|type| n51
+    classDef alarm fill:#ffd6d6,stroke:#c0392b,color:#111;
+    classDef archetype fill:#ffeaea,stroke:#c0392b,stroke-dasharray:4 3,color:#111;
+    classDef message fill:#ffe8cc,stroke:#e67e22,color:#111;
+    classDef patient fill:#d5f5e3,stroke:#27ae60,color:#111;
+    classDef device fill:#d6eaff,stroke:#2980b9,color:#111;
+    classDef sensor fill:#d1f2f2,stroke:#16a085,color:#111;
+    classDef signal fill:#e8fbfb,stroke:#16a085,color:#111;
+    classDef condition fill:#eaddf7,stroke:#8e44ad,color:#111;
+    classDef opstate fill:#fdf2b3,stroke:#b7950b,color:#111;
+    classDef concept fill:#ececec,stroke:#7f8c8d,color:#111;
+    classDef other fill:#ffffff,stroke:#000000,color:#111;
+    class n0 condition;
+    class n1 concept;
+    class n2 alarm;
+    class n3 archetype;
+    class n4 concept;
+    class n5 concept;
+    class n6 device;
+    class n7 concept;
+    class n8 device;
+    class n9 concept;
+    class n10 device;
+    class n11 concept;
+    class n12 signal;
+    class n13 concept;
+    class n14 alarm;
+    class n15 concept;
+    class n16 sensor;
+    class n17 device;
+    class n18 concept;
+    class n19 alarm;
+    class n20 concept;
+    class n21 concept;
+    class n22 condition;
+    class n23 concept;
+    class n24 other;
+    class n25 opstate;
+    class n26 concept;
+    class n27 concept;
+    class n28 sensor;
+    class n29 signal;
+    class n30 concept;
+    class n31 concept;
+    class n32 concept;
+    class n33 concept;
+    class n34 concept;
+    class n35 message;
+    class n36 concept;
+    class n37 alarm;
+    class n38 message;
+    class n39 opstate;
+    class n40 patient;
+    class n41 concept;
+    class n42 concept;
+    class n43 concept;
+    class n44 archetype;
+    class n45 message;
+    class n46 archetype;
+    class n47 message;
+    class n48 concept;
+    class n49 concept;
+    class n50 archetype;
+    class n51 concept;

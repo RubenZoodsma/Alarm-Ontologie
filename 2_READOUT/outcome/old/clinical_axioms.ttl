@@ -1,0 +1,150 @@
+####################################################################
+# clinical_axioms.ttl — HAND-AUTHORED.  NOT GENERATED.  DO NOT OVERWRITE.
+#
+# The clinical knowledge implied by an alarm, asserted ONCE.
+#
+# An alarm states only that some metric deviated.  What that implies clinically
+# — which physiological property the metric approximates, which process that
+# property characterises, where the process occurs — is definitional knowledge
+# and belongs here, not copied into every alarm archetype.
+#
+# Vocabulary for these concepts: clinical_vocab.ttl (same directory).
+# Why stage 2 rather than 1_BASE: see the header of clinical_vocab.ttl.
+#
+#
+# TWO LAYERS OF AXIOM, AND WHY THE FIRST IS SHAPED DIFFERENTLY
+# -----------------------------------------------------------
+# §1 BRIDGE AXIOMS cross from the operational instance level to the universal
+#    level.  They are written as class-level value restrictions:
+#
+#        metric:SpO2 rdfs:subClassOf [ owl:onProperty mda:approximates ;
+#                                      owl:hasValue physiologicalProperty:PaO2 ]
+#
+#    This form is REQUIRED, and the distinction is not cosmetic.  A plain triple
+#    'metric:SpO2 mda:approximates physiologicalProperty:PaO2' treats the concept
+#    as an individual (punning); an operational node typed 'a metric:SpO2' then
+#    reaches NOTHING through it under OWL-RL.  That is precisely why the physiology
+#    currently has to be duplicated into every archetype to be visible at all.
+#    With the restriction form, every instance of the metric inherits the link and
+#    no duplication is needed.
+#
+# §2 TAIL AXIOMS relate universals to universals — property to process, process
+#    to organ, organ to organ system.  Once the bridge has been crossed, the
+#    subject is a concept used as an individual, so plain triples are correct and
+#    sufficient.  Only ONE bridge is needed per chain; the tail traverses from
+#    there.
+#
+# Reasoning over (situational graph ∪ these axioms) with OWL-RL therefore derives
+# the full clinical context of every alarm without any alarm carrying it.
+####################################################################
+
+@prefix mda:        <http://example.org/model-device-alarm-knowledge#> .
+@prefix owl:        <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
+
+@prefix metric:      <http://example.org/model-device-alarm-knowledge/vocab/metric/> .
+@prefix physiologicalProperty: <http://example.org/model-device-alarm-knowledge/vocab/physiological-property/> .
+@prefix physiologicalProcess:  <http://example.org/model-device-alarm-knowledge/vocab/physiological-process/> .
+@prefix organ:       <http://example.org/model-device-alarm-knowledge/vocab/organ/> .
+@prefix organSystem: <http://example.org/model-device-alarm-knowledge/vocab/organ-system/> .
+
+
+####################################################################
+# §1  BRIDGE AXIOMS — metric concept ⊑ (approximates value <property>)
+#
+# One per pre-coordinated metric concept.  The base concepts (metric:ABP,
+# metric:BP, metric:AirwayPressure) carry no bridge: instances are always
+# typed by the pre-coordinated form, and skos:broader does not confer
+# class subsumption.
+####################################################################
+
+metric:ABP_Mean rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:ArterialPressure ] .
+
+metric:ABP_Systolic rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:ArterialPressure ] .
+
+metric:ABP_Diastolic rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:ArterialPressure ] .
+
+metric:BP_Mean rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:ArterialPressure ] .
+
+metric:SpO2 rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:PaO2 ] .
+
+metric:HeartRateElectric rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:ElectricalContraction ] .
+
+metric:RespRate rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:Respiration ] .
+
+metric:Temperature rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:Temperature ] .
+
+metric:AirwayPressure_EndExpiratory rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:AirwayPressure ] .
+
+
+####################################################################
+# §2  TAIL AXIOMS — universal to universal
+####################################################################
+
+# ── property → process ───────────────────────────────────────────
+physiologicalProperty:PaO2                  mda:isPropertyOf physiologicalProcess:Oxygenation .
+physiologicalProperty:AirwayPressure        mda:isPropertyOf physiologicalProcess:Ventilation .
+physiologicalProperty:Respiration           mda:isPropertyOf physiologicalProcess:Ventilation .
+physiologicalProperty:ArterialPressure      mda:isPropertyOf physiologicalProcess:VascularCompliance .
+physiologicalProperty:ElectricalContraction mda:isPropertyOf physiologicalProcess:CardiacContraction .
+physiologicalProperty:Temperature           mda:isPropertyOf physiologicalProcess:Metabolism .
+
+# ── process → organ ──────────────────────────────────────────────
+physiologicalProcess:Ventilation        mda:presentIn organ:Lungs .
+physiologicalProcess:Oxygenation        mda:presentIn organ:Lungs .
+physiologicalProcess:CardiacContraction mda:presentIn organ:Heart .
+physiologicalProcess:VascularCompliance mda:presentIn organ:Arteries .   # REVIEW — see §3
+
+# physiologicalProcess:Metabolism  — deliberately NOT asserted.  See §3.
+
+# ── organ → organ system ─────────────────────────────────────────
+organ:Lungs    mda:organPartOfSystem organSystem:Pulmonary .
+organ:Heart    mda:organPartOfSystem organSystem:CardioVascular .
+organ:Arteries mda:organPartOfSystem organSystem:CardioVascular .
+
+
+####################################################################
+# §3  OPEN — processes with no single anatomical locus
+#
+# Metabolism belongs to the endocrine system but occurs in no one organ; the
+# alarm table asserts 'Endocrine' with an empty Organ cell for exactly this
+# reason.  Under the current ontology the ONLY route from a process to an organ
+# system runs through an organ, so there is no honest way to state this: the
+# generated model invents an anonymous organ, and this file would have to invent
+# a named one.  Neither is true.
+#
+# Consequence as the file now stands: a temperature alarm derives its property
+# and its process, and the chain stops there.  It reaches no organ system.  That
+# is the correct behaviour for missing knowledge — an absent inference, visible
+# and fixable — rather than a fabricated organ that looks like data.
+#
+# organ:Arteries is the same question in weaker form.  Arterial compliance is a
+# property of the vessel wall, which is arguably a tissue rather than an organ.
+# The axiom above is asserted because it is clinically defensible, but it is
+# marked for review.
+#
+# Resolving both needs one ontology decision: whether mda:PhysiologicalProcess
+# may relate directly to mda:OrganSystem (a sibling of mda:presentIn), or whether
+# mda:presentIn should range over a broader anatomical-structure notion that
+# subsumes both Organ and OrganSystem.  Note that adding a direct process→system
+# property re-parents OrganSystem in the readout's derived class tree — harmless
+# once the physiology columns leave data.csv, but not before.
+####################################################################

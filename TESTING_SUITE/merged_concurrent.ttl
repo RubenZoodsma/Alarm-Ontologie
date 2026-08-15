@@ -1,0 +1,114 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ns1: <http://example.org/model-device-alarm-knowledge#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/model-device-alarm-knowledge/entity/Device_MechanicalVentilator_Draeger_01> a <http://example.org/model-device-alarm-knowledge/vocab/device/MechanicalVentilator_Draeger> ;
+    ns1:administers <http://example.org/model-device-alarm-knowledge/vocab/therapeutic-modality/VentilationTherapy> ;
+    ns1:hasComponent <http://example.org/model-device-alarm-knowledge/entity/Component_MechanicalVentilator_Draeger_01_ConnectionUnit> ;
+    ns1:hasOperationState <http://example.org/model-device-alarm-knowledge/vocab/operation-state/Disconnected> ;
+    dcterms:identifier "MechanicalVentilator_Draeger_01" .
+
+<http://example.org/model-device-alarm-knowledge/entity/Device_MechanicalVentilator_Hulbus_LowensteinMedical_01> a <http://example.org/model-device-alarm-knowledge/vocab/device/MechanicalVentilator_Hulbus_LowensteinMedical> ;
+    ns1:administers <http://example.org/model-device-alarm-knowledge/vocab/therapeutic-modality/VentilationTherapy> ;
+    dcterms:identifier "MechanicalVentilator_Hulbus_LowensteinMedical_01" .
+
+<http://example.org/model-device-alarm-knowledge/entity/Device_MechanicalVentilator_ServoI_Getinge_01> a <http://example.org/model-device-alarm-knowledge/vocab/device/MechanicalVentilator_ServoI_Getinge> ;
+    ns1:administers <http://example.org/model-device-alarm-knowledge/vocab/therapeutic-modality/VentilationTherapy> ;
+    ns1:hasSensor <http://example.org/model-device-alarm-knowledge/entity/Sensor_MechanicalVentilator_ServoI_Getinge_01_PneumoTachograph_TerminalAirway> ;
+    dcterms:identifier "MechanicalVentilator_ServoI_Getinge_01" .
+
+<http://example.org/model-device-alarm-knowledge/entity/Device_PhysiologicalMonitor_Infinity_Draeger_01> a <http://example.org/model-device-alarm-knowledge/vocab/device/PhysiologicalMonitor_Infinity_Draeger> ;
+    ns1:hasOperationState <http://example.org/model-device-alarm-knowledge/vocab/operation-state/Enabled> ;
+    ns1:hasSensor <http://example.org/model-device-alarm-knowledge/entity/Sensor_PhysiologicalMonitor_Infinity_Draeger_01_PulseOximeter> ;
+    dcterms:identifier "PhysiologicalMonitor_Infinity_Draeger_01" .
+
+<http://example.org/model-device-alarm-knowledge/instance/Alarm_MechanicalVentilator_Draeger_01_20260717T080000> a ns1:Alarm ;
+    ns1:hasCategory <http://example.org/model-device-alarm-knowledge/vocab/alarm-category/Technical> ;
+    ns1:hasEnd "2026-07-17T08:20:00"^^xsd:dateTime ;
+    ns1:hasLabel "MEDIBUS - Verbinding verbroken"@en ;
+    ns1:hasMessage <http://example.org/model-device-alarm-knowledge/instance/Msg_MechanicalVentilator_Draeger_01_20260717T080000> ;
+    ns1:hasPriority <http://example.org/model-device-alarm-knowledge/vocab/alarm-priority/Unknown> ;
+    ns1:hasStart "2026-07-17T08:00:00"^^xsd:dateTime ;
+    ns1:isOfType <http://example.org/model-device-alarm-knowledge/alarmtype/MedibusVerbindingVerbroken_Unknown> .
+
+<http://example.org/model-device-alarm-knowledge/instance/Alarm_MechanicalVentilator_Hulbus_LowensteinMedical_01_20260717T080030> a ns1:Alarm ;
+    ns1:hasCategory <http://example.org/model-device-alarm-knowledge/vocab/alarm-category/Unknown> ;
+    ns1:hasEnd "2026-07-17T08:20:00"^^xsd:dateTime ;
+    ns1:hasLabel "HULBUS - 345"@en ;
+    ns1:hasMessage <http://example.org/model-device-alarm-knowledge/instance/Msg_MechanicalVentilator_Hulbus_LowensteinMedical_01_20260717T080030> ;
+    ns1:hasPriority <http://example.org/model-device-alarm-knowledge/vocab/alarm-priority/Hoog> ;
+    ns1:hasStart "2026-07-17T08:00:30"^^xsd:dateTime ;
+    ns1:isOfType <http://example.org/model-device-alarm-knowledge/alarmtype/Hulbus345_Hoog> .
+
+<http://example.org/model-device-alarm-knowledge/instance/Alarm_MechanicalVentilator_ServoI_Getinge_01_20260717T080130> a ns1:Alarm ;
+    ns1:hasCategory <http://example.org/model-device-alarm-knowledge/vocab/alarm-category/Physiological> ;
+    ns1:hasEnd "2026-07-17T08:20:00"^^xsd:dateTime ;
+    ns1:hasLabel "SERVOI - Ademfrequentie: Hoog"@en ;
+    ns1:hasMessage <http://example.org/model-device-alarm-knowledge/instance/Msg_MechanicalVentilator_ServoI_Getinge_01_20260717T080130> ;
+    ns1:hasPriority <http://example.org/model-device-alarm-knowledge/vocab/alarm-priority/Unknown> ;
+    ns1:hasStart "2026-07-17T08:01:30"^^xsd:dateTime ;
+    ns1:isOfType <http://example.org/model-device-alarm-knowledge/alarmtype/ServoiAdemfrequentieHoog_Unknown> .
+
+<http://example.org/model-device-alarm-knowledge/instance/Alarm_PhysiologicalMonitor_Infinity_Draeger_01_20260717T080100> a ns1:Alarm ;
+    ns1:hasCategory <http://example.org/model-device-alarm-knowledge/vocab/alarm-category/Physiological> ;
+    ns1:hasEnd "2026-07-17T08:20:00"^^xsd:dateTime ;
+    ns1:hasLabel "Monitor - Lage SpO2"@en ;
+    ns1:hasMessage <http://example.org/model-device-alarm-knowledge/instance/Msg_PhysiologicalMonitor_Infinity_Draeger_01_20260717T080100> ;
+    ns1:hasPriority <http://example.org/model-device-alarm-knowledge/vocab/alarm-priority/Unknown> ;
+    ns1:hasStart "2026-07-17T08:01:00"^^xsd:dateTime ;
+    ns1:isOfType <http://example.org/model-device-alarm-knowledge/alarmtype/MonitorLageSpo2_Unknown> .
+
+<http://example.org/model-device-alarm-knowledge/entity/Component_MechanicalVentilator_Draeger_01_ConnectionUnit> a <http://example.org/model-device-alarm-knowledge/vocab/component/ConnectionUnit> ;
+    ns1:hasComponentOperationState <http://example.org/model-device-alarm-knowledge/vocab/operation-state/Disconnected> ;
+    ns1:hasOperationState <http://example.org/model-device-alarm-knowledge/vocab/operation-state/Disconnected> .
+
+<http://example.org/model-device-alarm-knowledge/entity/Sensor_MechanicalVentilator_ServoI_Getinge_01_PneumoTachograph_TerminalAirway> a <http://example.org/model-device-alarm-knowledge/vocab/sensor/PneumoTachograph> ;
+    ns1:detectsMetric <http://example.org/model-device-alarm-knowledge/instance/Metric_MechanicalVentilator_ServoI_Getinge_01_PneumoTachograph_TerminalAirway_RespiratoryRate> ;
+    ns1:hasAnatomicalPosition <http://example.org/model-device-alarm-knowledge/vocab/anatomical-position/TerminalAirway> ;
+    ns1:producesSignal <http://example.org/model-device-alarm-knowledge/entity/Signal_MechanicalVentilator_ServoI_Getinge_01_PneumoTachograph_TerminalAirway_AirwayFlow_waveform> .
+
+<http://example.org/model-device-alarm-knowledge/entity/Sensor_PhysiologicalMonitor_Infinity_Draeger_01_PulseOximeter> a <http://example.org/model-device-alarm-knowledge/vocab/sensor/PulseOximeter> ;
+    ns1:detectsMetric <http://example.org/model-device-alarm-knowledge/instance/Metric_PhysiologicalMonitor_Infinity_Draeger_01_PulseOximeter_SpO2> ;
+    ns1:hasOperationState <http://example.org/model-device-alarm-knowledge/vocab/operation-state/Enabled> ;
+    ns1:hasSensorOperationState <http://example.org/model-device-alarm-knowledge/vocab/operation-state/Enabled> ;
+    ns1:producesSignal <http://example.org/model-device-alarm-knowledge/entity/Signal_PhysiologicalMonitor_Infinity_Draeger_01_PulseOximeter_PPG_waveform> .
+
+<http://example.org/model-device-alarm-knowledge/entity/Signal_MechanicalVentilator_ServoI_Getinge_01_PneumoTachograph_TerminalAirway_AirwayFlow_waveform> a <http://example.org/model-device-alarm-knowledge/vocab/signal/AirwayFlow_waveform> .
+
+<http://example.org/model-device-alarm-knowledge/entity/Signal_PhysiologicalMonitor_Infinity_Draeger_01_PulseOximeter_PPG_waveform> a <http://example.org/model-device-alarm-knowledge/vocab/signal/PPG_waveform> .
+
+<http://example.org/model-device-alarm-knowledge/instance/Metric_MechanicalVentilator_ServoI_Getinge_01_PneumoTachograph_TerminalAirway_RespiratoryRate> a <http://example.org/model-device-alarm-knowledge/vocab/metric/RespiratoryRate> ;
+    ns1:approximates <http://example.org/model-device-alarm-knowledge/vocab/physiological-property/RespirationRate> ;
+    ns1:hasRate <http://example.org/model-device-alarm-knowledge/vocab/metric-rate/Increased> .
+
+<http://example.org/model-device-alarm-knowledge/instance/Metric_PhysiologicalMonitor_Infinity_Draeger_01_PulseOximeter_SpO2> a <http://example.org/model-device-alarm-knowledge/vocab/metric/SpO2> ;
+    ns1:approximates <http://example.org/model-device-alarm-knowledge/vocab/physiological-property/SaO2> ;
+    ns1:hasRate <http://example.org/model-device-alarm-knowledge/vocab/metric-rate/Decreased> .
+
+<http://example.org/model-device-alarm-knowledge/instance/Msg_MechanicalVentilator_Draeger_01_20260717T080000> a ns1:AlarmMessage ;
+    ns1:concernsPatient <http://example.org/model-device-alarm-knowledge/entity/Patient_johnDoe_01> .
+
+<http://example.org/model-device-alarm-knowledge/instance/Msg_MechanicalVentilator_Hulbus_LowensteinMedical_01_20260717T080030> a ns1:AlarmMessage ;
+    ns1:concernsPatient <http://example.org/model-device-alarm-knowledge/entity/Patient_johnDoe_01> .
+
+<http://example.org/model-device-alarm-knowledge/instance/Msg_MechanicalVentilator_ServoI_Getinge_01_20260717T080130> a ns1:AlarmMessage ;
+    ns1:concernsPatient <http://example.org/model-device-alarm-knowledge/entity/Patient_johnDoe_01> .
+
+<http://example.org/model-device-alarm-knowledge/instance/Msg_PhysiologicalMonitor_Infinity_Draeger_01_20260717T080100> a ns1:AlarmMessage ;
+    ns1:concernsPatient <http://example.org/model-device-alarm-knowledge/entity/Patient_johnDoe_01> .
+
+<http://example.org/model-device-alarm-knowledge/vocab/physiological-process/PulmonaryOxygenation> ns1:presentIn <http://example.org/model-device-alarm-knowledge/vocab/organ/Lungs> .
+
+<http://example.org/model-device-alarm-knowledge/vocab/physiological-property/RespirationRate> ns1:isPropertyOf <http://example.org/model-device-alarm-knowledge/vocab/physiological-process/PulmonaryVentilation> .
+
+<http://example.org/model-device-alarm-knowledge/vocab/physiological-property/SaO2> ns1:isPropertyOf <http://example.org/model-device-alarm-knowledge/vocab/physiological-process/PulmonaryOxygenation> .
+
+<http://example.org/model-device-alarm-knowledge/vocab/organ/Lungs> ns1:organPartOfSystem <http://example.org/model-device-alarm-knowledge/vocab/organ-system/Pulmonary> .
+
+<http://example.org/model-device-alarm-knowledge/vocab/physiological-process/PulmonaryVentilation> ns1:presentIn <http://example.org/model-device-alarm-knowledge/vocab/organ/Lungs> .
+
+<http://example.org/model-device-alarm-knowledge/vocab/therapeutic-modality/VentilationTherapy> ns1:targetsProcess <http://example.org/model-device-alarm-knowledge/vocab/physiological-process/PulmonaryVentilation> .
+
+<http://example.org/model-device-alarm-knowledge/entity/Patient_johnDoe_01> a ns1:Patient ;
+    dcterms:identifier "johnDoe_01" .
+

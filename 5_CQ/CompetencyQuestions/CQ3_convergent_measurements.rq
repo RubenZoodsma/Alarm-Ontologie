@@ -1,0 +1,39 @@
+# question: Which different technical measurements can provide information about the same physiological process or property?
+#
+# The inverse of CQ2: not which ALARMS converge, but which METRIC TYPES do —
+# a vocabulary-level question about inference.ttl's bridge+tail axioms
+# themselves, independent of which archetypes in kg.ttl happen to use them.
+# A metric TYPE -> physiologicalProperty link is a class-level restriction
+# (`?metricType rdfs:subClassOf [ owl:onProperty mda:approximates ;
+# owl:hasValue ?property ]`) asserted directly in inference.ttl — reading it
+# is just matching that triple shape, no instance and no reasoner needed
+# (contrast CQ2/CQ4, which ask about actual alarms and so need an instance
+# for the restriction to fire on). property->process (mda:isPropertyOf) is
+# likewise a plain asserted triple. Runs against the ASSERTED graph only.
+#
+# Two levels again: ?level="property" is direct convergence (e.g. ABP and
+# ABP_Mean both approximate ArterialPressure); ?level="process" is the
+# broader convergence once every property's own process is followed too
+# (e.g. Volume_Tidal, Volume_Minute, RespiratoryRate, AirwayPressure and
+# AirwayPressure_EndExpiratory — five distinct metrics — all inform
+# PulmonaryVentilation).
+
+PREFIX mda: <http://example.org/model-device-alarm-knowledge#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?level ?target (GROUP_CONCAT(DISTINCT ?metricName; separator=" | ") AS ?measurements)
+       (COUNT(DISTINCT ?metricConcept) AS ?matchCount) WHERE {
+  {
+    ?metricConcept rdfs:subClassOf [ a owl:Restriction ; owl:onProperty mda:approximates ; owl:hasValue ?target ] .
+    BIND("property" AS ?level)
+  } UNION {
+    ?metricConcept rdfs:subClassOf [ a owl:Restriction ; owl:onProperty mda:approximates ; owl:hasValue ?property ] .
+    ?property mda:isPropertyOf ?target .
+    BIND("process" AS ?level)
+  }
+  BIND(REPLACE(STR(?metricConcept), "^.*/", "") AS ?metricName)
+}
+GROUP BY ?level ?target
+HAVING (COUNT(DISTINCT ?metricConcept) > 1)
+ORDER BY ?level DESC(?matchCount)

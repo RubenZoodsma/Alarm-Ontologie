@@ -1,0 +1,887 @@
+@prefix channel:    <http://example.org/poliplanning/vocab/channel/> .
+@prefix mode:       <http://example.org/poliplanning/vocab/mode/> .
+@prefix timing:     <http://example.org/poliplanning/vocab/timing/> .
+@prefix organsys:   <http://example.org/poliplanning/vocab/organsys/> .
+@prefix subdomain:  <http://example.org/poliplanning/vocab/subdomain/> .
+@prefix datetime:   <http://example.org/poliplanning/vocab/date-time-format/> .
+@prefix goal:       <http://example.org/poliplanning/vocab/goal/> .
+@prefix med:        <http://example.org/poliplanning/vocab/medium/> .
+@prefix spec:       <http://example.org/poliplanning/vocab/specialty/> .
+@prefix prior:      <http://example.org/poliplanning/vocab/priority/> .
+@prefix func:       <http://example.org/poliplanning/vocab/function/> .
+@prefix rph:        <http://example.org/planning/vocab/required-plan-horizon/> .
+@prefix sp:         <http://example.org/planning/vocab/scheduling-policy/> .
+@prefix codesys:    <http://example.org/planning/vocab/codesystem/> .
+
+@prefix opp:        <http://example.org/poliplanning#> .
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix skos:       <http://www.w3.org/2004/02/skos/core#> .
+
+
+############################################################
+# Channel scheme
+############################################################
+
+channel:Scheme          a skos:ConceptScheme ; 
+    skos:prefLabel      "Channel"@en, "Channel"@nl .
+
+channel:Channel         a skos:Concept ;
+    skos:inScheme       channel:Scheme ;
+    skos:topConceptOf   channel:Scheme ;
+    skos:prefLabel      "Channel"@en, "Channel"@nl ;
+    skos:definition     "Channel"@en, "Channel"@nl ;
+    skos:notation       "Channel" .
+
+channel:Physical        a skos:Concept  ;
+    skos:inScheme       channel:Scheme ;
+    skos:broader        channel:Channel ;
+    skos:prefLabel      "Physical"@en, "Physical"@nl ;
+    skos:definition     "Physical"@en, "Physical"@nl ;
+    skos:notation       "Physical" . 
+
+channel:Virtual         a skos:Concept ;
+    skos:inScheme       channel:Scheme ;
+    skos:broader        channel:Channel ;
+    skos:prefLabel      "Virtual"@en, "Virtual"@nl ;
+    skos:definition     "Virtual"@en, "Virtual"@nl ;
+    skos:notation       "Virtual" .
+
+
+############################################################
+# Mode scheme
+############################################################
+
+mode:Scheme             a skos:ConceptScheme ;
+    skos:prefLabel      "Mode"@en, "Mode"@nl .
+
+mode:Mode               a skos:Concept ;
+    skos:inScheme       mode:Scheme ;
+    skos:topConceptOf   mode:Scheme ;
+    skos:prefLabel      "Mode"@en, "Mode"@nl ;
+    skos:definition     "Mode"@en, "Mode"@nl ;
+    skos:notation       "Mode" .
+
+mode:Audio              a skos:Concept ;
+    skos:inScheme       mode:Scheme ;
+    skos:broader        mode:Mode ;
+    skos:prefLabel      "Audio"@en, "Audio"@nl ;
+    skos:definition     "Audio"@en, "Audio"@nl ;
+    skos:notation       "Audio" .
+
+mode:Video              a skos:Concept ;
+    skos:inScheme       mode:Scheme ;
+    skos:broader        mode:Mode ;
+    skos:prefLabel      "Video"@en, "Video"@nl ;
+    skos:definition     "Video"@en, "Video"@nl ;
+    skos:notation       "Video" .
+
+mode:Text               a skos:Concept ;
+    skos:inScheme       mode:Scheme ;
+    skos:broader        mode:Mode ;
+    skos:prefLabel      "Text"@en, "Text"@nl ;
+    skos:definition     "Text"@en, "Text"@nl ;
+    skos:notation       "Text" .
+
+
+############################################################
+# Timing scheme
+############################################################
+
+timing:Scheme           a skos:ConceptScheme ;
+    skos:prefLabel      "Timing"@en, "Timing"@nl .
+
+timing:Timing           a skos:Concept ;
+    skos:inScheme       timing:Scheme ;
+    skos:topConceptOf   timing:Scheme ;
+    skos:prefLabel      "Timing"@en, "Timing"@nl ;
+    skos:definition     "Timing"@en, "Timing"@nl ;
+    skos:notation       "Timing" .
+
+timing:Synchronous      a skos:Concept ;
+    skos:inScheme       timing:Scheme ;
+    skos:broader        timing:Timing ;
+    skos:prefLabel      "Synchronous"@en, "Synchronous"@nl ;
+    skos:definition     "Synchronous"@en, "Synchronous"@nl ;
+    skos:notation       "Synchronous" .
+
+timing:Asynchronous     a skos:Concept ;
+    skos:inScheme       timing:Scheme ;
+    skos:broader        timing:Timing ;
+    skos:prefLabel      "Asynchronous"@en, "Asynchronous"@nl ;
+    skos:definition     "Asynchronous"@en, "Asynchronous"@nl ;
+    skos:notation       "Asynchronous" .
+
+timing:SemiSynchronous  a skos:Concept ;
+    skos:inScheme       timing:Scheme ;
+    skos:broader        timing:Timing ;
+    skos:prefLabel      "SemiSynchronous"@en, "SemiSynchronous"@nl ;
+    skos:definition     "SemiSynchronous"@en, "SemiSynchronous"@nl ;
+    skos:notation       "SemiSynchronous" .
+
+
+############################################################
+# Organsys scheme
+############################################################
+
+organsys:Scheme         a skos:ConceptScheme ;
+    skos:prefLabel      "Organsystem"@en, "Organsystem"@nl .
+
+organsys:Organsystem    a skos:Concept ;
+    skos:inScheme       organsys:Scheme ;
+    skos:topConceptOf   organsys:Scheme ;
+    skos:prefLabel      "Organsystem"@en, "Organsystem"@nl ;
+    skos:definition     "Organsystem"@en, "Organsystem"@nl ;
+    skos:notation       "Organsystem" .
+
+organsys:Cardiovascular a skos:Concept ;
+    skos:inScheme       organsys:Scheme ;
+    skos:broader        organsys:Organsystem ;
+    skos:prefLabel      "Cardiovascular"@en, "Cardiovascular"@nl ;
+    skos:definition     "Cardiovascular"@en, "Cardiovascular"@nl ;
+    skos:notation       "Cardiovascular" .
+
+
+############################################################
+# Organsys scheme
+############################################################
+
+subdomain:Scheme        a skos:ConceptScheme ;
+    skos:prefLabel      "Subdomains"@en, "Subdomains"@nl .
+
+subdomain:Subdomains    a skos:Concept ;
+    skos:inScheme       subdomain:Scheme ;
+    skos:topConceptOf   subdomain:Scheme ;
+    skos:prefLabel      "Subdomains"@en, "Subdomains"@nl ;
+    skos:definition     "Subdomains"@en, "Subdomains"@nl ;
+    skos:notation       "Subdomains" .
+
+subdomain:Medical       a skos:Concept ;
+    skos:inScheme       subdomain:Scheme ;
+    skos:broader        subdomain:Subdomains ;
+    skos:prefLabel      "Medical"@en, "Medical"@nl ;
+    skos:definition     "Medical"@en, "Medical"@nl ;
+    skos:notation       "Medical" .
+
+subdomain:Paramedical   a skos:Concept ;
+    skos:inScheme       subdomain:Scheme ;
+    skos:broader        subdomain:Subdomains ;
+    skos:prefLabel      "Paramedical"@en, "Paramedical"@nl ;
+    skos:definition     "Paramedical"@en, "Paramedical"@nl ;
+    skos:notation       "Paramedical" .
+
+subdomain:Nurse         a skos:Concept ;
+    skos:inScheme       subdomain:Scheme ;
+    skos:broader        subdomain:Subdomains ;
+    skos:prefLabel      "Nurse"@en, "Nurse"@nl ;
+    skos:definition     "Nurse"@en, "Nurse"@nl ;
+    skos:notation       "Nurse" .
+
+subdomain:Supportive    a skos:Concept ;
+    skos:inScheme       subdomain:Scheme ;
+    skos:broader        subdomain:Subdomains ;
+    skos:prefLabel      "Supportive"@en, "Supportive"@nl ;
+    skos:definition     "Supportive"@en, "Supportive"@nl ;
+    skos:notation       "Supportive" .
+
+
+############################################################
+# Date Time Format scheme
+############################################################
+
+
+datetime:Scheme         a skos:ConceptScheme ;
+    skos:prefLabel      "DateTimeFormat"@en, "DateTimeFormat"@nl .
+
+datetime:DateTimeFormat a skos:Concept ;
+    skos:inScheme       datetime:Scheme ;
+    skos:topConceptOf   datetime:Scheme ;
+    skos:prefLabel      "DateTimeFormat"@en, "DateTimeFormat"@nl ;
+    skos:definition     "DateTimeFormat"@en, "DateTimeFormat"@nl ;
+    skos:notation       "DateTimeFormat" .
+
+datetime:DateOnly       a skos:Concept ;
+    skos:inScheme       datetime:Scheme ;
+    skos:broader        datetime:DateTimeFormat ;
+    skos:prefLabel      "DateOnly"@en, "DateOnly"@nl ;
+    skos:definition     "A date in the standardized ISO 8601 format yyyy-MM-dd"@en,
+                        "A date in the standardized ISO 8601 format yyyy-MM-dd"@nl ;
+    skos:notation       "yyyy-MM-dd" .
+
+datetime:MonthDay       a skos:Concept ;
+    skos:inScheme       datetime:Scheme ;
+    skos:broader        datetime:DateTimeFormat ;
+    skos:prefLabel      "MonthDay"@en, "MonthDay"@nl ;
+    skos:definition     "A month and day in the standardized ISO 8601 format MM-dd"@en,
+                        "A month and day in the standardized ISO 8601 format MM-dd"@nl ;
+    skos:notation       "MM-dd" .
+
+datetime:TimeOnly       a skos:Concept ;
+    skos:inScheme       datetime:Scheme ;
+    skos:broader        datetime:DateTimeFormat ;
+    skos:prefLabel      "TimeOnly"@en, "TimeOnly"@nl ;
+    skos:definition     "A time in the standardized ISO 8601 format HH:mm:ss"@en,
+                        "A time in the standardized ISO 8601 format HH:mm:ss"@nl ;
+    skos:notation       "HH:mm:ss" .
+
+datetime:DayOfWeek       a skos:Concept ;
+    skos:inScheme       datetime:Scheme ;
+    skos:broader        datetime:DateTimeFormat ;
+    skos:prefLabel      "DayOfWeek"@en, "DayOfWeek"@nl ;
+    skos:definition     "A day of the week represented as an integer, where Monday is 0 and Sunday is 6"@en,
+                        "A day of the week represented as an integer, where Monday is 0 and Sunday is 6"@nl .
+
+
+############################################################
+# Goal scheme
+############################################################
+
+goal:Scheme             a skos:ConceptScheme ;
+    skos:prefLabel      "Goals"@en, "Doelen"@nl .
+
+goal:Goal               a skos:Concept ;
+    skos:inScheme       goal:Scheme ;
+    skos:topConceptOf   goal:Scheme ;
+    skos:prefLabel      "Goals"@en, "Doelen"@nl ;
+    skos:definition     "Goals"@en, "Doelen"@nl ;
+    skos:notation       "Goal" .
+
+goal:Inform             a skos:Concept ;
+    skos:inScheme       goal:Scheme ;
+    skos:broader        goal:Goal ;
+    skos:prefLabel      "Inform"@en , "Informatie verstrekken"@nl ;
+    skos:definition     "Inform"@en , "Informatie verstrekken"@nl ;
+    skos:notation       "Inform" .
+
+goal:Examine            a skos:Concept ;
+    skos:inScheme       goal:Scheme ;
+    skos:broader        goal:Goal ;
+    skos:prefLabel      "Examine"@en, "Lichamelijk onderzoek/aanvullend onderzoek"@nl ;
+    skos:definition     "Examine"@en, "Lichamelijk onderzoek/aanvullend onderzoek"@nl ;
+    skos:notation       "Examine" .
+
+goal:Treatment          a skos:Concept ;
+    skos:inScheme       goal:Scheme ;
+    skos:broader        goal:Goal ;
+    skos:prefLabel      "Treatment"@en, "Behandelen"@nl ;
+    skos:definition     "Treatment"@en, "Behandelen"@nl ;
+    skos:notation       "Treatment" .
+
+goal:Supervision        a skos:Concept ;
+    skos:inScheme       goal:Scheme ;
+    skos:broader        goal:Goal ;
+    skos:prefLabel      "Supervision"@en, "Supervisie"@nl ;
+    skos:definition     "Supervision"@en, "Supervisie"@nl ;
+    skos:notation       "Supervision" .
+
+goal:Material           a skos:Concept ;
+    skos:inScheme       goal:Scheme ;
+    skos:broader        goal:Goal ;
+    skos:prefLabel      "Material"@en, "Materiaal"@nl ;
+    skos:definition     "Material"@en, "Materiaal"@nl ;
+    skos:notation       "Material" .
+
+goal:Research           a skos:Concept ;
+    skos:inScheme       goal:Scheme ;
+    skos:broader        goal:Goal ;
+    skos:prefLabel      "Research"@en, "Onderzoek"@nl ;
+    skos:definition     "Research"@en, "Onderzoek"@nl ;
+    skos:notation       "Research" .
+
+goal:SecondOpinion      a skos:Concept ;
+    skos:inScheme       goal:Scheme ;
+    skos:broader        goal:Goal ;
+    skos:prefLabel      "SecondOpinion"@en, "Second Opinion"@nl ;
+    skos:definition     "SecondOpinion"@en, "Second Opinion"@nl ;
+    skos:notation       "SecondOpinion" .
+
+goal:Educate            a skos:Concept ;
+    skos:inScheme       goal:Scheme ;
+    skos:broader        goal:Goal ;
+    skos:prefLabel      "Educate"@en, "Onderwijs"@nl ;
+    skos:definition     "Educate"@en, "Onderwijs"@nl ;
+    skos:notation       "Educate" .
+
+goal:Discuss            a skos:Concept ;
+    skos:inScheme       goal:Scheme ;
+    skos:broader        goal:Goal ;
+    skos:prefLabel      "Discuss"@en, "Bespreken"@nl ;
+    skos:definition     "Discuss"@en, "Bespreken"@nl ;
+    skos:notation       "Discuss" .
+
+goal:Daycare            a skos:Concept ;
+    skos:inScheme       goal:Scheme ;
+    skos:broader        goal:Goal ;
+    skos:prefLabel      "Daycare"@en, "Dagbehandeling"@nl ;
+    skos:definition     "Daycare"@en, "Dagbehandeling"@nl ;
+    skos:notation       "Daycare" .
+
+
+############################################################
+# Medium scheme
+############################################################
+
+med:Scheme              a skos:ConceptScheme ;
+  skos:prefLabel        "Media"@en, "Media"@nl .
+
+med:Medium              a skos:Concept ;
+  skos:inScheme         med:Scheme ;
+  skos:topConceptOf     med:Scheme ;
+  skos:prefLabel        "Medium"@en, "Medium"@nl ;
+  skos:definition       "Medium"@en, "Medium"@nl ;
+  skos:notation         "Medium" .
+
+med:Physical            a skos:Concept ;
+  skos:inScheme         med:Scheme ;
+  skos:broader          med:Medium ;
+  skos:prefLabel        "Physical"@en, "Fysiek Gesprek"@nl ;
+  skos:definition       "Physical"@en, "Fysiek Gesprek"@nl ;
+  skos:notation         "Physical" ;
+  opp:channel           channel:Physical ;
+  opp:timing            timing:Synchronous .
+
+med:Phone               a skos:Concept ;
+  skos:inScheme         med:Scheme ;
+  skos:broader          med:Medium ;
+  skos:prefLabel        "Phone"@en, "Telefoongesprek"@nl ;
+  skos:definition       "Phone"@en, "Telefoongesprek"@nl ;
+  skos:notation         "Phone" ;
+  opp:channel           channel:Virtual ;
+  opp:mode              mode:Audio ;
+  opp:timing            timing:Synchronous .
+
+med:Video               a skos:Concept ;
+  skos:inScheme         med:Scheme ;
+  skos:broader          med:Medium ;
+  skos:prefLabel        "Video"@en, "Videobellen"@nl ;
+  skos:definition       "Video"@en, "Videobellen"@nl ;
+  skos:notation         "Video" ;
+  opp:channel           channel:Virtual ;
+  opp:mode              mode:Video ;
+  opp:timing            timing:Synchronous .
+
+med:Email               a skos:Concept ;
+  skos:inScheme         med:Scheme ;
+  skos:broader          med:Medium ;
+  skos:prefLabel        "Email"@en, "E-mail"@nl ;
+  skos:definition       "Email"@en, "E-mail"@nl ;
+  skos:notation         "Email" ;
+  opp:channel           channel:Virtual ;
+  opp:mode              mode:Text ;
+  opp:timing            timing:Asynchronous .
+
+med:Letter              a skos:Concept ;
+  skos:inScheme         med:Scheme ;
+  skos:broader          med:Medium ;
+  skos:prefLabel        "Letter"@en, "Briefcontact"@nl ;
+  skos:definition       "Letter"@en, "Briefcontact"@nl ;
+  skos:notation         "Letter" ;
+  opp:channel           channel:Physical ;
+  opp:mode              mode:Text ;
+  opp:timing            timing:Asynchronous .
+
+med:EConsult            a skos:Concept ;
+  skos:inScheme         med:Scheme ;
+  skos:broader          med:Medium ;
+  skos:prefLabel        "EConsult"@en, "E-consult"@nl ;
+  skos:definition       "EConsult"@en, "E-consult"@nl ;
+  skos:notation         "EConsult" ;
+  opp:channel           channel:Virtual ;
+  opp:mode              mode:Text ;
+  opp:timing            timing:SemiSynchronous .
+
+med:Administrative      a skos:Concept ;
+  skos:inScheme         med:Scheme ;
+  skos:broader          med:Medium ;
+  skos:prefLabel        "Administrative"@en, "Administratieve handelingen"@nl ;
+  skos:definition       "Administrative"@en, "Administratieve handelingen"@nl ;
+  skos:notation         "Administrative" ;
+  opp:channel           channel:Virtual ;
+  opp:mode              mode:Text ;
+  opp:timing            timing:Asynchronous .
+
+
+############################################################
+# Specialty scheme
+############################################################
+
+spec:Scheme             a skos:ConceptScheme ;
+    skos:prefLabel      "Specialty"@en, "Specialty"@nl .
+
+spec:Specialty          a skos:Concept ;
+    skos:inScheme       spec:Scheme ;
+    skos:topConceptOf   spec:Scheme ;
+    skos:prefLabel      "Specialty"@en, "Specialty"@nl ;
+    skos:definition     "Specialty"@en, "Specialty"@nl ;
+    skos:notation       "Specialty" .
+
+spec:VAAT               a skos:Concept ;
+    skos:inScheme       spec:Scheme ;
+    skos:broader        spec:Specialty ;
+    skos:prefLabel      "VAAT"@en, "VAAT"@nl ;
+    skos:definition     "Vasculaire geneeskunde"@en, "Vasculaire geneeskunde"@nl ;
+    skos:notation       "VAAT" ;
+    opp:organsystem     organsys:Cardiovascular .
+
+spec:MKA                a skos:Concept ;
+    skos:inScheme       spec:Scheme ;
+    skos:broader        spec:Specialty ;
+    skos:prefLabel      "MKA"@en, "MKA"@nl ;
+    skos:definition     "Mondziekten, kaak- en aangezichtschirurgie"@en,
+                        "Mondziekten, kaak- en aangezichtschirurgie"@nl ;
+    skos:notation       "MKA" .
+
+spec:ANE                a skos:Concept ;
+    skos:inScheme       spec:Scheme ;
+    skos:broader        spec:Specialty ;
+    skos:prefLabel      "ANE"@en, "ANE"@nl ;
+    skos:definition     "Anesthesie"@en, "Anesthesie"@nl ;
+    skos:notation       "ANE" .
+
+spec:OOG                a skos:Concept ;
+    skos:inScheme       spec:Scheme ;
+    skos:broader        spec:Specialty ;
+    skos:prefLabel      "OOG"@en, "OOG"@nl ;
+    skos:definition     "Oogheelkunde"@en, "Oogheelkunde"@nl ;
+    skos:notation       "OOG" .
+
+spec:RAD                a skos:Concept ;
+    skos:inScheme       spec:Scheme ;
+    skos:broader        spec:Specialty ;
+    skos:prefLabel      "RAD"@en, "RAD"@nl ;
+    skos:definition     "Radiologie"@en, "Radiologie"@nl ;
+    skos:notation       "RAD" .
+
+spec:FYS                a skos:Concept ;
+    skos:inScheme       spec:Scheme ;
+    skos:broader        spec:Specialty ;
+    skos:prefLabel      "FYS"@en, "FYS"@nl ;
+    skos:definition     "Fysiotherapie"@en, "Fysiotherapie"@nl ;
+    skos:notation       "FYS" .
+
+spec:NEF                a skos:Concept ;
+    skos:inScheme       spec:Scheme ;
+    skos:broader        spec:Specialty ;
+    skos:prefLabel      "NEF"@en, "NEF"@nl ;
+    skos:definition     "Nefrologie"@en, "Nefrologie"@nl ;
+    skos:notation       "NEF" .
+
+spec:CHI                a skos:Concept ;
+    skos:inScheme       spec:Scheme ;
+    skos:broader        spec:Specialty ;
+    skos:prefLabel      "CHI"@en, "CHI"@nl ;
+    skos:definition     "Chirurgie"@en, "Chirurgie"@nl ;
+    skos:notation       "CHI" .
+
+spec:CAR                a skos:Concept ;
+    skos:inScheme       spec:Scheme ;
+    skos:broader        spec:Specialty ;
+    skos:prefLabel      "CAR"@en, "CAR"@nl ;
+    skos:definition     "Cardiologie"@en, "Cardiologie"@nl ;
+    skos:notation       "CAR" .
+
+
+############################################################
+# Priority scheme
+############################################################
+
+prior:Scheme            a skos:ConceptScheme ;
+    skos:prefLabel      "Priority"@en, "Priority"@nl .
+
+prior:Priority          a skos:Concept ;
+    skos:inScheme       spec:Scheme ;
+    skos:topConceptOf   spec:Scheme ;
+    skos:prefLabel      "Priority"@en, "Priority"@nl ;
+    skos:definition     "Priority"@en, "Priority"@nl ;
+    skos:notation       "Priority" .
+
+prior:Regular           a skos:Concept ;
+    skos:inScheme       prior:Scheme ;
+    skos:broader        prior:Priority ;
+    skos:prefLabel      "Regular"@en, "Regular"@nl ;
+    skos:definition     "Reguliere Afspraak"@en, "Reguliere Afspraak"@nl ;
+    skos:notation       "Regular" .
+
+prior:Emergency         a skos:Concept ;
+    skos:inScheme       prior:Scheme ;
+    skos:broader        prior:Priority ;
+    skos:prefLabel      "Emergency"@en, "Emergency"@nl ;
+    skos:definition     "Spoed Afspraak"@en, "Spoed Afspraak"@nl ;
+    skos:notation       "Emergency" .
+
+
+############################################################
+# Function scheme
+############################################################
+
+func:Scheme             a skos:ConceptScheme ;
+    skos:prefLabel      "Functions"@en, "Functions"@nl .
+
+func:Function           a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:topConceptOf   func:Scheme ;
+    skos:prefLabel      "Function"@en, "Functie"@nl ;
+    skos:definition     "Function"@en, "Function"@nl ;
+    skos:notation       "Function" .
+
+func:AfdelingsHoofd     a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "AfdelingsHoofd"@en, "AfdelingsHoofd"@nl ;
+    skos:definition     "Afdelingshoofd"@en, "Afdelingshoofd"@nl ;
+    skos:notation       "AfdelingsHoofd" ;
+    opp:subdomain       subdomain:Medical .
+
+func:AIOS               a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "AIOS"@en, "AIOS"@nl ;
+    skos:definition     "Arts in opleiding tot specialist"@en, "Arts in opleiding tot specialist"@nl ;
+    skos:notation       "AIOS" ;
+    opp:subdomain       subdomain:Medical .
+
+func:ANIOS              a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "ANIOS"@en, "ANIOS"@nl ;
+    skos:definition     "Arts niet in opleiding tot specialist"@en, "Arts niet in opleiding tot specialist"@nl ;
+    skos:notation       "ANIOS" ;
+    opp:subdomain       subdomain:Medical .
+
+func:AssistantProfessor a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "AssistantProfessor"@en, "AssistantProfessor"@nl ;
+    skos:definition     "Universitair hoofddocent"@en, "Universitair hoofddocent"@nl ;
+    skos:notation       "AssistantProfessor" .
+
+func:Chirurg            a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "Chirurg"@en, "Chirurg"@nl ;
+    skos:definition     "Chirurg"@en, "Chirurg"@nl ;
+    skos:notation       "Chirurg" ;
+    opp:subdomain       subdomain:Medical .
+
+func:CoAssistent        a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "CoAssistent"@en, "CoAssistent"@nl ;
+    skos:definition     "Co-assistent"@en, "Co-assistent"@nl ;
+    skos:notation       "CoAssistent" ;
+    opp:subdomain       subdomain:Medical .
+
+func:Dietist            a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "Dietist"@en, "Dietist"@nl ;
+    skos:definition     "Dietist"@en, "Dietist"@nl ;
+    skos:notation       "Dietist" ;
+    opp:subdomain       subdomain:Paramedical .
+
+func:ErgoTherapeut      a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "ErgoTherapeut"@en, "ErgoTherapeut"@nl ;
+    skos:definition     "Ergotherapeut"@en, "Ergotherapeut"@nl ;
+    skos:notation       "ErgoTherapeut" ;
+    opp:subdomain       subdomain:Paramedical .
+
+func:FunctieLaborant    a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "FunctieLaborant"@en, "FunctieLaborant"@nl ;
+    skos:definition     "Laborant op een functie-afdeling"@en, "Laborant op een functie-afdeling"@nl ;
+    skos:notation       "FunctieLaborant" ;
+    opp:subdomain       subdomain:Paramedical .
+
+func:FysioTherapeut     a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "FysioTherapeut"@en, "FysioTherapeut"@nl ;
+    skos:definition     "Fysiotherapeut"@en, "Fysiotherapeut"@nl ;
+    skos:notation       "FysioTherapeut" ;
+    opp:subdomain       subdomain:Paramedical .
+
+func:GeestelijkVerzorger a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "GeestelijkVerzorger"@en, "GeestelijkVerzorger"@nl ;
+    skos:definition     "Geestelijk verzorger"@en, "Geestelijk verzorger"@nl ;
+    skos:notation       "GeestelijkVerzorger" ;
+    opp:subdomain       subdomain:Paramedical .
+
+func:HandTherapeut      a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "HandTherapeut"@en, "HandTherapeut"@nl ;
+    skos:definition     "Handtherapeut"@en, "Handtherapeut"@nl ;
+    skos:notation       "HandTherapeut" ;
+    opp:subdomain       subdomain:Paramedical .
+
+func:KlinischFysicus    a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "KlinischFysicus"@en, "KlinischFysicus"@nl ;
+    skos:definition     "Klinisch fysicus"@en, "Klinisch fysicus"@nl ;
+    skos:notation       "KlinischFysicus" ;
+    opp:subdomain       subdomain:Medical .
+
+func:Laborant           a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "Laborant"@en, "Laborant"@nl ;
+    skos:definition     "Laborant"@en, "Laborant"@nl ;
+    skos:notation       "Laborant" ;
+    opp:subdomain       subdomain:Supportive .
+
+func:Logopedist         a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "Logopedist"@en, "Logopedist"@nl ;
+    skos:definition     "Logopedist"@en, "Logopedist"@nl ;
+    skos:notation       "Logopedist" ;
+    opp:subdomain       subdomain:Paramedical .
+
+func:MaatschappelijkWerker a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "MaatschappelijkWerker"@en, "MaatschappelijkWerker"@nl ;
+    skos:definition     "Maatschappelijk werker"@en, "Maatschappelijk werker"@nl ;
+    skos:notation       "MaatschappelijkWerker" ;
+    opp:subdomain       subdomain:Paramedical .
+
+func:MDPhD              a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "MDPhD"@en, "MDPhD"@nl ;
+    skos:definition     "Arts onderzoeker"@en, "Arts onderzoeker"@nl ;
+    skos:notation       "MDPhD" .
+
+func:MedischSpecialist  a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "MedischSpecialist"@en, "MedischSpecialist"@nl ;
+    skos:definition     "Medisch specialist"@en, "Medisch specialist"@nl ;
+    skos:notation       "MedischSpecialist" ;
+    opp:subdomain       subdomain:Medical .
+
+func:OKAssistent        a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "OKAssistent"@en, "OKAssistent"@nl ;
+    skos:definition     "OK-assistent"@en, "OK-assistent"@nl ;
+    skos:notation       "OKAssistent" ;
+    opp:subdomain       subdomain:Supportive .
+
+func:PhDStudent         a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "PhDStudent"@en, "PhDStudent"@nl ;
+    skos:definition     "Onderzoeker in opleiding"@en, "Onderzoeker in opleiding"@nl ;
+    skos:notation       "PhDStudent" .
+
+func:PhysicianAssistant a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "PhysicianAssistant"@en, "PhysicianAssistant"@nl ;
+    skos:definition     "Physician Assistant"@en, "Physician Assistant"@nl ;
+    skos:notation       "PhysicianAssistant" ;
+    opp:subdomain       subdomain:Nurse .
+
+func:PostDoc            a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "PostDoc"@en, "PostDoc"@nl ;
+    skos:definition     "Postdoctoraal onderzoeker"@en, "Postdoctoraal onderzoeker"@nl ;
+    skos:notation       "PostDoc" .
+
+func:Professor          a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "Professor"@en, "Professor"@nl ;
+    skos:definition     "Hoogleraar"@en, "Hoogleraar"@nl ;
+    skos:notation       "Professor" .
+
+func:Psycholoog         a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "Psycholoog"@en, "Psycholoog"@nl ;
+    skos:definition     "Psycholoog"@en, "Psycholoog"@nl ;
+    skos:notation       "Psycholoog" ;
+    opp:subdomain       subdomain:Paramedical .
+
+func:RadiologischLaborant a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "RadiologischLaborant"@en, "RadiologischLaborant"@nl ;
+    skos:definition     "Laborant bij de radiologie-afdeling"@en, "Laborant bij de radiologie-afdeling"@nl ;
+    skos:notation       "RadiologischLaborant" ;
+    opp:subdomain       subdomain:Paramedical .
+
+func:ResearchVerpleegkundige a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "ResearchVerpleegkundige"@en, "ResearchVerpleegkundige"@nl ;
+    skos:definition     "Onderzoeksverpleegkundige"@en, "Onderzoeksverpleegkundige"@nl ;
+    skos:notation       "ResearchVerpleegkundige" ;
+    opp:subdomain       subdomain:Nurse .
+
+func:Secretaresse       a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "Secretaresse"@en, "Secretaresse"@nl ;
+    skos:definition     "Secretaresse"@en, "Secretaresse"@nl ;
+    skos:notation       "Secretaresse" ;
+    opp:subdomain       subdomain:Supportive .
+
+func:Sterilisatie       a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "Sterilisatie"@en, "Sterilisatie"@nl ;
+    skos:definition     "Sterilisatie medewerker"@en, "Sterilisatie medewerker"@nl ;
+    skos:notation       "Sterilisatie" ;
+    opp:subdomain       subdomain:Supportive .
+
+func:Tandarts           a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "Tandarts"@en, "Tandarts"@nl ;
+    skos:definition     "Tandarts"@en, "Tandarts"@nl ;
+    skos:notation       "Tandarts" ;
+    opp:subdomain       subdomain:Medical .
+
+func:TandTechnicus      a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "TandTechnicus"@en, "TandTechnicus"@nl ;
+    skos:definition     "Tandtechnicus"@en, "Tandtechnicus"@nl ;
+    skos:notation       "TandTechnicus" ;
+    opp:subdomain       subdomain:Medical .
+
+func:TechnischGeneeskundige a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "TechnischGeneeskundige"@en, "TechnischGeneeskundige"@nl ;
+    skos:definition     "Technisch geneeskundige"@en, "Technisch geneeskundige"@nl ;
+    skos:notation       "TechnischGeneeskundige" ;
+    opp:subdomain       subdomain:Medical .
+
+func:TransplantatieVerpleegkundige a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "TransplantatieVerpleegkundige"@en, "TransplantatieVerpleegkundige"@nl ;
+    skos:definition     "Transplantatie verpleegkundige"@en, "Transplantatie verpleegkundige"@nl ;
+    skos:notation       "TransplantatieVerpleegkundige" ;
+    opp:subdomain       subdomain:Nurse .
+
+func:Verpleegkundige    a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "Verpleegkundige"@en, "Verpleegkundige"@nl ;
+    skos:definition     "Verpleegkundige"@en, "Verpleegkundige"@nl ;
+    skos:notation       "Verpleegkundige" ;
+    opp:subdomain       subdomain:Nurse .
+
+func:VerpleegkundigeIO  a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "VerpleegkundigeIO"@en, "VerpleegkundigeIO"@nl ;
+    skos:definition     "Verpleegkundige in opleiding"@en, "Verpleegkundige in opleiding"@nl ;
+    skos:notation       "VerpleegkundigeIO" ;
+    opp:subdomain       subdomain:Nurse .
+
+func:VerpleegkundigSpecialist a skos:Concept ;
+    skos:inScheme       func:Scheme ;
+    skos:broader        func:Function ;
+    skos:prefLabel      "VerpleegkundigSpecialist"@en, "VerpleegkundigSpecialist"@nl ;
+    skos:definition     "Verpleegkundig specialist"@en, "Verpleegkundig specialist"@nl ;
+    skos:notation       "VerpleegkundigSpecialist" ;
+    opp:subdomain       subdomain:Nurse .
+
+
+############################################################
+# Required Plan Horizon scheme
+############################################################
+
+rph:Scheme              a skos:ConceptScheme ;
+    skos:prefLabel      "Required Plan Horizon"@en, "Required Plan Horizon"@nl .
+
+rph:RequiredPlanHorizon a skos:Concept ;
+    skos:inScheme       rph:Scheme ;
+    skos:topConceptOf   rph:Scheme ;
+    skos:prefLabel      "Required plan horizon status"@en, "Required plan horizon status"@nl ;
+    skos:definition     "Required plan horizon status"@en, "Required plan horizon status"@nl ;
+    skos:notation       "RequiredPlanHorizon" .
+
+rph:AboveMaxPlanHorizon a skos:Concept ;
+    skos:inScheme       rph:Scheme ;
+    skos:broader        rph:RequiredPlanHorizon ;
+    skos:prefLabel      "Above max plan horizon"@en,  "Above max plan horizon"@nl ;
+    skos:definition     "Minimum required length of this series is above maximum HiX planhorizon of 14 weeks"@en,
+                        "Minimum required length of this series is above maximum HiX planhorizon of 14 weeks"@nl ;
+    skos:notation       "AboveMaxPlanHorizon" .
+
+rph:BelowMaxPlanHorizon a skos:Concept ;
+    skos:inScheme       rph:Scheme ;
+    skos:broader        rph:RequiredPlanHorizon ;
+    skos:prefLabel      "Below max plan horizon"@en, "Below max plan horizon"@nl ;
+    skos:definition     "Minimum required length of this series is below maximum HiX planhorizon of 14 weeks"@en,
+                        "Minimum required length of this series is below maximum HiX planhorizon of 14 weeks"@nl ;
+    skos:notation       "BelowMaxPlanHorizon" .
+
+
+############################################################
+# Scheduling Policy scheme
+############################################################
+
+sp:Scheme               a skos:ConceptScheme ;
+    skos:prefLabel "Scheduling Policy flags"@en, "Scheduling Policy flags"@nl .
+
+sp:SchedulingPolicy     a skos:Concept ;
+    skos:inScheme       sp:Scheme ;
+    skos:topConceptOf   sp:Scheme ;
+    skos:prefLabel      "Scheduling policy"@en, "Scheduling policy"@nl ;
+    skos:definition     "Scheduling policy"@en, "Scheduling policy"@nl ;
+    skos:notation       "SchedulingPolicy" .
+
+sp:Authorized           a skos:Concept ;
+    skos:inScheme       sp:Scheme ;
+    skos:broader        sp:SchedulingPolicy ;
+    skos:prefLabel      "Authorized"@en, "Authorized"@nl ;
+    skos:definition     "Item can be scheduled directly"@en, "Item can be scheduled directly"@nl ;
+    skos:notation       "Authorized" .
+
+sp:ExternalValidation   a skos:Concept ;
+    skos:inScheme       sp:Scheme ;
+    skos:broader        sp:SchedulingPolicy ;
+    skos:prefLabel      "External validation"@en, "External validation"@nl ;
+    skos:definition     "Item requires external validation (e.g. contacting relevant outpatient clinic) before scheduling"@en,
+                        "Item requires external validation (e.g. contacting relevant outpatient clinic) before scheduling"@nl ;
+    skos:notation       "ExternalValidation" .
+
+
+############################################################
+# Code system scheme
+############################################################
+
+codesys:Scheme          a skos:ConceptScheme ;
+    skos:prefLabel      "Code systems"@en, "Code systems"@nl .
+
+codesys:CodeSystem      a skos:Concept ;
+    skos:inScheme       codesys:Scheme ;
+    skos:topConceptOf   codesys:Scheme ;
+    skos:prefLabel      "Code system"@en, "Code system"@nl .
+
+codesys:AppointmentCode a skos:Concept ;
+    skos:inScheme       codesys:Scheme ;
+    skos:broader        codesys:CodeSystem ;
+    skos:prefLabel      "Appointment code"@en, "Appointment code"@nl ;
+    skos:definition     "Appointment code"@en, "Appointment code"@nl ;
+    skos:notation       "AppointmentCode" .
+
+codesys:HiXCode         a skos:Concept ;
+    skos:inScheme       codesys:Scheme ;
+    skos:broader        codesys:CodeSystem ;
+    skos:prefLabel      "HiX code"@en, "HiX code"@nl ;
+    skos:definition     "HiX code"@en, "HiX code"@nl ;
+    skos:notation       "HiXCode" .

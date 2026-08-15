@@ -1,0 +1,37 @@
+# question: Given a specific physiological property or process, which alarm messages can convey knowledge about it, and through which technical measurement pathways?
+#
+# Parametrised by ?target, bound below via VALUES to one example concept —
+# swap it for any physiologicalProperty or physiologicalProcess IRI to ask
+# the same question about a different target. The `(mda:isPropertyOf)?`
+# zero-or-one path lets one query accept EITHER kind of target: zero hops
+# when ?target is already the property an alarm's metric approximates, one
+# hop when ?target is the coarser process a property belongs to.
+#
+# Same reasoner dependency as CQ2 (mda:approximates is entailed, not
+# asserted — see that file's header) plus the same false-superclass hazard
+# CQ1 avoids on the technical side: under the OWL-RL closure a metric
+# instance also gains entailed types like mda:Metric and owl:Thing (and
+# owlrl's internal restriction blank nodes), so ?metricConcept is
+# constrained to an actual skos:Concept to keep the reported pathway to the
+# specific metric TYPE, not that noise.
+#
+# reasoning: required
+#
+# Example below: physiologicalProcess:VascularCompliance — expect three
+# alarms, through three distinct metric pathways (ABP/ABP_Mean -> ArterialPressure,
+# VenousPressure -> VenousPressure, PulseFlowIndex -> TissuePerfusion).
+
+PREFIX mda: <http://example.org/model-device-alarm-knowledge#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX physiologicalProcess: <http://example.org/model-device-alarm-knowledge/vocab/physiological-process/>
+
+SELECT ?label ?metricConcept ?property WHERE {
+  VALUES ?target { physiologicalProcess:VascularCompliance }
+  ?a a mda:AlarmType ; mda:hasLabel ?label .
+  ?a mda:hasMessage/mda:concernsPatient/mda:isMonitoredBy/(mda:hasSensor|mda:hasComponent)*/mda:detectsMetric ?metric .
+  ?metric a ?metricConcept .
+  ?metricConcept a skos:Concept .
+  ?metric mda:approximates ?property .
+  ?property (mda:isPropertyOf)? ?target .
+}
+ORDER BY ?label ?metricConcept

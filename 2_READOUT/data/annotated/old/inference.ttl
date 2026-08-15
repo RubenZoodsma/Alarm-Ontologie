@@ -1,0 +1,41 @@
+@prefix mda:     <http://example.org/model-device-alarm-knowledge#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix opstate: <http://example.org/model-device-alarm-knowledge/vocab/operation-state/> .
+
+#################################################################
+# Inference Axioms
+#################################################################
+# Named resources for cross-ontology inferences and explainability.
+# mda:InferenceResource acts as a metaclass: the defined classes below
+# are also typed as its instances (OWL 2 class/individual punning) to
+# mark them as inference-defined without polluting instance data.
+
+mda:InferenceResource  a owl:Class ;
+    rdfs:label    "Inference Resource"@en ;
+    rdfs:comment  "A resource / state that can be inferred from other resources."@en .
+
+mda:QualityMeasuringResource  a owl:Class, mda:InferenceResource ;
+    rdfs:label    "Quality Measuring Resource"@en ;
+    rdfs:comment  "A signal that has at least one asserted quality state."@en ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty      mda:hasQualityState ;
+        owl:someValuesFrom  skos:Concept
+    ] .
+
+# opstate:Enabled is referenced by IRI only; the concept itself is
+# provided by the vocabulary layer (vocab_base.ttl or the generated
+# expansion in 2_READOUT/), never declared here.
+mda:EnabledResource  a owl:Class, mda:InferenceResource ;
+    rdfs:label    "Enabled Resource"@en ;
+    rdfs:comment  "A device, sensor or signal whose operational state is Enabled."@en ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty  mda:hasOperationState ;
+        owl:hasValue    opstate:Enabled
+    ] .
+
+# Inference: anything quality-measuring is enabled
+mda:QualityMeasuringResource  rdfs:subClassOf  mda:EnabledResource .

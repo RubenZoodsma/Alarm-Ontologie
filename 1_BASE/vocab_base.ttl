@@ -1,0 +1,389 @@
+@prefix device:     <http://example.org/model-device-alarm-knowledge/vocab/device/> .
+@prefix component:  <http://example.org/model-device-alarm-knowledge/vocab/component/> .
+@prefix sensor:     <http://example.org/model-device-alarm-knowledge/vocab/sensor/> .
+@prefix signal:     <http://example.org/model-device-alarm-knowledge/vocab/signal/> .
+@prefix alarmprio: <http://example.org/model-device-alarm-knowledge/vocab/alarm-priority/> .
+@prefix alarmcat:   <http://example.org/model-device-alarm-knowledge/vocab/alarm-category/> .
+@prefix opstate:    <http://example.org/model-device-alarm-knowledge/vocab/operation-state/> .
+
+@prefix qualitystate: <http://example.org/model-device-alarm-knowledge/vocab/quality-state/> .
+@prefix metric:     <http://example.org/model-device-alarm-knowledge/vocab/metric/> .
+@prefix anatomicalPosition: <http://example.org/model-device-alarm-knowledge/vocab/anatomical-position/> .
+@prefix laterality: <http://example.org/model-device-alarm-knowledge/vocab/laterality/> .
+@prefix physiologicalProperty: <http://example.org/model-device-alarm-knowledge/vocab/physiological-property/> .
+@prefix physiologicalProcess: <http://example.org/model-device-alarm-knowledge/vocab/physiological-process/> .
+@prefix organ:      <http://example.org/model-device-alarm-knowledge/vocab/organ/> .
+@prefix organSystem: <http://example.org/model-device-alarm-knowledge/vocab/organ-system/> .
+@prefix patient:    <http://example.org/model-device-alarm-knowledge/vocab/patient/> .
+@prefix therapeuticModality: <http://example.org/model-device-alarm-knowledge/vocab/therapeutic-modality/> .
+@prefix metricPhase: <http://example.org/model-device-alarm-knowledge/vocab/metric-phase/> .
+@prefix metricRate: <http://example.org/model-device-alarm-knowledge/vocab/metric-rate/> .
+@prefix rhythm:     <http://example.org/model-device-alarm-knowledge/vocab/rhythm/> .
+@prefix deviceType: <http://example.org/model-device-alarm-knowledge/vocab/device-type/> .
+@prefix manufacturer: <http://example.org/model-device-alarm-knowledge/vocab/manufacturer/> .
+@prefix alarmLabel: <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/> .
+@prefix mda:        <http://example.org/model-device-alarm-knowledge#> .
+@prefix owl:        <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:       <http://www.w3.org/2004/02/skos/core#> .
+
+
+############################################################
+# Device scheme
+############################################################
+
+device:Scheme               a skos:ConceptScheme ;
+    skos:prefLabel          "Device"@en, "Apparaat"@nl .
+
+device:Device               a skos:Concept ;
+    skos:inScheme           device:Scheme ;
+    skos:topConceptOf       device:Scheme ;
+    skos:prefLabel          "Device"@en, "Apparaat"@nl ;
+    skos:definition         "A medical device."@en,
+                            "Een medisch apparaat."@nl ;
+    skos:notation           "Device" .
+
+
+############################################################
+# Device Type scheme
+############################################################
+
+deviceType:Scheme           a skos:ConceptScheme ;
+    skos:prefLabel          "Device Type"@en, "Apparaattype"@nl .
+
+deviceType:DeviceType       a skos:Concept ;
+    skos:inScheme           deviceType:Scheme ;
+    skos:topConceptOf       deviceType:Scheme ;
+    skos:prefLabel          "Device Type"@en, "Apparaattype"@nl ;
+    skos:definition         "The specific type or model designation of a medical device."@en,
+                            "Het specifieke type of de modelaanduiding van een medisch apparaat."@nl ;
+    skos:notation           "DeviceType" .
+
+
+############################################################
+# Manufacturer scheme
+############################################################
+
+manufacturer:Scheme         a skos:ConceptScheme ;
+    skos:prefLabel          "Manufacturer"@en, "Fabrikant"@nl .
+
+manufacturer:Manufacturer   a skos:Concept ;
+    skos:inScheme           manufacturer:Scheme ;
+    skos:topConceptOf       manufacturer:Scheme ;
+    skos:prefLabel          "Manufacturer"@en, "Fabrikant"@nl ;
+    skos:definition         "The manufacturer or product line of a medical device."@en,
+                            "De fabrikant of productlijn van een medisch apparaat."@nl ;
+    skos:notation           "Manufacturer" .
+
+
+############################################################
+# Component scheme
+############################################################
+
+component:Scheme            a skos:ConceptScheme ;
+    skos:prefLabel          "Component"@en, "Onderdeel"@nl .
+
+component:Component         a skos:Concept ;
+    skos:inScheme           component:Scheme ;
+    skos:topConceptOf       component:Scheme ;
+    skos:prefLabel          "Component"@en, "Onderdeel"@nl ;
+    skos:definition         "A physical or functional part of a medical device — e.g. a connection port, power unit, heating element, or sensor. Sensor is a specialisation that additionally produces a measurable signal."@en,
+                            "Een fysiek of functioneel onderdeel van een medisch apparaat — bijv. een aansluitpoort, voedingseenheid, verwarmingselement of sensor. Sensor is een specialisatie die daarnaast een meetbaar signaal produceert."@nl ;
+    skos:notation           "Component" .
+
+
+############################################################
+# Sensor scheme
+############################################################
+
+sensor:Scheme             a skos:ConceptScheme ;
+    skos:prefLabel          "Sensor"@en, "Sensor"@nl .
+
+sensor:Sensor             a skos:Concept ;
+    skos:inScheme           sensor:Scheme ;
+    skos:topConceptOf       sensor:Scheme ;
+    skos:prefLabel          "Sensor"@en, "Sensor"@nl ;
+    skos:definition         "A device that detects or measures a physical property and records, indicates, or otherwise responds to it."@en,
+                            "Een apparaat dat een fysieke eigenschap detecteert of meet en deze registreert, aangeeft of er anderszins op reageert."@nl ;
+    skos:notation           "Sensor" .
+
+
+############################################################
+# Signal scheme
+############################################################
+
+signal:Scheme             a skos:ConceptScheme ;
+    skos:prefLabel          "Signal"@en, "Signaal"@nl .
+
+signal:Signal           a skos:Concept ;
+    skos:inScheme           signal:Scheme ;
+    skos:topConceptOf       signal:Scheme ;
+    skos:prefLabel          "Signal"@en, "Signaal"@nl ;
+    skos:definition         "A signal produced by a sensor."@en,
+                            "Een signaal geproduceerd door een sensor."@nl ;
+    skos:notation           "Signal" .
+
+############################################################
+# Metric scheme
+############################################################
+
+metric:Scheme             a skos:ConceptScheme ;
+    skos:prefLabel          "Metric"@en, "Metriek"@nl .
+
+metric:Metric           a skos:Concept ;
+    skos:inScheme           metric:Scheme ;
+    skos:topConceptOf       metric:Scheme ;
+    skos:prefLabel          "Metric"@en, "Metriek"@nl ;
+    skos:definition         "A measurable quantity derived from a physiological signal, such as heart rate or oxygen saturation."@en,
+                            "Een meetbare grootheid afgeleid van een fysiologisch signaal, zoals hartfrequentie of zuurstofsaturatie."@nl ;
+    skos:notation           "Metric" .
+
+
+############################################################
+# AnatomicalPosition scheme
+############################################################
+
+anatomicalPosition:Scheme             a skos:ConceptScheme ;
+    skos:prefLabel          "Anatomical Position"@en, "Anatomische positie"@nl .
+
+anatomicalPosition:AnatomicalPosition           a skos:Concept ;
+    skos:inScheme           anatomicalPosition:Scheme ;
+    skos:topConceptOf       anatomicalPosition:Scheme ;
+    skos:prefLabel          "Anatomical Position"@en, "Anatomische positie"@nl ;
+    skos:definition         "A specific location or orientation of a body part or organ in relation to the rest of the body."@en,
+                            "Een specifieke locatie of oriëntatie van een lichaamsdeel of orgaan in relatie tot de rest van het lichaam."@nl ;
+    skos:notation           "AnatomicalPosition" .
+
+############################################################
+# Laterality scheme
+############################################################
+
+laterality:Scheme             a skos:ConceptScheme ;
+    skos:prefLabel          "Laterality"@en, "Lateraliteit"@nl .
+
+laterality:Laterality           a skos:Concept ;
+    skos:inScheme           laterality:Scheme ;
+    skos:topConceptOf       laterality:Scheme ;
+    skos:prefLabel          "Laterality"@en, "Lateraliteit"@nl ;
+    skos:definition         "The side of the body (left, right, or bilateral) at which a sensor is positioned."@en,
+                            "De zijde van het lichaam (links, rechts of bilateraal) waar een sensor is geplaatst."@nl ;
+    skos:notation           "Laterality" .
+
+############################################################
+# PhysiologicalProperty scheme
+############################################################
+
+physiologicalProperty:Scheme             a skos:ConceptScheme ;
+    skos:prefLabel          "Physiological Property"@en, "Fysiologische eigenschap"@nl .
+
+physiologicalProperty:PhysiologicalProperty           a skos:Concept ;
+    skos:inScheme           physiologicalProperty:Scheme ;
+    skos:topConceptOf       physiologicalProperty:Scheme ;
+    skos:prefLabel          "Physiological Property"@en, "Fysiologische eigenschap"@nl ;
+    skos:definition         "A measurable characteristic of a biological system, often used in the context of health and medicine."@en,
+                            "Een meetbare eigenschap van een biologisch systeem, vaak gebruikt in de context van gezondheid en geneeskunde."@nl ;
+    skos:notation           "PhysiologicalProperty" .
+
+############################################################
+# PhysiologicalProcess scheme
+############################################################
+
+physiologicalProcess:Scheme             a skos:ConceptScheme ;
+    skos:prefLabel          "Physiological Process"@en, "Fysiologisch proces"@nl .
+
+physiologicalProcess:PhysiologicalProcess           a skos:Concept ;
+    skos:inScheme           physiologicalProcess:Scheme ;
+    skos:topConceptOf       physiologicalProcess:Scheme ;
+    skos:prefLabel          "Physiological Process"@en, "Fysiologisch proces"@nl ;
+    skos:definition         "A biological process that occurs within an organism, often related to maintaining homeostasis."@en,
+                            "Een biologisch proces dat plaatsvindt binnen een organisme, vaak gerelateerd aan het handhaven van homeostase."@nl ;
+    skos:notation           "PhysiologicalProcess" .
+
+############################################################
+# Organ scheme
+############################################################
+
+organ:Scheme             a skos:ConceptScheme ;
+    skos:prefLabel          "Organ"@en, "Orgaan"@nl .
+
+organ:Organ           a skos:Concept ;
+    skos:inScheme           organ:Scheme ;
+    skos:topConceptOf       organ:Scheme ;
+    skos:prefLabel          "Organ"@en, "Orgaan"@nl ;
+    skos:definition         "A part of an organism that is typically self-contained and has a specific vital function, such as the heart or liver."@en,
+                            "Een deel van een organisme dat typisch zelfvoorzienend is en een specifieke vitale functie heeft, zoals het hart of de lever."@nl ;
+    skos:notation           "Organ" .
+
+############################################################
+# OrganSystem scheme
+############################################################
+
+organSystem:Scheme             a skos:ConceptScheme ;
+    skos:prefLabel          "Organ System"@en, "Orgaansysteem"@nl .
+
+organSystem:OrganSystem           a skos:Concept ;
+    skos:inScheme           organSystem:Scheme ;
+    skos:topConceptOf       organSystem:Scheme ;
+    skos:prefLabel          "Organ System"@en, "Orgaansysteem"@nl ;
+    skos:definition         "A group of organs that work together to perform one or more functions in an organism."@en,
+                            "Een groep organen die samenwerken om één of meer functies in een organisme uit te voeren."@nl ;
+    skos:notation           "OrganSystem" .
+
+############################################################
+# Patient scheme
+############################################################
+    
+patient:Scheme             a skos:ConceptScheme ;
+    skos:prefLabel          "Patient"@en, "Patiënt"@nl .
+
+patient:Patient           a skos:Concept ;
+    skos:inScheme           patient:Scheme ;
+    skos:topConceptOf       patient:Scheme ;
+    skos:prefLabel          "Patient"@en, "Patiënt"@nl ;
+    skos:definition         "An individual receiving medical care or treatment."@en,
+                            "Een individu dat medische zorg of behandeling ontvangt."@nl ;
+    skos:notation           "Patient" .
+
+############################################################
+# Operation State scheme
+############################################################
+
+opstate:Scheme              a skos:ConceptScheme, mda:PostAlarmValidScheme ;
+    skos:prefLabel          "Operation State"@en, "Operatiestatus"@nl .
+
+opstate:OperationState      a skos:Concept ;
+    skos:inScheme           opstate:Scheme ;
+    skos:topConceptOf       opstate:Scheme ;
+    skos:prefLabel          "Operation State"@en, "Operatiestatus"@nl ;
+    skos:definition         "The operational state of a device or sensor."@en,
+                            "De operationele status van een apparaat of sensor."@nl ;
+    skos:notation           "OperationState" .
+
+
+############################################################
+# Quality State scheme
+############################################################
+
+qualitystate:Scheme         a skos:ConceptScheme ;
+    skos:prefLabel          "Quality State"@en, "Kwaliteitsstatus"@nl .
+
+qualitystate:QualityState   a skos:Concept ;
+    skos:inScheme           qualitystate:Scheme ;
+    skos:topConceptOf       qualitystate:Scheme ;
+    skos:prefLabel          "Quality State"@en, "Kwaliteitsstatus"@nl ;
+    skos:definition         "The quality state of a signal, indicating measurement reliability."@en,
+                            "De kwaliteitsstatus van een signaal, die de meetbetrouwbaarheid aangeeft."@nl ;
+    skos:notation           "QualityState" .
+
+
+############################################################
+# Alarm Priority scheme
+############################################################
+
+alarmprio:Scheme           a skos:ConceptScheme ;
+    skos:prefLabel          "Alarm Priority"@en, "Alarmprioriteit"@nl .
+
+alarmprio:AlarmPriority    a skos:Concept ;
+    skos:inScheme           alarmprio:Scheme ;
+    skos:topConceptOf       alarmprio:Scheme ;
+    skos:prefLabel          "Alarm Priority"@en, "Alarmprioriteit"@nl ;
+    skos:definition         "The priority level of an alarm."@en,
+                            "Het prioriteitsniveau van een alarm."@nl ;
+    skos:notation           "AlarmPriority" .
+
+
+############################################################
+# Alarm Category scheme
+############################################################
+
+alarmcat:Scheme             a skos:ConceptScheme ;
+    skos:prefLabel          "Alarm Category"@en, "Alarmcategorie"@nl .
+
+alarmcat:AlarmCategory      a skos:Concept ;
+    skos:inScheme           alarmcat:Scheme ;
+    skos:topConceptOf       alarmcat:Scheme ;
+    skos:prefLabel          "Alarm Category"@en, "Alarmcategorie"@nl ;
+    skos:definition         "The category of an alarm message."@en,
+                            "De categorie van een alarmbericht."@nl ;
+    skos:notation           "AlarmCategory" .
+
+
+############################################################
+# Alarm Label scheme
+############################################################
+
+alarmLabel:Scheme           a skos:ConceptScheme ;
+    skos:prefLabel          "Alarm Label"@en, "Alarmlabel"@nl .
+
+alarmLabel:AlarmLabel       a skos:Concept ;
+    skos:inScheme           alarmLabel:Scheme ;
+    skos:topConceptOf       alarmLabel:Scheme ;
+    skos:prefLabel          "Alarm Label"@en, "Alarmlabel"@nl ;
+    skos:definition         "The controlled-vocabulary term identifying an alarm type, one concept per distinct alarm label in the catalogue."@en,
+                            "De gecontroleerde-vocabulaireterm die een alarmtype identificeert, één concept per onderscheidend alarmlabel in de catalogus."@nl ;
+    skos:notation           "AlarmLabel" .
+
+
+############################################################
+# Therapeutic Modality scheme
+############################################################
+
+therapeuticModality:Scheme  a skos:ConceptScheme ;
+    skos:prefLabel          "Therapeutic Modality"@en, "Therapeutische modaliteit"@nl .
+
+therapeuticModality:TherapeuticModality  a skos:Concept ;
+    skos:inScheme           therapeuticModality:Scheme ;
+    skos:topConceptOf       therapeuticModality:Scheme ;
+    skos:prefLabel          "Therapeutic Modality"@en, "Therapeutische modaliteit"@nl ;
+    skos:definition         "A therapeutic intervention or treatment modality."@en,
+                            "Een therapeutische interventie of behandelingsmodaliteit."@nl ;
+    skos:notation           "TherapeuticModality" .
+
+
+############################################################
+# Metric Phase scheme
+############################################################
+
+metricPhase:Scheme          a skos:ConceptScheme ;
+    skos:prefLabel          "Metric Phase"@en, "Metriekfase"@nl .
+
+metricPhase:MetricPhase     a skos:Concept ;
+    skos:inScheme           metricPhase:Scheme ;
+    skos:topConceptOf       metricPhase:Scheme ;
+    skos:prefLabel          "Metric Phase"@en, "Metriekfase"@nl ;
+    skos:definition         "The phase of a metric to which an alarm condition applies, such as mean, systolic, diastolic, or end-expiratory."@en,
+                            "De fase van een metriek waarop een alarmconditie van toepassing is, zoals gemiddeld, systolisch, diastolisch of eind-expiratoir."@nl ;
+    skos:notation           "MetricPhase" .
+
+
+############################################################
+# Metric Rate scheme
+############################################################
+
+metricRate:Scheme            a skos:ConceptScheme ;
+    skos:prefLabel          "Metric Rate"@en, "Metrieksnelheid"@nl .
+
+metricRate:MetricRate       a skos:Concept ;
+    skos:inScheme           metricRate:Scheme ;
+    skos:topConceptOf       metricRate:Scheme ;
+    skos:prefLabel          "Metric Rate"@en, "Metrieksnelheid"@nl ;
+    skos:definition         "The rate of a metric that raises an alarm, such as increased, decreased, or critical decrease."@en,
+                            "De snelheid van een metriek die een alarm veroorzaakt, zoals verhoogd, verlaagd of kritieke daling."@nl ;
+    skos:notation           "MetricRate" .
+
+
+############################################################
+# Rhythm scheme
+############################################################
+
+rhythm:Scheme               a skos:ConceptScheme ;
+    skos:prefLabel          "Rhythm"@en, "Ritme"@nl .
+
+rhythm:Rhythm               a skos:Concept ;
+    skos:inScheme           rhythm:Scheme ;
+    skos:topConceptOf       rhythm:Scheme ;
+    skos:prefLabel          "Rhythm"@en, "Ritme"@nl ;
+    skos:definition         "The rhythm pattern of a metric to which an alarm condition applies, such as irregular."@en,
+                            "Het ritmepatroon van een metriek waarop een alarmconditie van toepassing is, zoals onregelmatig."@nl ;
+    skos:notation           "Rhythm" .
+
