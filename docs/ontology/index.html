@@ -17,7 +17,7 @@
 
 
 <!-- SCHEMA.ORG METADATA -->
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","url":"https://w3id.org/mda/ontology/","image":"http://vowl.visualdataweb.org/webvowl/#iri=https://w3id.org/mda/ontology/","name":"Medical Device Alarm Ontology", "headline":"Document describing the ontology https://w3id.org/mda/ontology/", "dateReleased":"2026-07-08", "version":"1.0.0", "author":[{"@type":"Person","name":"Ruben Zoodsma"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","url":"https://w3id.org/mda/ontology/","image":"http://vowl.visualdataweb.org/webvowl/#iri=https://w3id.org/mda/ontology/","name":"Medical Device Alarm Ontology", "headline":"The Medical Device Alarm (MDA) Ontology provides a formal representation of the technical and clinical knowledge conveyed by medical device alarms.It models alarms in relation to measurements, devices, sensors, physiological variables, interpretations, and associated clinical or technical concerns, enabling alarm information to be represented in a machine-interpretable form.", "dateReleased":"2026-07-08", "version":"1.0.0", "author":[{"@type":"Person","name":"Ruben Zoodsma"}]}</script>
 
 <script src="resources/jquery.js"></script> 
 <script src="resources/marked.min.js"></script> 
@@ -88,13 +88,16 @@ $(function(){
 <span>Ontology Specification Draft</span>
 </div>
 </div>     <div id="abstract"><h2>Abstract</h2><span class="markdown">
-This is a placeholder text for the abstract. The abstract should contain a couple of sentences summarizing the ontology and its purpose.</span>
+The Medical Device Alarm (MDA) Ontology provides a formal representation of the technical and clinical knowledge conveyed by medical device alarms.
+It models alarms in relation to measurements, devices, sensors, physiological variables, interpretations, and associated clinical or technical concerns, enabling alarm information to be represented in a machine-interpretable form.
+        </span>
 </div>
 <div id="toc"></div> 
 
 <!--INTRODUCTION SECTION-->
     <div id="introduction"><h2 id="intro" class="list">Introduction <span class="backlink"> back to <a href="#toc">ToC</a></span></h2>
-<span class="markdown">Medical device alarms are typically communicated as short textual messages, but they implicitly convey information about the measurement, device, interpretation, and associated technical or clinical concern. The MDA Ontology makes this knowledge explicit and provides a shared semantic structure for representing and combining alarm information across devices and clinical context.</span>
+<span class="markdown">
+This is a place holder text for the introduction. The introduction should briefly describe the ontology, its motivation, state of the art and goals.</span>
 <div id="namespacedeclarations">
 <h3 id="ns" class="list">Namespace declarations</h3>
 <div id="ns" align="center">
@@ -151,253 +154,203 @@ This ontology has the following classes and properties.</span>
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     class="hlist">
    <li>
-      <a href="#https://w3id.org/mda/ontology/Alarm"
-         title="https://w3id.org/mda/ontology/Alarm">Alarm</a>
+      <a href="#Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/AlarmMessage"
-         title="https://w3id.org/mda/ontology/AlarmMessage">Alarm Message</a>
+      <a href="#AlarmMessage" title="https://w3id.org/mda/ontology/AlarmMessage">Alarm Message</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/AlarmType"
-         title="https://w3id.org/mda/ontology/AlarmType">Alarm Type</a>
+      <a href="#AlarmType" title="https://w3id.org/mda/ontology/AlarmType">Alarm Type</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/AnatomicalPosition"
+      <a href="#AnatomicalPosition"
          title="https://w3id.org/mda/ontology/AnatomicalPosition">Anatomical Position</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/Component"
-         title="https://w3id.org/mda/ontology/Component">Component</a>
+      <a href="#Component" title="https://w3id.org/mda/ontology/Component">Component</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/CriticalComponent"
-         title="https://w3id.org/mda/ontology/CriticalComponent">Critical component</a>
+      <a href="#CriticalComponent" title="https://w3id.org/mda/ontology/CriticalComponent">Critical component</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/Device"
-         title="https://w3id.org/mda/ontology/Device">Device</a>
+      <a href="#Device" title="https://w3id.org/mda/ontology/Device">Device</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/FunctionalUnit"
-         title="https://w3id.org/mda/ontology/FunctionalUnit">Functional unit</a>
+      <a href="#FunctionalUnit" title="https://w3id.org/mda/ontology/FunctionalUnit">Functional unit</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/Laterality"
-         title="https://w3id.org/mda/ontology/Laterality">Laterality</a>
+      <a href="#Laterality" title="https://w3id.org/mda/ontology/Laterality">Laterality</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/Metric"
-         title="https://w3id.org/mda/ontology/Metric">Metric</a>
+      <a href="#Metric" title="https://w3id.org/mda/ontology/Metric">Metric</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/Organ"
-         title="https://w3id.org/mda/ontology/Organ">Organ</a>
+      <a href="#Organ" title="https://w3id.org/mda/ontology/Organ">Organ</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/OrganSystem"
-         title="https://w3id.org/mda/ontology/OrganSystem">Organ System</a>
+      <a href="#OrganSystem" title="https://w3id.org/mda/ontology/OrganSystem">Organ System</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/Patient"
-         title="https://w3id.org/mda/ontology/Patient">Patient</a>
+      <a href="#Patient" title="https://w3id.org/mda/ontology/Patient">Patient</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/PhysiologicalProcess"
+      <a href="#PhysiologicalProcess"
          title="https://w3id.org/mda/ontology/PhysiologicalProcess">Physiological Process</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/PhysiologicalProperty"
+      <a href="#PhysiologicalProperty"
          title="https://w3id.org/mda/ontology/PhysiologicalProperty">Physiological Property</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/PostAlarmValidScheme"
+      <a href="#PostAlarmValidScheme"
          title="https://w3id.org/mda/ontology/PostAlarmValidScheme">Post-alarm valid scheme</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/Sensor"
-         title="https://w3id.org/mda/ontology/Sensor">Sensor</a>
+      <a href="#Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/Signal"
-         title="https://w3id.org/mda/ontology/Signal">Signal</a>
+      <a href="#Signal" title="https://w3id.org/mda/ontology/Signal">Signal</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/SignalAnalysis"
-         title="https://w3id.org/mda/ontology/SignalAnalysis">Signal analysis</a>
+      <a href="#SignalAnalysis" title="https://w3id.org/mda/ontology/SignalAnalysis">Signal analysis</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/TherapeuticModality"
+      <a href="#TherapeuticModality"
          title="https://w3id.org/mda/ontology/TherapeuticModality">Therapeutic Modality</a>
    </li>
 </ul><h4>Object Properties</h4><ul xmlns:widoco="https://w3id.org/widoco/vocab#"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     class="hlist">
    <li>
-      <a href="#https://w3id.org/mda/ontology/administers"
-         title="https://w3id.org/mda/ontology/administers">administers</a>
+      <a href="#administers" title="https://w3id.org/mda/ontology/administers">administers</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/analyzedBy"
-         title="https://w3id.org/mda/ontology/analyzedBy">analyzed by</a>
+      <a href="#analyzedBy" title="https://w3id.org/mda/ontology/analyzedBy">analyzed by</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/approximates"
-         title="https://w3id.org/mda/ontology/approximates">approximates</a>
+      <a href="#approximates" title="https://w3id.org/mda/ontology/approximates">approximates</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/concernsPatient"
-         title="https://w3id.org/mda/ontology/concernsPatient">concerns patient</a>
+      <a href="#concernsPatient" title="https://w3id.org/mda/ontology/concernsPatient">concerns patient</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasAnatomicalPosition"
+      <a href="#hasAnatomicalPosition"
          title="https://w3id.org/mda/ontology/hasAnatomicalPosition">has anatomical position</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasCategory"
-         title="https://w3id.org/mda/ontology/hasCategory">has category</a>
+      <a href="#hasCategory" title="https://w3id.org/mda/ontology/hasCategory">has category</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasComponent"
-         title="https://w3id.org/mda/ontology/hasComponent">has component</a>
+      <a href="#hasComponent" title="https://w3id.org/mda/ontology/hasComponent">has component</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasComponentOperationState"
+      <a href="#hasComponentOperationState"
          title="https://w3id.org/mda/ontology/hasComponentOperationState">has component operation state</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasDeviceOperationState"
+      <a href="#hasDeviceOperationState"
          title="https://w3id.org/mda/ontology/hasDeviceOperationState">has device operation state</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasDeviceType"
-         title="https://w3id.org/mda/ontology/hasDeviceType">has device type</a>
+      <a href="#hasDeviceType" title="https://w3id.org/mda/ontology/hasDeviceType">has device type</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasFunctionalUnit"
-         title="https://w3id.org/mda/ontology/hasFunctionalUnit">has functional unit</a>
+      <a href="#hasFunctionalUnit" title="https://w3id.org/mda/ontology/hasFunctionalUnit">has functional unit</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasLabelConcept"
-         title="https://w3id.org/mda/ontology/hasLabelConcept">has label concept</a>
+      <a href="#hasLabelConcept" title="https://w3id.org/mda/ontology/hasLabelConcept">has label concept</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasLaterality"
-         title="https://w3id.org/mda/ontology/hasLaterality">has laterality</a>
+      <a href="#hasLaterality" title="https://w3id.org/mda/ontology/hasLaterality">has laterality</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasManufacturer"
-         title="https://w3id.org/mda/ontology/hasManufacturer">has manufacturer</a>
+      <a href="#hasManufacturer" title="https://w3id.org/mda/ontology/hasManufacturer">has manufacturer</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasMessage"
-         title="https://w3id.org/mda/ontology/hasMessage">has message</a>
+      <a href="#hasMessage" title="https://w3id.org/mda/ontology/hasMessage">has message</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasOperationState"
-         title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a>
+      <a href="#hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasPhase"
-         title="https://w3id.org/mda/ontology/hasPhase">has phase</a>
+      <a href="#hasPhase" title="https://w3id.org/mda/ontology/hasPhase">has phase</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasPriority"
-         title="https://w3id.org/mda/ontology/hasPriority">has priority</a>
+      <a href="#hasPriority" title="https://w3id.org/mda/ontology/hasPriority">has priority</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasQualityState"
-         title="https://w3id.org/mda/ontology/hasQualityState">has quality state</a>
+      <a href="#hasQualityState" title="https://w3id.org/mda/ontology/hasQualityState">has quality state</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasRate"
-         title="https://w3id.org/mda/ontology/hasRate">has rate</a>
+      <a href="#hasRate" title="https://w3id.org/mda/ontology/hasRate">has rate</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasRhythm"
-         title="https://w3id.org/mda/ontology/hasRhythm">has rhythm</a>
+      <a href="#hasRhythm" title="https://w3id.org/mda/ontology/hasRhythm">has rhythm</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasSensor"
-         title="https://w3id.org/mda/ontology/hasSensor">has sensor</a>
+      <a href="#hasSensor" title="https://w3id.org/mda/ontology/hasSensor">has sensor</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasSensorOperationState"
+      <a href="#hasSensorOperationState"
          title="https://w3id.org/mda/ontology/hasSensorOperationState">has sensor operation state</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/isMonitoredBy"
-         title="https://w3id.org/mda/ontology/isMonitoredBy">is monitored by</a>
+      <a href="#isMonitoredBy" title="https://w3id.org/mda/ontology/isMonitoredBy">is monitored by</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/isOfType"
-         title="https://w3id.org/mda/ontology/isOfType">is of type</a>
+      <a href="#isOfType" title="https://w3id.org/mda/ontology/isOfType">is of type</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/isPropertyOf"
-         title="https://w3id.org/mda/ontology/isPropertyOf">is property of</a>
+      <a href="#isPropertyOf" title="https://w3id.org/mda/ontology/isPropertyOf">is property of</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/organPartOfSystem"
-         title="https://w3id.org/mda/ontology/organPartOfSystem">organ part of system</a>
+      <a href="#organPartOfSystem" title="https://w3id.org/mda/ontology/organPartOfSystem">organ part of system</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/presentIn"
-         title="https://w3id.org/mda/ontology/presentIn">present in</a>
+      <a href="#presentIn" title="https://w3id.org/mda/ontology/presentIn">present in</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/producesMetric"
-         title="https://w3id.org/mda/ontology/producesMetric">produces metric</a>
+      <a href="#producesMetric" title="https://w3id.org/mda/ontology/producesMetric">produces metric</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/producesSignal"
-         title="https://w3id.org/mda/ontology/producesSignal">produces signal</a>
+      <a href="#producesSignal" title="https://w3id.org/mda/ontology/producesSignal">produces signal</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/sensorProducesSignal"
+      <a href="#sensorProducesSignal"
          title="https://w3id.org/mda/ontology/sensorProducesSignal">sensor produces signal</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/targetsProcess"
-         title="https://w3id.org/mda/ontology/targetsProcess">targets process</a>
+      <a href="#targetsProcess" title="https://w3id.org/mda/ontology/targetsProcess">targets process</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/triggeredBy"
-         title="https://w3id.org/mda/ontology/triggeredBy">triggered by</a>
+      <a href="#triggeredBy" title="https://w3id.org/mda/ontology/triggeredBy">triggered by</a>
    </li>
 </ul><h4>Data Properties</h4><ul xmlns:widoco="https://w3id.org/widoco/vocab#"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     class="hlist">
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasDuration"
-         title="https://w3id.org/mda/ontology/hasDuration">has duration</a>
+      <a href="#hasDuration" title="https://w3id.org/mda/ontology/hasDuration">has duration</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasEnd"
-         title="https://w3id.org/mda/ontology/hasEnd">has end</a>
+      <a href="#hasEnd" title="https://w3id.org/mda/ontology/hasEnd">has end</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasLabel"
-         title="https://w3id.org/mda/ontology/hasLabel">has label</a>
+      <a href="#hasLabel" title="https://w3id.org/mda/ontology/hasLabel">has label</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/hasStart"
-         title="https://w3id.org/mda/ontology/hasStart">has start</a>
+      <a href="#hasStart" title="https://w3id.org/mda/ontology/hasStart">has start</a>
    </li>
 </ul><h4>Named Individuals</h4><ul xmlns:widoco="https://w3id.org/widoco/vocab#"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     class="hlist">
    <li>
-      <a href="#https://w3id.org/mda/ontology/Individuated"
-         title="https://w3id.org/mda/ontology/Individuated">individuated</a>
+      <a href="#Individuated" title="https://w3id.org/mda/ontology/Individuated">individuated</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/Referential"
-         title="https://w3id.org/mda/ontology/Referential">referential</a>
+      <a href="#Referential" title="https://w3id.org/mda/ontology/Referential">referential</a>
    </li>
    <li>
-      <a href="#https://w3id.org/mda/ontology/Stateful"
-         title="https://w3id.org/mda/ontology/Stateful">stateful</a>
+      <a href="#Stateful" title="https://w3id.org/mda/ontology/Stateful">stateful</a>
    </li>
 </ul><iframe src="webvowl/index.html"></iframe> 
 </div>
@@ -406,7 +359,8 @@ This ontology has the following classes and properties.</span>
 <!--DESCRIPTION SECTION-->
     <div id="description"><h2 id="desc" class="list">MDA Ontology: Description <span class="backlink"> back to <a href="#toc">ToC</a></span></h2>
 
-<span class="markdown">The Medical Device Alarm (MDA) Ontology provides a formal representation of the technical and clinical knowledge conveyed by medical device alarms. It models the concepts and relationships involved in alarm generation and interpretation, enabling alarm information to be represented in a machine-interpretable form.</span></div>
+<span class="markdown">The MDA Ontology formally represents the concepts and relationships involved in medical device alarm generation and interpretation, making the implicit technical and clinical knowledge conveyed by alarms explicit and machine-interpretable.
+</span></div>
    
 
 <!--CROSSREF SECTION-->
@@ -415,28 +369,28 @@ This section provides details for each class and property defined by MDA Ontolog
 <div xmlns:widoco="https://w3id.org/widoco/vocab#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="classes">
  <h3 id="classes-headline" class="list">Classes</h3>
  <ul class="hlist">
-  <li><a href="#https://w3id.org/mda/ontology/Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/AlarmMessage" title="https://w3id.org/mda/ontology/AlarmMessage">Alarm Message</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/AlarmType" title="https://w3id.org/mda/ontology/AlarmType">Alarm Type</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/AnatomicalPosition" title="https://w3id.org/mda/ontology/AnatomicalPosition">Anatomical Position</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/Component" title="https://w3id.org/mda/ontology/Component">Component</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/CriticalComponent" title="https://w3id.org/mda/ontology/CriticalComponent">Critical component</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/Device" title="https://w3id.org/mda/ontology/Device">Device</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/FunctionalUnit" title="https://w3id.org/mda/ontology/FunctionalUnit">Functional unit</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/Laterality" title="https://w3id.org/mda/ontology/Laterality">Laterality</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/Metric" title="https://w3id.org/mda/ontology/Metric">Metric</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/Organ" title="https://w3id.org/mda/ontology/Organ">Organ</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/OrganSystem" title="https://w3id.org/mda/ontology/OrganSystem">Organ System</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/Patient" title="https://w3id.org/mda/ontology/Patient">Patient</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/PhysiologicalProcess" title="https://w3id.org/mda/ontology/PhysiologicalProcess">Physiological Process</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/PhysiologicalProperty" title="https://w3id.org/mda/ontology/PhysiologicalProperty">Physiological Property</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/PostAlarmValidScheme" title="https://w3id.org/mda/ontology/PostAlarmValidScheme">Post-alarm valid scheme</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/Signal" title="https://w3id.org/mda/ontology/Signal">Signal</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/SignalAnalysis" title="https://w3id.org/mda/ontology/SignalAnalysis">Signal analysis</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/TherapeuticModality" title="https://w3id.org/mda/ontology/TherapeuticModality">Therapeutic Modality</a></li>
+  <li><a href="#Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a></li>
+  <li><a href="#AlarmMessage" title="https://w3id.org/mda/ontology/AlarmMessage">Alarm Message</a></li>
+  <li><a href="#AlarmType" title="https://w3id.org/mda/ontology/AlarmType">Alarm Type</a></li>
+  <li><a href="#AnatomicalPosition" title="https://w3id.org/mda/ontology/AnatomicalPosition">Anatomical Position</a></li>
+  <li><a href="#Component" title="https://w3id.org/mda/ontology/Component">Component</a></li>
+  <li><a href="#CriticalComponent" title="https://w3id.org/mda/ontology/CriticalComponent">Critical component</a></li>
+  <li><a href="#Device" title="https://w3id.org/mda/ontology/Device">Device</a></li>
+  <li><a href="#FunctionalUnit" title="https://w3id.org/mda/ontology/FunctionalUnit">Functional unit</a></li>
+  <li><a href="#Laterality" title="https://w3id.org/mda/ontology/Laterality">Laterality</a></li>
+  <li><a href="#Metric" title="https://w3id.org/mda/ontology/Metric">Metric</a></li>
+  <li><a href="#Organ" title="https://w3id.org/mda/ontology/Organ">Organ</a></li>
+  <li><a href="#OrganSystem" title="https://w3id.org/mda/ontology/OrganSystem">Organ System</a></li>
+  <li><a href="#Patient" title="https://w3id.org/mda/ontology/Patient">Patient</a></li>
+  <li><a href="#PhysiologicalProcess" title="https://w3id.org/mda/ontology/PhysiologicalProcess">Physiological Process</a></li>
+  <li><a href="#PhysiologicalProperty" title="https://w3id.org/mda/ontology/PhysiologicalProperty">Physiological Property</a></li>
+  <li><a href="#PostAlarmValidScheme" title="https://w3id.org/mda/ontology/PostAlarmValidScheme">Post-alarm valid scheme</a></li>
+  <li><a href="#Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a></li>
+  <li><a href="#Signal" title="https://w3id.org/mda/ontology/Signal">Signal</a></li>
+  <li><a href="#SignalAnalysis" title="https://w3id.org/mda/ontology/SignalAnalysis">Signal analysis</a></li>
+  <li><a href="#TherapeuticModality" title="https://w3id.org/mda/ontology/TherapeuticModality">Therapeutic Modality</a></li>
  </ul>
- <div class="entity" id="https://w3id.org/mda/ontology/Alarm">
+ <div class="entity" id="Alarm">
   <h3>Alarm<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/Alarm</p>
   <div class="comment">
@@ -447,17 +401,17 @@ This section provides details for each class and property defined by MDA Ontolog
     has sub-classes
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/AlarmType" title="https://w3id.org/mda/ontology/AlarmType">Alarm Type</a> <sup class="type-c" title="class">c</sup>
+    <a href="#AlarmType" title="https://w3id.org/mda/ontology/AlarmType">Alarm Type</a> <sup class="type-c" title="class">c</sup>
    </dd>
    <dt>
     is in domain of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/hasCategory" title="https://w3id.org/mda/ontology/hasCategory">has category</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasDuration" title="https://w3id.org/mda/ontology/hasDuration">has duration</a> <sup class="type-dp" title="data property">dp</sup>, <a href="#https://w3id.org/mda/ontology/hasEnd" title="https://w3id.org/mda/ontology/hasEnd">has end</a> <sup class="type-dp" title="data property">dp</sup>, <a href="#https://w3id.org/mda/ontology/hasMessage" title="https://w3id.org/mda/ontology/hasMessage">has message</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasPriority" title="https://w3id.org/mda/ontology/hasPriority">has priority</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasStart" title="https://w3id.org/mda/ontology/hasStart">has start</a> <sup class="type-dp" title="data property">dp</sup>, <a href="#https://w3id.org/mda/ontology/isOfType" title="https://w3id.org/mda/ontology/isOfType">is of type</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#hasCategory" title="https://w3id.org/mda/ontology/hasCategory">has category</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasDuration" title="https://w3id.org/mda/ontology/hasDuration">has duration</a> <sup class="type-dp" title="data property">dp</sup>, <a href="#hasEnd" title="https://w3id.org/mda/ontology/hasEnd">has end</a> <sup class="type-dp" title="data property">dp</sup>, <a href="#hasMessage" title="https://w3id.org/mda/ontology/hasMessage">has message</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasPriority" title="https://w3id.org/mda/ontology/hasPriority">has priority</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasStart" title="https://w3id.org/mda/ontology/hasStart">has start</a> <sup class="type-dp" title="data property">dp</sup>, <a href="#isOfType" title="https://w3id.org/mda/ontology/isOfType">is of type</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/AlarmMessage">
+ <div class="entity" id="AlarmMessage">
   <h3>Alarm Message<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/AlarmMessage</p>
   <div class="comment">
@@ -468,17 +422,17 @@ This section provides details for each class and property defined by MDA Ontolog
     is in domain of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/concernsPatient" title="https://w3id.org/mda/ontology/concernsPatient">concerns patient</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/triggeredBy" title="https://w3id.org/mda/ontology/triggeredBy">triggered by</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#concernsPatient" title="https://w3id.org/mda/ontology/concernsPatient">concerns patient</a> <sup class="type-op" title="object property">op</sup>, <a href="#triggeredBy" title="https://w3id.org/mda/ontology/triggeredBy">triggered by</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is in range of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/hasMessage" title="https://w3id.org/mda/ontology/hasMessage">has message</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#hasMessage" title="https://w3id.org/mda/ontology/hasMessage">has message</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/AlarmType">
+ <div class="entity" id="AlarmType">
   <h3>Alarm Type<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/AlarmType</p>
   <div class="comment">
@@ -489,23 +443,23 @@ This section provides details for each class and property defined by MDA Ontolog
     has super-classes
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
+    <a href="#Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
    </dd>
    <dt>
     is in domain of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/hasLabel" title="https://w3id.org/mda/ontology/hasLabel">has label</a> <sup class="type-dp" title="data property">dp</sup>, <a href="#https://w3id.org/mda/ontology/hasLabelConcept" title="https://w3id.org/mda/ontology/hasLabelConcept">has label concept</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#hasLabel" title="https://w3id.org/mda/ontology/hasLabel">has label</a> <sup class="type-dp" title="data property">dp</sup>, <a href="#hasLabelConcept" title="https://w3id.org/mda/ontology/hasLabelConcept">has label concept</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is in range of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/isOfType" title="https://w3id.org/mda/ontology/isOfType">is of type</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#isOfType" title="https://w3id.org/mda/ontology/isOfType">is of type</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/AnatomicalPosition">
+ <div class="entity" id="AnatomicalPosition">
   <h3>Anatomical Position<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/AnatomicalPosition</p>
   <div class="comment">
@@ -516,11 +470,11 @@ This section provides details for each class and property defined by MDA Ontolog
     is in range of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/hasAnatomicalPosition" title="https://w3id.org/mda/ontology/hasAnatomicalPosition">has anatomical position</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#hasAnatomicalPosition" title="https://w3id.org/mda/ontology/hasAnatomicalPosition">has anatomical position</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/Component">
+ <div class="entity" id="Component">
   <h3>Component<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/Component</p>
   <div class="comment">
@@ -531,23 +485,23 @@ This section provides details for each class and property defined by MDA Ontolog
     has sub-classes
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/CriticalComponent" title="https://w3id.org/mda/ontology/CriticalComponent">Critical component</a> <sup class="type-c" title="class">c</sup>, <a href="#https://w3id.org/mda/ontology/FunctionalUnit" title="https://w3id.org/mda/ontology/FunctionalUnit">Functional unit</a> <sup class="type-c" title="class">c</sup>, <a href="#https://w3id.org/mda/ontology/Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
+    <a href="#CriticalComponent" title="https://w3id.org/mda/ontology/CriticalComponent">Critical component</a> <sup class="type-c" title="class">c</sup>, <a href="#FunctionalUnit" title="https://w3id.org/mda/ontology/FunctionalUnit">Functional unit</a> <sup class="type-c" title="class">c</sup>, <a href="#Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
    </dd>
    <dt>
     is in domain of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/hasComponentOperationState" title="https://w3id.org/mda/ontology/hasComponentOperationState">has component operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#hasComponentOperationState" title="https://w3id.org/mda/ontology/hasComponentOperationState">has component operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is in range of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/hasComponent" title="https://w3id.org/mda/ontology/hasComponent">has component</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#hasComponent" title="https://w3id.org/mda/ontology/hasComponent">has component</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/CriticalComponent">
+ <div class="entity" id="CriticalComponent">
   <h3>Critical component<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/CriticalComponent</p>
   <div class="comment">
@@ -558,11 +512,11 @@ This section provides details for each class and property defined by MDA Ontolog
     has super-classes
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/Component" title="https://w3id.org/mda/ontology/Component">Component</a> <sup class="type-c" title="class">c</sup>
+    <a href="#Component" title="https://w3id.org/mda/ontology/Component">Component</a> <sup class="type-c" title="class">c</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/Device">
+ <div class="entity" id="Device">
   <h3>Device<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/Device</p>
   <div class="comment">
@@ -573,17 +527,17 @@ This section provides details for each class and property defined by MDA Ontolog
     is in domain of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/administers" title="https://w3id.org/mda/ontology/administers">administers</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasComponent" title="https://w3id.org/mda/ontology/hasComponent">has component</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasDeviceOperationState" title="https://w3id.org/mda/ontology/hasDeviceOperationState">has device operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasDeviceType" title="https://w3id.org/mda/ontology/hasDeviceType">has device type</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasFunctionalUnit" title="https://w3id.org/mda/ontology/hasFunctionalUnit">has functional unit</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasManufacturer" title="https://w3id.org/mda/ontology/hasManufacturer">has manufacturer</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#administers" title="https://w3id.org/mda/ontology/administers">administers</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasComponent" title="https://w3id.org/mda/ontology/hasComponent">has component</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasDeviceOperationState" title="https://w3id.org/mda/ontology/hasDeviceOperationState">has device operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasDeviceType" title="https://w3id.org/mda/ontology/hasDeviceType">has device type</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasFunctionalUnit" title="https://w3id.org/mda/ontology/hasFunctionalUnit">has functional unit</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasManufacturer" title="https://w3id.org/mda/ontology/hasManufacturer">has manufacturer</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is in range of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/isMonitoredBy" title="https://w3id.org/mda/ontology/isMonitoredBy">is monitored by</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/triggeredBy" title="https://w3id.org/mda/ontology/triggeredBy">triggered by</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#isMonitoredBy" title="https://w3id.org/mda/ontology/isMonitoredBy">is monitored by</a> <sup class="type-op" title="object property">op</sup>, <a href="#triggeredBy" title="https://w3id.org/mda/ontology/triggeredBy">triggered by</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/FunctionalUnit">
+ <div class="entity" id="FunctionalUnit">
   <h3>Functional unit<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/FunctionalUnit</p>
   <div class="comment">
@@ -594,29 +548,29 @@ This section provides details for each class and property defined by MDA Ontolog
     has super-classes
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/Component" title="https://w3id.org/mda/ontology/Component">Component</a> <sup class="type-c" title="class">c</sup>
+    <a href="#Component" title="https://w3id.org/mda/ontology/Component">Component</a> <sup class="type-c" title="class">c</sup>
    </dd>
    <dt>
     is in domain of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/hasSensor" title="https://w3id.org/mda/ontology/hasSensor">has sensor</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#hasSensor" title="https://w3id.org/mda/ontology/hasSensor">has sensor</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is in range of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/hasFunctionalUnit" title="https://w3id.org/mda/ontology/hasFunctionalUnit">has functional unit</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#hasFunctionalUnit" title="https://w3id.org/mda/ontology/hasFunctionalUnit">has functional unit</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is disjoint with
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
+    <a href="#Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/Laterality">
+ <div class="entity" id="Laterality">
   <h3>Laterality<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/Laterality</p>
   <div class="comment">
@@ -627,11 +581,11 @@ This section provides details for each class and property defined by MDA Ontolog
     is in range of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/hasLaterality" title="https://w3id.org/mda/ontology/hasLaterality">has laterality</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#hasLaterality" title="https://w3id.org/mda/ontology/hasLaterality">has laterality</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/Metric">
+ <div class="entity" id="Metric">
   <h3>Metric<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/Metric</p>
   <div class="comment">
@@ -642,17 +596,17 @@ This section provides details for each class and property defined by MDA Ontolog
     is in domain of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/approximates" title="https://w3id.org/mda/ontology/approximates">approximates</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasPhase" title="https://w3id.org/mda/ontology/hasPhase">has phase</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasRate" title="https://w3id.org/mda/ontology/hasRate">has rate</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasRhythm" title="https://w3id.org/mda/ontology/hasRhythm">has rhythm</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#approximates" title="https://w3id.org/mda/ontology/approximates">approximates</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasPhase" title="https://w3id.org/mda/ontology/hasPhase">has phase</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasRate" title="https://w3id.org/mda/ontology/hasRate">has rate</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasRhythm" title="https://w3id.org/mda/ontology/hasRhythm">has rhythm</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is in range of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/producesMetric" title="https://w3id.org/mda/ontology/producesMetric">produces metric</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#producesMetric" title="https://w3id.org/mda/ontology/producesMetric">produces metric</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/Organ">
+ <div class="entity" id="Organ">
   <h3>Organ<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/Organ</p>
   <div class="comment">
@@ -663,17 +617,17 @@ This section provides details for each class and property defined by MDA Ontolog
     is in domain of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/organPartOfSystem" title="https://w3id.org/mda/ontology/organPartOfSystem">organ part of system</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#organPartOfSystem" title="https://w3id.org/mda/ontology/organPartOfSystem">organ part of system</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is in range of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/presentIn" title="https://w3id.org/mda/ontology/presentIn">present in</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#presentIn" title="https://w3id.org/mda/ontology/presentIn">present in</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/OrganSystem">
+ <div class="entity" id="OrganSystem">
   <h3>Organ System<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/OrganSystem</p>
   <div class="comment">
@@ -684,11 +638,11 @@ This section provides details for each class and property defined by MDA Ontolog
     is in range of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/organPartOfSystem" title="https://w3id.org/mda/ontology/organPartOfSystem">organ part of system</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#organPartOfSystem" title="https://w3id.org/mda/ontology/organPartOfSystem">organ part of system</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/Patient">
+ <div class="entity" id="Patient">
   <h3>Patient<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/Patient</p>
   <div class="comment">
@@ -699,17 +653,17 @@ This section provides details for each class and property defined by MDA Ontolog
     is in domain of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/isMonitoredBy" title="https://w3id.org/mda/ontology/isMonitoredBy">is monitored by</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#isMonitoredBy" title="https://w3id.org/mda/ontology/isMonitoredBy">is monitored by</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is in range of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/concernsPatient" title="https://w3id.org/mda/ontology/concernsPatient">concerns patient</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#concernsPatient" title="https://w3id.org/mda/ontology/concernsPatient">concerns patient</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/PhysiologicalProcess">
+ <div class="entity" id="PhysiologicalProcess">
   <h3>Physiological Process<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/PhysiologicalProcess</p>
   <div class="comment">
@@ -720,17 +674,17 @@ This section provides details for each class and property defined by MDA Ontolog
     is in domain of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/presentIn" title="https://w3id.org/mda/ontology/presentIn">present in</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#presentIn" title="https://w3id.org/mda/ontology/presentIn">present in</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is in range of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/isPropertyOf" title="https://w3id.org/mda/ontology/isPropertyOf">is property of</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/targetsProcess" title="https://w3id.org/mda/ontology/targetsProcess">targets process</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#isPropertyOf" title="https://w3id.org/mda/ontology/isPropertyOf">is property of</a> <sup class="type-op" title="object property">op</sup>, <a href="#targetsProcess" title="https://w3id.org/mda/ontology/targetsProcess">targets process</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/PhysiologicalProperty">
+ <div class="entity" id="PhysiologicalProperty">
   <h3>Physiological Property<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/PhysiologicalProperty</p>
   <div class="comment">
@@ -741,17 +695,17 @@ This section provides details for each class and property defined by MDA Ontolog
     is in domain of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/isPropertyOf" title="https://w3id.org/mda/ontology/isPropertyOf">is property of</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#isPropertyOf" title="https://w3id.org/mda/ontology/isPropertyOf">is property of</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is in range of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/approximates" title="https://w3id.org/mda/ontology/approximates">approximates</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#approximates" title="https://w3id.org/mda/ontology/approximates">approximates</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/PostAlarmValidScheme">
+ <div class="entity" id="PostAlarmValidScheme">
   <h3>Post-alarm valid scheme<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/PostAlarmValidScheme</p>
   <div class="comment">
@@ -766,7 +720,7 @@ This section provides details for each class and property defined by MDA Ontolog
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/Sensor">
+ <div class="entity" id="Sensor">
   <h3>Sensor<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/Sensor</p>
   <div class="comment">
@@ -777,29 +731,29 @@ This section provides details for each class and property defined by MDA Ontolog
     has super-classes
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/Component" title="https://w3id.org/mda/ontology/Component">Component</a> <sup class="type-c" title="class">c</sup>
+    <a href="#Component" title="https://w3id.org/mda/ontology/Component">Component</a> <sup class="type-c" title="class">c</sup>
    </dd>
    <dt>
     is in domain of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/hasAnatomicalPosition" title="https://w3id.org/mda/ontology/hasAnatomicalPosition">has anatomical position</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasLaterality" title="https://w3id.org/mda/ontology/hasLaterality">has laterality</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasSensorOperationState" title="https://w3id.org/mda/ontology/hasSensorOperationState">has sensor operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/producesSignal" title="https://w3id.org/mda/ontology/producesSignal">produces signal</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/sensorProducesSignal" title="https://w3id.org/mda/ontology/sensorProducesSignal">sensor produces signal</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#hasAnatomicalPosition" title="https://w3id.org/mda/ontology/hasAnatomicalPosition">has anatomical position</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasLaterality" title="https://w3id.org/mda/ontology/hasLaterality">has laterality</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasSensorOperationState" title="https://w3id.org/mda/ontology/hasSensorOperationState">has sensor operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#producesSignal" title="https://w3id.org/mda/ontology/producesSignal">produces signal</a> <sup class="type-op" title="object property">op</sup>, <a href="#sensorProducesSignal" title="https://w3id.org/mda/ontology/sensorProducesSignal">sensor produces signal</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is in range of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/hasSensor" title="https://w3id.org/mda/ontology/hasSensor">has sensor</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#hasSensor" title="https://w3id.org/mda/ontology/hasSensor">has sensor</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is disjoint with
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/FunctionalUnit" title="https://w3id.org/mda/ontology/FunctionalUnit">Functional unit</a> <sup class="type-c" title="class">c</sup>
+    <a href="#FunctionalUnit" title="https://w3id.org/mda/ontology/FunctionalUnit">Functional unit</a> <sup class="type-c" title="class">c</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/Signal">
+ <div class="entity" id="Signal">
   <h3>Signal<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/Signal</p>
   <div class="comment">
@@ -810,17 +764,17 @@ This section provides details for each class and property defined by MDA Ontolog
     is in domain of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/analyzedBy" title="https://w3id.org/mda/ontology/analyzedBy">analyzed by</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasQualityState" title="https://w3id.org/mda/ontology/hasQualityState">has quality state</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#analyzedBy" title="https://w3id.org/mda/ontology/analyzedBy">analyzed by</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasQualityState" title="https://w3id.org/mda/ontology/hasQualityState">has quality state</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is in range of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/producesSignal" title="https://w3id.org/mda/ontology/producesSignal">produces signal</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/sensorProducesSignal" title="https://w3id.org/mda/ontology/sensorProducesSignal">sensor produces signal</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#producesSignal" title="https://w3id.org/mda/ontology/producesSignal">produces signal</a> <sup class="type-op" title="object property">op</sup>, <a href="#sensorProducesSignal" title="https://w3id.org/mda/ontology/sensorProducesSignal">sensor produces signal</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/SignalAnalysis">
+ <div class="entity" id="SignalAnalysis">
   <h3>Signal analysis<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/SignalAnalysis</p>
   <div class="comment">
@@ -831,17 +785,17 @@ This section provides details for each class and property defined by MDA Ontolog
     is in domain of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/producesMetric" title="https://w3id.org/mda/ontology/producesMetric">produces metric</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/producesSignal" title="https://w3id.org/mda/ontology/producesSignal">produces signal</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#producesMetric" title="https://w3id.org/mda/ontology/producesMetric">produces metric</a> <sup class="type-op" title="object property">op</sup>, <a href="#producesSignal" title="https://w3id.org/mda/ontology/producesSignal">produces signal</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is in range of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/analyzedBy" title="https://w3id.org/mda/ontology/analyzedBy">analyzed by</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#analyzedBy" title="https://w3id.org/mda/ontology/analyzedBy">analyzed by</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/TherapeuticModality">
+ <div class="entity" id="TherapeuticModality">
   <h3>Therapeutic Modality<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/TherapeuticModality</p>
   <div class="comment">
@@ -852,54 +806,54 @@ This section provides details for each class and property defined by MDA Ontolog
     is in domain of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/targetsProcess" title="https://w3id.org/mda/ontology/targetsProcess">targets process</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#targetsProcess" title="https://w3id.org/mda/ontology/targetsProcess">targets process</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is in range of
    </dt>
    <dd>
-    <a href="#https://w3id.org/mda/ontology/administers" title="https://w3id.org/mda/ontology/administers">administers</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#administers" title="https://w3id.org/mda/ontology/administers">administers</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
 </div><div xmlns:widoco="https://w3id.org/widoco/vocab#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="objectproperties">
  <h3 id="properties" class="list">Object Properties</h3>
  <ul class="hlist">
-  <li><a href="#https://w3id.org/mda/ontology/administers" title="https://w3id.org/mda/ontology/administers">administers</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/analyzedBy" title="https://w3id.org/mda/ontology/analyzedBy">analyzed by</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/approximates" title="https://w3id.org/mda/ontology/approximates">approximates</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/concernsPatient" title="https://w3id.org/mda/ontology/concernsPatient">concerns patient</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasAnatomicalPosition" title="https://w3id.org/mda/ontology/hasAnatomicalPosition">has anatomical position</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasCategory" title="https://w3id.org/mda/ontology/hasCategory">has category</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasComponent" title="https://w3id.org/mda/ontology/hasComponent">has component</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasComponentOperationState" title="https://w3id.org/mda/ontology/hasComponentOperationState">has component operation state</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasDeviceOperationState" title="https://w3id.org/mda/ontology/hasDeviceOperationState">has device operation state</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasDeviceType" title="https://w3id.org/mda/ontology/hasDeviceType">has device type</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasFunctionalUnit" title="https://w3id.org/mda/ontology/hasFunctionalUnit">has functional unit</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasLabelConcept" title="https://w3id.org/mda/ontology/hasLabelConcept">has label concept</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasLaterality" title="https://w3id.org/mda/ontology/hasLaterality">has laterality</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasManufacturer" title="https://w3id.org/mda/ontology/hasManufacturer">has manufacturer</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasMessage" title="https://w3id.org/mda/ontology/hasMessage">has message</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasPhase" title="https://w3id.org/mda/ontology/hasPhase">has phase</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasPriority" title="https://w3id.org/mda/ontology/hasPriority">has priority</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasQualityState" title="https://w3id.org/mda/ontology/hasQualityState">has quality state</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasRate" title="https://w3id.org/mda/ontology/hasRate">has rate</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasRhythm" title="https://w3id.org/mda/ontology/hasRhythm">has rhythm</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasSensor" title="https://w3id.org/mda/ontology/hasSensor">has sensor</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasSensorOperationState" title="https://w3id.org/mda/ontology/hasSensorOperationState">has sensor operation state</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/isMonitoredBy" title="https://w3id.org/mda/ontology/isMonitoredBy">is monitored by</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/isOfType" title="https://w3id.org/mda/ontology/isOfType">is of type</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/isPropertyOf" title="https://w3id.org/mda/ontology/isPropertyOf">is property of</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/organPartOfSystem" title="https://w3id.org/mda/ontology/organPartOfSystem">organ part of system</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/presentIn" title="https://w3id.org/mda/ontology/presentIn">present in</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/producesMetric" title="https://w3id.org/mda/ontology/producesMetric">produces metric</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/producesSignal" title="https://w3id.org/mda/ontology/producesSignal">produces signal</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/sensorProducesSignal" title="https://w3id.org/mda/ontology/sensorProducesSignal">sensor produces signal</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/targetsProcess" title="https://w3id.org/mda/ontology/targetsProcess">targets process</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/triggeredBy" title="https://w3id.org/mda/ontology/triggeredBy">triggered by</a></li>
+  <li><a href="#administers" title="https://w3id.org/mda/ontology/administers">administers</a></li>
+  <li><a href="#analyzedBy" title="https://w3id.org/mda/ontology/analyzedBy">analyzed by</a></li>
+  <li><a href="#approximates" title="https://w3id.org/mda/ontology/approximates">approximates</a></li>
+  <li><a href="#concernsPatient" title="https://w3id.org/mda/ontology/concernsPatient">concerns patient</a></li>
+  <li><a href="#hasAnatomicalPosition" title="https://w3id.org/mda/ontology/hasAnatomicalPosition">has anatomical position</a></li>
+  <li><a href="#hasCategory" title="https://w3id.org/mda/ontology/hasCategory">has category</a></li>
+  <li><a href="#hasComponent" title="https://w3id.org/mda/ontology/hasComponent">has component</a></li>
+  <li><a href="#hasComponentOperationState" title="https://w3id.org/mda/ontology/hasComponentOperationState">has component operation state</a></li>
+  <li><a href="#hasDeviceOperationState" title="https://w3id.org/mda/ontology/hasDeviceOperationState">has device operation state</a></li>
+  <li><a href="#hasDeviceType" title="https://w3id.org/mda/ontology/hasDeviceType">has device type</a></li>
+  <li><a href="#hasFunctionalUnit" title="https://w3id.org/mda/ontology/hasFunctionalUnit">has functional unit</a></li>
+  <li><a href="#hasLabelConcept" title="https://w3id.org/mda/ontology/hasLabelConcept">has label concept</a></li>
+  <li><a href="#hasLaterality" title="https://w3id.org/mda/ontology/hasLaterality">has laterality</a></li>
+  <li><a href="#hasManufacturer" title="https://w3id.org/mda/ontology/hasManufacturer">has manufacturer</a></li>
+  <li><a href="#hasMessage" title="https://w3id.org/mda/ontology/hasMessage">has message</a></li>
+  <li><a href="#hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a></li>
+  <li><a href="#hasPhase" title="https://w3id.org/mda/ontology/hasPhase">has phase</a></li>
+  <li><a href="#hasPriority" title="https://w3id.org/mda/ontology/hasPriority">has priority</a></li>
+  <li><a href="#hasQualityState" title="https://w3id.org/mda/ontology/hasQualityState">has quality state</a></li>
+  <li><a href="#hasRate" title="https://w3id.org/mda/ontology/hasRate">has rate</a></li>
+  <li><a href="#hasRhythm" title="https://w3id.org/mda/ontology/hasRhythm">has rhythm</a></li>
+  <li><a href="#hasSensor" title="https://w3id.org/mda/ontology/hasSensor">has sensor</a></li>
+  <li><a href="#hasSensorOperationState" title="https://w3id.org/mda/ontology/hasSensorOperationState">has sensor operation state</a></li>
+  <li><a href="#isMonitoredBy" title="https://w3id.org/mda/ontology/isMonitoredBy">is monitored by</a></li>
+  <li><a href="#isOfType" title="https://w3id.org/mda/ontology/isOfType">is of type</a></li>
+  <li><a href="#isPropertyOf" title="https://w3id.org/mda/ontology/isPropertyOf">is property of</a></li>
+  <li><a href="#organPartOfSystem" title="https://w3id.org/mda/ontology/organPartOfSystem">organ part of system</a></li>
+  <li><a href="#presentIn" title="https://w3id.org/mda/ontology/presentIn">present in</a></li>
+  <li><a href="#producesMetric" title="https://w3id.org/mda/ontology/producesMetric">produces metric</a></li>
+  <li><a href="#producesSignal" title="https://w3id.org/mda/ontology/producesSignal">produces signal</a></li>
+  <li><a href="#sensorProducesSignal" title="https://w3id.org/mda/ontology/sensorProducesSignal">sensor produces signal</a></li>
+  <li><a href="#targetsProcess" title="https://w3id.org/mda/ontology/targetsProcess">targets process</a></li>
+  <li><a href="#triggeredBy" title="https://w3id.org/mda/ontology/triggeredBy">triggered by</a></li>
  </ul>
- <div class="entity" id="https://w3id.org/mda/ontology/administers">
+ <div class="entity" id="administers">
   <h3>administers<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/administers</p>
   <div class="comment">
@@ -911,18 +865,18 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/TherapeuticModality" title="https://w3id.org/mda/ontology/TherapeuticModality">Therapeutic Modality</a> <sup class="type-c" title="class">c</sup>
+     <a href="#TherapeuticModality" title="https://w3id.org/mda/ontology/TherapeuticModality">Therapeutic Modality</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/analyzedBy">
+ <div class="entity" id="analyzedBy">
   <h3>analyzed by<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/analyzedBy</p>
   <div class="comment">
@@ -934,18 +888,18 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Signal" title="https://w3id.org/mda/ontology/Signal">Signal</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Signal" title="https://w3id.org/mda/ontology/Signal">Signal</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/SignalAnalysis" title="https://w3id.org/mda/ontology/SignalAnalysis">Signal analysis</a> <sup class="type-c" title="class">c</sup>
+     <a href="#SignalAnalysis" title="https://w3id.org/mda/ontology/SignalAnalysis">Signal analysis</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/approximates">
+ <div class="entity" id="approximates">
   <h3>approximates<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/approximates</p>
   <div class="comment">
@@ -957,18 +911,18 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Metric" title="https://w3id.org/mda/ontology/Metric">Metric</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Metric" title="https://w3id.org/mda/ontology/Metric">Metric</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/PhysiologicalProperty" title="https://w3id.org/mda/ontology/PhysiologicalProperty">Physiological Property</a> <sup class="type-c" title="class">c</sup>
+     <a href="#PhysiologicalProperty" title="https://w3id.org/mda/ontology/PhysiologicalProperty">Physiological Property</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/concernsPatient">
+ <div class="entity" id="concernsPatient">
   <h3>concerns patient<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/concernsPatient</p>
   <div class="comment">
@@ -981,18 +935,18 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/AlarmMessage" title="https://w3id.org/mda/ontology/AlarmMessage">Alarm Message</a> <sup class="type-c" title="class">c</sup>
+     <a href="#AlarmMessage" title="https://w3id.org/mda/ontology/AlarmMessage">Alarm Message</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Patient" title="https://w3id.org/mda/ontology/Patient">Patient</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Patient" title="https://w3id.org/mda/ontology/Patient">Patient</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasAnatomicalPosition">
+ <div class="entity" id="hasAnatomicalPosition">
   <h3>has anatomical position<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasAnatomicalPosition</p>
   <div class="comment">
@@ -1005,18 +959,18 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/AnatomicalPosition" title="https://w3id.org/mda/ontology/AnatomicalPosition">Anatomical Position</a> <sup class="type-c" title="class">c</sup>
+     <a href="#AnatomicalPosition" title="https://w3id.org/mda/ontology/AnatomicalPosition">Anatomical Position</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasCategory">
+ <div class="entity" id="hasCategory">
   <h3>has category<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasCategory</p>
   <div class="comment">
@@ -1028,7 +982,7 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
@@ -1039,7 +993,7 @@ This section provides details for each class and property defined by MDA Ontolog
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasComponent">
+ <div class="entity" id="hasComponent">
   <h3>has component<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasComponent</p>
   <div class="comment">
@@ -1052,24 +1006,24 @@ This section provides details for each class and property defined by MDA Ontolog
      has sub-properties
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/hasFunctionalUnit" title="https://w3id.org/mda/ontology/hasFunctionalUnit">has functional unit</a> <sup class="type-op" title="object property">op</sup>
+     <a href="#hasFunctionalUnit" title="https://w3id.org/mda/ontology/hasFunctionalUnit">has functional unit</a> <sup class="type-op" title="object property">op</sup>
     </dd>
     <dt>
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Component" title="https://w3id.org/mda/ontology/Component">Component</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Component" title="https://w3id.org/mda/ontology/Component">Component</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasComponentOperationState">
+ <div class="entity" id="hasComponentOperationState">
   <h3>has component operation state<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasComponentOperationState</p>
   <div class="comment">
@@ -1081,13 +1035,13 @@ This section provides details for each class and property defined by MDA Ontolog
      has super-properties
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+     <a href="#hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
     </dd>
     <dt>
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Component" title="https://w3id.org/mda/ontology/Component">Component</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Component" title="https://w3id.org/mda/ontology/Component">Component</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
@@ -1098,7 +1052,7 @@ This section provides details for each class and property defined by MDA Ontolog
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasDeviceOperationState">
+ <div class="entity" id="hasDeviceOperationState">
   <h3>has device operation state<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasDeviceOperationState</p>
   <div class="comment">
@@ -1110,13 +1064,13 @@ This section provides details for each class and property defined by MDA Ontolog
      has super-properties
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+     <a href="#hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
     </dd>
     <dt>
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
@@ -1127,7 +1081,7 @@ This section provides details for each class and property defined by MDA Ontolog
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasDeviceType">
+ <div class="entity" id="hasDeviceType">
   <h3>has device type<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasDeviceType</p>
   <div class="comment">
@@ -1139,7 +1093,7 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
@@ -1150,7 +1104,7 @@ This section provides details for each class and property defined by MDA Ontolog
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasFunctionalUnit">
+ <div class="entity" id="hasFunctionalUnit">
   <h3>has functional unit<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasFunctionalUnit</p>
   <div class="comment">
@@ -1163,24 +1117,24 @@ This section provides details for each class and property defined by MDA Ontolog
      has super-properties
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/hasComponent" title="https://w3id.org/mda/ontology/hasComponent">has component</a> <sup class="type-op" title="object property">op</sup>
+     <a href="#hasComponent" title="https://w3id.org/mda/ontology/hasComponent">has component</a> <sup class="type-op" title="object property">op</sup>
     </dd>
     <dt>
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/FunctionalUnit" title="https://w3id.org/mda/ontology/FunctionalUnit">Functional unit</a> <sup class="type-c" title="class">c</sup>
+     <a href="#FunctionalUnit" title="https://w3id.org/mda/ontology/FunctionalUnit">Functional unit</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasLabelConcept">
+ <div class="entity" id="hasLabelConcept">
   <h3>has label concept<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasLabelConcept</p>
   <div class="comment">
@@ -1192,7 +1146,7 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/AlarmType" title="https://w3id.org/mda/ontology/AlarmType">Alarm Type</a> <sup class="type-c" title="class">c</sup>
+     <a href="#AlarmType" title="https://w3id.org/mda/ontology/AlarmType">Alarm Type</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
@@ -1203,7 +1157,7 @@ This section provides details for each class and property defined by MDA Ontolog
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasLaterality">
+ <div class="entity" id="hasLaterality">
   <h3>has laterality<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasLaterality</p>
   <div class="comment">
@@ -1216,18 +1170,18 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Laterality" title="https://w3id.org/mda/ontology/Laterality">Laterality</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Laterality" title="https://w3id.org/mda/ontology/Laterality">Laterality</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasManufacturer">
+ <div class="entity" id="hasManufacturer">
   <h3>has manufacturer<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasManufacturer</p>
   <div class="comment">
@@ -1239,7 +1193,7 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
@@ -1250,7 +1204,7 @@ This section provides details for each class and property defined by MDA Ontolog
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasMessage">
+ <div class="entity" id="hasMessage">
   <h3>has message<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasMessage</p>
   <div class="comment">
@@ -1263,18 +1217,18 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/AlarmMessage" title="https://w3id.org/mda/ontology/AlarmMessage">Alarm Message</a> <sup class="type-c" title="class">c</sup>
+     <a href="#AlarmMessage" title="https://w3id.org/mda/ontology/AlarmMessage">Alarm Message</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasOperationState">
+ <div class="entity" id="hasOperationState">
   <h3>has operation state<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasOperationState</p>
   <div class="comment">
@@ -1286,13 +1240,13 @@ This section provides details for each class and property defined by MDA Ontolog
      has sub-properties
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/hasComponentOperationState" title="https://w3id.org/mda/ontology/hasComponentOperationState">has component operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasDeviceOperationState" title="https://w3id.org/mda/ontology/hasDeviceOperationState">has device operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#https://w3id.org/mda/ontology/hasSensorOperationState" title="https://w3id.org/mda/ontology/hasSensorOperationState">has sensor operation state</a> <sup class="type-op" title="object property">op</sup>
+     <a href="#hasComponentOperationState" title="https://w3id.org/mda/ontology/hasComponentOperationState">has component operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasDeviceOperationState" title="https://w3id.org/mda/ontology/hasDeviceOperationState">has device operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#hasSensorOperationState" title="https://w3id.org/mda/ontology/hasSensorOperationState">has sensor operation state</a> <sup class="type-op" title="object property">op</sup>
     </dd>
     <dt>
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Component" title="https://w3id.org/mda/ontology/Component">Component</a> <sup class="type-c" title="class">c</sup> <span class="logic">or</span> <a href="#https://w3id.org/mda/ontology/Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup> <span class="logic">or</span> <a href="#https://w3id.org/mda/ontology/Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup> <span class="logic">or</span> <a href="#https://w3id.org/mda/ontology/Signal" title="https://w3id.org/mda/ontology/Signal">Signal</a> <sup class="type-c" title="class">c</sup> <span class="logic">or</span> <a href="#https://w3id.org/mda/ontology/TherapeuticModality" title="https://w3id.org/mda/ontology/TherapeuticModality">Therapeutic Modality</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Component" title="https://w3id.org/mda/ontology/Component">Component</a> <sup class="type-c" title="class">c</sup> <span class="logic">or</span> <a href="#Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup> <span class="logic">or</span> <a href="#Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup> <span class="logic">or</span> <a href="#Signal" title="https://w3id.org/mda/ontology/Signal">Signal</a> <sup class="type-c" title="class">c</sup> <span class="logic">or</span> <a href="#TherapeuticModality" title="https://w3id.org/mda/ontology/TherapeuticModality">Therapeutic Modality</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
@@ -1304,21 +1258,21 @@ This section provides details for each class and property defined by MDA Ontolog
      has sub-property chains
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/hasFunctionalUnit" title="https://w3id.org/mda/ontology/hasFunctionalUnit">has functional unit</a> <sup class="type-op" title="object property">op</sup> <span class="logic">o</span> <a href="#https://w3id.org/mda/ontology/hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+     <a href="#hasFunctionalUnit" title="https://w3id.org/mda/ontology/hasFunctionalUnit">has functional unit</a> <sup class="type-op" title="object property">op</sup> <span class="logic">o</span> <a href="#hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
     </dd>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/hasSensor" title="https://w3id.org/mda/ontology/hasSensor">has sensor</a> <sup class="type-op" title="object property">op</sup> <span class="logic">o</span> <a href="#https://w3id.org/mda/ontology/hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+     <a href="#hasSensor" title="https://w3id.org/mda/ontology/hasSensor">has sensor</a> <sup class="type-op" title="object property">op</sup> <span class="logic">o</span> <a href="#hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
     </dd>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/producesSignal" title="https://w3id.org/mda/ontology/producesSignal">produces signal</a> <sup class="type-op" title="object property">op</sup> <span class="logic">o</span> <a href="#https://w3id.org/mda/ontology/hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+     <a href="#producesSignal" title="https://w3id.org/mda/ontology/producesSignal">produces signal</a> <sup class="type-op" title="object property">op</sup> <span class="logic">o</span> <a href="#hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
     </dd>
     <dd>
-     <span class="logic">o</span> <a href="#https://w3id.org/mda/ontology/hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+     <span class="logic">o</span> <a href="#hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasPhase">
+ <div class="entity" id="hasPhase">
   <h3>has phase<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasPhase</p>
   <div class="comment">
@@ -1330,7 +1284,7 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Metric" title="https://w3id.org/mda/ontology/Metric">Metric</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Metric" title="https://w3id.org/mda/ontology/Metric">Metric</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
@@ -1341,7 +1295,7 @@ This section provides details for each class and property defined by MDA Ontolog
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasPriority">
+ <div class="entity" id="hasPriority">
   <h3>has priority<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasPriority</p>
   <div class="comment">
@@ -1353,7 +1307,7 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
@@ -1364,7 +1318,7 @@ This section provides details for each class and property defined by MDA Ontolog
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasQualityState">
+ <div class="entity" id="hasQualityState">
   <h3>has quality state<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasQualityState</p>
   <div class="comment">
@@ -1376,7 +1330,7 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Signal" title="https://w3id.org/mda/ontology/Signal">Signal</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Signal" title="https://w3id.org/mda/ontology/Signal">Signal</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
@@ -1387,7 +1341,7 @@ This section provides details for each class and property defined by MDA Ontolog
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasRate">
+ <div class="entity" id="hasRate">
   <h3>has rate<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasRate</p>
   <div class="comment">
@@ -1399,7 +1353,7 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Metric" title="https://w3id.org/mda/ontology/Metric">Metric</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Metric" title="https://w3id.org/mda/ontology/Metric">Metric</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
@@ -1410,7 +1364,7 @@ This section provides details for each class and property defined by MDA Ontolog
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasRhythm">
+ <div class="entity" id="hasRhythm">
   <h3>has rhythm<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasRhythm</p>
   <div class="comment">
@@ -1422,7 +1376,7 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Metric" title="https://w3id.org/mda/ontology/Metric">Metric</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Metric" title="https://w3id.org/mda/ontology/Metric">Metric</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
@@ -1433,7 +1387,7 @@ This section provides details for each class and property defined by MDA Ontolog
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasSensor">
+ <div class="entity" id="hasSensor">
   <h3>has sensor<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasSensor</p>
   <div class="comment">
@@ -1445,18 +1399,18 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/FunctionalUnit" title="https://w3id.org/mda/ontology/FunctionalUnit">Functional unit</a> <sup class="type-c" title="class">c</sup>
+     <a href="#FunctionalUnit" title="https://w3id.org/mda/ontology/FunctionalUnit">Functional unit</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasSensorOperationState">
+ <div class="entity" id="hasSensorOperationState">
   <h3>has sensor operation state<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasSensorOperationState</p>
   <div class="comment">
@@ -1468,13 +1422,13 @@ This section provides details for each class and property defined by MDA Ontolog
      has super-properties
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+     <a href="#hasOperationState" title="https://w3id.org/mda/ontology/hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
     </dd>
     <dt>
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
@@ -1485,7 +1439,7 @@ This section provides details for each class and property defined by MDA Ontolog
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/isMonitoredBy">
+ <div class="entity" id="isMonitoredBy">
   <h3>is monitored by<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/isMonitoredBy</p>
   <div class="comment">
@@ -1498,18 +1452,18 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Patient" title="https://w3id.org/mda/ontology/Patient">Patient</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Patient" title="https://w3id.org/mda/ontology/Patient">Patient</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/isOfType">
+ <div class="entity" id="isOfType">
   <h3>is of type<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/isOfType</p>
   <div class="comment">
@@ -1522,18 +1476,18 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/AlarmType" title="https://w3id.org/mda/ontology/AlarmType">Alarm Type</a> <sup class="type-c" title="class">c</sup>
+     <a href="#AlarmType" title="https://w3id.org/mda/ontology/AlarmType">Alarm Type</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/isPropertyOf">
+ <div class="entity" id="isPropertyOf">
   <h3>is property of<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/isPropertyOf</p>
   <div class="comment">
@@ -1545,18 +1499,18 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/PhysiologicalProperty" title="https://w3id.org/mda/ontology/PhysiologicalProperty">Physiological Property</a> <sup class="type-c" title="class">c</sup>
+     <a href="#PhysiologicalProperty" title="https://w3id.org/mda/ontology/PhysiologicalProperty">Physiological Property</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/PhysiologicalProcess" title="https://w3id.org/mda/ontology/PhysiologicalProcess">Physiological Process</a> <sup class="type-c" title="class">c</sup>
+     <a href="#PhysiologicalProcess" title="https://w3id.org/mda/ontology/PhysiologicalProcess">Physiological Process</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/organPartOfSystem">
+ <div class="entity" id="organPartOfSystem">
   <h3>organ part of system<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/organPartOfSystem</p>
   <div class="comment">
@@ -1568,18 +1522,18 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Organ" title="https://w3id.org/mda/ontology/Organ">Organ</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Organ" title="https://w3id.org/mda/ontology/Organ">Organ</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/OrganSystem" title="https://w3id.org/mda/ontology/OrganSystem">Organ System</a> <sup class="type-c" title="class">c</sup>
+     <a href="#OrganSystem" title="https://w3id.org/mda/ontology/OrganSystem">Organ System</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/presentIn">
+ <div class="entity" id="presentIn">
   <h3>present in<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/presentIn</p>
   <div class="comment">
@@ -1591,18 +1545,18 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/PhysiologicalProcess" title="https://w3id.org/mda/ontology/PhysiologicalProcess">Physiological Process</a> <sup class="type-c" title="class">c</sup>
+     <a href="#PhysiologicalProcess" title="https://w3id.org/mda/ontology/PhysiologicalProcess">Physiological Process</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Organ" title="https://w3id.org/mda/ontology/Organ">Organ</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Organ" title="https://w3id.org/mda/ontology/Organ">Organ</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/producesMetric">
+ <div class="entity" id="producesMetric">
   <h3>produces metric<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/producesMetric</p>
   <div class="comment">
@@ -1614,18 +1568,18 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/SignalAnalysis" title="https://w3id.org/mda/ontology/SignalAnalysis">Signal analysis</a> <sup class="type-c" title="class">c</sup>
+     <a href="#SignalAnalysis" title="https://w3id.org/mda/ontology/SignalAnalysis">Signal analysis</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Metric" title="https://w3id.org/mda/ontology/Metric">Metric</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Metric" title="https://w3id.org/mda/ontology/Metric">Metric</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/producesSignal">
+ <div class="entity" id="producesSignal">
   <h3>produces signal<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/producesSignal</p>
   <div class="comment">
@@ -1638,24 +1592,24 @@ This section provides details for each class and property defined by MDA Ontolog
      has sub-properties
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/sensorProducesSignal" title="https://w3id.org/mda/ontology/sensorProducesSignal">sensor produces signal</a> <sup class="type-op" title="object property">op</sup>
+     <a href="#sensorProducesSignal" title="https://w3id.org/mda/ontology/sensorProducesSignal">sensor produces signal</a> <sup class="type-op" title="object property">op</sup>
     </dd>
     <dt>
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup> <span class="logic">or</span> <a href="#https://w3id.org/mda/ontology/SignalAnalysis" title="https://w3id.org/mda/ontology/SignalAnalysis">Signal analysis</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup> <span class="logic">or</span> <a href="#SignalAnalysis" title="https://w3id.org/mda/ontology/SignalAnalysis">Signal analysis</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Signal" title="https://w3id.org/mda/ontology/Signal">Signal</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Signal" title="https://w3id.org/mda/ontology/Signal">Signal</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/sensorProducesSignal">
+ <div class="entity" id="sensorProducesSignal">
   <h3>sensor produces signal<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/sensorProducesSignal</p>
   <div class="comment">
@@ -1667,24 +1621,24 @@ This section provides details for each class and property defined by MDA Ontolog
      has super-properties
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/producesSignal" title="https://w3id.org/mda/ontology/producesSignal">produces signal</a> <sup class="type-op" title="object property">op</sup>
+     <a href="#producesSignal" title="https://w3id.org/mda/ontology/producesSignal">produces signal</a> <sup class="type-op" title="object property">op</sup>
     </dd>
     <dt>
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Sensor" title="https://w3id.org/mda/ontology/Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Signal" title="https://w3id.org/mda/ontology/Signal">Signal</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Signal" title="https://w3id.org/mda/ontology/Signal">Signal</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/targetsProcess">
+ <div class="entity" id="targetsProcess">
   <h3>targets process<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/targetsProcess</p>
   <div class="comment">
@@ -1696,18 +1650,18 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/TherapeuticModality" title="https://w3id.org/mda/ontology/TherapeuticModality">Therapeutic Modality</a> <sup class="type-c" title="class">c</sup>
+     <a href="#TherapeuticModality" title="https://w3id.org/mda/ontology/TherapeuticModality">Therapeutic Modality</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/PhysiologicalProcess" title="https://w3id.org/mda/ontology/PhysiologicalProcess">Physiological Process</a> <sup class="type-c" title="class">c</sup>
+     <a href="#PhysiologicalProcess" title="https://w3id.org/mda/ontology/PhysiologicalProcess">Physiological Process</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/triggeredBy">
+ <div class="entity" id="triggeredBy">
   <h3>triggered by<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/triggeredBy</p>
   <div class="comment">
@@ -1720,13 +1674,13 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/AlarmMessage" title="https://w3id.org/mda/ontology/AlarmMessage">Alarm Message</a> <sup class="type-c" title="class">c</sup>
+     <a href="#AlarmMessage" title="https://w3id.org/mda/ontology/AlarmMessage">Alarm Message</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Device" title="https://w3id.org/mda/ontology/Device">Device</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
@@ -1734,12 +1688,12 @@ This section provides details for each class and property defined by MDA Ontolog
 </div><div xmlns:widoco="https://w3id.org/widoco/vocab#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="dataproperties">
  <h3 id="dataproperties-headline" class="list">Data Properties</h3>
  <ul class="hlist">
-  <li><a href="#https://w3id.org/mda/ontology/hasDuration" title="https://w3id.org/mda/ontology/hasDuration">has duration</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasEnd" title="https://w3id.org/mda/ontology/hasEnd">has end</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasLabel" title="https://w3id.org/mda/ontology/hasLabel">has label</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/hasStart" title="https://w3id.org/mda/ontology/hasStart">has start</a></li>
+  <li><a href="#hasDuration" title="https://w3id.org/mda/ontology/hasDuration">has duration</a></li>
+  <li><a href="#hasEnd" title="https://w3id.org/mda/ontology/hasEnd">has end</a></li>
+  <li><a href="#hasLabel" title="https://w3id.org/mda/ontology/hasLabel">has label</a></li>
+  <li><a href="#hasStart" title="https://w3id.org/mda/ontology/hasStart">has start</a></li>
  </ul>
- <div class="entity" id="https://w3id.org/mda/ontology/hasDuration">
+ <div class="entity" id="hasDuration">
   <h3>has duration<sup class="type-dp" title="data property">dp</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#dataproperties">Data Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasDuration</p>
   <div class="comment">
@@ -1751,7 +1705,7 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
@@ -1762,7 +1716,7 @@ This section provides details for each class and property defined by MDA Ontolog
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasEnd">
+ <div class="entity" id="hasEnd">
   <h3>has end<sup class="type-dp" title="data property">dp</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#dataproperties">Data Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasEnd</p>
   <div class="comment">
@@ -1774,7 +1728,7 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
@@ -1785,7 +1739,7 @@ This section provides details for each class and property defined by MDA Ontolog
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasLabel">
+ <div class="entity" id="hasLabel">
   <h3>has label<sup class="type-dp" title="data property">dp</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#dataproperties">Data Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasLabel</p>
   <div class="comment">
@@ -1797,7 +1751,7 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/AlarmType" title="https://w3id.org/mda/ontology/AlarmType">Alarm Type</a> <sup class="type-c" title="class">c</sup>
+     <a href="#AlarmType" title="https://w3id.org/mda/ontology/AlarmType">Alarm Type</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
@@ -1808,7 +1762,7 @@ This section provides details for each class and property defined by MDA Ontolog
    </dl>
   </div>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/hasStart">
+ <div class="entity" id="hasStart">
   <h3>has start<sup class="type-dp" title="data property">dp</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#dataproperties">Data Property ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/hasStart</p>
   <div class="comment">
@@ -1820,7 +1774,7 @@ This section provides details for each class and property defined by MDA Ontolog
      has domain
     </dt>
     <dd>
-     <a href="#https://w3id.org/mda/ontology/Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
+     <a href="#Alarm" title="https://w3id.org/mda/ontology/Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range
@@ -1834,19 +1788,19 @@ This section provides details for each class and property defined by MDA Ontolog
 </div><div xmlns:widoco="https://w3id.org/widoco/vocab#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="namedindividuals">
  <h3 id="namedindividuals" class="list">Named Individuals</h3>
  <ul class="hlist">
-  <li><a href="#https://w3id.org/mda/ontology/Individuated" title="https://w3id.org/mda/ontology/Individuated">individuated</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/Referential" title="https://w3id.org/mda/ontology/Referential">referential</a></li>
-  <li><a href="#https://w3id.org/mda/ontology/Stateful" title="https://w3id.org/mda/ontology/Stateful">stateful</a></li>
+  <li><a href="#Individuated" title="https://w3id.org/mda/ontology/Individuated">individuated</a></li>
+  <li><a href="#Referential" title="https://w3id.org/mda/ontology/Referential">referential</a></li>
+  <li><a href="#Stateful" title="https://w3id.org/mda/ontology/Stateful">stateful</a></li>
  </ul>
- <div class="entity" id="https://w3id.org/mda/ontology/Individuated">
+ <div class="entity" id="Individuated">
   <h3>individuated<sup class="type-ni" title="named individual">ni</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#namedindividuals">Named Individual ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/Individuated</p>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/Referential">
+ <div class="entity" id="Referential">
   <h3>referential<sup class="type-ni" title="named individual">ni</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#namedindividuals">Named Individual ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/Referential</p>
  </div>
- <div class="entity" id="https://w3id.org/mda/ontology/Stateful">
+ <div class="entity" id="Stateful">
   <h3>stateful<sup class="type-ni" title="named individual">ni</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#namedindividuals">Named Individual ToC</a> </span></h3>
   <p><strong>IRI:</strong> https://w3id.org/mda/ontology/Stateful</p>
  </div>

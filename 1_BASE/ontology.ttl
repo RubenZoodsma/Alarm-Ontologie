@@ -38,14 +38,16 @@
 ##################################################################
 
 <https://w3id.org/mda/ontology/>  a owl:Ontology ;
-    dc:title                        "The ontology for the medical device alarm knowledge."@en ;
-    dc:description                  "Conceptual model for the medical device alarm knowledge."@en ;
+    dc:title                        "Medical Device Alarm Ontology"@en ;
     dcterms:creator                 "Ruben Zoodsma" ;
     dcterms:created                 "2026-07-08"^^xsd:date ;
     owl:versionInfo                 "1.0.0" ;
     dc:license                      <https://creativecommons.org/licenses/by/4.0/> ;
     vann:preferredNamespacePrefix   "mda";
-    vann:preferredNamespaceUri      "https://w3id.org/mda/ontology/" .
+    vann:preferredNamespaceUri      "https://w3id.org/mda/ontology/" ;
+    dcterms:abstract """The Medical Device Alarm (MDA) Ontology provides a formal representation of the technical and clinical knowledge conveyed by medical device alarms. It models alarms in relation to measurements, devices, sensors, physiological variables, interpretations, and associated clinical or technical concerns, enabling alarm information to be represented in a machine-interpretable form."""@en ;
+    dcterms:description """The MDA Ontology formally represents the concepts and relationships involved in medical device alarm generation and interpretation, making the implicit technical and clinical knowledge conveyed by alarms explicit and machine-interpretable."""@en .
+
 
 
 #################################################################

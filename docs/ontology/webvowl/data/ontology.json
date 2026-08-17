@@ -2,15 +2,15 @@
   "_comment" : "Created with OWL2VOWL (version 0.3.5), http://vowl.visualdataweb.org",
   "header" : {
     "languages" : [ "en", "nl", "undefined" ],
-    "baseIris" : [ "http://www.w3.org/1999/02/22-rdf-syntax-ns", "http://example.org/model-device-alarm-knowledge", "http://www.w3.org/2000/01/rdf-schema", "http://www.w3.org/2001/XMLSchema", "http://www.w3.org/2004/02/skos/core" ],
+    "baseIris" : [ "http://www.w3.org/1999/02/22-rdf-syntax-ns", "http://www.w3.org/2000/01/rdf-schema", "http://www.w3.org/2001/XMLSchema", "https://w3id.org/mda/ontology", "http://www.w3.org/2004/02/skos/core" ],
     "title" : {
-      "en" : "The ontology for the medical device alarm knowledge."
+      "en" : "MEdical Device Alarm Ontology"
     },
     "iri" : "https://w3id.org/mda/ontology/",
     "version" : "1.0.0",
     "author" : [ "Ruben Zoodsma" ],
     "description" : {
-      "en" : "Conceptual model for the medical device alarm knowledge."
+      "en" : "\n        The MDA Ontology formally represents the concepts and relationships\n        involved in medical device alarm generation and interpretation, making\n        the implicit technical and clinical knowledge conveyed by alarms explicit\n        and machine-interpretable.\n        "
     },
     "other" : {
       "license" : [ {
@@ -43,6 +43,12 @@
         "value" : "https://w3id.org/mda/ontology/",
         "type" : "label"
       } ],
+      "abstract" : [ {
+        "identifier" : "abstract",
+        "language" : "en",
+        "value" : "\n        The Medical Device Alarm (MDA) Ontology provides a formal representation\n        of the technical and clinical knowledge conveyed by medical device alarms.\n        It models alarms in relation to measurements, devices, sensors,\n        physiological variables, interpretations, and associated clinical or\n        technical concerns, enabling alarm information to be represented in a\n        machine-interpretable form.\n        ",
+        "type" : "label"
+      } ],
       "versionInfo" : [ {
         "identifier" : "versionInfo",
         "language" : "undefined",
@@ -52,98 +58,121 @@
       "title" : [ {
         "identifier" : "title",
         "language" : "en",
-        "value" : "The ontology for the medical device alarm knowledge.",
+        "value" : "MEdical Device Alarm Ontology",
         "type" : "label"
       } ]
     }
   },
   "namespace" : [ ],
   "class" : [ {
-    "id" : "2",
-    "type" : "owl:Class"
-  }, {
-    "id" : "22",
-    "type" : "owl:Class"
-  }, {
-    "id" : "12",
-    "type" : "owl:Class"
-  }, {
-    "id" : "26",
-    "type" : "owl:Class"
-  }, {
-    "id" : "37",
-    "type" : "owl:Class"
-  }, {
-    "id" : "10",
-    "type" : "owl:Class"
-  }, {
-    "id" : "29",
-    "type" : "owl:Class"
-  }, {
-    "id" : "45",
-    "type" : "owl:Class"
-  }, {
-    "id" : "48",
-    "type" : "owl:Class"
-  }, {
     "id" : "4",
     "type" : "owl:Class"
   }, {
-    "id" : "31",
-    "type" : "owl:Class"
-  }, {
-    "id" : "51",
-    "type" : "owl:Class"
-  }, {
-    "id" : "34",
-    "type" : "owl:Class"
-  }, {
-    "id" : "55",
-    "type" : "owl:unionOf"
-  }, {
-    "id" : "42",
-    "type" : "rdfs:Datatype"
-  }, {
-    "id" : "54",
-    "type" : "rdfs:Datatype"
-  }, {
-    "id" : "19",
-    "type" : "rdfs:Datatype"
-  }, {
-    "id" : "21",
-    "type" : "rdfs:Datatype"
-  }, {
-    "id" : "46",
-    "type" : "owl:Class"
-  }, {
-    "id" : "14",
-    "type" : "owl:unionOf"
-  }, {
-    "id" : "40",
+    "id" : "2",
     "type" : "owl:Class"
   }, {
     "id" : "8",
     "type" : "owl:Class"
   }, {
+    "id" : "9",
+    "type" : "owl:Class"
+  }, {
     "id" : "1",
     "type" : "owl:Class"
   }, {
-    "id" : "7",
+    "id" : "33",
     "type" : "owl:Class"
   }, {
-    "id" : "25",
+    "id" : "16",
     "type" : "owl:Class"
   }, {
     "id" : "5",
     "type" : "owl:Class"
   }, {
-    "id" : "38",
+    "id" : "28",
     "type" : "owl:Class"
   }, {
+    "id" : "37",
+    "type" : "owl:Class"
+  }, {
+    "id" : "40",
+    "type" : "owl:Class"
+  }, {
+    "id" : "22",
+    "type" : "owl:Class"
+  }, {
+    "id" : "45",
+    "type" : "owl:unionOf"
+  }, {
+    "id" : "31",
+    "type" : "owl:Class"
+  }, {
+    "id" : "7",
+    "type" : "rdfs:Datatype"
+  }, {
     "id" : "24",
+    "type" : "rdfs:Datatype"
+  }, {
+    "id" : "11",
+    "type" : "owl:Class"
+  }, {
+    "id" : "14",
+    "type" : "rdfs:Datatype"
+  }, {
+    "id" : "53",
+    "type" : "rdfs:Datatype"
+  }, {
+    "id" : "57",
+    "type" : "owl:Class"
+  }, {
+    "id" : "19",
+    "type" : "owl:Class"
+  }, {
+    "id" : "59",
+    "type" : "owl:unionOf"
+  }, {
+    "id" : "36",
+    "type" : "owl:Class"
+  }, {
+    "id" : "60",
+    "type" : "owl:Class"
+  }, {
+    "id" : "34",
+    "type" : "owl:Class"
+  }, {
+    "id" : "48",
+    "type" : "owl:Class"
+  }, {
+    "id" : "18",
+    "type" : "owl:Class"
+  }, {
+    "id" : "12",
     "type" : "owl:Class"
   } ],
   "classAttribute" : [ {
+    "iri" : "https://w3id.org/mda/ontology/AlarmType",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "instances" : 0,
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "AlarmType",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "AlarmType",
+      "en" : "Alarm Type",
+      "nl" : "Alarmtype"
+    },
+    "comment" : {
+      "en" : "A generic, archetypal alarm definition independent of any specific device instance or patient encounter. Captures the default device, sensor, and signal structure associated with a class of alarm.",
+      "nl" : "Een generieke, archetypische alarmdefinitie, onafhankelijk van een specifieke apparaatinstantie of patiëntencounter. Legt de standaard apparaat-, sensor- en signaalstructuur vast die samenhangt met een klasse van alarmen."
+    },
+    "id" : "4",
+    "superClasses" : [ "5" ]
+  }, {
     "iri" : "http://www.w3.org/2004/02/skos/core#Concept",
     "baseIri" : "http://www.w3.org/2004/02/skos/core",
     "instances" : 0,
@@ -153,30 +182,8 @@
     "attributes" : [ "external" ],
     "id" : "2"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/Laterality",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "instances" : 0,
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "Laterality",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "Laterality",
-      "en" : "Laterality",
-      "nl" : "Lateraliteit"
-    },
-    "comment" : {
-      "en" : "The laterality (left, right, bilateral) of a sensor position.",
-      "nl" : "De lateraliteit (links, rechts, bilateraal) van een sensorpositie."
-    },
-    "id" : "22"
-  }, {
     "iri" : "https://w3id.org/mda/ontology/Signal",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
+    "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
       "identifier" : [ {
@@ -201,29 +208,58 @@
       "en" : "A signal — either raw, produced by a sensor, or derived/intermediate, produced by a mda:SignalAnalysis step from other signals (e.g. augmented lead aVF, combined from ECG leads I and II). No structural distinction between the two: a later analysis step consuming a signal doesn't need to know whether it came from a sensor or from an earlier analysis.",
       "nl" : "Een signaal — ofwel ruw, geproduceerd door een sensor, ofwel afgeleid/tussenliggend, geproduceerd door een mda:SignalAnalysis-stap uit andere signalen (bijv. versterkte afleiding aVF, gecombineerd uit ECG-afleidingen I en II). Geen structureel onderscheid tussen beide: een latere analysestap die een signaal verbruikt hoeft niet te weten of het van een sensor komt of van een eerdere analyse."
     },
-    "id" : "12"
+    "id" : "8"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/TherapeuticModality",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
+    "iri" : "https://w3id.org/mda/ontology/PhysiologicalProcess",
+    "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
         "language" : "undefined",
-        "value" : "TherapeuticModality",
+        "value" : "PhysiologicalProcess",
         "type" : "label"
       } ]
     },
     "label" : {
-      "IRI-based" : "TherapeuticModality",
-      "en" : "Therapeutic Modality",
-      "nl" : "Therapeutische Modaliteit"
+      "IRI-based" : "PhysiologicalProcess",
+      "en" : "Physiological Process",
+      "nl" : "Fysiologisch Proces"
     },
     "comment" : {
-      "en" : "A therapeutic intervention or treatment modality.",
-      "nl" : "Een therapeutische interventie of behandelingsmodaliteit."
+      "en" : "A biological or physiological process occurring in the body.",
+      "nl" : "Een biologisch of fysiologisch proces dat in het lichaam plaatsvindt."
     },
-    "id" : "26"
+    "id" : "9"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/Component",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "instances" : 0,
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "Component",
+        "type" : "label"
+      } ],
+      "nodeKind" : [ {
+        "identifier" : "nodeKind",
+        "language" : "undefined",
+        "value" : "https://w3id.org/mda/ontology/Individuated",
+        "type" : "iri"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "Component",
+      "en" : "Component",
+      "nl" : "Onderdeel"
+    },
+    "subClasses" : [ "19", "22", "11" ],
+    "comment" : {
+      "en" : "A physical or functional part of a medical device (e.g. a connection port, power unit, or heating element). mda:Sensor is the specialisation that additionally produces a measurable signal — every sensor is a component, but not every component senses.",
+      "nl" : "Een fysiek of functioneel onderdeel van een medisch apparaat (bijv. een aansluitpoort, voedingseenheid of verwarmingselement). mda:Sensor is de specialisatie die daarnaast een meetbaar signaal produceert — elke sensor is een onderdeel, maar niet elk onderdeel meet."
+    },
+    "id" : "1"
   }, {
     "iri" : "http://www.w3.org/2004/02/skos/core#ConceptScheme",
     "baseIri" : "http://www.w3.org/2004/02/skos/core",
@@ -231,12 +267,34 @@
     "label" : {
       "IRI-based" : "ConceptScheme"
     },
-    "subClasses" : [ "38" ],
+    "subClasses" : [ "34" ],
     "attributes" : [ "external" ],
-    "id" : "37"
+    "id" : "33"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/Organ",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "instances" : 0,
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "Organ",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "Organ",
+      "en" : "Organ",
+      "nl" : "Orgaan"
+    },
+    "comment" : {
+      "en" : "A biological organ.",
+      "nl" : "Een biologisch orgaan."
+    },
+    "id" : "16"
   }, {
     "iri" : "https://w3id.org/mda/ontology/Alarm",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
+    "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
       "identifier" : [ {
@@ -251,15 +309,37 @@
       "en" : "Alarm",
       "nl" : "Alarm"
     },
-    "subClasses" : [ "1" ],
+    "subClasses" : [ "4" ],
     "comment" : {
       "en" : "A notification or alert generated by a medical device.",
       "nl" : "Een melding of waarschuwing gegenereerd door een medisch apparaat."
     },
-    "id" : "10"
+    "id" : "5"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/AlarmMessage",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "instances" : 0,
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "AlarmMessage",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "AlarmMessage",
+      "en" : "Alarm Message",
+      "nl" : "Alarmbericht"
+    },
+    "comment" : {
+      "en" : "A per-alarm message node — the hub for this occurrence's independent facets: mda:concernsPatient (the shared, persistent patient — the merge anchor operational inference reasons across alarms over) and mda:triggeredBy (the device whose technical structure this alarm implicates), reached as siblings rather than one gatewaying the other.",
+      "nl" : "Een per-alarm berichtknooppunt — het knooppunt voor de onafhankelijke facetten van deze gebeurtenis: mda:concernsPatient en mda:triggeredBy, als nevengeschikte eigenschappen bereikt."
+    },
+    "id" : "28"
   }, {
     "iri" : "https://w3id.org/mda/ontology/Metric",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
+    "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
       "identifier" : [ {
@@ -284,106 +364,10 @@
       "en" : "A measurable quantity, computed from one or more signals by a mda:SignalAnalysis step.",
       "nl" : "Een meetbare grootheid, berekend uit één of meer signalen door een mda:SignalAnalysis-stap."
     },
-    "id" : "29"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/Organ",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "instances" : 0,
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "Organ",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "Organ",
-      "en" : "Organ",
-      "nl" : "Orgaan"
-    },
-    "comment" : {
-      "en" : "A biological organ.",
-      "nl" : "Een biologisch orgaan."
-    },
-    "id" : "45"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/CriticalComponent",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "instances" : 0,
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "CriticalComponent",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "CriticalComponent",
-      "en" : "Critical component",
-      "nl" : "Kritiek onderdeel"
-    },
-    "comment" : {
-      "en" : "The subclass of mda:Component whose own disconnection means the device itself is unavailable (e.g. the data-link port, the power inlet) — as opposed to a peripheral component whose disconnection is only a subsystem-level warning (e.g. a mattress heater). This class exists so the propagation rule using it can be precise: unconditionally true for CriticalComponent, never assumed for mda:Component as a whole — see mda:hasOperationState's comment below on why mda:hasComponent was deliberately dropped from its propertyChainAxiom. The rule itself, and which concrete vocabulary-level component types (e.g. component:ConnectionUnit, component:PowerUnit) are tagged as members of this class, both live in 2_READOUT/outcome/inference.ttl's Component operational-state propagation section — the rule's hasValue target (a specific operation-state concept) is catalogue vocabulary, so it cannot be asserted here, but this class it's written over is a plain structural distinction with no vocabulary dependency, so it belongs in this TBox, not duplicated per component type down there.",
-      "nl" : "De subklasse van mda:Component waarvan het loskoppelen betekent dat het apparaat zelf niet beschikbaar is (bijv. de datapoort, de stroomaansluiting) — in tegenstelling tot een randonderdeel waarvan het loskoppelen slechts een subsysteemwaarschuwing is (bijv. een matrasverwarming)."
-    },
-    "id" : "48",
-    "superClasses" : [ "31" ]
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/AlarmMessage",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "instances" : 0,
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "AlarmMessage",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "AlarmMessage",
-      "en" : "Alarm Message",
-      "nl" : "Alarmbericht"
-    },
-    "comment" : {
-      "en" : "A per-alarm message node — the hub for this occurrence's independent facets: mda:concernsPatient (the shared, persistent patient — the merge anchor operational inference reasons across alarms over) and mda:triggeredBy (the device whose technical structure this alarm implicates), reached as siblings rather than one gatewaying the other.",
-      "nl" : "Een per-alarm berichtknooppunt — het knooppunt voor de onafhankelijke facetten van deze gebeurtenis: mda:concernsPatient en mda:triggeredBy, als nevengeschikte eigenschappen bereikt."
-    },
-    "id" : "4"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/Component",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "instances" : 0,
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "Component",
-        "type" : "label"
-      } ],
-      "nodeKind" : [ {
-        "identifier" : "nodeKind",
-        "language" : "undefined",
-        "value" : "https://w3id.org/mda/ontology/Individuated",
-        "type" : "iri"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "Component",
-      "en" : "Component",
-      "nl" : "Onderdeel"
-    },
-    "subClasses" : [ "24", "48", "40" ],
-    "comment" : {
-      "en" : "A physical or functional part of a medical device (e.g. a connection port, power unit, or heating element). mda:Sensor is the specialisation that additionally produces a measurable signal — every sensor is a component, but not every component senses.",
-      "nl" : "Een fysiek of functioneel onderdeel van een medisch apparaat (bijv. een aansluitpoort, voedingseenheid of verwarmingselement). mda:Sensor is de specialisatie die daarnaast een meetbaar signaal produceert — elke sensor is een onderdeel, maar niet elk onderdeel meet."
-    },
-    "id" : "31"
+    "id" : "37"
   }, {
     "iri" : "https://w3id.org/mda/ontology/Patient",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
+    "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
       "identifier" : [ {
@@ -408,166 +392,38 @@
       "en" : "A patient being monitored by medical devices.",
       "nl" : "Een patiënt die wordt bewaakt door medische apparaten."
     },
-    "id" : "51"
+    "id" : "40"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/SignalAnalysis",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
+    "iri" : "https://w3id.org/mda/ontology/CriticalComponent",
+    "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
         "language" : "undefined",
-        "value" : "SignalAnalysis",
+        "value" : "CriticalComponent",
         "type" : "label"
       } ]
     },
     "label" : {
-      "IRI-based" : "SignalAnalysis",
-      "en" : "Signal analysis",
-      "nl" : "Signaalanalyse"
+      "IRI-based" : "CriticalComponent",
+      "en" : "Critical component",
+      "nl" : "Kritiek onderdeel"
     },
     "comment" : {
-      "en" : "One computation step of a functional unit: consumes one or more signals (reached via the inverse of mda:analyzedBy) and produces either a metric (mda:producesMetric) or a further, derived signal (mda:producesSignal) that a later step can itself consume. Not itself a mda:Component — it's the computation a functional unit performs, not a physical part.",
-      "nl" : "Eén berekeningsstap van een functionele eenheid: verbruikt één of meer signalen (bereikt via de inverse van mda:analyzedBy) en produceert ofwel een metriek (mda:producesMetric) ofwel een verder afgeleid signaal (mda:producesSignal) dat een latere stap op zijn beurt kan verbruiken. Zelf geen mda:Component — het is de berekening die een functionele eenheid uitvoert, geen fysiek onderdeel."
+      "en" : "The subclass of mda:Component whose own disconnection means the device itself is unavailable (e.g. the data-link port, the power inlet) — as opposed to a peripheral component whose disconnection is only a subsystem-level warning (e.g. a mattress heater). This class exists so the propagation rule using it can be precise: unconditionally true for CriticalComponent, never assumed for mda:Component as a whole — see mda:hasOperationState's comment below on why mda:hasComponent was deliberately dropped from its propertyChainAxiom. The rule itself, and which concrete vocabulary-level component types (e.g. component:ConnectionUnit, component:PowerUnit) are tagged as members of this class, both live in 2_READOUT/outcome/inference.ttl's Component operational-state propagation section — the rule's hasValue target (a specific operation-state concept) is catalogue vocabulary, so it cannot be asserted here, but this class it's written over is a plain structural distinction with no vocabulary dependency, so it belongs in this TBox, not duplicated per component type down there.",
+      "nl" : "De subklasse van mda:Component waarvan het loskoppelen betekent dat het apparaat zelf niet beschikbaar is (bijv. de datapoort, de stroomaansluiting) — in tegenstelling tot een randonderdeel waarvan het loskoppelen slechts een subsysteemwaarschuwing is (bijv. een matrasverwarming)."
     },
-    "id" : "34"
+    "id" : "22",
+    "superClasses" : [ "1" ]
   }, {
     "instances" : 0,
-    "union" : [ "34", "24" ],
-    "attributes" : [ "union", "anonymous" ],
-    "id" : "55"
-  }, {
-    "iri" : "http://www.w3.org/2001/XMLSchema#duration",
-    "baseIri" : "http://www.w3.org/2001/XMLSchema",
-    "id" : "42",
-    "label" : {
-      "IRI-based" : "duration"
-    }
-  }, {
-    "iri" : "http://www.w3.org/2001/XMLSchema#dateTime",
-    "baseIri" : "http://www.w3.org/2001/XMLSchema",
-    "id" : "54",
-    "label" : {
-      "IRI-based" : "dateTime"
-    }
-  }, {
-    "iri" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-    "baseIri" : "http://www.w3.org/1999/02/22-rdf-syntax-ns",
-    "id" : "19",
-    "label" : {
-      "IRI-based" : "langString"
-    }
-  }, {
-    "iri" : "http://www.w3.org/2001/XMLSchema#dateTime",
-    "baseIri" : "http://www.w3.org/2001/XMLSchema",
-    "id" : "21",
-    "label" : {
-      "IRI-based" : "dateTime"
-    }
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/OrganSystem",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "instances" : 0,
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "OrganSystem",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "OrganSystem",
-      "en" : "Organ System",
-      "nl" : "Orgaansysteem"
-    },
-    "comment" : {
-      "en" : "A system of related organs in the body.",
-      "nl" : "Een systeem van gerelateerde organen in het lichaam."
-    },
-    "id" : "46"
-  }, {
-    "instances" : 0,
-    "union" : [ "31", "12", "26", "5", "24" ],
-    "attributes" : [ "union", "anonymous" ],
-    "id" : "14"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/FunctionalUnit",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "instances" : 0,
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "FunctionalUnit",
-        "type" : "label"
-      } ],
-      "nodeKind" : [ {
-        "identifier" : "nodeKind",
-        "language" : "undefined",
-        "value" : "https://w3id.org/mda/ontology/Individuated",
-        "type" : "iri"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "FunctionalUnit",
-      "en" : "Functional unit",
-      "nl" : "Functionele eenheid"
-    },
-    "comment" : {
-      "en" : "The module of a device that houses the computation logic for a particular measurement capability (e.g. an ECG module, an SpO2 module) — often called 'the sensor' colloquially, but distinct here from mda:Sensor, which is only the physical probe. A functional unit reads from one or more sensors and, via one or more mda:SignalAnalysis steps, turns their signals into metrics. A specialisation of mda:Component. Declared disjoint with mda:Sensor precisely because of that colloquial conflation — the two are easy to confuse in exactly the way this class's own name tries to prevent, so a node accidentally typed as both is now an inconsistency a reasoner catches rather than a silent modelling error.",
-      "nl" : "De module van een apparaat die de berekeningslogica voor een bepaalde meetmogelijkheid huisvest (bijv. een ECG-module, een SpO2-module) — in de volksmond vaak 'de sensor' genoemd, maar hier onderscheiden van mda:Sensor, dat enkel de fysieke probe is. Een functionele eenheid leest van één of meer sensoren en zet, via één of meer mda:SignalAnalysis-stappen, hun signalen om in metrieken. Een specialisatie van mda:Component. Disjunct verklaard met mda:Sensor vanwege precies die volkstaal-verwarring."
-    },
-    "id" : "40",
-    "superClasses" : [ "31" ]
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/PhysiologicalProcess",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "instances" : 0,
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "PhysiologicalProcess",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "PhysiologicalProcess",
-      "en" : "Physiological Process",
-      "nl" : "Fysiologisch Proces"
-    },
-    "comment" : {
-      "en" : "A biological or physiological process occurring in the body.",
-      "nl" : "Een biologisch of fysiologisch proces dat in het lichaam plaatsvindt."
-    },
-    "id" : "8"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/AlarmType",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "instances" : 0,
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "AlarmType",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "AlarmType",
-      "en" : "Alarm Type",
-      "nl" : "Alarmtype"
-    },
-    "comment" : {
-      "en" : "A generic, archetypal alarm definition independent of any specific device instance or patient encounter. Captures the default device, sensor, and signal structure associated with a class of alarm.",
-      "nl" : "Een generieke, archetypische alarmdefinitie, onafhankelijk van een specifieke apparaatinstantie of patiëntencounter. Legt de standaard apparaat-, sensor- en signaalstructuur vast die samenhangt met een klasse van alarmen."
-    },
-    "id" : "1",
-    "superClasses" : [ "10" ]
+    "union" : [ "48", "11" ],
+    "attributes" : [ "anonymous", "union" ],
+    "id" : "45"
   }, {
     "iri" : "https://w3id.org/mda/ontology/PhysiologicalProperty",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
+    "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
       "identifier" : [ {
@@ -586,89 +442,24 @@
       "en" : "A measurable property of a physiological process.",
       "nl" : "Een meetbare eigenschap van een fysiologisch proces."
     },
-    "id" : "7"
+    "id" : "31"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/AnatomicalPosition",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "instances" : 0,
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "AnatomicalPosition",
-        "type" : "label"
-      } ]
-    },
+    "iri" : "http://www.w3.org/2001/XMLSchema#duration",
+    "baseIri" : "http://www.w3.org/2001/XMLSchema",
+    "id" : "7",
     "label" : {
-      "IRI-based" : "AnatomicalPosition",
-      "en" : "Anatomical Position",
-      "nl" : "Anatomische Positie"
-    },
-    "comment" : {
-      "en" : "The anatomical position of a sensor on the body.",
-      "nl" : "De anatomische positie van een sensor op het lichaam."
-    },
-    "id" : "25"
+      "IRI-based" : "duration"
+    }
   }, {
-    "iri" : "https://w3id.org/mda/ontology/Device",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "instances" : 0,
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "Device",
-        "type" : "label"
-      } ],
-      "nodeKind" : [ {
-        "identifier" : "nodeKind",
-        "language" : "undefined",
-        "value" : "https://w3id.org/mda/ontology/Individuated",
-        "type" : "iri"
-      } ]
-    },
+    "iri" : "http://www.w3.org/2001/XMLSchema#dateTime",
+    "baseIri" : "http://www.w3.org/2001/XMLSchema",
+    "id" : "24",
     "label" : {
-      "IRI-based" : "Device",
-      "en" : "Device",
-      "nl" : "Apparaat"
-    },
-    "comment" : {
-      "en" : "A medical device that generates alarms.",
-      "nl" : "Een medisch apparaat dat alarmen genereert."
-    },
-    "id" : "5"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/PostAlarmValidScheme",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "instances" : 0,
-    "annotations" : {
-      "postAlarmValidityDuration" : [ {
-        "identifier" : "postAlarmValidityDuration",
-        "language" : "undefined",
-        "value" : "PT60S",
-        "type" : "label"
-      } ],
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "PostAlarmValidScheme",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "PostAlarmValidScheme",
-      "en" : "Post-alarm valid scheme",
-      "nl" : "Post-alarm geldig schema"
-    },
-    "comment" : {
-      "en" : "A SKOS concept scheme whose concepts remain valid for a fixed duration after an alarm ends.",
-      "nl" : "Een SKOS-conceptschema waarvan de concepten geldig blijven gedurende een vaste duur nadat een alarm is geëindigd."
-    },
-    "id" : "38",
-    "superClasses" : [ "37" ]
+      "IRI-based" : "dateTime"
+    }
   }, {
     "iri" : "https://w3id.org/mda/ontology/Sensor",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
+    "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
       "identifier" : [ {
@@ -693,72 +484,284 @@
       "en" : "The physical object placed to generate a signal — e.g. a pulse-oximetry clip, an ECG lead, a temperature probe. It does not itself measure or compute anything: it only produces a raw signal (mda:producesSignal). Turning that signal into a metric is mda:FunctionalUnit's job, via mda:SignalAnalysis. A specialisation of mda:Component. Declared disjoint with mda:FunctionalUnit (see its own comment) — asserted there, applies symmetrically.",
       "nl" : "Het fysieke object dat geplaatst wordt om een signaal te genereren — bijv. een pulse-oximetrieklip, een ECG-afleiding, een temperatuurprobe. Het meet of berekent zelf niets: het produceert enkel een ruw signaal (mda:producesSignal). Dat signaal omzetten in een metriek is de taak van mda:FunctionalUnit, via mda:SignalAnalysis. Een specialisatie van mda:Component."
     },
-    "id" : "24",
-    "superClasses" : [ "31" ]
+    "id" : "11",
+    "superClasses" : [ "1" ]
+  }, {
+    "iri" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
+    "baseIri" : "http://www.w3.org/1999/02/22-rdf-syntax-ns",
+    "id" : "14",
+    "label" : {
+      "IRI-based" : "langString"
+    }
+  }, {
+    "iri" : "http://www.w3.org/2001/XMLSchema#dateTime",
+    "baseIri" : "http://www.w3.org/2001/XMLSchema",
+    "id" : "53",
+    "label" : {
+      "IRI-based" : "dateTime"
+    }
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/Laterality",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "instances" : 0,
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "Laterality",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "Laterality",
+      "en" : "Laterality",
+      "nl" : "Lateraliteit"
+    },
+    "comment" : {
+      "en" : "The laterality (left, right, bilateral) of a sensor position.",
+      "nl" : "De lateraliteit (links, rechts, bilateraal) van een sensorpositie."
+    },
+    "id" : "57"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/FunctionalUnit",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "instances" : 0,
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "FunctionalUnit",
+        "type" : "label"
+      } ],
+      "nodeKind" : [ {
+        "identifier" : "nodeKind",
+        "language" : "undefined",
+        "value" : "https://w3id.org/mda/ontology/Individuated",
+        "type" : "iri"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "FunctionalUnit",
+      "en" : "Functional unit",
+      "nl" : "Functionele eenheid"
+    },
+    "comment" : {
+      "en" : "The module of a device that houses the computation logic for a particular measurement capability (e.g. an ECG module, an SpO2 module) — often called 'the sensor' colloquially, but distinct here from mda:Sensor, which is only the physical probe. A functional unit reads from one or more sensors and, via one or more mda:SignalAnalysis steps, turns their signals into metrics. A specialisation of mda:Component. Declared disjoint with mda:Sensor precisely because of that colloquial conflation — the two are easy to confuse in exactly the way this class's own name tries to prevent, so a node accidentally typed as both is now an inconsistency a reasoner catches rather than a silent modelling error.",
+      "nl" : "De module van een apparaat die de berekeningslogica voor een bepaalde meetmogelijkheid huisvest (bijv. een ECG-module, een SpO2-module) — in de volksmond vaak 'de sensor' genoemd, maar hier onderscheiden van mda:Sensor, dat enkel de fysieke probe is. Een functionele eenheid leest van één of meer sensoren en zet, via één of meer mda:SignalAnalysis-stappen, hun signalen om in metrieken. Een specialisatie van mda:Component. Disjunct verklaard met mda:Sensor vanwege precies die volkstaal-verwarring."
+    },
+    "id" : "19",
+    "superClasses" : [ "1" ]
+  }, {
+    "instances" : 0,
+    "union" : [ "1", "18", "11", "60", "8" ],
+    "attributes" : [ "anonymous", "union" ],
+    "id" : "59"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/OrganSystem",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "instances" : 0,
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "OrganSystem",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "OrganSystem",
+      "en" : "Organ System",
+      "nl" : "Orgaansysteem"
+    },
+    "comment" : {
+      "en" : "A system of related organs in the body.",
+      "nl" : "Een systeem van gerelateerde organen in het lichaam."
+    },
+    "id" : "36"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/TherapeuticModality",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "instances" : 0,
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "TherapeuticModality",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "TherapeuticModality",
+      "en" : "Therapeutic Modality",
+      "nl" : "Therapeutische Modaliteit"
+    },
+    "comment" : {
+      "en" : "A therapeutic intervention or treatment modality.",
+      "nl" : "Een therapeutische interventie of behandelingsmodaliteit."
+    },
+    "id" : "60"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/PostAlarmValidScheme",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "instances" : 0,
+    "annotations" : {
+      "postAlarmValidityDuration" : [ {
+        "identifier" : "postAlarmValidityDuration",
+        "language" : "undefined",
+        "value" : "PT60S",
+        "type" : "label"
+      } ],
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "PostAlarmValidScheme",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "PostAlarmValidScheme",
+      "en" : "Post-alarm valid scheme",
+      "nl" : "Post-alarm geldig schema"
+    },
+    "comment" : {
+      "en" : "A SKOS concept scheme whose concepts remain valid for a fixed duration after an alarm ends.",
+      "nl" : "Een SKOS-conceptschema waarvan de concepten geldig blijven gedurende een vaste duur nadat een alarm is geëindigd."
+    },
+    "id" : "34",
+    "superClasses" : [ "33" ]
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/SignalAnalysis",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "instances" : 0,
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "SignalAnalysis",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "SignalAnalysis",
+      "en" : "Signal analysis",
+      "nl" : "Signaalanalyse"
+    },
+    "comment" : {
+      "en" : "One computation step of a functional unit: consumes one or more signals (reached via the inverse of mda:analyzedBy) and produces either a metric (mda:producesMetric) or a further, derived signal (mda:producesSignal) that a later step can itself consume. Not itself a mda:Component — it's the computation a functional unit performs, not a physical part.",
+      "nl" : "Eén berekeningsstap van een functionele eenheid: verbruikt één of meer signalen (bereikt via de inverse van mda:analyzedBy) en produceert ofwel een metriek (mda:producesMetric) ofwel een verder afgeleid signaal (mda:producesSignal) dat een latere stap op zijn beurt kan verbruiken. Zelf geen mda:Component — het is de berekening die een functionele eenheid uitvoert, geen fysiek onderdeel."
+    },
+    "id" : "48"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/Device",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "instances" : 0,
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "Device",
+        "type" : "label"
+      } ],
+      "nodeKind" : [ {
+        "identifier" : "nodeKind",
+        "language" : "undefined",
+        "value" : "https://w3id.org/mda/ontology/Individuated",
+        "type" : "iri"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "Device",
+      "en" : "Device",
+      "nl" : "Apparaat"
+    },
+    "comment" : {
+      "en" : "A medical device that generates alarms.",
+      "nl" : "Een medisch apparaat dat alarmen genereert."
+    },
+    "id" : "18"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/AnatomicalPosition",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "instances" : 0,
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "AnatomicalPosition",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "AnatomicalPosition",
+      "en" : "Anatomical Position",
+      "nl" : "Anatomische Positie"
+    },
+    "comment" : {
+      "en" : "The anatomical position of a sensor on the body.",
+      "nl" : "De anatomische positie van een sensor op het lichaam."
+    },
+    "id" : "12"
   } ],
   "property" : [ {
     "id" : "0",
     "type" : "owl:objectProperty"
   }, {
-    "id" : "3",
-    "type" : "owl:objectProperty"
-  }, {
     "id" : "6",
-    "type" : "owl:objectProperty"
+    "type" : "owl:datatypeProperty"
   }, {
-    "id" : "9",
-    "type" : "owl:objectProperty"
-  }, {
-    "id" : "11",
+    "id" : "10",
     "type" : "owl:objectProperty"
   }, {
     "id" : "13",
-    "type" : "owl:objectProperty"
-  }, {
-    "id" : "18",
     "type" : "owl:datatypeProperty"
   }, {
-    "id" : "20",
-    "type" : "owl:datatypeProperty"
-  }, {
-    "id" : "23",
-    "type" : "owl:objectProperty"
-  }, {
-    "id" : "27",
-    "type" : "owl:objectProperty"
-  }, {
-    "id" : "28",
-    "type" : "owl:objectProperty"
-  }, {
-    "id" : "30",
-    "type" : "owl:objectProperty"
-  }, {
-    "id" : "33",
+    "id" : "15",
     "type" : "owl:objectProperty"
   }, {
     "id" : "17",
     "type" : "owl:objectProperty"
   }, {
-    "id" : "35",
+    "id" : "20",
     "type" : "owl:objectProperty"
   }, {
-    "id" : "15",
+    "id" : "21",
     "type" : "owl:objectProperty"
   }, {
-    "id" : "36",
+    "id" : "23",
+    "type" : "owl:datatypeProperty"
+  }, {
+    "id" : "25",
     "type" : "owl:objectProperty"
   }, {
-    "id" : "39",
+    "id" : "26",
     "type" : "owl:objectProperty"
   }, {
-    "id" : "16",
+    "id" : "27",
+    "type" : "owl:objectProperty"
+  }, {
+    "id" : "29",
+    "type" : "owl:objectProperty"
+  }, {
+    "id" : "30",
     "type" : "owl:objectProperty"
   }, {
     "id" : "32",
     "type" : "owl:objectProperty"
   }, {
+    "id" : "35",
+    "type" : "owl:objectProperty"
+  }, {
+    "id" : "38",
+    "type" : "owl:objectProperty"
+  }, {
+    "id" : "39",
+    "type" : "rdfs:SubClassOf"
+  }, {
     "id" : "41",
-    "type" : "owl:datatypeProperty"
+    "type" : "owl:objectProperty"
+  }, {
+    "id" : "42",
+    "type" : "rdfs:SubClassOf"
   }, {
     "id" : "43",
     "type" : "owl:objectProperty"
@@ -767,37 +770,34 @@
     "type" : "owl:objectProperty"
   }, {
     "id" : "47",
-    "type" : "rdfs:SubClassOf"
+    "type" : "owl:objectProperty"
   }, {
     "id" : "49",
     "type" : "owl:objectProperty"
   }, {
     "id" : "50",
-    "type" : "rdfs:SubClassOf"
+    "type" : "owl:objectProperty"
+  }, {
+    "id" : "51",
+    "type" : "owl:objectProperty"
   }, {
     "id" : "52",
     "type" : "owl:objectProperty"
   }, {
-    "id" : "53",
-    "type" : "owl:datatypeProperty"
+    "id" : "54",
+    "type" : "rdfs:SubClassOf"
+  }, {
+    "id" : "55",
+    "type" : "rdfs:SubClassOf"
   }, {
     "id" : "56",
-    "type" : "owl:objectProperty"
-  }, {
-    "id" : "57",
     "type" : "rdfs:SubClassOf"
   }, {
     "id" : "58",
-    "type" : "rdfs:SubClassOf"
-  }, {
-    "id" : "59",
-    "type" : "rdfs:SubClassOf"
-  }, {
-    "id" : "60",
-    "type" : "owl:objectProperty"
+    "type" : "owl:disjointWith"
   }, {
     "id" : "61",
-    "type" : "owl:disjointWith"
+    "type" : "owl:objectProperty"
   }, {
     "id" : "62",
     "type" : "owl:objectProperty"
@@ -817,435 +817,24 @@
     "id" : "67",
     "type" : "owl:objectProperty"
   }, {
+    "id" : "68",
+    "type" : "owl:datatypeProperty"
+  }, {
+    "id" : "46",
+    "type" : "owl:objectProperty"
+  }, {
     "id" : "69",
     "type" : "owl:objectProperty"
   }, {
     "id" : "70",
     "type" : "owl:objectProperty"
   }, {
-    "id" : "68",
+    "id" : "3",
     "type" : "owl:objectProperty"
   } ],
   "propertyAttribute" : [ {
-    "iri" : "https://w3id.org/mda/ontology/hasLabelConcept",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "2",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "hasLabelConcept",
-        "type" : "label"
-      } ],
-      "valuesFromScheme" : [ {
-        "identifier" : "valuesFromScheme",
-        "language" : "undefined",
-        "value" : "https://w3id.org/mda/vocab/alarm-label/Scheme",
-        "type" : "iri"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "hasLabelConcept",
-      "en" : "has label concept",
-      "nl" : "heeft labelconcept"
-    },
-    "domain" : "1",
-    "comment" : {
-      "en" : "Relates an alarm type to its controlled-vocabulary concept in mda:AlarmLabel's scheme — one concept per distinct label string encountered, shared across every archetype that uses that label regardless of priority (2_READOUT/vocab_readout.py's label_concept_iri keys on the label alone, not the archetype). The companion of mda:hasLabel, not a replacement for it.",
-      "nl" : "Koppelt een alarmtype aan zijn gecontroleerde-vocabulaireconcept in het schema van mda:AlarmLabel — één concept per onderscheidend labelstring, gedeeld door elk archetype dat dat label gebruikt, ongeacht prioriteit."
-    },
-    "attributes" : [ "object" ],
-    "id" : "0"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/triggeredBy",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "5",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "triggeredBy",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "triggeredBy",
-      "en" : "triggered by",
-      "nl" : "veroorzaakt door"
-    },
-    "domain" : "4",
-    "comment" : {
-      "en" : "Relates an alarm message directly to the device whose technical structure it implicates — the sole path from AlarmMessage into the mda:Device subtree (mda:hasFunctionalUnit, mda:hasSensor, ...). Replaces routing that reach through mda:concernsPatient/mda:isMonitoredBy: that chain asserted every alarm-raising device 'monitors' the patient, which is false for a fundamentally therapeutic device (mda:MechanicalVentilator, mda:Dialysator, mda:ExtracorporealMembraneOxygenator, mda:Incubator/mda:Thermoregulator all administer a therapy — see mda:administers — rather than principally observe). mda:isMonitoredBy itself is UNCHANGED and still used, but only for its own actual justification: 4_OPERATIONAL/op_knowledge.py's per-instant double-booking check, asserted fresh at grounding time, never derived from or dependent on this blueprint-level structure. Functional, not inverse-functional: one message has exactly one triggering device, but one device triggers many messages over its lifetime — unlike mda:hasMessage's strict bijection.",
-      "nl" : "Koppelt een alarmbericht rechtstreeks aan het apparaat waarvan het de technische structuur impliceert — de enige weg van AlarmMessage naar de mda:Device-deelboom. Vervangt routering via mda:concernsPatient/mda:isMonitoredBy: die keten beweerde dat elk alarmerend apparaat de patiënt 'bewaakt', wat onjuist is voor een wezenlijk therapeutisch apparaat. mda:isMonitoredBy zelf is ONGEWIJZIGD en blijft gebruikt, maar uitsluitend voor de eigen operationele rechtvaardiging. Functioneel, niet invers-functioneel."
-    },
-    "attributes" : [ "object", "functional" ],
-    "id" : "3"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/isPropertyOf",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "8",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "isPropertyOf",
-        "type" : "label"
-      } ],
-      "situational" : [ {
-        "identifier" : "situational",
-        "language" : "undefined",
-        "value" : "true",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "isPropertyOf",
-      "en" : "is property of",
-      "nl" : "is eigenschap van"
-    },
-    "domain" : "7",
-    "comment" : {
-      "en" : "Relates a physiological property to the process it characterises.",
-      "nl" : "Koppelt een fysiologische eigenschap aan het proces dat het karakteriseert."
-    },
-    "attributes" : [ "object" ],
-    "id" : "6"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/isOfType",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "1",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "isOfType",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "isOfType",
-      "en" : "is of type",
-      "nl" : "is van type"
-    },
-    "domain" : "10",
-    "comment" : {
-      "en" : "Links a concrete alarm instance to its archetypal alarm type in the type catalogue, from which default structural knowledge (device type, sensor type, signal type) can be inherited. Functional: one alarm occurrence is of exactly one archetype.",
-      "nl" : "Koppelt een concrete alarminstantie aan zijn archetypische alarmtype in de typecatalogus, waaruit standaard structurele kennis (apparaattype, sensortype, signaaltype) kan worden geërfd. Functioneel: één alarminstantie is van precies één archetype."
-    },
-    "attributes" : [ "object", "functional" ],
-    "id" : "9"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/hasQualityState",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "2",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "hasQualityState",
-        "type" : "label"
-      } ],
-      "valuesFromScheme" : [ {
-        "identifier" : "valuesFromScheme",
-        "language" : "undefined",
-        "value" : "https://w3id.org/mda/vocab/quality-state/Scheme",
-        "type" : "iri"
-      } ],
-      "persistsPostAlarm" : [ {
-        "identifier" : "persistsPostAlarm",
-        "language" : "undefined",
-        "value" : "true",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "hasQualityState",
-      "en" : "has quality state",
-      "nl" : "heeft kwaliteitsstatus"
-    },
-    "domain" : "12",
-    "comment" : {
-      "en" : "The quality state of a signal, indicating measurement reliability.",
-      "nl" : "De kwaliteitsstatus van een signaal, die de meetbetrouwbaarheid aangeeft."
-    },
-    "attributes" : [ "object" ],
-    "id" : "11"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/hasOperationState",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "2",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "hasOperationState",
-        "type" : "label"
-      } ],
-      "persistsPostAlarm" : [ {
-        "identifier" : "persistsPostAlarm",
-        "language" : "undefined",
-        "value" : "true",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "hasOperationState",
-      "en" : "has operation state",
-      "nl" : "heeft operatiestatus"
-    },
-    "domain" : "14",
-    "subproperty" : [ "15", "16", "17" ],
-    "comment" : {
-      "en" : "The operational state of a device, sensor, signal, component, or the therapeutic modality a device administers (the latter inferred from the administering device's own state, not asserted directly).",
-      "nl" : "De operationele status van een apparaat, sensor, signaal, onderdeel, of de therapeutische modaliteit die een apparaat toedient (dit laatste afgeleid van de status van het toedienende apparaat, niet direct toegekend)."
-    },
-    "attributes" : [ "object" ],
-    "id" : "13"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/hasLabel",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "19",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "hasLabel",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "hasLabel",
-      "en" : "has label",
-      "nl" : "heeft label"
-    },
-    "domain" : "1",
-    "comment" : {
-      "en" : "The free-text label identifying an alarm type, exactly as it occurs in the source data (e.g. 'PHILIPSMONITOR - SpO2 geen pols') — a literal, not a concept: alarm labels routinely contain spaces and punctuation no SKOS notation can carry. mda:hasLabelConcept is the companion controlled-vocabulary reading of the same label — the two are deliberately BOTH kept, not alternatives: this ontology wants both the label as encountered and a stable, deduplicated vocabulary entry for it (the same label recurs across archetypes that differ only in priority). AlarmType is its only domain; a plain Alarm instance reaches its label via mda:isOfType.",
-      "nl" : "Het vrije-tekstlabel dat een alarmtype identificeert, exact zoals het in de brondata voorkomt — een literal, geen concept. mda:hasLabelConcept is de bijbehorende gecontroleerde-vocabulaire lezing van hetzelfde label; beide worden bewust bijgehouden. AlarmType is het enige domein; een Alarm-instantie bereikt zijn label via mda:isOfType."
-    },
-    "attributes" : [ "datatype" ],
-    "id" : "18"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/hasStart",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "21",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "hasStart",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "hasStart",
-      "en" : "has start",
-      "nl" : "heeft start"
-    },
-    "domain" : "10",
-    "comment" : {
-      "en" : "The start time of the alarm.",
-      "nl" : "Het starttijdstip van het alarm."
-    },
-    "attributes" : [ "datatype" ],
-    "id" : "20"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/hasAnatomicalPosition",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "25",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "hasAnatomicalPosition",
-        "type" : "label"
-      } ],
-      "refinesParticularIdentity" : [ {
-        "identifier" : "refinesParticularIdentity",
-        "language" : "undefined",
-        "value" : "true",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "hasAnatomicalPosition",
-      "en" : "has anatomical position",
-      "nl" : "heeft anatomische positie"
-    },
-    "domain" : "24",
-    "comment" : {
-      "en" : "Relates a sensor to its anatomical position on the body. Functional: a physical sensor occupies exactly one position at a time.",
-      "nl" : "Koppelt een sensor aan zijn anatomische positie op het lichaam. Functioneel: een fysieke sensor bevindt zich op een gegeven moment op precies één positie."
-    },
-    "attributes" : [ "object", "functional" ],
-    "id" : "23"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/administers",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "26",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "administers",
-        "type" : "label"
-      } ],
-      "situational" : [ {
-        "identifier" : "situational",
-        "language" : "undefined",
-        "value" : "true",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "administers",
-      "en" : "administers",
-      "nl" : "toegediend"
-    },
-    "domain" : "5",
-    "comment" : {
-      "en" : "Relates a device to the therapeutic modality it administers.",
-      "nl" : "Koppelt een apparaat aan de therapeutische modaliteit die het toedient."
-    },
-    "attributes" : [ "object" ],
-    "id" : "27"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/hasRate",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "2",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "hasRate",
-        "type" : "label"
-      } ],
-      "valuesFromScheme" : [ {
-        "identifier" : "valuesFromScheme",
-        "language" : "undefined",
-        "value" : "https://w3id.org/mda/vocab/metric-rate/Scheme",
-        "type" : "iri"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "hasRate",
-      "en" : "has rate",
-      "nl" : "heeft snelheid"
-    },
-    "domain" : "29",
-    "comment" : {
-      "en" : "The rate deviation of the metric that raises the alarm (e.g. increased, decreased, critical decrease).",
-      "nl" : "De snelheidsafwijking van de metriek die het alarm veroorzaakt (bijv. verhoogd, verlaagd, kritieke daling)."
-    },
-    "attributes" : [ "object" ],
-    "id" : "28"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/hasComponent",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "31",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "hasComponent",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "hasComponent",
-      "en" : "has component",
-      "nl" : "heeft onderdeel"
-    },
-    "domain" : "5",
-    "subproperty" : [ "32" ],
-    "comment" : {
-      "en" : "Relates a device to its components, sensing or not (e.g. a connection port, power unit, heating element, or functional unit). Inverse-functional: a component belongs to at most one device — no separate isComponentOf property is declared; query in this direction only.",
-      "nl" : "Koppelt een apparaat aan zijn onderdelen, al dan niet sensorisch (bijv. een aansluitpoort, voedingseenheid, verwarmingselement of functionele eenheid). Invers-functioneel: een onderdeel behoort tot hoogstens één apparaat — er is geen aparte isComponentOf-eigenschap; bevraag alleen in deze richting."
-    },
-    "attributes" : [ "object", "inverse functional" ],
-    "id" : "30"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/analyzedBy",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "34",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "analyzedBy",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "analyzedBy",
-      "en" : "analyzed by",
-      "nl" : "geanalyseerd door"
-    },
-    "domain" : "12",
-    "comment" : {
-      "en" : "Relates a signal to the signal-analysis step that consumes it. The only edge reaching mda:SignalAnalysis — deliberately not also reachable directly from mda:FunctionalUnit (no performsAnalysis-style shortcut exists), so there is exactly one path to an analysis step, always through the specific signal(s) it actually consumes. A second, shorter path would let ontology_tree.py's shortest-path class-tree derivation silently prefer it over the precise one (the same failure mode mda:administers was introduced to avoid for mda:TherapeuticModality — see the Technical axioms note in inference.ttl). Not functional: the same signal can feed more than one analysis step (e.g. ECG lead II feeds both a heart-rate computation and an aVF derivation).",
-      "nl" : "Koppelt een signaal aan de signaalanalysestap die het verbruikt. De enige weg naar mda:SignalAnalysis — bewust niet ook rechtstreeks bereikbaar vanaf mda:FunctionalUnit (er bestaat geen performsAnalysis-achtige kortere weg), zodat er precies één pad naar een analysestap bestaat, altijd via het specifieke signaal (de specifieke signalen) dat het daadwerkelijk verbruikt. Functioneel niet: hetzelfde signaal kan meer dan één analysestap voeden."
-    },
-    "attributes" : [ "object" ],
-    "id" : "33"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/hasSensorOperationState",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "2",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "hasSensorOperationState",
-        "type" : "label"
-      } ],
-      "valuesFromScheme" : [ {
-        "identifier" : "valuesFromScheme",
-        "language" : "undefined",
-        "value" : "https://w3id.org/mda/vocab/operation-state/Scheme",
-        "type" : "iri"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "hasSensorOperationState",
-      "en" : "has sensor operation state",
-      "nl" : "heeft sensoroperatiestatus"
-    },
-    "superproperty" : [ "13" ],
-    "domain" : "24",
-    "comment" : {
-      "en" : "The operational state of a sensor, e.g. Enabled, Disabled, or Malfunction. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously.",
-      "nl" : "De operationele status van een sensor, bijv. Enabled, Disabled of Malfunction. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen."
-    },
-    "attributes" : [ "object" ],
-    "id" : "17"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/hasMessage",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "4",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "hasMessage",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "hasMessage",
-      "en" : "has message",
-      "nl" : "heeft bericht"
-    },
-    "domain" : "10",
-    "comment" : {
-      "en" : "The alarm's message: a per-alarm mda:AlarmMessage node carrying the occurrence's independent facets — mda:concernsPatient (who this alarm is about) and mda:triggeredBy (what caused it) — as siblings, neither reached through the other (see mda:triggeredBy's comment for why they used to be chained and no longer are). Distinct per alarm so many alarms can reference the same shared patient/device and merge there. Functional and inverse-functional: one alarm has exactly one message and one message belongs to exactly one alarm — alarm_iri/message_iri are minted from the same (device_id, start) key in 4_OPERATIONAL/op_knowledge.py precisely to keep this a bijection.",
-      "nl" : "Het bericht van het alarm: een per-alarm mda:AlarmMessage-knooppunt met de onafhankelijke facetten van de gebeurtenis — mda:concernsPatient en mda:triggeredBy — als nevengeschikte eigenschappen, geen van beide via de ander bereikt. Functioneel en invers-functioneel: één alarm heeft precies één bericht en één bericht hoort bij precies één alarm."
-    },
-    "attributes" : [ "object", "inverse functional", "functional" ],
-    "id" : "35"
-  }, {
     "iri" : "https://w3id.org/mda/ontology/hasComponentOperationState",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
+    "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
       "identifier" : [ {
@@ -1266,17 +855,175 @@
       "en" : "has component operation state",
       "nl" : "heeft onderdeeloperatiestatus"
     },
-    "superproperty" : [ "13" ],
-    "domain" : "31",
+    "superproperty" : [ "3" ],
+    "domain" : "1",
     "comment" : {
       "en" : "The operational state of a non-sensing component, e.g. Disconnected or Warning. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously.",
       "nl" : "De operationele status van een niet-sensorisch onderdeel, bijv. Disconnected of Warning. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen."
     },
     "attributes" : [ "object" ],
+    "id" : "0"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/hasDuration",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "7",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "hasDuration",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "hasDuration",
+      "en" : "has duration",
+      "nl" : "heeft duur"
+    },
+    "domain" : "5",
+    "comment" : {
+      "en" : "The duration of the alarm.",
+      "nl" : "De duur van het alarm."
+    },
+    "attributes" : [ "datatype" ],
+    "id" : "6"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/hasAnatomicalPosition",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "12",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "hasAnatomicalPosition",
+        "type" : "label"
+      } ],
+      "refinesParticularIdentity" : [ {
+        "identifier" : "refinesParticularIdentity",
+        "language" : "undefined",
+        "value" : "true",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "hasAnatomicalPosition",
+      "en" : "has anatomical position",
+      "nl" : "heeft anatomische positie"
+    },
+    "domain" : "11",
+    "comment" : {
+      "en" : "Relates a sensor to its anatomical position on the body. Functional: a physical sensor occupies exactly one position at a time.",
+      "nl" : "Koppelt een sensor aan zijn anatomische positie op het lichaam. Functioneel: een fysieke sensor bevindt zich op een gegeven moment op precies één positie."
+    },
+    "attributes" : [ "functional", "object" ],
+    "id" : "10"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/hasLabel",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "14",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "hasLabel",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "hasLabel",
+      "en" : "has label",
+      "nl" : "heeft label"
+    },
+    "domain" : "4",
+    "comment" : {
+      "en" : "The free-text label identifying an alarm type, exactly as it occurs in the source data (e.g. 'PHILIPSMONITOR - SpO2 geen pols') — a literal, not a concept: alarm labels routinely contain spaces and punctuation no SKOS notation can carry. mda:hasLabelConcept is the companion controlled-vocabulary reading of the same label — the two are deliberately BOTH kept, not alternatives: this ontology wants both the label as encountered and a stable, deduplicated vocabulary entry for it (the same label recurs across archetypes that differ only in priority). AlarmType is its only domain; a plain Alarm instance reaches its label via mda:isOfType.",
+      "nl" : "Het vrije-tekstlabel dat een alarmtype identificeert, exact zoals het in de brondata voorkomt — een literal, geen concept. mda:hasLabelConcept is de bijbehorende gecontroleerde-vocabulaire lezing van hetzelfde label; beide worden bewust bijgehouden. AlarmType is het enige domein; een Alarm-instantie bereikt zijn label via mda:isOfType."
+    },
+    "attributes" : [ "datatype" ],
+    "id" : "13"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/presentIn",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "16",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "presentIn",
+        "type" : "label"
+      } ],
+      "situational" : [ {
+        "identifier" : "situational",
+        "language" : "undefined",
+        "value" : "true",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "presentIn",
+      "en" : "present in",
+      "nl" : "aanwezig in"
+    },
+    "domain" : "9",
+    "comment" : {
+      "en" : "Relates a physiological process to the organ it occurs in.",
+      "nl" : "Koppelt een fysiologisch proces aan het orgaan waarin het plaatsvindt."
+    },
+    "attributes" : [ "object" ],
     "id" : "15"
   }, {
+    "iri" : "https://w3id.org/mda/ontology/hasFunctionalUnit",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "19",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "hasFunctionalUnit",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "hasFunctionalUnit",
+      "en" : "has functional unit",
+      "nl" : "heeft functionele eenheid"
+    },
+    "superproperty" : [ "20" ],
+    "domain" : "18",
+    "comment" : {
+      "en" : "Relates a device to a functional unit it houses (e.g. an ECG module, an SpO2 module) — a sub-property of hasComponent, since every functional unit is a component. Inverse-functional: a functional unit belongs to at most one device.",
+      "nl" : "Koppelt een apparaat aan een functionele eenheid die het bevat (bijv. een ECG-module, een SpO2-module) — een subeigenschap van hasComponent, aangezien elke functionele eenheid een onderdeel is. Invers-functioneel: een functionele eenheid behoort tot hoogstens één apparaat."
+    },
+    "attributes" : [ "object", "inverse functional" ],
+    "id" : "17"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/hasComponent",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "1",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "hasComponent",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "hasComponent",
+      "en" : "has component",
+      "nl" : "heeft onderdeel"
+    },
+    "domain" : "18",
+    "subproperty" : [ "17" ],
+    "comment" : {
+      "en" : "Relates a device to its components, sensing or not (e.g. a connection port, power unit, heating element, or functional unit). Inverse-functional: a component belongs to at most one device — no separate isComponentOf property is declared; query in this direction only.",
+      "nl" : "Koppelt een apparaat aan zijn onderdelen, al dan niet sensorisch (bijv. een aansluitpoort, voedingseenheid, verwarmingselement of functionele eenheid). Invers-functioneel: een onderdeel behoort tot hoogstens één apparaat — er is geen aparte isComponentOf-eigenschap; bevraag alleen in deze richting."
+    },
+    "attributes" : [ "object", "inverse functional" ],
+    "id" : "20"
+  }, {
     "iri" : "https://w3id.org/mda/ontology/hasDeviceType",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
+    "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
       "identifier" : [ {
@@ -1303,46 +1050,46 @@
       "en" : "has device type",
       "nl" : "heeft apparaattype"
     },
-    "domain" : "5",
+    "domain" : "18",
     "comment" : {
       "en" : "The specific type or model designation of the device (e.g. ServoU).",
       "nl" : "Het specifieke type of de modelaanduiding van het apparaat (bijv. ServoU)."
     },
     "attributes" : [ "object" ],
-    "id" : "36"
+    "id" : "21"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasSensor",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
+    "iri" : "https://w3id.org/mda/ontology/hasEnd",
+    "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "24",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
         "language" : "undefined",
-        "value" : "hasSensor",
+        "value" : "hasEnd",
         "type" : "label"
       } ]
     },
     "label" : {
-      "IRI-based" : "hasSensor",
-      "en" : "has sensor",
-      "nl" : "heeft sensor"
+      "IRI-based" : "hasEnd",
+      "en" : "has end",
+      "nl" : "heeft einde"
     },
-    "domain" : "40",
+    "domain" : "5",
     "comment" : {
-      "en" : "Relates a functional unit to the physical sensor(s) it reads from (e.g. an ECG module to each of its 12 leads). NOT a sub-property of hasComponent: its domain is FunctionalUnit, not Device, and hasComponent's domain is fixed to Device — declaring it a sub-property would wrongly entail every FunctionalUnit is itself a Device. A sensor no longer belongs directly to a device (see FunctionalUnit below for why: the sensor is the physical probe, the functional unit is what analyses what it picks up). Deliberately NOT owl:InverseFunctionalProperty, unlike most of this file's other IFP-marked relations: 2_READOUT/outcome/inference.ttl's FunctionalUnit recipe axioms assert hasSensor via an owl:hasValue restriction, so every alarm typed to the same FunctionalUnit concept (e.g. every FU_PneumoTachograph alarm) entails hasSensor to the SAME shared sensor concept, not a fresh individual per alarm the way 2_READOUT/vocab_readout.py's own per-row blank nodes do. Confirmed by an isolated reasoner test: with InverseFunctionalProperty declared, prp-ifp forces every one of those alarms' FunctionalUnit individuals into owl:sameAs with each other — and would do the same across grounded, per-patient data in 4_OPERATIONAL if this property were ever reasoned over there, merging different patients' equipment. mda:producesSignal carries the same latent risk if a future recipe axiom (e.g. the pending ECG one) ever reuses one signal concept across two different sensor concepts — watch for it there too.",
-      "nl" : "Koppelt een functionele eenheid aan de fysieke sensor(en) waarvan het afleest (bijv. een ECG-module aan elk van zijn 12 afleidingen). GEEN subeigenschap van hasComponent: het domein is FunctionalUnit, niet Device, en het domein van hasComponent ligt vast op Device. Een sensor behoort niet langer rechtstreeks tot een apparaat."
+      "en" : "The end time of the alarm.",
+      "nl" : "Het eindtijdstip van het alarm."
     },
-    "attributes" : [ "object" ],
-    "id" : "39"
+    "attributes" : [ "datatype" ],
+    "id" : "23"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasDeviceOperationState",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
+    "iri" : "https://w3id.org/mda/ontology/hasSensorOperationState",
+    "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
         "language" : "undefined",
-        "value" : "hasDeviceOperationState",
+        "value" : "hasSensorOperationState",
         "type" : "label"
       } ],
       "valuesFromScheme" : [ {
@@ -1353,112 +1100,105 @@
       } ]
     },
     "label" : {
-      "IRI-based" : "hasDeviceOperationState",
-      "en" : "has device operation state",
-      "nl" : "heeft apparaatoperatiestatus"
+      "IRI-based" : "hasSensorOperationState",
+      "en" : "has sensor operation state",
+      "nl" : "heeft sensoroperatiestatus"
     },
-    "superproperty" : [ "13" ],
-    "domain" : "5",
+    "superproperty" : [ "3" ],
+    "domain" : "11",
     "comment" : {
-      "en" : "The operational state of a device itself, e.g. Disconnected. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously.",
-      "nl" : "De operationele status van een apparaat zelf, bijv. Disconnected. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen."
+      "en" : "The operational state of a sensor, e.g. Enabled, Disabled, or Malfunction. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously.",
+      "nl" : "De operationele status van een sensor, bijv. Enabled, Disabled of Malfunction. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen."
     },
     "attributes" : [ "object" ],
-    "id" : "16"
+    "id" : "25"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasFunctionalUnit",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "40",
+    "iri" : "https://w3id.org/mda/ontology/isOfType",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "4",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
         "language" : "undefined",
-        "value" : "hasFunctionalUnit",
+        "value" : "isOfType",
         "type" : "label"
       } ]
     },
     "label" : {
-      "IRI-based" : "hasFunctionalUnit",
-      "en" : "has functional unit",
-      "nl" : "heeft functionele eenheid"
+      "IRI-based" : "isOfType",
+      "en" : "is of type",
+      "nl" : "is van type"
     },
-    "superproperty" : [ "30" ],
     "domain" : "5",
     "comment" : {
-      "en" : "Relates a device to a functional unit it houses (e.g. an ECG module, an SpO2 module) — a sub-property of hasComponent, since every functional unit is a component. Inverse-functional: a functional unit belongs to at most one device.",
-      "nl" : "Koppelt een apparaat aan een functionele eenheid die het bevat (bijv. een ECG-module, een SpO2-module) — een subeigenschap van hasComponent, aangezien elke functionele eenheid een onderdeel is. Invers-functioneel: een functionele eenheid behoort tot hoogstens één apparaat."
+      "en" : "Links a concrete alarm instance to its archetypal alarm type in the type catalogue, from which default structural knowledge (device type, sensor type, signal type) can be inherited. Functional: one alarm occurrence is of exactly one archetype.",
+      "nl" : "Koppelt een concrete alarminstantie aan zijn archetypische alarmtype in de typecatalogus, waaruit standaard structurele kennis (apparaattype, sensortype, signaaltype) kan worden geërfd. Functioneel: één alarminstantie is van precies één archetype."
     },
-    "attributes" : [ "object", "inverse functional" ],
-    "id" : "32"
+    "attributes" : [ "functional", "object" ],
+    "id" : "26"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasDuration",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "42",
+    "iri" : "https://w3id.org/mda/ontology/triggeredBy",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "18",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
         "language" : "undefined",
-        "value" : "hasDuration",
+        "value" : "triggeredBy",
         "type" : "label"
       } ]
     },
     "label" : {
-      "IRI-based" : "hasDuration",
-      "en" : "has duration",
-      "nl" : "heeft duur"
+      "IRI-based" : "triggeredBy",
+      "en" : "triggered by",
+      "nl" : "veroorzaakt door"
     },
-    "domain" : "10",
+    "domain" : "28",
     "comment" : {
-      "en" : "The duration of the alarm.",
-      "nl" : "De duur van het alarm."
+      "en" : "Relates an alarm message directly to the device whose technical structure it implicates — the sole path from AlarmMessage into the mda:Device subtree (mda:hasFunctionalUnit, mda:hasSensor, ...). Replaces routing that reach through mda:concernsPatient/mda:isMonitoredBy: that chain asserted every alarm-raising device 'monitors' the patient, which is false for a fundamentally therapeutic device (mda:MechanicalVentilator, mda:Dialysator, mda:ExtracorporealMembraneOxygenator, mda:Incubator/mda:Thermoregulator all administer a therapy — see mda:administers — rather than principally observe). mda:isMonitoredBy itself is UNCHANGED and still used, but only for its own actual justification: 4_OPERATIONAL/op_knowledge.py's per-instant double-booking check, asserted fresh at grounding time, never derived from or dependent on this blueprint-level structure. Functional, not inverse-functional: one message has exactly one triggering device, but one device triggers many messages over its lifetime — unlike mda:hasMessage's strict bijection.",
+      "nl" : "Koppelt een alarmbericht rechtstreeks aan het apparaat waarvan het de technische structuur impliceert — de enige weg van AlarmMessage naar de mda:Device-deelboom. Vervangt routering via mda:concernsPatient/mda:isMonitoredBy: die keten beweerde dat elk alarmerend apparaat de patiënt 'bewaakt', wat onjuist is voor een wezenlijk therapeutisch apparaat. mda:isMonitoredBy zelf is ONGEWIJZIGD en blijft gebruikt, maar uitsluitend voor de eigen operationele rechtvaardiging. Functioneel, niet invers-functioneel."
     },
-    "attributes" : [ "datatype" ],
-    "id" : "41"
+    "attributes" : [ "functional", "object" ],
+    "id" : "27"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasPhase",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
+    "iri" : "https://w3id.org/mda/ontology/hasLabelConcept",
+    "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
         "language" : "undefined",
-        "value" : "hasPhase",
+        "value" : "hasLabelConcept",
         "type" : "label"
       } ],
       "valuesFromScheme" : [ {
         "identifier" : "valuesFromScheme",
         "language" : "undefined",
-        "value" : "https://w3id.org/mda/vocab/metric-phase/Scheme",
+        "value" : "https://w3id.org/mda/vocab/alarm-label/Scheme",
         "type" : "iri"
-      } ],
-      "refinesUniversalIdentity" : [ {
-        "identifier" : "refinesUniversalIdentity",
-        "language" : "undefined",
-        "value" : "true",
-        "type" : "label"
       } ]
     },
     "label" : {
-      "IRI-based" : "hasPhase",
-      "en" : "has phase",
-      "nl" : "heeft fase"
+      "IRI-based" : "hasLabelConcept",
+      "en" : "has label concept",
+      "nl" : "heeft labelconcept"
     },
-    "domain" : "29",
+    "domain" : "4",
     "comment" : {
-      "en" : "The phase of the metric to which the alarm condition applies (e.g. mean, systolic, diastolic, end-expiratory).",
-      "nl" : "De fase van de metriek waarop de alarmconditie van toepassing is (bijv. gemiddeld, systolisch, diastolisch, eind-expiratoir)."
+      "en" : "Relates an alarm type to its controlled-vocabulary concept in mda:AlarmLabel's scheme — one concept per distinct label string encountered, shared across every archetype that uses that label regardless of priority (2_READOUT/vocab_readout.py's label_concept_iri keys on the label alone, not the archetype). The companion of mda:hasLabel, not a replacement for it.",
+      "nl" : "Koppelt een alarmtype aan zijn gecontroleerde-vocabulaireconcept in het schema van mda:AlarmLabel — één concept per onderscheidend labelstring, gedeeld door elk archetype dat dat label gebruikt, ongeacht prioriteit."
     },
     "attributes" : [ "object" ],
-    "id" : "43"
+    "id" : "29"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/organPartOfSystem",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "46",
+    "iri" : "https://w3id.org/mda/ontology/isPropertyOf",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "9",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
         "language" : "undefined",
-        "value" : "organPartOfSystem",
+        "value" : "isPropertyOf",
         "type" : "label"
       } ],
       "situational" : [ {
@@ -1469,25 +1209,20 @@
       } ]
     },
     "label" : {
-      "IRI-based" : "organPartOfSystem",
-      "en" : "organ part of system",
-      "nl" : "orgaan deel van systeem"
+      "IRI-based" : "isPropertyOf",
+      "en" : "is property of",
+      "nl" : "is eigenschap van"
     },
-    "domain" : "45",
+    "domain" : "31",
     "comment" : {
-      "en" : "Relates an organ to the organ system it belongs to.",
-      "nl" : "Koppelt een orgaan aan het orgaansysteem waartoe het behoort."
+      "en" : "Relates a physiological property to the process it characterises.",
+      "nl" : "Koppelt een fysiologische eigenschap aan het proces dat het karakteriseert."
     },
     "attributes" : [ "object" ],
-    "id" : "44"
-  }, {
-    "range" : "31",
-    "domain" : "48",
-    "attributes" : [ "object", "anonymous" ],
-    "id" : "47"
+    "id" : "30"
   }, {
     "iri" : "https://w3id.org/mda/ontology/hasManufacturer",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
+    "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
       "identifier" : [ {
@@ -1514,150 +1249,124 @@
       "en" : "has manufacturer",
       "nl" : "heeft fabrikant"
     },
-    "domain" : "5",
+    "domain" : "18",
     "comment" : {
       "en" : "The manufacturer or product line of the device.",
       "nl" : "De fabrikant of productlijn van het apparaat."
     },
     "attributes" : [ "object" ],
-    "id" : "49"
+    "id" : "32"
   }, {
-    "range" : "31",
-    "domain" : "40",
-    "attributes" : [ "object", "anonymous" ],
-    "id" : "50"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/hasLaterality",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "22",
+    "iri" : "https://w3id.org/mda/ontology/organPartOfSystem",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "36",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
         "language" : "undefined",
-        "value" : "hasLaterality",
+        "value" : "organPartOfSystem",
         "type" : "label"
       } ],
-      "refinesParticularIdentity" : [ {
-        "identifier" : "refinesParticularIdentity",
+      "situational" : [ {
+        "identifier" : "situational",
         "language" : "undefined",
         "value" : "true",
         "type" : "label"
       } ]
     },
     "label" : {
-      "IRI-based" : "hasLaterality",
-      "en" : "has laterality",
-      "nl" : "heeft lateraliteit"
+      "IRI-based" : "organPartOfSystem",
+      "en" : "organ part of system",
+      "nl" : "orgaan deel van systeem"
     },
-    "domain" : "24",
+    "domain" : "16",
     "comment" : {
-      "en" : "Relates a sensor to its laterality (left, right, bilateral). Functional: a physical sensor has exactly one laterality at a time.",
-      "nl" : "Koppelt een sensor aan zijn lateraliteit (links, rechts, bilateraal). Functioneel: een fysieke sensor heeft op een gegeven moment precies één lateraliteit."
+      "en" : "Relates an organ to the organ system it belongs to.",
+      "nl" : "Koppelt een orgaan aan het orgaansysteem waartoe het behoort."
     },
-    "attributes" : [ "object", "functional" ],
-    "id" : "52"
+    "attributes" : [ "object" ],
+    "id" : "35"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasEnd",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "54",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "hasEnd",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "hasEnd",
-      "en" : "has end",
-      "nl" : "heeft einde"
-    },
-    "domain" : "10",
-    "comment" : {
-      "en" : "The end time of the alarm.",
-      "nl" : "Het eindtijdstip van het alarm."
-    },
-    "attributes" : [ "datatype" ],
-    "id" : "53"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/hasCategory",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
+    "iri" : "https://w3id.org/mda/ontology/hasDeviceOperationState",
+    "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
         "language" : "undefined",
-        "value" : "hasCategory",
+        "value" : "hasDeviceOperationState",
         "type" : "label"
       } ],
       "valuesFromScheme" : [ {
         "identifier" : "valuesFromScheme",
         "language" : "undefined",
-        "value" : "https://w3id.org/mda/vocab/alarm-category/Scheme",
+        "value" : "https://w3id.org/mda/vocab/operation-state/Scheme",
         "type" : "iri"
       } ]
     },
     "label" : {
-      "IRI-based" : "hasCategory",
-      "en" : "has category",
-      "nl" : "heeft categorie"
+      "IRI-based" : "hasDeviceOperationState",
+      "en" : "has device operation state",
+      "nl" : "heeft apparaatoperatiestatus"
     },
-    "domain" : "10",
+    "superproperty" : [ "3" ],
+    "domain" : "18",
     "comment" : {
-      "en" : "The category of the alarm (a descriptive, alongside label and priority).",
-      "nl" : "De categorie van het alarm (beschrijvend, naast label en prioriteit)."
+      "en" : "The operational state of a device itself, e.g. Disconnected. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously.",
+      "nl" : "De operationele status van een apparaat zelf, bijv. Disconnected. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen."
     },
     "attributes" : [ "object" ],
-    "id" : "56"
+    "id" : "38"
   }, {
-    "range" : "37",
-    "domain" : "38",
-    "attributes" : [ "object", "anonymous" ],
-    "id" : "57"
+    "range" : "33",
+    "domain" : "34",
+    "attributes" : [ "anonymous", "object" ],
+    "id" : "39"
   }, {
-    "range" : "10",
-    "domain" : "1",
-    "attributes" : [ "object", "anonymous" ],
-    "id" : "58"
-  }, {
-    "range" : "31",
-    "domain" : "24",
-    "attributes" : [ "object", "anonymous" ],
-    "id" : "59"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/producesMetric",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "29",
+    "iri" : "https://w3id.org/mda/ontology/hasQualityState",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "2",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
         "language" : "undefined",
-        "value" : "producesMetric",
+        "value" : "hasQualityState",
+        "type" : "label"
+      } ],
+      "valuesFromScheme" : [ {
+        "identifier" : "valuesFromScheme",
+        "language" : "undefined",
+        "value" : "https://w3id.org/mda/vocab/quality-state/Scheme",
+        "type" : "iri"
+      } ],
+      "persistsPostAlarm" : [ {
+        "identifier" : "persistsPostAlarm",
+        "language" : "undefined",
+        "value" : "true",
         "type" : "label"
       } ]
     },
     "label" : {
-      "IRI-based" : "producesMetric",
-      "en" : "produces metric",
-      "nl" : "produceert metriek"
+      "IRI-based" : "hasQualityState",
+      "en" : "has quality state",
+      "nl" : "heeft kwaliteitsstatus"
     },
-    "domain" : "34",
+    "domain" : "8",
     "comment" : {
-      "en" : "Relates a signal-analysis step to the metric it computes.",
-      "nl" : "Koppelt een signaalanalysestap aan de metriek die het berekent."
+      "en" : "The quality state of a signal, indicating measurement reliability.",
+      "nl" : "De kwaliteitsstatus van een signaal, die de meetbetrouwbaarheid aangeeft."
     },
     "attributes" : [ "object" ],
-    "id" : "60"
+    "id" : "41"
   }, {
-    "range" : "24",
-    "domain" : "40",
-    "attributes" : [ "object", "anonymous" ],
-    "id" : "61"
+    "range" : "5",
+    "domain" : "4",
+    "attributes" : [ "anonymous", "object" ],
+    "id" : "42"
   }, {
     "iri" : "https://w3id.org/mda/ontology/approximates",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "7",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "31",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
@@ -1677,125 +1386,17 @@
       "en" : "approximates",
       "nl" : "benadert"
     },
-    "domain" : "29",
+    "domain" : "37",
     "comment" : {
       "en" : "Relates a metric to the physiological property it approximates.",
       "nl" : "Koppelt een metriek aan de fysiologische eigenschap die het benadert."
     },
     "attributes" : [ "object" ],
-    "id" : "62"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/presentIn",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "45",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "presentIn",
-        "type" : "label"
-      } ],
-      "situational" : [ {
-        "identifier" : "situational",
-        "language" : "undefined",
-        "value" : "true",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "presentIn",
-      "en" : "present in",
-      "nl" : "aanwezig in"
-    },
-    "domain" : "8",
-    "comment" : {
-      "en" : "Relates a physiological process to the organ it occurs in.",
-      "nl" : "Koppelt een fysiologisch proces aan het orgaan waarin het plaatsvindt."
-    },
-    "attributes" : [ "object" ],
-    "id" : "63"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/isMonitoredBy",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "5",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "isMonitoredBy",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "isMonitoredBy",
-      "en" : "is monitored by",
-      "nl" : "wordt bewaakt door"
-    },
-    "domain" : "51",
-    "comment" : {
-      "en" : "Relates a patient to the device currently monitoring them. No longer part of the blueprint's structural path to mda:Device (see mda:triggeredBy) — that routing asserted every alarm-raising device 'monitors' the patient, which overclaims for a therapeutic one. What remains is this property's own, separate justification: inverse-functional, a device monitors at most one patient at a time — a physical monitor is not shared between two patients simultaneously, even though it may serve different patients at different times — so a reasoner can catch a double-booking directly (as an entailed owl:sameAs between two asserted-distinct patients) rather than relying on generator discipline, the same pattern as mda:hasSensor/mda:producesSignal below. Only meaningful if isMonitoredBy is asserted per-instant, not as a standing fact for a patient's whole encounter — see 4_OPERATIONAL/op_knowledge.py, the only place it is still asserted.",
-      "nl" : "Koppelt een patiënt aan het apparaat dat hen op dit moment bewaakt. Invers-functioneel: een apparaat bewaakt hoogstens één patiënt tegelijk."
-    },
-    "attributes" : [ "object", "inverse functional" ],
-    "id" : "64"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/hasRhythm",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "2",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "hasRhythm",
-        "type" : "label"
-      } ],
-      "valuesFromScheme" : [ {
-        "identifier" : "valuesFromScheme",
-        "language" : "undefined",
-        "value" : "https://w3id.org/mda/vocab/rhythm/Scheme",
-        "type" : "iri"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "hasRhythm",
-      "en" : "has rhythm",
-      "nl" : "heeft ritme"
-    },
-    "domain" : "29",
-    "comment" : {
-      "en" : "The rhythm pattern of the metric to which the alarm condition applies (e.g. irregular).",
-      "nl" : "Het ritmepatroon van de metriek waarop de alarmconditie van toepassing is (bijv. onregelmatig)."
-    },
-    "attributes" : [ "object" ],
-    "id" : "65"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology/concernsPatient",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "51",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "concernsPatient",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "concernsPatient",
-      "en" : "concerns patient",
-      "nl" : "betreft patiënt"
-    },
-    "domain" : "4",
-    "comment" : {
-      "en" : "Relates an alarm message to the patient it concerns — the shared, persistent merge anchor. Deliberately a dead end: it no longer continues on to mda:Device via mda:isMonitoredBy (see mda:triggeredBy's comment for why). Functional: one message concerns exactly one patient — it is minted fresh per alarm precisely so it never needs to concern more than one.",
-      "nl" : "Koppelt een alarmbericht aan de patiënt die het betreft — het gedeelde, persistente samenvoegankerpunt. Bewust een doodlopend pad: leidt niet langer via mda:isMonitoredBy naar mda:Device. Functioneel: één bericht betreft precies één patiënt."
-    },
-    "attributes" : [ "object", "functional" ],
-    "id" : "66"
+    "id" : "43"
   }, {
     "iri" : "https://w3id.org/mda/ontology/producesSignal",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "12",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "8",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
@@ -1809,47 +1410,65 @@
       "en" : "produces signal",
       "nl" : "produceert signaal"
     },
-    "domain" : "55",
-    "subproperty" : [ "68" ],
+    "domain" : "45",
+    "subproperty" : [ "46" ],
     "comment" : {
       "en" : "Relates a sensor OR a signal-analysis step to the signal it produces — a sensor's raw signal, or an analysis step's derived/intermediate signal (e.g. augmented lead aVF, combined from other leads). Inverse-functional: a signal has at most one producer, whichever kind produced it. Its domain is a union, so it cannot itself anchor 2_READOUT/vocab_readout.py's CSV/tree derivation (ontology_tree.py's derive_class_tree only follows a named rdfs:domain, the same limitation documented at mda:hasOperationState below) — mda:sensorProducesSignal is the single-domain sub-property that does. A signal-analysis step's own derived-signal output (the aVF case) is only ever hand-authored in inference.ttl, never CSV-driven, so it uses this general property directly and needs no sub-property of its own.",
       "nl" : "Koppelt een sensor OF een signaalanalysestap aan het signaal dat het produceert — het ruwe signaal van een sensor, of het afgeleide/tussenliggende signaal van een analysestap (bijv. versterkte afleiding aVF, gecombineerd uit andere afleidingen). Invers-functioneel: een signaal heeft hoogstens één producent, ongeacht het soort."
     },
     "attributes" : [ "object", "inverse functional" ],
-    "id" : "67"
+    "id" : "44"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/targetsProcess",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "8",
+    "iri" : "https://w3id.org/mda/ontology/analyzedBy",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "48",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
         "language" : "undefined",
-        "value" : "targetsProcess",
-        "type" : "label"
-      } ],
-      "situational" : [ {
-        "identifier" : "situational",
-        "language" : "undefined",
-        "value" : "true",
+        "value" : "analyzedBy",
         "type" : "label"
       } ]
     },
     "label" : {
-      "IRI-based" : "targetsProcess",
-      "en" : "targets process",
-      "nl" : "richt zich op proces"
+      "IRI-based" : "analyzedBy",
+      "en" : "analyzed by",
+      "nl" : "geanalyseerd door"
     },
-    "domain" : "26",
+    "domain" : "8",
     "comment" : {
-      "en" : "Relates a therapeutic modality to the physiological process it targets.",
-      "nl" : "Koppelt een therapeutische modaliteit aan het fysiologische proces waarop het zich richt."
+      "en" : "Relates a signal to the signal-analysis step that consumes it. The only edge reaching mda:SignalAnalysis — deliberately not also reachable directly from mda:FunctionalUnit (no performsAnalysis-style shortcut exists), so there is exactly one path to an analysis step, always through the specific signal(s) it actually consumes. A second, shorter path would let ontology_tree.py's shortest-path class-tree derivation silently prefer it over the precise one (the same failure mode mda:administers was introduced to avoid for mda:TherapeuticModality — see the Technical axioms note in inference.ttl). Not functional: the same signal can feed more than one analysis step (e.g. ECG lead II feeds both a heart-rate computation and an aVF derivation).",
+      "nl" : "Koppelt een signaal aan de signaalanalysestap die het verbruikt. De enige weg naar mda:SignalAnalysis — bewust niet ook rechtstreeks bereikbaar vanaf mda:FunctionalUnit (er bestaat geen performsAnalysis-achtige kortere weg), zodat er precies één pad naar een analysestap bestaat, altijd via het specifieke signaal (de specifieke signalen) dat het daadwerkelijk verbruikt. Functioneel niet: hetzelfde signaal kan meer dan één analysestap voeden."
     },
     "attributes" : [ "object" ],
-    "id" : "69"
+    "id" : "47"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/hasMessage",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "28",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "hasMessage",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "hasMessage",
+      "en" : "has message",
+      "nl" : "heeft bericht"
+    },
+    "domain" : "5",
+    "comment" : {
+      "en" : "The alarm's message: a per-alarm mda:AlarmMessage node carrying the occurrence's independent facets — mda:concernsPatient (who this alarm is about) and mda:triggeredBy (what caused it) — as siblings, neither reached through the other (see mda:triggeredBy's comment for why they used to be chained and no longer are). Distinct per alarm so many alarms can reference the same shared patient/device and merge there. Functional and inverse-functional: one alarm has exactly one message and one message belongs to exactly one alarm — alarm_iri/message_iri are minted from the same (device_id, start) key in 4_OPERATIONAL/op_knowledge.py precisely to keep this a bijection.",
+      "nl" : "Het bericht van het alarm: een per-alarm mda:AlarmMessage-knooppunt met de onafhankelijke facetten van de gebeurtenis — mda:concernsPatient en mda:triggeredBy — als nevengeschikte eigenschappen, geen van beide via de ander bereikt. Functioneel en invers-functioneel: één alarm heeft precies één bericht en één bericht hoort bij precies één alarm."
+    },
+    "attributes" : [ "functional", "object", "inverse functional" ],
+    "id" : "49"
   }, {
     "iri" : "https://w3id.org/mda/ontology/hasPriority",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
+    "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
       "identifier" : [ {
@@ -1870,17 +1489,313 @@
       "en" : "has priority",
       "nl" : "heeft prioriteit"
     },
-    "domain" : "10",
+    "domain" : "5",
     "comment" : {
       "en" : "The priority level of an alarm or alarm message.",
       "nl" : "Het prioriteitsniveau van een alarm of alarmbericht."
     },
     "attributes" : [ "object" ],
-    "id" : "70"
+    "id" : "50"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/isMonitoredBy",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "18",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "isMonitoredBy",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "isMonitoredBy",
+      "en" : "is monitored by",
+      "nl" : "wordt bewaakt door"
+    },
+    "domain" : "40",
+    "comment" : {
+      "en" : "Relates a patient to the device currently monitoring them. No longer part of the blueprint's structural path to mda:Device (see mda:triggeredBy) — that routing asserted every alarm-raising device 'monitors' the patient, which overclaims for a therapeutic one. What remains is this property's own, separate justification: inverse-functional, a device monitors at most one patient at a time — a physical monitor is not shared between two patients simultaneously, even though it may serve different patients at different times — so a reasoner can catch a double-booking directly (as an entailed owl:sameAs between two asserted-distinct patients) rather than relying on generator discipline, the same pattern as mda:hasSensor/mda:producesSignal below. Only meaningful if isMonitoredBy is asserted per-instant, not as a standing fact for a patient's whole encounter — see 4_OPERATIONAL/op_knowledge.py, the only place it is still asserted.",
+      "nl" : "Koppelt een patiënt aan het apparaat dat hen op dit moment bewaakt. Invers-functioneel: een apparaat bewaakt hoogstens één patiënt tegelijk."
+    },
+    "attributes" : [ "object", "inverse functional" ],
+    "id" : "51"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/hasSensor",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "11",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "hasSensor",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "hasSensor",
+      "en" : "has sensor",
+      "nl" : "heeft sensor"
+    },
+    "domain" : "19",
+    "comment" : {
+      "en" : "Relates a functional unit to the physical sensor(s) it reads from (e.g. an ECG module to each of its 12 leads). NOT a sub-property of hasComponent: its domain is FunctionalUnit, not Device, and hasComponent's domain is fixed to Device — declaring it a sub-property would wrongly entail every FunctionalUnit is itself a Device. A sensor no longer belongs directly to a device (see FunctionalUnit below for why: the sensor is the physical probe, the functional unit is what analyses what it picks up). Deliberately NOT owl:InverseFunctionalProperty, unlike most of this file's other IFP-marked relations: 2_READOUT/outcome/inference.ttl's FunctionalUnit recipe axioms assert hasSensor via an owl:hasValue restriction, so every alarm typed to the same FunctionalUnit concept (e.g. every FU_PneumoTachograph alarm) entails hasSensor to the SAME shared sensor concept, not a fresh individual per alarm the way 2_READOUT/vocab_readout.py's own per-row blank nodes do. Confirmed by an isolated reasoner test: with InverseFunctionalProperty declared, prp-ifp forces every one of those alarms' FunctionalUnit individuals into owl:sameAs with each other — and would do the same across grounded, per-patient data in 4_OPERATIONAL if this property were ever reasoned over there, merging different patients' equipment. mda:producesSignal carries the same latent risk if a future recipe axiom (e.g. the pending ECG one) ever reuses one signal concept across two different sensor concepts — watch for it there too.",
+      "nl" : "Koppelt een functionele eenheid aan de fysieke sensor(en) waarvan het afleest (bijv. een ECG-module aan elk van zijn 12 afleidingen). GEEN subeigenschap van hasComponent: het domein is FunctionalUnit, niet Device, en het domein van hasComponent ligt vast op Device. Een sensor behoort niet langer rechtstreeks tot een apparaat."
+    },
+    "attributes" : [ "object" ],
+    "id" : "52"
+  }, {
+    "range" : "1",
+    "domain" : "19",
+    "attributes" : [ "anonymous", "object" ],
+    "id" : "54"
+  }, {
+    "range" : "1",
+    "domain" : "22",
+    "attributes" : [ "anonymous", "object" ],
+    "id" : "55"
+  }, {
+    "range" : "1",
+    "domain" : "11",
+    "attributes" : [ "anonymous", "object" ],
+    "id" : "56"
+  }, {
+    "range" : "11",
+    "domain" : "19",
+    "attributes" : [ "anonymous", "object" ],
+    "id" : "58"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/hasPhase",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "2",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "hasPhase",
+        "type" : "label"
+      } ],
+      "valuesFromScheme" : [ {
+        "identifier" : "valuesFromScheme",
+        "language" : "undefined",
+        "value" : "https://w3id.org/mda/vocab/metric-phase/Scheme",
+        "type" : "iri"
+      } ],
+      "refinesUniversalIdentity" : [ {
+        "identifier" : "refinesUniversalIdentity",
+        "language" : "undefined",
+        "value" : "true",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "hasPhase",
+      "en" : "has phase",
+      "nl" : "heeft fase"
+    },
+    "domain" : "37",
+    "comment" : {
+      "en" : "The phase of the metric to which the alarm condition applies (e.g. mean, systolic, diastolic, end-expiratory).",
+      "nl" : "De fase van de metriek waarop de alarmconditie van toepassing is (bijv. gemiddeld, systolisch, diastolisch, eind-expiratoir)."
+    },
+    "attributes" : [ "object" ],
+    "id" : "61"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/hasCategory",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "2",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "hasCategory",
+        "type" : "label"
+      } ],
+      "valuesFromScheme" : [ {
+        "identifier" : "valuesFromScheme",
+        "language" : "undefined",
+        "value" : "https://w3id.org/mda/vocab/alarm-category/Scheme",
+        "type" : "iri"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "hasCategory",
+      "en" : "has category",
+      "nl" : "heeft categorie"
+    },
+    "domain" : "5",
+    "comment" : {
+      "en" : "The category of the alarm (a descriptive, alongside label and priority).",
+      "nl" : "De categorie van het alarm (beschrijvend, naast label en prioriteit)."
+    },
+    "attributes" : [ "object" ],
+    "id" : "62"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/producesMetric",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "37",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "producesMetric",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "producesMetric",
+      "en" : "produces metric",
+      "nl" : "produceert metriek"
+    },
+    "domain" : "48",
+    "comment" : {
+      "en" : "Relates a signal-analysis step to the metric it computes.",
+      "nl" : "Koppelt een signaalanalysestap aan de metriek die het berekent."
+    },
+    "attributes" : [ "object" ],
+    "id" : "63"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/targetsProcess",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "9",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "targetsProcess",
+        "type" : "label"
+      } ],
+      "situational" : [ {
+        "identifier" : "situational",
+        "language" : "undefined",
+        "value" : "true",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "targetsProcess",
+      "en" : "targets process",
+      "nl" : "richt zich op proces"
+    },
+    "domain" : "60",
+    "comment" : {
+      "en" : "Relates a therapeutic modality to the physiological process it targets.",
+      "nl" : "Koppelt een therapeutische modaliteit aan het fysiologische proces waarop het zich richt."
+    },
+    "attributes" : [ "object" ],
+    "id" : "64"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/concernsPatient",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "40",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "concernsPatient",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "concernsPatient",
+      "en" : "concerns patient",
+      "nl" : "betreft patiënt"
+    },
+    "domain" : "28",
+    "comment" : {
+      "en" : "Relates an alarm message to the patient it concerns — the shared, persistent merge anchor. Deliberately a dead end: it no longer continues on to mda:Device via mda:isMonitoredBy (see mda:triggeredBy's comment for why). Functional: one message concerns exactly one patient — it is minted fresh per alarm precisely so it never needs to concern more than one.",
+      "nl" : "Koppelt een alarmbericht aan de patiënt die het betreft — het gedeelde, persistente samenvoegankerpunt. Bewust een doodlopend pad: leidt niet langer via mda:isMonitoredBy naar mda:Device. Functioneel: één bericht betreft precies één patiënt."
+    },
+    "attributes" : [ "functional", "object" ],
+    "id" : "65"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/hasLaterality",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "57",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "hasLaterality",
+        "type" : "label"
+      } ],
+      "refinesParticularIdentity" : [ {
+        "identifier" : "refinesParticularIdentity",
+        "language" : "undefined",
+        "value" : "true",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "hasLaterality",
+      "en" : "has laterality",
+      "nl" : "heeft lateraliteit"
+    },
+    "domain" : "11",
+    "comment" : {
+      "en" : "Relates a sensor to its laterality (left, right, bilateral). Functional: a physical sensor has exactly one laterality at a time.",
+      "nl" : "Koppelt een sensor aan zijn lateraliteit (links, rechts, bilateraal). Functioneel: een fysieke sensor heeft op een gegeven moment precies één lateraliteit."
+    },
+    "attributes" : [ "functional", "object" ],
+    "id" : "66"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/hasRate",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "2",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "hasRate",
+        "type" : "label"
+      } ],
+      "valuesFromScheme" : [ {
+        "identifier" : "valuesFromScheme",
+        "language" : "undefined",
+        "value" : "https://w3id.org/mda/vocab/metric-rate/Scheme",
+        "type" : "iri"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "hasRate",
+      "en" : "has rate",
+      "nl" : "heeft snelheid"
+    },
+    "domain" : "37",
+    "comment" : {
+      "en" : "The rate deviation of the metric that raises the alarm (e.g. increased, decreased, critical decrease).",
+      "nl" : "De snelheidsafwijking van de metriek die het alarm veroorzaakt (bijv. verhoogd, verlaagd, kritieke daling)."
+    },
+    "attributes" : [ "object" ],
+    "id" : "67"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/hasStart",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "53",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "hasStart",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "hasStart",
+      "en" : "has start",
+      "nl" : "heeft start"
+    },
+    "domain" : "5",
+    "comment" : {
+      "en" : "The start time of the alarm.",
+      "nl" : "Het starttijdstip van het alarm."
+    },
+    "attributes" : [ "datatype" ],
+    "id" : "68"
   }, {
     "iri" : "https://w3id.org/mda/ontology/sensorProducesSignal",
-    "baseIri" : "http://example.org/model-device-alarm-knowledge",
-    "range" : "12",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "8",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
@@ -1894,13 +1809,104 @@
       "en" : "sensor produces signal",
       "nl" : "sensor produceert signaal"
     },
-    "superproperty" : [ "67" ],
-    "domain" : "24",
+    "superproperty" : [ "44" ],
+    "domain" : "11",
     "comment" : {
       "en" : "The CSV/tree-facing case of mda:producesSignal: a sensor's own raw signal. A single-domain sub-property so 2_READOUT/vocab_readout.py's ontology-derived tree can attach Signal under Sensor unambiguously — see mda:producesSignal's comment. Every fact asserted through it still entails the general mda:producesSignal fact (and, transitively, mda:hasOperationState's propagation chain) via rdfs:subPropertyOf.",
       "nl" : "Het CSV/boom-gerichte geval van mda:producesSignal: het eigen ruwe signaal van een sensor. Een subeigenschap met één domein, zodat de door 2_READOUT/vocab_readout.py afgeleide boom Signal ondubbelzinnig onder Sensor kan hangen."
     },
     "attributes" : [ "object" ],
-    "id" : "68"
+    "id" : "46"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/administers",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "60",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "administers",
+        "type" : "label"
+      } ],
+      "situational" : [ {
+        "identifier" : "situational",
+        "language" : "undefined",
+        "value" : "true",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "administers",
+      "en" : "administers",
+      "nl" : "toegediend"
+    },
+    "domain" : "18",
+    "comment" : {
+      "en" : "Relates a device to the therapeutic modality it administers.",
+      "nl" : "Koppelt een apparaat aan de therapeutische modaliteit die het toedient."
+    },
+    "attributes" : [ "object" ],
+    "id" : "69"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/hasRhythm",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "2",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "hasRhythm",
+        "type" : "label"
+      } ],
+      "valuesFromScheme" : [ {
+        "identifier" : "valuesFromScheme",
+        "language" : "undefined",
+        "value" : "https://w3id.org/mda/vocab/rhythm/Scheme",
+        "type" : "iri"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "hasRhythm",
+      "en" : "has rhythm",
+      "nl" : "heeft ritme"
+    },
+    "domain" : "37",
+    "comment" : {
+      "en" : "The rhythm pattern of the metric to which the alarm condition applies (e.g. irregular).",
+      "nl" : "Het ritmepatroon van de metriek waarop de alarmconditie van toepassing is (bijv. onregelmatig)."
+    },
+    "attributes" : [ "object" ],
+    "id" : "70"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology/hasOperationState",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "2",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "hasOperationState",
+        "type" : "label"
+      } ],
+      "persistsPostAlarm" : [ {
+        "identifier" : "persistsPostAlarm",
+        "language" : "undefined",
+        "value" : "true",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "hasOperationState",
+      "en" : "has operation state",
+      "nl" : "heeft operatiestatus"
+    },
+    "domain" : "59",
+    "subproperty" : [ "0", "25", "38" ],
+    "comment" : {
+      "en" : "The operational state of a device, sensor, signal, component, or the therapeutic modality a device administers (the latter inferred from the administering device's own state, not asserted directly).",
+      "nl" : "De operationele status van een apparaat, sensor, signaal, onderdeel, of de therapeutische modaliteit die een apparaat toedient (dit laatste afgeleid van de status van het toedienende apparaat, niet direct toegekend)."
+    },
+    "attributes" : [ "object" ],
+    "id" : "3"
   } ]
 }

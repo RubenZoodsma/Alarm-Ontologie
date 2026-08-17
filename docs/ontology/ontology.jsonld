@@ -30,18 +30,57 @@
     } ]
   } ]
 }, {
+  "@id" : "http://purl.org/dc/elements/1.1/license",
+  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
+}, {
+  "@id" : "http://purl.org/dc/elements/1.1/title",
+  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
+}, {
+  "@id" : "http://purl.org/dc/terms/abstract",
+  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
+}, {
+  "@id" : "http://purl.org/dc/terms/created",
+  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
+}, {
+  "@id" : "http://purl.org/dc/terms/creator",
+  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
+}, {
+  "@id" : "http://purl.org/dc/terms/description",
+  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
+}, {
+  "@id" : "http://purl.org/dc/terms/identifier",
+  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
+}, {
+  "@id" : "http://purl.org/vocab/vann/preferredNamespacePrefix",
+  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
+}, {
+  "@id" : "http://purl.org/vocab/vann/preferredNamespaceUri",
+  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
+}, {
+  "@id" : "http://www.w3.org/2001/XMLSchema#date",
+  "@type" : [ "http://www.w3.org/2000/01/rdf-schema#Datatype" ]
+}, {
+  "@id" : "http://www.w3.org/2001/XMLSchema#duration",
+  "@type" : [ "http://www.w3.org/2000/01/rdf-schema#Datatype" ]
+}, {
+  "@id" : "http://www.w3.org/2004/02/skos/core#Concept",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ]
+}, {
+  "@id" : "http://www.w3.org/2004/02/skos/core#ConceptScheme",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ]
+}, {
   "@id" : "https://w3id.org/mda/ontology/",
   "@type" : [ "http://www.w3.org/2002/07/owl#Ontology" ],
-  "http://purl.org/dc/elements/1.1/description" : [ {
-    "@language" : "en",
-    "@value" : "Conceptual model for the medical device alarm knowledge."
-  } ],
   "http://purl.org/dc/elements/1.1/license" : [ {
     "@id" : "https://creativecommons.org/licenses/by/4.0/"
   } ],
   "http://purl.org/dc/elements/1.1/title" : [ {
     "@language" : "en",
-    "@value" : "The ontology for the medical device alarm knowledge."
+    "@value" : "MEdical Device Alarm Ontology"
+  } ],
+  "http://purl.org/dc/terms/abstract" : [ {
+    "@language" : "en",
+    "@value" : "\n        The Medical Device Alarm (MDA) Ontology provides a formal representation\n        of the technical and clinical knowledge conveyed by medical device alarms.\n        It models alarms in relation to measurements, devices, sensors,\n        physiological variables, interpretations, and associated clinical or\n        technical concerns, enabling alarm information to be represented in a\n        machine-interpretable form.\n        "
   } ],
   "http://purl.org/dc/terms/created" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#date",
@@ -49,6 +88,10 @@
   } ],
   "http://purl.org/dc/terms/creator" : [ {
     "@value" : "Ruben Zoodsma"
+  } ],
+  "http://purl.org/dc/terms/description" : [ {
+    "@language" : "en",
+    "@value" : "\n        The MDA Ontology formally represents the concepts and relationships\n        involved in medical device alarm generation and interpretation, making\n        the implicit technical and clinical knowledge conveyed by alarms explicit\n        and machine-interpretable.\n        "
   } ],
   "http://purl.org/vocab/vann/preferredNamespacePrefix" : [ {
     "@value" : "mda"
@@ -145,9 +188,6 @@
 }, {
   "@id" : "https://w3id.org/mda/ontology/Component",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
-  "https://w3id.org/mda/ontology/nodeKind" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Individuated"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "Component"
   } ],
@@ -164,6 +204,9 @@
   }, {
     "@language" : "nl",
     "@value" : "Onderdeel"
+  } ],
+  "https://w3id.org/mda/ontology/nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/ontology/Individuated"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/CriticalComponent",
@@ -191,9 +234,6 @@
 }, {
   "@id" : "https://w3id.org/mda/ontology/Device",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
-  "https://w3id.org/mda/ontology/nodeKind" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Individuated"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "Device"
   } ],
@@ -210,13 +250,13 @@
   }, {
     "@language" : "en",
     "@value" : "Device"
+  } ],
+  "https://w3id.org/mda/ontology/nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/ontology/Individuated"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/FunctionalUnit",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
-  "https://w3id.org/mda/ontology/nodeKind" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Individuated"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "FunctionalUnit"
   } ],
@@ -239,6 +279,9 @@
   } ],
   "http://www.w3.org/2002/07/owl#disjointWith" : [ {
     "@id" : "https://w3id.org/mda/ontology/Sensor"
+  } ],
+  "https://w3id.org/mda/ontology/nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/ontology/Individuated"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/Individuated",
@@ -270,9 +313,6 @@
 }, {
   "@id" : "https://w3id.org/mda/ontology/Metric",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
-  "https://w3id.org/mda/ontology/nodeKind" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Stateful"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "Metric"
   } ],
@@ -289,6 +329,9 @@
   }, {
     "@language" : "nl",
     "@value" : "Metriek"
+  } ],
+  "https://w3id.org/mda/ontology/nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/ontology/Stateful"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/Organ",
@@ -333,9 +376,6 @@
 }, {
   "@id" : "https://w3id.org/mda/ontology/Patient",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
-  "https://w3id.org/mda/ontology/nodeKind" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Individuated"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "Patient"
   } ],
@@ -352,6 +392,9 @@
   }, {
     "@language" : "nl",
     "@value" : "Patiënt"
+  } ],
+  "https://w3id.org/mda/ontology/nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/ontology/Individuated"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/PhysiologicalProcess",
@@ -396,10 +439,6 @@
 }, {
   "@id" : "https://w3id.org/mda/ontology/PostAlarmValidScheme",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
-  "https://w3id.org/mda/ontology/postAlarmValidityDuration" : [ {
-    "@type" : "http://www.w3.org/2001/XMLSchema#duration",
-    "@value" : "PT60S"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "PostAlarmValidScheme"
   } ],
@@ -419,6 +458,10 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#ConceptScheme"
+  } ],
+  "https://w3id.org/mda/ontology/postAlarmValidityDuration" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#duration",
+    "@value" : "PT60S"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/Referential",
@@ -430,9 +473,6 @@
 }, {
   "@id" : "https://w3id.org/mda/ontology/Sensor",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
-  "https://w3id.org/mda/ontology/nodeKind" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Individuated"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "Sensor"
   } ],
@@ -452,13 +492,13 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
     "@id" : "https://w3id.org/mda/ontology/Component"
+  } ],
+  "https://w3id.org/mda/ontology/nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/ontology/Individuated"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/Signal",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
-  "https://w3id.org/mda/ontology/nodeKind" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Individuated"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "Signal"
   } ],
@@ -475,6 +515,9 @@
   }, {
     "@language" : "en",
     "@value" : "Signal"
+  } ],
+  "https://w3id.org/mda/ontology/nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/ontology/Individuated"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/SignalAnalysis",
@@ -526,10 +569,6 @@
 }, {
   "@id" : "https://w3id.org/mda/ontology/administers",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/situational" : [ {
-    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
-    "@value" : "true"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "administers"
   } ],
@@ -552,6 +591,10 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "https://w3id.org/mda/ontology/TherapeuticModality"
+  } ],
+  "https://w3id.org/mda/ontology/situational" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
+    "@value" : "true"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/analyzedBy",
@@ -582,10 +625,6 @@
 }, {
   "@id" : "https://w3id.org/mda/ontology/approximates",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/situational" : [ {
-    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
-    "@value" : "true"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "approximates"
   } ],
@@ -608,6 +647,10 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "https://w3id.org/mda/ontology/PhysiologicalProperty"
+  } ],
+  "https://w3id.org/mda/ontology/situational" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
+    "@value" : "true"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/concernsPatient",
@@ -638,10 +681,6 @@
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasAnatomicalPosition",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty", "http://www.w3.org/2002/07/owl#FunctionalProperty" ],
-  "https://w3id.org/mda/ontology/refinesParticularIdentity" : [ {
-    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
-    "@value" : "true"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasAnatomicalPosition"
   } ],
@@ -664,13 +703,14 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "https://w3id.org/mda/ontology/AnatomicalPosition"
+  } ],
+  "https://w3id.org/mda/ontology/refinesParticularIdentity" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
+    "@value" : "true"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasCategory",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
-    "@id" : "https://w3id.org/mda/vocab/alarm-category/Scheme"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasCategory"
   } ],
@@ -693,6 +733,9 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ],
+  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+    "@id" : "https://w3id.org/mda/vocab/alarm-category/Scheme"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasComponent",
@@ -723,9 +766,6 @@
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasComponentOperationState",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
-    "@id" : "https://w3id.org/mda/vocab/operation-state/Scheme"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasComponentOperationState"
   } ],
@@ -751,13 +791,13 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subPropertyOf" : [ {
     "@id" : "https://w3id.org/mda/ontology/hasOperationState"
+  } ],
+  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+    "@id" : "https://w3id.org/mda/vocab/operation-state/Scheme"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasDeviceOperationState",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
-    "@id" : "https://w3id.org/mda/vocab/operation-state/Scheme"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasDeviceOperationState"
   } ],
@@ -783,17 +823,13 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subPropertyOf" : [ {
     "@id" : "https://w3id.org/mda/ontology/hasOperationState"
+  } ],
+  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+    "@id" : "https://w3id.org/mda/vocab/operation-state/Scheme"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasDeviceType",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/refinesUniversalIdentity" : [ {
-    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
-    "@value" : "true"
-  } ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
-    "@id" : "https://w3id.org/mda/vocab/device-type/Scheme"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasDeviceType"
   } ],
@@ -816,6 +852,13 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ],
+  "https://w3id.org/mda/ontology/refinesUniversalIdentity" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
+    "@value" : "true"
+  } ],
+  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+    "@id" : "https://w3id.org/mda/vocab/device-type/Scheme"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasDuration",
@@ -927,9 +970,6 @@
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasLabelConcept",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
-    "@id" : "https://w3id.org/mda/vocab/alarm-label/Scheme"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasLabelConcept"
   } ],
@@ -952,14 +992,13 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ],
+  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+    "@id" : "https://w3id.org/mda/vocab/alarm-label/Scheme"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasLaterality",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty", "http://www.w3.org/2002/07/owl#FunctionalProperty" ],
-  "https://w3id.org/mda/ontology/refinesParticularIdentity" : [ {
-    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
-    "@value" : "true"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasLaterality"
   } ],
@@ -982,17 +1021,14 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "https://w3id.org/mda/ontology/Laterality"
+  } ],
+  "https://w3id.org/mda/ontology/refinesParticularIdentity" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
+    "@value" : "true"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasManufacturer",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/refinesUniversalIdentity" : [ {
-    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
-    "@value" : "true"
-  } ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
-    "@id" : "https://w3id.org/mda/vocab/manufacturer/Scheme"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasManufacturer"
   } ],
@@ -1015,6 +1051,13 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ],
+  "https://w3id.org/mda/ontology/refinesUniversalIdentity" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
+    "@value" : "true"
+  } ],
+  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+    "@id" : "https://w3id.org/mda/vocab/manufacturer/Scheme"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasMessage",
@@ -1045,10 +1088,6 @@
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasOperationState",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/persistsPostAlarm" : [ {
-    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
-    "@value" : "true"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasOperationState"
   } ],
@@ -1096,17 +1135,14 @@
     }, {
       "@id" : "https://w3id.org/mda/ontology/hasOperationState"
     } ]
+  } ],
+  "https://w3id.org/mda/ontology/persistsPostAlarm" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
+    "@value" : "true"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasPhase",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/refinesUniversalIdentity" : [ {
-    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
-    "@value" : "true"
-  } ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
-    "@id" : "https://w3id.org/mda/vocab/metric-phase/Scheme"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasPhase"
   } ],
@@ -1129,13 +1165,17 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ],
+  "https://w3id.org/mda/ontology/refinesUniversalIdentity" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
+    "@value" : "true"
+  } ],
+  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+    "@id" : "https://w3id.org/mda/vocab/metric-phase/Scheme"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasPriority",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
-    "@id" : "https://w3id.org/mda/vocab/alarm-priority/Scheme"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasPriority"
   } ],
@@ -1158,17 +1198,13 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ],
+  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+    "@id" : "https://w3id.org/mda/vocab/alarm-priority/Scheme"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasQualityState",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/persistsPostAlarm" : [ {
-    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
-    "@value" : "true"
-  } ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
-    "@id" : "https://w3id.org/mda/vocab/quality-state/Scheme"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasQualityState"
   } ],
@@ -1191,13 +1227,17 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ],
+  "https://w3id.org/mda/ontology/persistsPostAlarm" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
+    "@value" : "true"
+  } ],
+  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+    "@id" : "https://w3id.org/mda/vocab/quality-state/Scheme"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasRate",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
-    "@id" : "https://w3id.org/mda/vocab/metric-rate/Scheme"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasRate"
   } ],
@@ -1220,13 +1260,13 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ],
+  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+    "@id" : "https://w3id.org/mda/vocab/metric-rate/Scheme"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasRhythm",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
-    "@id" : "https://w3id.org/mda/vocab/rhythm/Scheme"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasRhythm"
   } ],
@@ -1249,6 +1289,9 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ],
+  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+    "@id" : "https://w3id.org/mda/vocab/rhythm/Scheme"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasSensor",
@@ -1279,9 +1322,6 @@
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasSensorOperationState",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
-    "@id" : "https://w3id.org/mda/vocab/operation-state/Scheme"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasSensorOperationState"
   } ],
@@ -1307,6 +1347,9 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subPropertyOf" : [ {
     "@id" : "https://w3id.org/mda/ontology/hasOperationState"
+  } ],
+  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+    "@id" : "https://w3id.org/mda/vocab/operation-state/Scheme"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/hasStart",
@@ -1415,10 +1458,6 @@
 }, {
   "@id" : "https://w3id.org/mda/ontology/isPropertyOf",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/situational" : [ {
-    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
-    "@value" : "true"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "isPropertyOf"
   } ],
@@ -1441,6 +1480,10 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "https://w3id.org/mda/ontology/PhysiologicalProcess"
+  } ],
+  "https://w3id.org/mda/ontology/situational" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
+    "@value" : "true"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/nodeKind",
@@ -1465,10 +1508,6 @@
 }, {
   "@id" : "https://w3id.org/mda/ontology/organPartOfSystem",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/situational" : [ {
-    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
-    "@value" : "true"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "organPartOfSystem"
   } ],
@@ -1491,6 +1530,10 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "https://w3id.org/mda/ontology/OrganSystem"
+  } ],
+  "https://w3id.org/mda/ontology/situational" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
+    "@value" : "true"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/persistsPostAlarm",
@@ -1541,10 +1584,6 @@
 }, {
   "@id" : "https://w3id.org/mda/ontology/presentIn",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/situational" : [ {
-    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
-    "@value" : "true"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "presentIn"
   } ],
@@ -1567,6 +1606,10 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "https://w3id.org/mda/ontology/Organ"
+  } ],
+  "https://w3id.org/mda/ontology/situational" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
+    "@value" : "true"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/producesMetric",
@@ -1715,10 +1758,6 @@
 }, {
   "@id" : "https://w3id.org/mda/ontology/targetsProcess",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "https://w3id.org/mda/ontology/situational" : [ {
-    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
-    "@value" : "true"
-  } ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "targetsProcess"
   } ],
@@ -1741,6 +1780,10 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "https://w3id.org/mda/ontology/PhysiologicalProcess"
+  } ],
+  "https://w3id.org/mda/ontology/situational" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
+    "@value" : "true"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology/triggeredBy",
@@ -1861,40 +1904,4 @@
   "https://w3id.org/mda/ontology/instantiatesClass" : [ {
     "@id" : "https://w3id.org/mda/ontology/TherapeuticModality"
   } ]
-}, {
-  "@id" : "http://purl.org/dc/elements/1.1/description",
-  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
-}, {
-  "@id" : "http://purl.org/dc/elements/1.1/license",
-  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
-}, {
-  "@id" : "http://purl.org/dc/elements/1.1/title",
-  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
-}, {
-  "@id" : "http://purl.org/dc/terms/created",
-  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
-}, {
-  "@id" : "http://purl.org/dc/terms/creator",
-  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
-}, {
-  "@id" : "http://purl.org/dc/terms/identifier",
-  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
-}, {
-  "@id" : "http://purl.org/vocab/vann/preferredNamespacePrefix",
-  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
-}, {
-  "@id" : "http://purl.org/vocab/vann/preferredNamespaceUri",
-  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
-}, {
-  "@id" : "http://www.w3.org/2001/XMLSchema#date",
-  "@type" : [ "http://www.w3.org/2000/01/rdf-schema#Datatype" ]
-}, {
-  "@id" : "http://www.w3.org/2001/XMLSchema#duration",
-  "@type" : [ "http://www.w3.org/2000/01/rdf-schema#Datatype" ]
-}, {
-  "@id" : "http://www.w3.org/2004/02/skos/core#Concept",
-  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ]
-}, {
-  "@id" : "http://www.w3.org/2004/02/skos/core#ConceptScheme",
-  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ]
 } ]
