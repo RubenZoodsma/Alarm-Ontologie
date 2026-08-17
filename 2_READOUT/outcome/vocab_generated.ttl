@@ -4,12 +4,15 @@
 @prefix component: <http://example.org/model-device-alarm-knowledge/vocab/component/> .
 @prefix device: <http://example.org/model-device-alarm-knowledge/vocab/device/> .
 @prefix deviceType: <http://example.org/model-device-alarm-knowledge/vocab/device-type/> .
+@prefix functionalUnit: <http://example.org/model-device-alarm-knowledge/vocab/functional-unit/> .
 @prefix manufacturer: <http://example.org/model-device-alarm-knowledge/vocab/manufacturer/> .
 @prefix mda: <http://example.org/model-device-alarm-knowledge#> .
 @prefix metric: <http://example.org/model-device-alarm-knowledge/vocab/metric/> .
 @prefix metricPhase: <http://example.org/model-device-alarm-knowledge/vocab/metric-phase/> .
 @prefix metricRate: <http://example.org/model-device-alarm-knowledge/vocab/metric-rate/> .
 @prefix opstate: <http://example.org/model-device-alarm-knowledge/vocab/operation-state/> .
+@prefix organ: <http://example.org/model-device-alarm-knowledge/vocab/organ/> .
+@prefix organSystem: <http://example.org/model-device-alarm-knowledge/vocab/organ-system/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix physiologicalProcess: <http://example.org/model-device-alarm-knowledge/vocab/physiological-process/> .
 @prefix physiologicalProperty: <http://example.org/model-device-alarm-knowledge/vocab/physiological-property/> .
@@ -48,6 +51,318 @@ alarmcat:Unknown a skos:Concept ;
     skos:prefLabel "Unknown"@en,
         "Unknown"@nl .
 
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/CardiohelpPvenOnderWaarschuwingsgrens> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "CARDIOHELP - pVen onder waarschuwingsgrens" ;
+    skos:prefLabel "CARDIOHELP - pVen onder waarschuwingsgrens"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/CardiohelpVerbindingVerbroken> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "CARDIOHELP - Verbinding verbroken" ;
+    skos:prefLabel "CARDIOHELP - Verbinding verbroken"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/CriticoolVerbindingVerbroken> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "CRITICOOL - Verbinding verbroken" ;
+    skos:prefLabel "CRITICOOL - Verbinding verbroken"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/DatexohmedacomventilatorMvexpHigh> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "DATEXOHMEDACOMVENTILATOR - MVexp High" ;
+    skos:prefLabel "DATEXOHMEDACOMVENTILATOR - MVexp High"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/DatexohmedacomventilatorPatientDisconnected> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "DATEXOHMEDACOMVENTILATOR - Patient Disconnected" ;
+    skos:prefLabel "DATEXOHMEDACOMVENTILATOR - Patient Disconnected"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/DatexohmedacomventilatorPlimitReached> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "DATEXOHMEDACOMVENTILATOR - Plimit Reached" ;
+    skos:prefLabel "DATEXOHMEDACOMVENTILATOR - Plimit Reached"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/DatexohmedacomventilatorRrHigh> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "DATEXOHMEDACOMVENTILATOR - RR High" ;
+    skos:prefLabel "DATEXOHMEDACOMVENTILATOR - RR High"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/DatexohmedacomventilatorVtexpHigh> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "DATEXOHMEDACOMVENTILATOR - VTexp High" ;
+    skos:prefLabel "DATEXOHMEDACOMVENTILATOR - VTexp High"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/EdwardsVerbindingVerbroken> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "EDWARDS - Verbinding verbroken" ;
+    skos:prefLabel "EDWARDS - Verbinding verbroken"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Hulbus345> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "HULBUS - 345" ;
+    skos:prefLabel "HULBUS - 345"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/HulbusLeakTooHigh> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "HULBUS - Leak too high" ;
+    skos:prefLabel "HULBUS - Leak too high"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/HulbusVteHigh> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "HULBUS - Vte high" ;
+    skos:prefLabel "HULBUS - Vte high"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusAirTemperatureHigh> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "MEDIBUS - Air temperature high" ;
+    skos:prefLabel "MEDIBUS - Air temperature high"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusAirTemperatureLow> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "MEDIBUS - Air temperature low" ;
+    skos:prefLabel "MEDIBUS - Air temperature low"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusCheckPatient> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "MEDIBUS - Check patient" ;
+    skos:prefLabel "MEDIBUS - Check patient"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusHumidityLow> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "MEDIBUS - Humidity low" ;
+    skos:prefLabel "MEDIBUS - Humidity low"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusHumiditySensorInoperable> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "MEDIBUS - Humidity Sensor inoperable" ;
+    skos:prefLabel "MEDIBUS - Humidity Sensor inoperable"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusMattressTemperatureSettingDeviation> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "MEDIBUS - Mattress temperature  setting deviation" ;
+    skos:prefLabel "MEDIBUS - Mattress temperature  setting deviation"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusRadiantHeaterAfter15MinsOperation> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "MEDIBUS - Radiant heater after 15 mins. operation" ;
+    skos:prefLabel "MEDIBUS - Radiant heater after 15 mins. operation"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusSlagvolumeHoog> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "MEDIBUS - Slagvolume hoog" ;
+    skos:prefLabel "MEDIBUS - Slagvolume hoog"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusVerbindingVerbroken> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "MEDIBUS - Verbinding verbroken" ;
+    skos:prefLabel "MEDIBUS - Verbinding verbroken"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusVolumeNietConstant> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "MEDIBUS - Volume niet constant" ;
+    skos:prefLabel "MEDIBUS - Volume niet constant"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MonitorArtStatischeDruk> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "Monitor - ART statische druk" ;
+    skos:prefLabel "Monitor - ART statische druk"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MonitorHogeArtmean> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "Monitor - Hoge ARTmean" ;
+    skos:prefLabel "Monitor - Hoge ARTmean"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MonitorLageArtmean> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "Monitor - Lage ARTmean" ;
+    skos:prefLabel "Monitor - Lage ARTmean"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MonitorLageSpo2> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "Monitor - Lage SpO2" ;
+    skos:prefLabel "Monitor - Lage SpO2"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MonitorSpo2SensorUit> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "Monitor - SpO2 sensor uit" ;
+    skos:prefLabel "Monitor - SpO2 sensor uit"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorAbpVerkleinen> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "PHILIPSMONITOR - ABP verkleinen" ;
+    skos:prefLabel "PHILIPSMONITOR - ABP verkleinen"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorCo2WijzigSchaalL> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "PHILIPSMONITOR - CO2 wijzig schaal l" ;
+    skos:prefLabel "PHILIPSMONITOR - CO2 wijzig schaal l"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorDesaturatie> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "PHILIPSMONITOR - Desaturatie" ;
+    skos:prefLabel "PHILIPSMONITOR - Desaturatie"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorExtremeTachy> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "PHILIPSMONITOR - Extreme Tachy" ;
+    skos:prefLabel "PHILIPSMONITOR - Extreme Tachy"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorHfHoog> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "PHILIPSMONITOR - HF hoog" ;
+    skos:prefLabel "PHILIPSMONITOR - HF hoog"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorLageHartfreq> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "PHILIPSMONITOR - Lage hartfreq." ;
+    skos:prefLabel "PHILIPSMONITOR - Lage hartfreq."@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorNietTeLerenEcg> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "PHILIPSMONITOR - Niet te leren ECG" ;
+    skos:prefLabel "PHILIPSMONITOR - Niet te leren ECG"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorRespElektrLos> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "PHILIPSMONITOR - Resp elektr.los" ;
+    skos:prefLabel "PHILIPSMONITOR - Resp elektr.los"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorSpo2GeenPols> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "PHILIPSMONITOR - SpO2 geen pols" ;
+    skos:prefLabel "PHILIPSMONITOR - SpO2 geen pols"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorSpo2Hoog> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "PHILIPSMONITOR - SpO2 hoog" ;
+    skos:prefLabel "PHILIPSMONITOR - SpO2 hoog"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorSpo2Laag> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "PHILIPSMONITOR - SpO2 laag" ;
+    skos:prefLabel "PHILIPSMONITOR - SpO2 laag"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorSpo2LagePfi> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "PHILIPSMONITOR - SpO2 lage PFI" ;
+    skos:prefLabel "PHILIPSMONITOR - SpO2 lage PFI"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorStoringInSpo2> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "PHILIPSMONITOR - Storing in SpO2" ;
+    skos:prefLabel "PHILIPSMONITOR - Storing in SpO2"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PrismaflexAlgemeneSysteemfout> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "PRISMAFLEX - Algemene systeemfout" ;
+    skos:prefLabel "PRISMAFLEX - Algemene systeemfout"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServoiAdemfrequentieHoog> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "SERVOI - Ademfrequentie: Hoog" ;
+    skos:prefLabel "SERVOI - Ademfrequentie: Hoog"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServoiExpMinuutvolume> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "SERVOI - Exp. Minuutvolume" ;
+    skos:prefLabel "SERVOI - Exp. Minuutvolume"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServoiVerbindingVerbroken> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "SERVOI - Verbinding verbroken" ;
+    skos:prefLabel "SERVOI - Verbinding verbroken"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServouAdemfrequentieHoog> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "SERVOU - Ademfrequentie hoog" ;
+    skos:prefLabel "SERVOU - Ademfrequentie hoog"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServouAdemfrequentieLaag> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "SERVOU - Ademfrequentie laag" ;
+    skos:prefLabel "SERVOU - Ademfrequentie laag"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServouBeademingsdrukHoog> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "SERVOU - Beademingsdruk hoog" ;
+    skos:prefLabel "SERVOU - Beademingsdruk hoog"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServouExpMinuutvolLaag> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "SERVOU - Exp. minuutvol. laag" ;
+    skos:prefLabel "SERVOU - Exp. minuutvol. laag"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServouPeepLaag> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "SERVOU - PEEP laag" ;
+    skos:prefLabel "SERVOU - PEEP laag"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServouVolumeUitBlokkade> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "SERVOU - Volume uit blokkade" ;
+    skos:prefLabel "SERVOU - Volume uit blokkade"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Trilogy0X79> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "TRILOGY - 0x79" ;
+    skos:prefLabel "TRILOGY - 0x79"@en .
+
+<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/TrilogyNetspanningAfwezig> a skos:Concept ;
+    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+    skos:notation "TRILOGY - Netspanning afwezig" ;
+    skos:prefLabel "TRILOGY - Netspanning afwezig"@en .
+
 alarmprio:Hoog a skos:Concept ;
     skos:broader alarmprio:AlarmPriority ;
     skos:definition "Hoog"@en,
@@ -84,16 +399,6 @@ alarmprio:Unknown a skos:Concept ;
     skos:prefLabel "Unknown"@en,
         "Unknown"@nl .
 
-anatomicalPosition:Air a skos:Concept ;
-    rdfs:subClassOf mda:AnatomicalPosition ;
-    skos:broader anatomicalPosition:AnatomicalPosition ;
-    skos:definition "Air"@en,
-        "Air"@nl ;
-    skos:inScheme anatomicalPosition:Scheme ;
-    skos:notation "Air" ;
-    skos:prefLabel "Air"@en,
-        "Air"@nl .
-
 anatomicalPosition:Arterial a skos:Concept ;
     rdfs:subClassOf mda:AnatomicalPosition ;
     skos:broader anatomicalPosition:AnatomicalPosition ;
@@ -114,16 +419,6 @@ anatomicalPosition:Peripheral a skos:Concept ;
     skos:prefLabel "Peripheral"@en,
         "Peripheral"@nl .
 
-anatomicalPosition:TerminalAirway a skos:Concept ;
-    rdfs:subClassOf mda:AnatomicalPosition ;
-    skos:broader anatomicalPosition:AnatomicalPosition ;
-    skos:definition "Terminal Airway"@en,
-        "Terminal Airway"@nl ;
-    skos:inScheme anatomicalPosition:Scheme ;
-    skos:notation "TerminalAirway" ;
-    skos:prefLabel "Terminal Airway"@en,
-        "Terminal Airway"@nl .
-
 anatomicalPosition:Thoracic a skos:Concept ;
     rdfs:subClassOf mda:AnatomicalPosition ;
     skos:broader anatomicalPosition:AnatomicalPosition ;
@@ -133,16 +428,6 @@ anatomicalPosition:Thoracic a skos:Concept ;
     skos:notation "Thoracic" ;
     skos:prefLabel "Thoracic"@en,
         "Thoracic"@nl .
-
-anatomicalPosition:Venous a skos:Concept ;
-    rdfs:subClassOf mda:AnatomicalPosition ;
-    skos:broader anatomicalPosition:AnatomicalPosition ;
-    skos:definition "Venous"@en,
-        "Venous"@nl ;
-    skos:inScheme anatomicalPosition:Scheme ;
-    skos:notation "Venous" ;
-    skos:prefLabel "Venous"@en,
-        "Venous"@nl .
 
 component:ConnectionUnit a skos:Concept ;
     rdfs:subClassOf mda:Component ;
@@ -380,6 +665,95 @@ device:Thermoregulator_Criticool_BelmontMedicalTechnologies a skos:Concept ;
     skos:notation "Thermoregulator_Criticool_BelmontMedicalTechnologies" ;
     skos:prefLabel "Thermoregulator_Criticool_Belmont Medical Technologies"@en .
 
+functionalUnit:FU_AirwayPressure a skos:Concept ;
+    rdfs:subClassOf mda:FunctionalUnit ;
+    skos:broader functionalUnit:FunctionalUnit ;
+    skos:definition "FU_Airway Pressure"@en,
+        "FU_Airway Pressure"@nl ;
+    skos:inScheme functionalUnit:Scheme ;
+    skos:notation "FU_AirwayPressure" ;
+    skos:prefLabel "FU_Airway Pressure"@en,
+        "FU_Airway Pressure"@nl .
+
+functionalUnit:FU_Capnography a skos:Concept ;
+    rdfs:subClassOf mda:FunctionalUnit ;
+    skos:broader functionalUnit:FunctionalUnit ;
+    skos:definition "FU_Capnography"@en,
+        "FU_Capnography"@nl ;
+    skos:inScheme functionalUnit:Scheme ;
+    skos:notation "FU_Capnography" ;
+    skos:prefLabel "FU_Capnography"@en,
+        "FU_Capnography"@nl .
+
+functionalUnit:FU_ElectroCardiography a skos:Concept ;
+    rdfs:subClassOf mda:FunctionalUnit ;
+    skos:broader functionalUnit:FunctionalUnit ;
+    skos:definition "FU_Electro Cardiography"@en,
+        "FU_Electro Cardiography"@nl ;
+    skos:inScheme functionalUnit:Scheme ;
+    skos:notation "FU_ElectroCardiography" ;
+    skos:prefLabel "FU_Electro Cardiography"@en,
+        "FU_Electro Cardiography"@nl .
+
+functionalUnit:FU_Humidity a skos:Concept ;
+    rdfs:subClassOf mda:FunctionalUnit ;
+    skos:broader functionalUnit:FunctionalUnit ;
+    skos:definition "FU_Humidity"@en,
+        "FU_Humidity"@nl ;
+    skos:inScheme functionalUnit:Scheme ;
+    skos:notation "FU_Humidity" ;
+    skos:prefLabel "FU_Humidity"@en,
+        "FU_Humidity"@nl .
+
+functionalUnit:FU_InvasiveBloodPressure a skos:Concept ;
+    rdfs:subClassOf mda:FunctionalUnit ;
+    skos:broader functionalUnit:FunctionalUnit ;
+    skos:definition "FU_Invasive Blood Pressure"@en,
+        "FU_Invasive Blood Pressure"@nl ;
+    skos:inScheme functionalUnit:Scheme ;
+    skos:notation "FU_InvasiveBloodPressure" ;
+    skos:prefLabel "FU_Invasive Blood Pressure"@en,
+        "FU_Invasive Blood Pressure"@nl .
+
+functionalUnit:FU_PneumoTachograph a skos:Concept ;
+    rdfs:subClassOf mda:FunctionalUnit ;
+    skos:broader functionalUnit:FunctionalUnit ;
+    skos:definition "FU_Pneumo Tachograph"@en,
+        "FU_Pneumo Tachograph"@nl ;
+    skos:inScheme functionalUnit:Scheme ;
+    skos:notation "FU_PneumoTachograph" ;
+    skos:prefLabel "FU_Pneumo Tachograph"@en,
+        "FU_Pneumo Tachograph"@nl .
+
+functionalUnit:FU_PulseOximetry a skos:Concept ;
+    rdfs:subClassOf mda:FunctionalUnit ;
+    skos:broader functionalUnit:FunctionalUnit ;
+    skos:definition "FU_Pulse Oximetry"@en,
+        "FU_Pulse Oximetry"@nl ;
+    skos:inScheme functionalUnit:Scheme ;
+    skos:notation "FU_PulseOximetry" ;
+    skos:prefLabel "FU_Pulse Oximetry"@en,
+        "FU_Pulse Oximetry"@nl .
+
+functionalUnit:FU_Temperature a skos:Concept ;
+    rdfs:subClassOf mda:FunctionalUnit ;
+    skos:broader functionalUnit:FunctionalUnit ;
+    skos:definition "FU_Temperature"@en,
+        "FU_Temperature"@nl ;
+    skos:inScheme functionalUnit:Scheme ;
+    skos:notation "FU_Temperature" ;
+    skos:prefLabel "FU_Temperature"@en,
+        "FU_Temperature"@nl .
+
+metricRate:Absent a skos:Concept ;
+    skos:broader metricRate:MetricRate ;
+    skos:definition "Absent"@en,
+        "Absent"@nl ;
+    skos:inScheme metricRate:Scheme ;
+    skos:notation "Absent" ;
+    skos:prefLabel "Absent"@en,
+        "Absent"@nl .
+
 metricRate:Decreased a skos:Concept ;
     skos:broader metricRate:MetricRate ;
     skos:definition "Decreased"@en,
@@ -419,15 +793,20 @@ metricRate:SeverelyIncreased a skos:Concept ;
 metric:ABP_Mean a skos:Concept ;
     mda:approximates physiologicalProperty:ArterialPressure ;
     mda:hasPhase metricPhase:Mean ;
-    rdfs:subClassOf metric:ABP ;
+    rdfs:subClassOf mda:Metric,
+        metric:ABP ;
     owl:equivalentClass [ a owl:Class ;
             owl:intersectionOf ( metric:ABP [ a owl:Restriction ;
                         owl:hasValue metricPhase:Mean ;
                         owl:onProperty mda:hasPhase ] ) ] ;
-    skos:broader metric:ABP ;
+    skos:broader metric:ABP,
+        metric:Metric ;
+    skos:definition "ABP_Mean"@en,
+        "ABP_Mean"@nl ;
     skos:inScheme metric:Scheme ;
     skos:notation "ABP_Mean" ;
-    skos:prefLabel "ABP_Mean"@en .
+    skos:prefLabel "ABP_Mean"@en,
+        "ABP_Mean"@nl .
 
 metric:AirTemperature a skos:Concept ;
     mda:approximates physiologicalProperty:Temperature ;
@@ -443,28 +822,38 @@ metric:AirTemperature a skos:Concept ;
 metric:AirwayPressure_EndExpiratory a skos:Concept ;
     mda:approximates physiologicalProperty:RespirationPressure ;
     mda:hasPhase metricPhase:EndExpiratory ;
-    rdfs:subClassOf metric:AirwayPressure ;
+    rdfs:subClassOf mda:Metric,
+        metric:AirwayPressure ;
     owl:equivalentClass [ a owl:Class ;
             owl:intersectionOf ( metric:AirwayPressure [ a owl:Restriction ;
                         owl:hasValue metricPhase:EndExpiratory ;
                         owl:onProperty mda:hasPhase ] ) ] ;
-    skos:broader metric:AirwayPressure ;
+    skos:broader metric:AirwayPressure,
+        metric:Metric ;
+    skos:definition "Airway Pressure_End Expiratory"@en,
+        "Airway Pressure_End Expiratory"@nl ;
     skos:inScheme metric:Scheme ;
     skos:notation "AirwayPressure_EndExpiratory" ;
-    skos:prefLabel "Airway Pressure_End Expiratory"@en .
+    skos:prefLabel "Airway Pressure_End Expiratory"@en,
+        "Airway Pressure_End Expiratory"@nl .
 
 metric:CO2_EndTidal a skos:Concept ;
     mda:approximates physiologicalProperty:PaCO2 ;
     mda:hasPhase metricPhase:EndTidal ;
-    rdfs:subClassOf metric:CO2 ;
+    rdfs:subClassOf mda:Metric,
+        metric:CO2 ;
     owl:equivalentClass [ a owl:Class ;
             owl:intersectionOf ( metric:CO2 [ a owl:Restriction ;
                         owl:hasValue metricPhase:EndTidal ;
                         owl:onProperty mda:hasPhase ] ) ] ;
-    skos:broader metric:CO2 ;
+    skos:broader metric:CO2,
+        metric:Metric ;
+    skos:definition "CO2_End Tidal"@en,
+        "CO2_End Tidal"@nl ;
     skos:inScheme metric:Scheme ;
     skos:notation "CO2_EndTidal" ;
-    skos:prefLabel "CO2_End Tidal"@en .
+    skos:prefLabel "CO2_End Tidal"@en,
+        "CO2_End Tidal"@nl .
 
 metric:HeartRate a skos:Concept ;
     mda:approximates physiologicalProperty:ElectricalHeartRate ;
@@ -487,6 +876,16 @@ metric:Humidity a skos:Concept ;
     skos:notation "Humidity" ;
     skos:prefLabel "Humidity"@en,
         "Humidity"@nl .
+
+metric:Pulse a skos:Concept ;
+    rdfs:subClassOf mda:Metric ;
+    skos:broader metric:Metric ;
+    skos:definition "Pulse"@en,
+        "Pulse"@nl ;
+    skos:inScheme metric:Scheme ;
+    skos:notation "Pulse" ;
+    skos:prefLabel "Pulse"@en,
+        "Pulse"@nl .
 
 metric:PulseFlowIndex a skos:Concept ;
     mda:approximates physiologicalProperty:TissuePerfusion ;
@@ -535,37 +934,38 @@ metric:VenousPressure a skos:Concept ;
 metric:Volume_Minute a skos:Concept ;
     mda:approximates physiologicalProperty:RespirationVolume ;
     mda:hasPhase metricPhase:Minute ;
-    rdfs:subClassOf metric:Volume ;
+    rdfs:subClassOf mda:Metric,
+        metric:Volume ;
     owl:equivalentClass [ a owl:Class ;
             owl:intersectionOf ( metric:Volume [ a owl:Restriction ;
                         owl:hasValue metricPhase:Minute ;
                         owl:onProperty mda:hasPhase ] ) ] ;
-    skos:broader metric:Volume ;
+    skos:broader metric:Metric,
+        metric:Volume ;
+    skos:definition "Volume_Minute"@en,
+        "Volume_Minute"@nl ;
     skos:inScheme metric:Scheme ;
     skos:notation "Volume_Minute" ;
-    skos:prefLabel "Volume_Minute"@en .
+    skos:prefLabel "Volume_Minute"@en,
+        "Volume_Minute"@nl .
 
 metric:Volume_Tidal a skos:Concept ;
     mda:approximates physiologicalProperty:RespirationVolume ;
     mda:hasPhase metricPhase:Tidal ;
-    rdfs:subClassOf metric:Volume ;
+    rdfs:subClassOf mda:Metric,
+        metric:Volume ;
     owl:equivalentClass [ a owl:Class ;
             owl:intersectionOf ( metric:Volume [ a owl:Restriction ;
                         owl:hasValue metricPhase:Tidal ;
                         owl:onProperty mda:hasPhase ] ) ] ;
-    skos:broader metric:Volume ;
+    skos:broader metric:Metric,
+        metric:Volume ;
+    skos:definition "Volume_Tidal"@en,
+        "Volume_Tidal"@nl ;
     skos:inScheme metric:Scheme ;
     skos:notation "Volume_Tidal" ;
-    skos:prefLabel "Volume_Tidal"@en .
-
-opstate:Disabled a skos:Concept ;
-    skos:broader opstate:OperationState ;
-    skos:definition "Disabled"@en,
-        "Disabled"@nl ;
-    skos:inScheme opstate:Scheme ;
-    skos:notation "Disabled" ;
-    skos:prefLabel "Disabled"@en,
-        "Disabled"@nl .
+    skos:prefLabel "Volume_Tidal"@en,
+        "Volume_Tidal"@nl .
 
 opstate:Disconnected a skos:Concept ;
     skos:broader opstate:OperationState ;
@@ -603,6 +1003,76 @@ opstate:Warning a skos:Concept ;
     skos:prefLabel "Warning"@en,
         "Warning"@nl .
 
+organSystem:CardioVascular a skos:Concept ;
+    rdfs:subClassOf mda:OrganSystem ;
+    skos:broader organSystem:OrganSystem ;
+    skos:definition "Cardio Vascular"@en,
+        "Cardio Vascular"@nl ;
+    skos:inScheme organSystem:Scheme ;
+    skos:notation "CardioVascular" ;
+    skos:prefLabel "Cardio Vascular"@en,
+        "Cardio Vascular"@nl .
+
+organSystem:Pulmonary a skos:Concept ;
+    rdfs:subClassOf mda:OrganSystem ;
+    skos:broader organSystem:OrganSystem ;
+    skos:definition "Pulmonary"@en,
+        "Pulmonary"@nl ;
+    skos:inScheme organSystem:Scheme ;
+    skos:notation "Pulmonary" ;
+    skos:prefLabel "Pulmonary"@en,
+        "Pulmonary"@nl .
+
+organSystem:Renal a skos:Concept ;
+    rdfs:subClassOf mda:OrganSystem ;
+    skos:broader organSystem:OrganSystem ;
+    skos:definition "Renal"@en,
+        "Renal"@nl ;
+    skos:inScheme organSystem:Scheme ;
+    skos:notation "Renal" ;
+    skos:prefLabel "Renal"@en,
+        "Renal"@nl .
+
+organ:BloodVessels a skos:Concept ;
+    rdfs:subClassOf mda:Organ ;
+    skos:broader organ:Organ ;
+    skos:definition "Blood Vessels"@en,
+        "Blood Vessels"@nl ;
+    skos:inScheme organ:Scheme ;
+    skos:notation "BloodVessels" ;
+    skos:prefLabel "Blood Vessels"@en,
+        "Blood Vessels"@nl .
+
+organ:Heart a skos:Concept ;
+    rdfs:subClassOf mda:Organ ;
+    skos:broader organ:Organ ;
+    skos:definition "Heart"@en,
+        "Heart"@nl ;
+    skos:inScheme organ:Scheme ;
+    skos:notation "Heart" ;
+    skos:prefLabel "Heart"@en,
+        "Heart"@nl .
+
+organ:Kidneys a skos:Concept ;
+    rdfs:subClassOf mda:Organ ;
+    skos:broader organ:Organ ;
+    skos:definition "Kidneys"@en,
+        "Kidneys"@nl ;
+    skos:inScheme organ:Scheme ;
+    skos:notation "Kidneys" ;
+    skos:prefLabel "Kidneys"@en,
+        "Kidneys"@nl .
+
+organ:Lungs a skos:Concept ;
+    rdfs:subClassOf mda:Organ ;
+    skos:broader organ:Organ ;
+    skos:definition "Lungs"@en,
+        "Lungs"@nl ;
+    skos:inScheme organ:Scheme ;
+    skos:notation "Lungs" ;
+    skos:prefLabel "Lungs"@en,
+        "Lungs"@nl .
+
 physiologicalProcess:CardiacContraction a skos:Concept ;
     rdfs:subClassOf mda:PhysiologicalProcess ;
     skos:broader physiologicalProcess:PhysiologicalProcess ;
@@ -623,6 +1093,26 @@ physiologicalProcess:PulmonaryDiffusion a skos:Concept ;
     skos:prefLabel "Pulmonary Diffusion"@en,
         "Pulmonary Diffusion"@nl .
 
+physiologicalProcess:RenalFiltration a skos:Concept ;
+    rdfs:subClassOf mda:PhysiologicalProcess ;
+    skos:broader physiologicalProcess:PhysiologicalProcess ;
+    skos:definition "Renal Filtration"@en,
+        "Renal Filtration"@nl ;
+    skos:inScheme physiologicalProcess:Scheme ;
+    skos:notation "RenalFiltration" ;
+    skos:prefLabel "Renal Filtration"@en,
+        "Renal Filtration"@nl .
+
+physiologicalProcess:VascularCompliance a skos:Concept ;
+    rdfs:subClassOf mda:PhysiologicalProcess ;
+    skos:broader physiologicalProcess:PhysiologicalProcess ;
+    skos:definition "Vascular Compliance"@en,
+        "Vascular Compliance"@nl ;
+    skos:inScheme physiologicalProcess:Scheme ;
+    skos:notation "VascularCompliance" ;
+    skos:prefLabel "Vascular Compliance"@en,
+        "Vascular Compliance"@nl .
+
 qualitystate:Impaired a skos:Concept ;
     skos:broader qualitystate:QualityState ;
     skos:definition "Impaired"@en,
@@ -631,6 +1121,16 @@ qualitystate:Impaired a skos:Concept ;
     skos:notation "Impaired" ;
     skos:prefLabel "Impaired"@en,
         "Impaired"@nl .
+
+sensor:ABP_transducer a skos:Concept ;
+    rdfs:subClassOf mda:Sensor ;
+    skos:broader sensor:Sensor ;
+    skos:definition "ABP_transducer"@en,
+        "ABP_transducer"@nl ;
+    skos:inScheme sensor:Scheme ;
+    skos:notation "ABP_transducer" ;
+    skos:prefLabel "ABP_transducer"@en,
+        "ABP_transducer"@nl .
 
 sensor:AW_transducer a skos:Concept ;
     rdfs:subClassOf mda:Sensor ;
@@ -672,15 +1172,15 @@ sensor:ElectroCardioGraphy_sensor a skos:Concept ;
     skos:prefLabel "Electro Cardio Graphy_sensor"@en,
         "Electro Cardio Graphy_sensor"@nl .
 
-sensor:HumiditySensor a skos:Concept ;
+sensor:Humidity_sensor a skos:Concept ;
     rdfs:subClassOf mda:Sensor ;
     skos:broader sensor:Sensor ;
-    skos:definition "Humidity Sensor"@en,
-        "Humidity Sensor"@nl ;
+    skos:definition "Humidity_sensor"@en,
+        "Humidity_sensor"@nl ;
     skos:inScheme sensor:Scheme ;
-    skos:notation "HumiditySensor" ;
-    skos:prefLabel "Humidity Sensor"@en,
-        "Humidity Sensor"@nl .
+    skos:notation "Humidity_sensor" ;
+    skos:prefLabel "Humidity_sensor"@en,
+        "Humidity_sensor"@nl .
 
 sensor:PneumoTachograph a skos:Concept ;
     rdfs:subClassOf mda:Sensor ;
@@ -691,16 +1191,6 @@ sensor:PneumoTachograph a skos:Concept ;
     skos:notation "PneumoTachograph" ;
     skos:prefLabel "Pneumo Tachograph"@en,
         "Pneumo Tachograph"@nl .
-
-sensor:Pressure_transducer a skos:Concept ;
-    rdfs:subClassOf mda:Sensor ;
-    skos:broader sensor:Sensor ;
-    skos:definition "Pressure_transducer"@en,
-        "Pressure_transducer"@nl ;
-    skos:inScheme sensor:Scheme ;
-    skos:notation "Pressure_transducer" ;
-    skos:prefLabel "Pressure_transducer"@en,
-        "Pressure_transducer"@nl .
 
 sensor:PulseOximeter a skos:Concept ;
     rdfs:subClassOf mda:Sensor ;
@@ -721,6 +1211,16 @@ sensor:Temperature_sensor a skos:Concept ;
     skos:notation "Temperature_sensor" ;
     skos:prefLabel "Temperature_sensor"@en,
         "Temperature_sensor"@nl .
+
+sensor:VenousPressureTransducer a skos:Concept ;
+    rdfs:subClassOf mda:Sensor ;
+    skos:broader sensor:Sensor ;
+    skos:definition "Venous Pressure Transducer"@en,
+        "Venous Pressure Transducer"@nl ;
+    skos:inScheme sensor:Scheme ;
+    skos:notation "VenousPressureTransducer" ;
+    skos:prefLabel "Venous Pressure Transducer"@en,
+        "Venous Pressure Transducer"@nl .
 
 signal:ABP_waveform a skos:Concept ;
     rdfs:subClassOf mda:Signal ;
@@ -822,6 +1322,16 @@ therapeuticModality:ExtraCorporeal_Membran_Oxygenation a skos:Concept ;
     skos:notation "ExtraCorporeal_Membran_Oxygenation" ;
     skos:prefLabel "Extra Corporeal_Membran_Oxygenation"@en,
         "Extra Corporeal_Membran_Oxygenation"@nl .
+
+therapeuticModality:RenalReplacementTherapy a skos:Concept ;
+    rdfs:subClassOf mda:TherapeuticModality ;
+    skos:broader therapeuticModality:TherapeuticModality ;
+    skos:definition "Renal Replacement Therapy"@en,
+        "Renal Replacement Therapy"@nl ;
+    skos:inScheme therapeuticModality:Scheme ;
+    skos:notation "RenalReplacementTherapy" ;
+    skos:prefLabel "Renal Replacement Therapy"@en,
+        "Renal Replacement Therapy"@nl .
 
 therapeuticModality:ThermoRegulationTherapy a skos:Concept ;
     mda:targetsProcess physiologicalProcess:ThermoRegulation ;

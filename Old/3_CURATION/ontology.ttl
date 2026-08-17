@@ -596,7 +596,7 @@ mda:targetsProcess a owl:ObjectProperty ;
                         "Koppelt een therapeutische modaliteit aan het fysiologische proces waarop het zich richt."@nl ;
     rdfs:domain         mda:TherapeuticModality ;
     rdfs:range          mda:PhysiologicalProcess .
-
+    
 # A single, one-directional property (Device → TherapeuticModality), not an
 # inverseOf pair: TherapeuticModality needs exactly one forward-navigable
 # route into it for the ontology_tree.py BFS to find (see hasOperationState's

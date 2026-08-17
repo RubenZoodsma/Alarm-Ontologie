@@ -1,5 +1,6 @@
 @prefix device:     <http://example.org/model-device-alarm-knowledge/vocab/device/> .
 @prefix component:  <http://example.org/model-device-alarm-knowledge/vocab/component/> .
+@prefix functionalUnit: <http://example.org/model-device-alarm-knowledge/vocab/functional-unit/> .
 @prefix sensor:     <http://example.org/model-device-alarm-knowledge/vocab/sensor/> .
 @prefix signal:     <http://example.org/model-device-alarm-knowledge/vocab/signal/> .
 @prefix alarmprio: <http://example.org/model-device-alarm-knowledge/vocab/alarm-priority/> .
@@ -90,6 +91,22 @@ component:Component         a skos:Concept ;
     skos:definition         "A physical or functional part of a medical device — e.g. a connection port, power unit, heating element, or sensor. Sensor is a specialisation that additionally produces a measurable signal."@en,
                             "Een fysiek of functioneel onderdeel van een medisch apparaat — bijv. een aansluitpoort, voedingseenheid, verwarmingselement of sensor. Sensor is een specialisatie die daarnaast een meetbaar signaal produceert."@nl ;
     skos:notation           "Component" .
+
+
+############################################################
+# FunctionalUnit scheme
+############################################################
+
+functionalUnit:Scheme     a skos:ConceptScheme ;
+    skos:prefLabel          "Functional Unit"@en, "Functionele Eenheid"@nl .
+
+functionalUnit:FunctionalUnit a skos:Concept ;
+    skos:inScheme           functionalUnit:Scheme ;
+    skos:topConceptOf       functionalUnit:Scheme ;
+    skos:prefLabel          "Functional Unit"@en, "Functionele Eenheid"@nl ;
+    skos:definition         "The module of a device that houses the computation logic for a particular measurement capability, reading from one or more sensors and turning their signals into metrics."@en,
+                            "De module van een apparaat die de berekeningslogica voor een bepaalde meetmogelijkheid huisvest, die van één of meer sensoren afleest en hun signalen omzet in metrieken."@nl ;
+    skos:notation           "FunctionalUnit" .
 
 
 ############################################################

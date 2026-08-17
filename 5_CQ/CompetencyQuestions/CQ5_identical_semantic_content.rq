@@ -32,8 +32,9 @@
 #
 # Method: for each archetype, compute a "signature" — the sorted set of every
 # (a) hasCategory/hasPriority on the archetype itself, (b) rdf:type of every
-# node reachable via hasMessage/concernsPatient/isMonitoredBy/(hasSensor|
-# hasComponent|producesSignal|detectsMetric)* — the asserted IDENTITY of each
+# node reachable via hasMessage/(concernsPatient|triggeredBy/(hasComponent|
+# hasFunctionalUnit|hasSensor|producesSignal|analyzedBy|producesMetric)*) —
+# the asserted IDENTITY of each
 # node, (c) hasQualityState/hasRate/hasComponentOperationState/
 # hasSensorOperationState/hasDeviceOperationState/hasAnatomicalPosition
 # asserted on those nodes — their asserted VALUES, (d) every entailed
@@ -62,25 +63,25 @@ SELECT (GROUP_CONCAT(?label; separator=" | ") AS ?identicalAlarms) (COUNT(DISTIN
         BIND(CONCAT("hasPriority=", STR(?v)) AS ?fact)
       } UNION {
         # node identity — which concept each node is asserted to be
-        ?a mda:hasMessage/mda:concernsPatient/mda:isMonitoredBy/(mda:hasSensor|mda:hasComponent|mda:producesSignal|mda:detectsMetric)* ?node .
+        ?a mda:hasMessage/(mda:concernsPatient|mda:triggeredBy/(mda:hasComponent|mda:hasFunctionalUnit|mda:hasSensor|mda:producesSignal|mda:analyzedBy|mda:producesMetric)*) ?node .
         ?node rdf:type ?t .
         ?t a skos:Concept .
         BIND(CONCAT("type=", STR(?t)) AS ?fact)
       } UNION {
         # node values — the leaf facts asserted on those nodes
-        ?a mda:hasMessage/mda:concernsPatient/mda:isMonitoredBy/(mda:hasSensor|mda:hasComponent|mda:producesSignal|mda:detectsMetric)* ?node .
+        ?a mda:hasMessage/(mda:concernsPatient|mda:triggeredBy/(mda:hasComponent|mda:hasFunctionalUnit|mda:hasSensor|mda:producesSignal|mda:analyzedBy|mda:producesMetric)*) ?node .
         ?node ?p ?v .
         FILTER(?p IN (mda:hasQualityState, mda:hasRate, mda:hasComponentOperationState,
                        mda:hasSensorOperationState, mda:hasDeviceOperationState, mda:hasAnatomicalPosition))
         BIND(CONCAT(STRAFTER(STR(?p), "#"), "=", STR(?v)) AS ?fact)
       } UNION {
         # net effect — entailed operation state anywhere in the tree
-        ?a mda:hasMessage/mda:concernsPatient/mda:isMonitoredBy/(mda:hasSensor|mda:hasComponent|mda:producesSignal|mda:detectsMetric)* ?node .
+        ?a mda:hasMessage/(mda:concernsPatient|mda:triggeredBy/(mda:hasComponent|mda:hasFunctionalUnit|mda:hasSensor|mda:producesSignal|mda:analyzedBy|mda:producesMetric)*) ?node .
         ?node mda:hasOperationState ?v .
         BIND(CONCAT("hasOperationState=", STR(?v)) AS ?fact)
       } UNION {
         # net effect — terminal situational implication (clinical/therapeutic)
-        ?a mda:hasMessage/mda:concernsPatient/mda:isMonitoredBy/(mda:hasSensor|mda:hasComponent|mda:producesSignal|mda:detectsMetric)* ?node .
+        ?a mda:hasMessage/(mda:concernsPatient|mda:triggeredBy/(mda:hasComponent|mda:hasFunctionalUnit|mda:hasSensor|mda:producesSignal|mda:analyzedBy|mda:producesMetric)*) ?node .
         ?node (mda:approximates|mda:isPropertyOf|mda:presentIn|mda:organPartOfSystem|mda:administers|mda:targetsProcess)+ ?effect .
         FILTER NOT EXISTS { ?effect (mda:approximates|mda:isPropertyOf|mda:presentIn|mda:organPartOfSystem|mda:administers|mda:targetsProcess) ?next }
         BIND(CONCAT("effect=", STR(?effect)) AS ?fact)
