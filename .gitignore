@@ -7,3 +7,5 @@
 **/documentation/*
 *.md
 *.py
+__pycache__/
+.vscode/
