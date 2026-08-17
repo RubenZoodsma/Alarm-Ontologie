@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="resources/primer.css" media="screen"/>
+<link rel="stylesheet" href="resources/rec.css" media="screen"/>
+<link rel="stylesheet" href="resources/extra.css" media="screen"/>
+<link rel="stylesheet" href="resources/owl.css" media="screen"/>
+<link rel="stylesheet" href="resources/dark.css" media="(prefers-color-scheme: dark)"/>
+<link rel="stylesheet" href="resources/light.css" media="(prefers-color-scheme: light)"/>
+<link rel="stylesheet" href="resources/slider.css" media="screen"/>
+<meta name="color-scheme" content="dark light">
+<script type="module" src="resources/dark-mode-toggle.mjs"></script><div class="darkmode">
+	<dark-mode-toggle class="slider"></dark-mode-toggle>
+</div>
+ <title>Medical Device Alarm Ontology</title>
+
+
+<!-- SCHEMA.ORG METADATA -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","url":"https://w3id.org/mda/ontology/","image":"http://vowl.visualdataweb.org/webvowl/#iri=https://w3id.org/mda/ontology/","name":"Medical Device Alarm Ontology", "headline":"Document describing the ontology https://w3id.org/mda/ontology/", "dateReleased":"2026-07-08", "version":"1.0.0", "author":[{"@type":"Person","name":"Ruben Zoodsma"}]}</script>
+
+<script src="resources/jquery.js"></script> 
+<script src="resources/marked.min.js"></script> 
+    <script> 
+function loadHash() {
+  jQuery(".markdown").each(function(el){jQuery(this).after(marked.parse(jQuery(this).text())).remove()});
+	var hash = location.hash;
+	if($(hash).offset()!=null){
+	  $('html, body').animate({scrollTop: $(hash).offset().top}, 0);
+}
+	loadTOC();
+}
+function loadTOC(){
+	//process toc dynamically
+	  var t='<h2>Table of contents</h2><ul>';i = 1;j=0;
+	  jQuery(".list").each(function(){
+		if(jQuery(this).is('h2')){
+			if(j>0){
+				t+='</ul>';
+				j=0;
+			}
+			t+= '<li>'+i+'. <a href=#'+ jQuery(this).attr('id')+'>'+ jQuery(this).ignore("span").text()+'</a></li>';
+			i++;
+		}
+		if(jQuery(this).is('h3')){
+			if(j==0){
+				t+='<ul>';
+			}
+			j++;
+			t+= '<li>'+(i-1)+'.'+j+'. '+'<a href=#'+ jQuery(this).attr('id')+'>'+ jQuery(this).ignore("span").text()+'</a></li>';
+		}
+	  });
+	  t+='</ul>';
+	  $("#toc").html(t); 
+}
+$(function(){
+    loadHash();
+}); $.fn.ignore = function(sel){
+        return this.clone().find(sel||">*").remove().end();
+ }; 
+   </script> 
+  </head> 
+
+<body>
+<div class="container">
+<div class="head">
+<div style="float:right">language <a href="index-en.html"><b>en</b></a> </div>
+<h1>Medical Device Alarm Ontology</h1>
+<h2>Release: 2026-07-08</h2>
+
+
+<dl>
+<dt>Latest version:</dt>
+<dd><a href="https://w3id.org/mda/ontology/">https://w3id.org/mda/ontology/</a></dd>
+<dt>Revision:</dt>
+<dd>1.0.0</dd>
+<dt>Authors:</dt>
+<dd>Ruben Zoodsma</dd>
+
+<dt>Download serialization:</dt><dd><span><a href="ontology.jsonld" target="_blank"><img src="https://img.shields.io/badge/Format-JSON_LD-blue.svg" alt="JSON-LD" /></a> </span><span><a href="ontology.owl" target="_blank"><img src="https://img.shields.io/badge/Format-RDF/XML-blue.svg" alt="RDF/XML" /></a> </span><span><a href="ontology.nt" target="_blank"><img src="https://img.shields.io/badge/Format-N_Triples-blue.svg" alt="N-Triples" /></a> </span><span><a href="ontology.ttl" target="_blank"><img src="https://img.shields.io/badge/Format-TTL-blue.svg" alt="TTL" /></a> </span></dd><dt>License:</dt><dd><a href="http://insertlicenseURIhere.example.org" target="_blank"><img src="https://img.shields.io/badge/License-license%20name%20goes%20here-blue.svg" alt="http://insertlicenseURIhere.example.org" /></a>
+</dd><dt>Visualization:</dt><dd><a href="webvowl/index.html#" target="_blank"><img src="https://img.shields.io/badge/Visualize_with-WebVowl-blue.svg" alt="Visualize with WebVowl" /></a></dd>
+<!-- <dt>Evaluation:</dt><dd><a href="OOPSevaluation/oopsEval.html#" target="_blank"><img src="https://img.shields.io/badge/Evaluate_with-OOPS! (OntOlogy Pitfall Scanner!)-blue.svg" alt="Evaluate with OOPS!" /></a></dd> --></dl>
+
+<hr/>
+</div>
+<div class="status">
+<div>
+<span>Ontology Specification Draft</span>
+</div>
+</div>     <div id="abstract"><h2>Abstract</h2><span class="markdown">
+This is a placeholder text for the abstract. The abstract should contain a couple of sentences summarizing the ontology and its purpose.</span>
+</div>
+<div id="toc"></div> 
+
+<!--INTRODUCTION SECTION-->
+    <div id="introduction"><h2 id="intro" class="list">Introduction <span class="backlink"> back to <a href="#toc">ToC</a></span></h2>
+<span class="markdown">Medical device alarms are typically communicated as short textual messages, but they implicitly convey information about the measurement, device, interpretation, and associated technical or clinical concern. The MDA Ontology makes this knowledge explicit and provides a shared semantic structure for representing and combining alarm information across devices and clinical context.</span>
+<div id="namespacedeclarations">
+<h3 id="ns" class="list">Namespace declarations</h3>
+<div id="ns" align="center">
+<table>
+<caption> <a href="#ns"> Table 1</a>: Namespaces used in the document </caption>
+<tbody>
+<tr><td><b>alarmLabel</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/alarm-label/&gt;</td></tr>
+<tr><td><b>alarmcat</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/alarm-category/&gt;</td></tr>
+<tr><td><b>alarmprio</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/alarm-priority/&gt;</td></tr>
+<tr><td><b>anatomicalPosition</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/anatomical-position/&gt;</td></tr>
+<tr><td><b>component</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/component/&gt;</td></tr>
+<tr><td><b>dc</b></td><td>&lt;http://purl.org/dc/elements/1.1/&gt;</td></tr>
+<tr><td><b>dcterms</b></td><td>&lt;http://purl.org/dc/terms/&gt;</td></tr>
+<tr><td><b>device</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/device/&gt;</td></tr>
+<tr><td><b>deviceType</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/device-type/&gt;</td></tr>
+<tr><td><b>functionalUnit</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/functional-unit/&gt;</td></tr>
+<tr><td><b>laterality</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/laterality/&gt;</td></tr>
+<tr><td><b>manufacturer</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/manufacturer/&gt;</td></tr>
+<tr><td><b>mda</b></td><td>&lt;http://example.org/model-device-alarm-knowledge#&gt;</td></tr>
+<tr><td><b>metric</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/metric/&gt;</td></tr>
+<tr><td><b>metricPhase</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/metric-phase/&gt;</td></tr>
+<tr><td><b>metricRate</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/metric-rate/&gt;</td></tr>
+<tr><td><b>opstate</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/operation-state/&gt;</td></tr>
+<tr><td><b>organ</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/organ/&gt;</td></tr>
+<tr><td><b>organSystem</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/organ-system/&gt;</td></tr>
+<tr><td><b>owl</b></td><td>&lt;http://www.w3.org/2002/07/owl#&gt;</td></tr>
+<tr><td><b>patient</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/patient/&gt;</td></tr>
+<tr><td><b>physiologicalProcess</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/physiological-process/&gt;</td></tr>
+<tr><td><b>physiologicalProperty</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/physiological-property/&gt;</td></tr>
+<tr><td><b>qualitystate</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/quality-state/&gt;</td></tr>
+<tr><td><b>rdf</b></td><td>&lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;</td></tr>
+<tr><td><b>rdfs</b></td><td>&lt;http://www.w3.org/2000/01/rdf-schema#&gt;</td></tr>
+<tr><td><b>rhythm</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/rhythm/&gt;</td></tr>
+<tr><td><b>sensor</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/sensor/&gt;</td></tr>
+<tr><td><b>signal</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/signal/&gt;</td></tr>
+<tr><td><b>skos</b></td><td>&lt;http://www.w3.org/2004/02/skos/core#&gt;</td></tr>
+<tr><td><b>therapeuticModality</b></td><td>&lt;http://example.org/model-device-alarm-knowledge/vocab/therapeutic-modality/&gt;</td></tr>
+<tr><td><b>vann</b></td><td>&lt;http://purl.org/vocab/vann/&gt;</td></tr>
+<tr><td><b>xml</b></td><td>&lt;http://www.w3.org/XML/1998/namespace&gt;</td></tr>
+<tr><td><b>xsd</b></td><td>&lt;http://www.w3.org/2001/XMLSchema#&gt;</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+  
+
+<!--OVERVIEW SECTION-->
+    <div id="overview"><h2 id="overv" class="list">MDA Ontology: Overview <span class="backlink"> back to <a href="#toc">ToC</a></span></h2>
+<span class="markdown">
+This ontology has the following classes and properties.</span>
+<h4>Classes</h4>
+<ul xmlns:widoco="https://w3id.org/widoco/vocab#"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    class="hlist">
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#Alarm"
+         title="http://example.org/model-device-alarm-knowledge#Alarm">Alarm</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#AlarmMessage"
+         title="http://example.org/model-device-alarm-knowledge#AlarmMessage">Alarm Message</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#AlarmType"
+         title="http://example.org/model-device-alarm-knowledge#AlarmType">Alarm Type</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#AnatomicalPosition"
+         title="http://example.org/model-device-alarm-knowledge#AnatomicalPosition">Anatomical Position</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#Component"
+         title="http://example.org/model-device-alarm-knowledge#Component">Component</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#CriticalComponent"
+         title="http://example.org/model-device-alarm-knowledge#CriticalComponent">Critical component</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#Device"
+         title="http://example.org/model-device-alarm-knowledge#Device">Device</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#FunctionalUnit"
+         title="http://example.org/model-device-alarm-knowledge#FunctionalUnit">Functional unit</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#Laterality"
+         title="http://example.org/model-device-alarm-knowledge#Laterality">Laterality</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#Metric"
+         title="http://example.org/model-device-alarm-knowledge#Metric">Metric</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#Organ"
+         title="http://example.org/model-device-alarm-knowledge#Organ">Organ</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#OrganSystem"
+         title="http://example.org/model-device-alarm-knowledge#OrganSystem">Organ System</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#Patient"
+         title="http://example.org/model-device-alarm-knowledge#Patient">Patient</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#PhysiologicalProcess"
+         title="http://example.org/model-device-alarm-knowledge#PhysiologicalProcess">Physiological Process</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#PhysiologicalProperty"
+         title="http://example.org/model-device-alarm-knowledge#PhysiologicalProperty">Physiological Property</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#PostAlarmValidScheme"
+         title="http://example.org/model-device-alarm-knowledge#PostAlarmValidScheme">Post-alarm valid scheme</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#Sensor"
+         title="http://example.org/model-device-alarm-knowledge#Sensor">Sensor</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#Signal"
+         title="http://example.org/model-device-alarm-knowledge#Signal">Signal</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#SignalAnalysis"
+         title="http://example.org/model-device-alarm-knowledge#SignalAnalysis">Signal analysis</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#TherapeuticModality"
+         title="http://example.org/model-device-alarm-knowledge#TherapeuticModality">Therapeutic Modality</a>
+   </li>
+</ul><h4>Object Properties</h4><ul xmlns:widoco="https://w3id.org/widoco/vocab#"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    class="hlist">
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#administers"
+         title="http://example.org/model-device-alarm-knowledge#administers">administers</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#analyzedBy"
+         title="http://example.org/model-device-alarm-knowledge#analyzedBy">analyzed by</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#approximates"
+         title="http://example.org/model-device-alarm-knowledge#approximates">approximates</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#concernsPatient"
+         title="http://example.org/model-device-alarm-knowledge#concernsPatient">concerns patient</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasAnatomicalPosition"
+         title="http://example.org/model-device-alarm-knowledge#hasAnatomicalPosition">has anatomical position</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasCategory"
+         title="http://example.org/model-device-alarm-knowledge#hasCategory">has category</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasComponent"
+         title="http://example.org/model-device-alarm-knowledge#hasComponent">has component</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasComponentOperationState"
+         title="http://example.org/model-device-alarm-knowledge#hasComponentOperationState">has component operation state</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasDeviceOperationState"
+         title="http://example.org/model-device-alarm-knowledge#hasDeviceOperationState">has device operation state</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasDeviceType"
+         title="http://example.org/model-device-alarm-knowledge#hasDeviceType">has device type</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasFunctionalUnit"
+         title="http://example.org/model-device-alarm-knowledge#hasFunctionalUnit">has functional unit</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasLabelConcept"
+         title="http://example.org/model-device-alarm-knowledge#hasLabelConcept">has label concept</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasLaterality"
+         title="http://example.org/model-device-alarm-knowledge#hasLaterality">has laterality</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasManufacturer"
+         title="http://example.org/model-device-alarm-knowledge#hasManufacturer">has manufacturer</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasMessage"
+         title="http://example.org/model-device-alarm-knowledge#hasMessage">has message</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasOperationState"
+         title="http://example.org/model-device-alarm-knowledge#hasOperationState">has operation state</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasPhase"
+         title="http://example.org/model-device-alarm-knowledge#hasPhase">has phase</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasPriority"
+         title="http://example.org/model-device-alarm-knowledge#hasPriority">has priority</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasQualityState"
+         title="http://example.org/model-device-alarm-knowledge#hasQualityState">has quality state</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasRate"
+         title="http://example.org/model-device-alarm-knowledge#hasRate">has rate</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasRhythm"
+         title="http://example.org/model-device-alarm-knowledge#hasRhythm">has rhythm</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasSensor"
+         title="http://example.org/model-device-alarm-knowledge#hasSensor">has sensor</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasSensorOperationState"
+         title="http://example.org/model-device-alarm-knowledge#hasSensorOperationState">has sensor operation state</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#isMonitoredBy"
+         title="http://example.org/model-device-alarm-knowledge#isMonitoredBy">is monitored by</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#isOfType"
+         title="http://example.org/model-device-alarm-knowledge#isOfType">is of type</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#isPropertyOf"
+         title="http://example.org/model-device-alarm-knowledge#isPropertyOf">is property of</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#organPartOfSystem"
+         title="http://example.org/model-device-alarm-knowledge#organPartOfSystem">organ part of system</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#presentIn"
+         title="http://example.org/model-device-alarm-knowledge#presentIn">present in</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#producesMetric"
+         title="http://example.org/model-device-alarm-knowledge#producesMetric">produces metric</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#producesSignal"
+         title="http://example.org/model-device-alarm-knowledge#producesSignal">produces signal</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#sensorProducesSignal"
+         title="http://example.org/model-device-alarm-knowledge#sensorProducesSignal">sensor produces signal</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#targetsProcess"
+         title="http://example.org/model-device-alarm-knowledge#targetsProcess">targets process</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#triggeredBy"
+         title="http://example.org/model-device-alarm-knowledge#triggeredBy">triggered by</a>
+   </li>
+</ul><h4>Data Properties</h4><ul xmlns:widoco="https://w3id.org/widoco/vocab#"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    class="hlist">
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasDuration"
+         title="http://example.org/model-device-alarm-knowledge#hasDuration">has duration</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasEnd"
+         title="http://example.org/model-device-alarm-knowledge#hasEnd">has end</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasLabel"
+         title="http://example.org/model-device-alarm-knowledge#hasLabel">has label</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#hasStart"
+         title="http://example.org/model-device-alarm-knowledge#hasStart">has start</a>
+   </li>
+</ul><h4>Named Individuals</h4><ul xmlns:widoco="https://w3id.org/widoco/vocab#"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    class="hlist">
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#Individuated"
+         title="http://example.org/model-device-alarm-knowledge#Individuated">individuated</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#Referential"
+         title="http://example.org/model-device-alarm-knowledge#Referential">referential</a>
+   </li>
+   <li>
+      <a href="#http://example.org/model-device-alarm-knowledge#Stateful"
+         title="http://example.org/model-device-alarm-knowledge#Stateful">stateful</a>
+   </li>
+</ul><iframe src="webvowl/index.html"></iframe> 
+</div>
+  
+
+<!--DESCRIPTION SECTION-->
+    <div id="description"><h2 id="desc" class="list">MDA Ontology: Description <span class="backlink"> back to <a href="#toc">ToC</a></span></h2>
+
+<span class="markdown">The Medical Device Alarm (MDA) Ontology provides a formal representation of the technical and clinical knowledge conveyed by medical device alarms. It models the concepts and relationships involved in alarm generation and interpretation, enabling alarm information to be represented in a machine-interpretable form.</span></div>
+   
+
+<!--CROSSREF SECTION-->
+   <div id="crossref"><h2 id="crossreference" class="list">Cross-reference for MDA Ontology classes, object properties and data properties <span class="backlink"> back to <a href="#toc">ToC</a></span></h2>
+This section provides details for each class and property defined by MDA Ontology.
+<div xmlns:widoco="https://w3id.org/widoco/vocab#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="classes">
+ <h3 id="classes-headline" class="list">Classes</h3>
+ <ul class="hlist">
+  <li><a href="#http://example.org/model-device-alarm-knowledge#Alarm" title="http://example.org/model-device-alarm-knowledge#Alarm">Alarm</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#AlarmMessage" title="http://example.org/model-device-alarm-knowledge#AlarmMessage">Alarm Message</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#AlarmType" title="http://example.org/model-device-alarm-knowledge#AlarmType">Alarm Type</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#AnatomicalPosition" title="http://example.org/model-device-alarm-knowledge#AnatomicalPosition">Anatomical Position</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#Component" title="http://example.org/model-device-alarm-knowledge#Component">Component</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#CriticalComponent" title="http://example.org/model-device-alarm-knowledge#CriticalComponent">Critical component</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#Device" title="http://example.org/model-device-alarm-knowledge#Device">Device</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#FunctionalUnit" title="http://example.org/model-device-alarm-knowledge#FunctionalUnit">Functional unit</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#Laterality" title="http://example.org/model-device-alarm-knowledge#Laterality">Laterality</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#Metric" title="http://example.org/model-device-alarm-knowledge#Metric">Metric</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#Organ" title="http://example.org/model-device-alarm-knowledge#Organ">Organ</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#OrganSystem" title="http://example.org/model-device-alarm-knowledge#OrganSystem">Organ System</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#Patient" title="http://example.org/model-device-alarm-knowledge#Patient">Patient</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#PhysiologicalProcess" title="http://example.org/model-device-alarm-knowledge#PhysiologicalProcess">Physiological Process</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#PhysiologicalProperty" title="http://example.org/model-device-alarm-knowledge#PhysiologicalProperty">Physiological Property</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#PostAlarmValidScheme" title="http://example.org/model-device-alarm-knowledge#PostAlarmValidScheme">Post-alarm valid scheme</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#Sensor" title="http://example.org/model-device-alarm-knowledge#Sensor">Sensor</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#Signal" title="http://example.org/model-device-alarm-knowledge#Signal">Signal</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#SignalAnalysis" title="http://example.org/model-device-alarm-knowledge#SignalAnalysis">Signal analysis</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#TherapeuticModality" title="http://example.org/model-device-alarm-knowledge#TherapeuticModality">Therapeutic Modality</a></li>
+ </ul>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#Alarm">
+  <h3>Alarm<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#Alarm</p>
+  <div class="comment">
+   <span class="markdown">A notification or alert generated by a medical device.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    has sub-classes
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#AlarmType" title="http://example.org/model-device-alarm-knowledge#AlarmType">Alarm Type</a> <sup class="type-c" title="class">c</sup>
+   </dd>
+   <dt>
+    is in domain of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#hasCategory" title="http://example.org/model-device-alarm-knowledge#hasCategory">has category</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasDuration" title="http://example.org/model-device-alarm-knowledge#hasDuration">has duration</a> <sup class="type-dp" title="data property">dp</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasEnd" title="http://example.org/model-device-alarm-knowledge#hasEnd">has end</a> <sup class="type-dp" title="data property">dp</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasMessage" title="http://example.org/model-device-alarm-knowledge#hasMessage">has message</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasPriority" title="http://example.org/model-device-alarm-knowledge#hasPriority">has priority</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasStart" title="http://example.org/model-device-alarm-knowledge#hasStart">has start</a> <sup class="type-dp" title="data property">dp</sup>, <a href="#http://example.org/model-device-alarm-knowledge#isOfType" title="http://example.org/model-device-alarm-knowledge#isOfType">is of type</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#AlarmMessage">
+  <h3>Alarm Message<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#AlarmMessage</p>
+  <div class="comment">
+   <span class="markdown">A per-alarm message node — the hub for this occurrence's independent facets: mda:concernsPatient (the shared, persistent patient — the merge anchor operational inference reasons across alarms over) and mda:triggeredBy (the device whose technical structure this alarm implicates), reached as siblings rather than one gatewaying the other.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    is in domain of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#concernsPatient" title="http://example.org/model-device-alarm-knowledge#concernsPatient">concerns patient</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#triggeredBy" title="http://example.org/model-device-alarm-knowledge#triggeredBy">triggered by</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#hasMessage" title="http://example.org/model-device-alarm-knowledge#hasMessage">has message</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#AlarmType">
+  <h3>Alarm Type<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#AlarmType</p>
+  <div class="comment">
+   <span class="markdown">A generic, archetypal alarm definition independent of any specific device instance or patient encounter. Captures the default device, sensor, and signal structure associated with a class of alarm.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    has super-classes
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#Alarm" title="http://example.org/model-device-alarm-knowledge#Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
+   </dd>
+   <dt>
+    is in domain of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#hasLabel" title="http://example.org/model-device-alarm-knowledge#hasLabel">has label</a> <sup class="type-dp" title="data property">dp</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasLabelConcept" title="http://example.org/model-device-alarm-knowledge#hasLabelConcept">has label concept</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#isOfType" title="http://example.org/model-device-alarm-knowledge#isOfType">is of type</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#AnatomicalPosition">
+  <h3>Anatomical Position<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#AnatomicalPosition</p>
+  <div class="comment">
+   <span class="markdown">The anatomical position of a sensor on the body.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#hasAnatomicalPosition" title="http://example.org/model-device-alarm-knowledge#hasAnatomicalPosition">has anatomical position</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#Component">
+  <h3>Component<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#Component</p>
+  <div class="comment">
+   <span class="markdown">A physical or functional part of a medical device (e.g. a connection port, power unit, or heating element). mda:Sensor is the specialisation that additionally produces a measurable signal — every sensor is a component, but not every component senses.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    has sub-classes
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#CriticalComponent" title="http://example.org/model-device-alarm-knowledge#CriticalComponent">Critical component</a> <sup class="type-c" title="class">c</sup>, <a href="#http://example.org/model-device-alarm-knowledge#FunctionalUnit" title="http://example.org/model-device-alarm-knowledge#FunctionalUnit">Functional unit</a> <sup class="type-c" title="class">c</sup>, <a href="#http://example.org/model-device-alarm-knowledge#Sensor" title="http://example.org/model-device-alarm-knowledge#Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
+   </dd>
+   <dt>
+    is in domain of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#hasComponentOperationState" title="http://example.org/model-device-alarm-knowledge#hasComponentOperationState">has component operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasOperationState" title="http://example.org/model-device-alarm-knowledge#hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#hasComponent" title="http://example.org/model-device-alarm-knowledge#hasComponent">has component</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#CriticalComponent">
+  <h3>Critical component<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#CriticalComponent</p>
+  <div class="comment">
+   <span class="markdown">The subclass of mda:Component whose own disconnection means the device itself is unavailable (e.g. the data-link port, the power inlet) — as opposed to a peripheral component whose disconnection is only a subsystem-level warning (e.g. a mattress heater). This class exists so the propagation rule using it can be precise: unconditionally true for CriticalComponent, never assumed for mda:Component as a whole — see mda:hasOperationState's comment below on why mda:hasComponent was deliberately dropped from its propertyChainAxiom. The rule itself, and which concrete vocabulary-level component types (e.g. component:ConnectionUnit, component:PowerUnit) are tagged as members of this class, both live in 2_READOUT/outcome/inference.ttl's Component operational-state propagation section — the rule's hasValue target (a specific operation-state concept) is catalogue vocabulary, so it cannot be asserted here, but this class it's written over is a plain structural distinction with no vocabulary dependency, so it belongs in this TBox, not duplicated per component type down there.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    has super-classes
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#Component" title="http://example.org/model-device-alarm-knowledge#Component">Component</a> <sup class="type-c" title="class">c</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#Device">
+  <h3>Device<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#Device</p>
+  <div class="comment">
+   <span class="markdown">A medical device that generates alarms.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    is in domain of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#administers" title="http://example.org/model-device-alarm-knowledge#administers">administers</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasComponent" title="http://example.org/model-device-alarm-knowledge#hasComponent">has component</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasDeviceOperationState" title="http://example.org/model-device-alarm-knowledge#hasDeviceOperationState">has device operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasDeviceType" title="http://example.org/model-device-alarm-knowledge#hasDeviceType">has device type</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasFunctionalUnit" title="http://example.org/model-device-alarm-knowledge#hasFunctionalUnit">has functional unit</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasManufacturer" title="http://example.org/model-device-alarm-knowledge#hasManufacturer">has manufacturer</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasOperationState" title="http://example.org/model-device-alarm-knowledge#hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#isMonitoredBy" title="http://example.org/model-device-alarm-knowledge#isMonitoredBy">is monitored by</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#triggeredBy" title="http://example.org/model-device-alarm-knowledge#triggeredBy">triggered by</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#FunctionalUnit">
+  <h3>Functional unit<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#FunctionalUnit</p>
+  <div class="comment">
+   <span class="markdown">The module of a device that houses the computation logic for a particular measurement capability (e.g. an ECG module, an SpO2 module) — often called 'the sensor' colloquially, but distinct here from mda:Sensor, which is only the physical probe. A functional unit reads from one or more sensors and, via one or more mda:SignalAnalysis steps, turns their signals into metrics. A specialisation of mda:Component. Declared disjoint with mda:Sensor precisely because of that colloquial conflation — the two are easy to confuse in exactly the way this class's own name tries to prevent, so a node accidentally typed as both is now an inconsistency a reasoner catches rather than a silent modelling error.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    has super-classes
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#Component" title="http://example.org/model-device-alarm-knowledge#Component">Component</a> <sup class="type-c" title="class">c</sup>
+   </dd>
+   <dt>
+    is in domain of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#hasSensor" title="http://example.org/model-device-alarm-knowledge#hasSensor">has sensor</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#hasFunctionalUnit" title="http://example.org/model-device-alarm-knowledge#hasFunctionalUnit">has functional unit</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+   <dt>
+    is disjoint with
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#Sensor" title="http://example.org/model-device-alarm-knowledge#Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#Laterality">
+  <h3>Laterality<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#Laterality</p>
+  <div class="comment">
+   <span class="markdown">The laterality (left, right, bilateral) of a sensor position.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#hasLaterality" title="http://example.org/model-device-alarm-knowledge#hasLaterality">has laterality</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#Metric">
+  <h3>Metric<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#Metric</p>
+  <div class="comment">
+   <span class="markdown">A measurable quantity, computed from one or more signals by a mda:SignalAnalysis step.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    is in domain of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#approximates" title="http://example.org/model-device-alarm-knowledge#approximates">approximates</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasPhase" title="http://example.org/model-device-alarm-knowledge#hasPhase">has phase</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasRate" title="http://example.org/model-device-alarm-knowledge#hasRate">has rate</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasRhythm" title="http://example.org/model-device-alarm-knowledge#hasRhythm">has rhythm</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#producesMetric" title="http://example.org/model-device-alarm-knowledge#producesMetric">produces metric</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#Organ">
+  <h3>Organ<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#Organ</p>
+  <div class="comment">
+   <span class="markdown">A biological organ.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    is in domain of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#organPartOfSystem" title="http://example.org/model-device-alarm-knowledge#organPartOfSystem">organ part of system</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#presentIn" title="http://example.org/model-device-alarm-knowledge#presentIn">present in</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#OrganSystem">
+  <h3>Organ System<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#OrganSystem</p>
+  <div class="comment">
+   <span class="markdown">A system of related organs in the body.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#organPartOfSystem" title="http://example.org/model-device-alarm-knowledge#organPartOfSystem">organ part of system</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#Patient">
+  <h3>Patient<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#Patient</p>
+  <div class="comment">
+   <span class="markdown">A patient being monitored by medical devices.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    is in domain of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#isMonitoredBy" title="http://example.org/model-device-alarm-knowledge#isMonitoredBy">is monitored by</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#concernsPatient" title="http://example.org/model-device-alarm-knowledge#concernsPatient">concerns patient</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#PhysiologicalProcess">
+  <h3>Physiological Process<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#PhysiologicalProcess</p>
+  <div class="comment">
+   <span class="markdown">A biological or physiological process occurring in the body.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    is in domain of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#presentIn" title="http://example.org/model-device-alarm-knowledge#presentIn">present in</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#isPropertyOf" title="http://example.org/model-device-alarm-knowledge#isPropertyOf">is property of</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#targetsProcess" title="http://example.org/model-device-alarm-knowledge#targetsProcess">targets process</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#PhysiologicalProperty">
+  <h3>Physiological Property<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#PhysiologicalProperty</p>
+  <div class="comment">
+   <span class="markdown">A measurable property of a physiological process.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    is in domain of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#isPropertyOf" title="http://example.org/model-device-alarm-knowledge#isPropertyOf">is property of</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#approximates" title="http://example.org/model-device-alarm-knowledge#approximates">approximates</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#PostAlarmValidScheme">
+  <h3>Post-alarm valid scheme<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#PostAlarmValidScheme</p>
+  <div class="comment">
+   <span class="markdown">A SKOS concept scheme whose concepts remain valid for a fixed duration after an alarm ends.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    has super-classes
+   </dt>
+   <dd>
+    <a href="http://www.w3.org/2004/02/skos/core#ConceptScheme" target="_blank" title="http://www.w3.org/2004/02/skos/core#ConceptScheme">Concept Scheme</a> <sup class="type-c" title="class">c</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#Sensor">
+  <h3>Sensor<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#Sensor</p>
+  <div class="comment">
+   <span class="markdown">The physical object placed to generate a signal — e.g. a pulse-oximetry clip, an ECG lead, a temperature probe. It does not itself measure or compute anything: it only produces a raw signal (mda:producesSignal). Turning that signal into a metric is mda:FunctionalUnit's job, via mda:SignalAnalysis. A specialisation of mda:Component. Declared disjoint with mda:FunctionalUnit (see its own comment) — asserted there, applies symmetrically.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    has super-classes
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#Component" title="http://example.org/model-device-alarm-knowledge#Component">Component</a> <sup class="type-c" title="class">c</sup>
+   </dd>
+   <dt>
+    is in domain of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#hasAnatomicalPosition" title="http://example.org/model-device-alarm-knowledge#hasAnatomicalPosition">has anatomical position</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasLaterality" title="http://example.org/model-device-alarm-knowledge#hasLaterality">has laterality</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasOperationState" title="http://example.org/model-device-alarm-knowledge#hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasSensorOperationState" title="http://example.org/model-device-alarm-knowledge#hasSensorOperationState">has sensor operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#producesSignal" title="http://example.org/model-device-alarm-knowledge#producesSignal">produces signal</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#sensorProducesSignal" title="http://example.org/model-device-alarm-knowledge#sensorProducesSignal">sensor produces signal</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#hasSensor" title="http://example.org/model-device-alarm-knowledge#hasSensor">has sensor</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+   <dt>
+    is disjoint with
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#FunctionalUnit" title="http://example.org/model-device-alarm-knowledge#FunctionalUnit">Functional unit</a> <sup class="type-c" title="class">c</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#Signal">
+  <h3>Signal<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#Signal</p>
+  <div class="comment">
+   <span class="markdown">A signal — either raw, produced by a sensor, or derived/intermediate, produced by a mda:SignalAnalysis step from other signals (e.g. augmented lead aVF, combined from ECG leads I and II). No structural distinction between the two: a later analysis step consuming a signal doesn't need to know whether it came from a sensor or from an earlier analysis.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    is in domain of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#analyzedBy" title="http://example.org/model-device-alarm-knowledge#analyzedBy">analyzed by</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasOperationState" title="http://example.org/model-device-alarm-knowledge#hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasQualityState" title="http://example.org/model-device-alarm-knowledge#hasQualityState">has quality state</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#producesSignal" title="http://example.org/model-device-alarm-knowledge#producesSignal">produces signal</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#sensorProducesSignal" title="http://example.org/model-device-alarm-knowledge#sensorProducesSignal">sensor produces signal</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#SignalAnalysis">
+  <h3>Signal analysis<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#SignalAnalysis</p>
+  <div class="comment">
+   <span class="markdown">One computation step of a functional unit: consumes one or more signals (reached via the inverse of mda:analyzedBy) and produces either a metric (mda:producesMetric) or a further, derived signal (mda:producesSignal) that a later step can itself consume. Not itself a mda:Component — it's the computation a functional unit performs, not a physical part.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    is in domain of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#producesMetric" title="http://example.org/model-device-alarm-knowledge#producesMetric">produces metric</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#producesSignal" title="http://example.org/model-device-alarm-knowledge#producesSignal">produces signal</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#analyzedBy" title="http://example.org/model-device-alarm-knowledge#analyzedBy">analyzed by</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#TherapeuticModality">
+  <h3>Therapeutic Modality<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#TherapeuticModality</p>
+  <div class="comment">
+   <span class="markdown">A therapeutic intervention or treatment modality.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    is in domain of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#hasOperationState" title="http://example.org/model-device-alarm-knowledge#hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#targetsProcess" title="http://example.org/model-device-alarm-knowledge#targetsProcess">targets process</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://example.org/model-device-alarm-knowledge#administers" title="http://example.org/model-device-alarm-knowledge#administers">administers</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
+</div><div xmlns:widoco="https://w3id.org/widoco/vocab#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="objectproperties">
+ <h3 id="properties" class="list">Object Properties</h3>
+ <ul class="hlist">
+  <li><a href="#http://example.org/model-device-alarm-knowledge#administers" title="http://example.org/model-device-alarm-knowledge#administers">administers</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#analyzedBy" title="http://example.org/model-device-alarm-knowledge#analyzedBy">analyzed by</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#approximates" title="http://example.org/model-device-alarm-knowledge#approximates">approximates</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#concernsPatient" title="http://example.org/model-device-alarm-knowledge#concernsPatient">concerns patient</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasAnatomicalPosition" title="http://example.org/model-device-alarm-knowledge#hasAnatomicalPosition">has anatomical position</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasCategory" title="http://example.org/model-device-alarm-knowledge#hasCategory">has category</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasComponent" title="http://example.org/model-device-alarm-knowledge#hasComponent">has component</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasComponentOperationState" title="http://example.org/model-device-alarm-knowledge#hasComponentOperationState">has component operation state</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasDeviceOperationState" title="http://example.org/model-device-alarm-knowledge#hasDeviceOperationState">has device operation state</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasDeviceType" title="http://example.org/model-device-alarm-knowledge#hasDeviceType">has device type</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasFunctionalUnit" title="http://example.org/model-device-alarm-knowledge#hasFunctionalUnit">has functional unit</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasLabelConcept" title="http://example.org/model-device-alarm-knowledge#hasLabelConcept">has label concept</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasLaterality" title="http://example.org/model-device-alarm-knowledge#hasLaterality">has laterality</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasManufacturer" title="http://example.org/model-device-alarm-knowledge#hasManufacturer">has manufacturer</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasMessage" title="http://example.org/model-device-alarm-knowledge#hasMessage">has message</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasOperationState" title="http://example.org/model-device-alarm-knowledge#hasOperationState">has operation state</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasPhase" title="http://example.org/model-device-alarm-knowledge#hasPhase">has phase</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasPriority" title="http://example.org/model-device-alarm-knowledge#hasPriority">has priority</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasQualityState" title="http://example.org/model-device-alarm-knowledge#hasQualityState">has quality state</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasRate" title="http://example.org/model-device-alarm-knowledge#hasRate">has rate</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasRhythm" title="http://example.org/model-device-alarm-knowledge#hasRhythm">has rhythm</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasSensor" title="http://example.org/model-device-alarm-knowledge#hasSensor">has sensor</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasSensorOperationState" title="http://example.org/model-device-alarm-knowledge#hasSensorOperationState">has sensor operation state</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#isMonitoredBy" title="http://example.org/model-device-alarm-knowledge#isMonitoredBy">is monitored by</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#isOfType" title="http://example.org/model-device-alarm-knowledge#isOfType">is of type</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#isPropertyOf" title="http://example.org/model-device-alarm-knowledge#isPropertyOf">is property of</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#organPartOfSystem" title="http://example.org/model-device-alarm-knowledge#organPartOfSystem">organ part of system</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#presentIn" title="http://example.org/model-device-alarm-knowledge#presentIn">present in</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#producesMetric" title="http://example.org/model-device-alarm-knowledge#producesMetric">produces metric</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#producesSignal" title="http://example.org/model-device-alarm-knowledge#producesSignal">produces signal</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#sensorProducesSignal" title="http://example.org/model-device-alarm-knowledge#sensorProducesSignal">sensor produces signal</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#targetsProcess" title="http://example.org/model-device-alarm-knowledge#targetsProcess">targets process</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#triggeredBy" title="http://example.org/model-device-alarm-knowledge#triggeredBy">triggered by</a></li>
+ </ul>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#administers">
+  <h3>administers<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#administers</p>
+  <div class="comment">
+   <span class="markdown">Relates a device to the therapeutic modality it administers.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Device" title="http://example.org/model-device-alarm-knowledge#Device">Device</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#TherapeuticModality" title="http://example.org/model-device-alarm-knowledge#TherapeuticModality">Therapeutic Modality</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#analyzedBy">
+  <h3>analyzed by<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#analyzedBy</p>
+  <div class="comment">
+   <span class="markdown">Relates a signal to the signal-analysis step that consumes it. The only edge reaching mda:SignalAnalysis — deliberately not also reachable directly from mda:FunctionalUnit (no performsAnalysis-style shortcut exists), so there is exactly one path to an analysis step, always through the specific signal(s) it actually consumes. A second, shorter path would let ontology_tree.py's shortest-path class-tree derivation silently prefer it over the precise one (the same failure mode mda:administers was introduced to avoid for mda:TherapeuticModality — see the Technical axioms note in inference.ttl). Not functional: the same signal can feed more than one analysis step (e.g. ECG lead II feeds both a heart-rate computation and an aVF derivation).</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Signal" title="http://example.org/model-device-alarm-knowledge#Signal">Signal</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#SignalAnalysis" title="http://example.org/model-device-alarm-knowledge#SignalAnalysis">Signal analysis</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#approximates">
+  <h3>approximates<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#approximates</p>
+  <div class="comment">
+   <span class="markdown">Relates a metric to the physiological property it approximates.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Metric" title="http://example.org/model-device-alarm-knowledge#Metric">Metric</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#PhysiologicalProperty" title="http://example.org/model-device-alarm-knowledge#PhysiologicalProperty">Physiological Property</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#concernsPatient">
+  <h3>concerns patient<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#concernsPatient</p>
+  <div class="comment">
+   <span class="markdown">Relates an alarm message to the patient it concerns — the shared, persistent merge anchor. Deliberately a dead end: it no longer continues on to mda:Device via mda:isMonitoredBy (see mda:triggeredBy's comment for why). Functional: one message concerns exactly one patient — it is minted fresh per alarm precisely so it never needs to concern more than one.</span>
+  </div>
+  <div class="description">
+   <p><strong>has characteristics: </strong> functional</p>
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#AlarmMessage" title="http://example.org/model-device-alarm-knowledge#AlarmMessage">Alarm Message</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Patient" title="http://example.org/model-device-alarm-knowledge#Patient">Patient</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasAnatomicalPosition">
+  <h3>has anatomical position<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasAnatomicalPosition</p>
+  <div class="comment">
+   <span class="markdown">Relates a sensor to its anatomical position on the body. Functional: a physical sensor occupies exactly one position at a time.</span>
+  </div>
+  <div class="description">
+   <p><strong>has characteristics: </strong> functional</p>
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Sensor" title="http://example.org/model-device-alarm-knowledge#Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#AnatomicalPosition" title="http://example.org/model-device-alarm-knowledge#AnatomicalPosition">Anatomical Position</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasCategory">
+  <h3>has category<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasCategory</p>
+  <div class="comment">
+   <span class="markdown">The category of the alarm (a descriptive, alongside label and priority).</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Alarm" title="http://example.org/model-device-alarm-knowledge#Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="http://www.w3.org/2004/02/skos/core#Concept" target="_blank" title="http://www.w3.org/2004/02/skos/core#Concept">Concept</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasComponent">
+  <h3>has component<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasComponent</p>
+  <div class="comment">
+   <span class="markdown">Relates a device to its components, sensing or not (e.g. a connection port, power unit, heating element, or functional unit). Inverse-functional: a component belongs to at most one device — no separate isComponentOf property is declared; query in this direction only.</span>
+  </div>
+  <div class="description">
+   <p><strong>has characteristics: </strong> inverse functional</p>
+   <dl>
+    <dt>
+     has sub-properties
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#hasFunctionalUnit" title="http://example.org/model-device-alarm-knowledge#hasFunctionalUnit">has functional unit</a> <sup class="type-op" title="object property">op</sup>
+    </dd>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Device" title="http://example.org/model-device-alarm-knowledge#Device">Device</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Component" title="http://example.org/model-device-alarm-knowledge#Component">Component</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasComponentOperationState">
+  <h3>has component operation state<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasComponentOperationState</p>
+  <div class="comment">
+   <span class="markdown">The operational state of a non-sensing component, e.g. Disconnected or Warning. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has super-properties
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#hasOperationState" title="http://example.org/model-device-alarm-knowledge#hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+    </dd>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Component" title="http://example.org/model-device-alarm-knowledge#Component">Component</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="http://www.w3.org/2004/02/skos/core#Concept" target="_blank" title="http://www.w3.org/2004/02/skos/core#Concept">Concept</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasDeviceOperationState">
+  <h3>has device operation state<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasDeviceOperationState</p>
+  <div class="comment">
+   <span class="markdown">The operational state of a device itself, e.g. Disconnected. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has super-properties
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#hasOperationState" title="http://example.org/model-device-alarm-knowledge#hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+    </dd>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Device" title="http://example.org/model-device-alarm-knowledge#Device">Device</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="http://www.w3.org/2004/02/skos/core#Concept" target="_blank" title="http://www.w3.org/2004/02/skos/core#Concept">Concept</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasDeviceType">
+  <h3>has device type<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasDeviceType</p>
+  <div class="comment">
+   <span class="markdown">The specific type or model designation of the device (e.g. ServoU).</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Device" title="http://example.org/model-device-alarm-knowledge#Device">Device</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="http://www.w3.org/2004/02/skos/core#Concept" target="_blank" title="http://www.w3.org/2004/02/skos/core#Concept">Concept</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasFunctionalUnit">
+  <h3>has functional unit<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasFunctionalUnit</p>
+  <div class="comment">
+   <span class="markdown">Relates a device to a functional unit it houses (e.g. an ECG module, an SpO2 module) — a sub-property of hasComponent, since every functional unit is a component. Inverse-functional: a functional unit belongs to at most one device.</span>
+  </div>
+  <div class="description">
+   <p><strong>has characteristics: </strong> inverse functional</p>
+   <dl>
+    <dt>
+     has super-properties
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#hasComponent" title="http://example.org/model-device-alarm-knowledge#hasComponent">has component</a> <sup class="type-op" title="object property">op</sup>
+    </dd>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Device" title="http://example.org/model-device-alarm-knowledge#Device">Device</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#FunctionalUnit" title="http://example.org/model-device-alarm-knowledge#FunctionalUnit">Functional unit</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasLabelConcept">
+  <h3>has label concept<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasLabelConcept</p>
+  <div class="comment">
+   <span class="markdown">Relates an alarm type to its controlled-vocabulary concept in mda:AlarmLabel's scheme — one concept per distinct label string encountered, shared across every archetype that uses that label regardless of priority (2_READOUT/vocab_readout.py's label_concept_iri keys on the label alone, not the archetype). The companion of mda:hasLabel, not a replacement for it.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#AlarmType" title="http://example.org/model-device-alarm-knowledge#AlarmType">Alarm Type</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="http://www.w3.org/2004/02/skos/core#Concept" target="_blank" title="http://www.w3.org/2004/02/skos/core#Concept">Concept</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasLaterality">
+  <h3>has laterality<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasLaterality</p>
+  <div class="comment">
+   <span class="markdown">Relates a sensor to its laterality (left, right, bilateral). Functional: a physical sensor has exactly one laterality at a time.</span>
+  </div>
+  <div class="description">
+   <p><strong>has characteristics: </strong> functional</p>
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Sensor" title="http://example.org/model-device-alarm-knowledge#Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Laterality" title="http://example.org/model-device-alarm-knowledge#Laterality">Laterality</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasManufacturer">
+  <h3>has manufacturer<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasManufacturer</p>
+  <div class="comment">
+   <span class="markdown">The manufacturer or product line of the device.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Device" title="http://example.org/model-device-alarm-knowledge#Device">Device</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="http://www.w3.org/2004/02/skos/core#Concept" target="_blank" title="http://www.w3.org/2004/02/skos/core#Concept">Concept</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasMessage">
+  <h3>has message<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasMessage</p>
+  <div class="comment">
+   <span class="markdown">The alarm's message: a per-alarm mda:AlarmMessage node carrying the occurrence's independent facets — mda:concernsPatient (who this alarm is about) and mda:triggeredBy (what caused it) — as siblings, neither reached through the other (see mda:triggeredBy's comment for why they used to be chained and no longer are). Distinct per alarm so many alarms can reference the same shared patient/device and merge there. Functional and inverse-functional: one alarm has exactly one message and one message belongs to exactly one alarm — alarm_iri/message_iri are minted from the same (device_id, start) key in 4_OPERATIONAL/op_knowledge.py precisely to keep this a bijection.</span>
+  </div>
+  <div class="description">
+   <p><strong>has characteristics: </strong> functional, inverse functional</p>
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Alarm" title="http://example.org/model-device-alarm-knowledge#Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#AlarmMessage" title="http://example.org/model-device-alarm-knowledge#AlarmMessage">Alarm Message</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasOperationState">
+  <h3>has operation state<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasOperationState</p>
+  <div class="comment">
+   <span class="markdown">The operational state of a device, sensor, signal, component, or the therapeutic modality a device administers (the latter inferred from the administering device's own state, not asserted directly).</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has sub-properties
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#hasComponentOperationState" title="http://example.org/model-device-alarm-knowledge#hasComponentOperationState">has component operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasDeviceOperationState" title="http://example.org/model-device-alarm-knowledge#hasDeviceOperationState">has device operation state</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://example.org/model-device-alarm-knowledge#hasSensorOperationState" title="http://example.org/model-device-alarm-knowledge#hasSensorOperationState">has sensor operation state</a> <sup class="type-op" title="object property">op</sup>
+    </dd>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Component" title="http://example.org/model-device-alarm-knowledge#Component">Component</a> <sup class="type-c" title="class">c</sup> <span class="logic">or</span> <a href="#http://example.org/model-device-alarm-knowledge#Device" title="http://example.org/model-device-alarm-knowledge#Device">Device</a> <sup class="type-c" title="class">c</sup> <span class="logic">or</span> <a href="#http://example.org/model-device-alarm-knowledge#Sensor" title="http://example.org/model-device-alarm-knowledge#Sensor">Sensor</a> <sup class="type-c" title="class">c</sup> <span class="logic">or</span> <a href="#http://example.org/model-device-alarm-knowledge#Signal" title="http://example.org/model-device-alarm-knowledge#Signal">Signal</a> <sup class="type-c" title="class">c</sup> <span class="logic">or</span> <a href="#http://example.org/model-device-alarm-knowledge#TherapeuticModality" title="http://example.org/model-device-alarm-knowledge#TherapeuticModality">Therapeutic Modality</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="http://www.w3.org/2004/02/skos/core#Concept" target="_blank" title="http://www.w3.org/2004/02/skos/core#Concept">Concept</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has sub-property chains
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#hasFunctionalUnit" title="http://example.org/model-device-alarm-knowledge#hasFunctionalUnit">has functional unit</a> <sup class="type-op" title="object property">op</sup> <span class="logic">o</span> <a href="#http://example.org/model-device-alarm-knowledge#hasOperationState" title="http://example.org/model-device-alarm-knowledge#hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+    </dd>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#hasSensor" title="http://example.org/model-device-alarm-knowledge#hasSensor">has sensor</a> <sup class="type-op" title="object property">op</sup> <span class="logic">o</span> <a href="#http://example.org/model-device-alarm-knowledge#hasOperationState" title="http://example.org/model-device-alarm-knowledge#hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+    </dd>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#producesSignal" title="http://example.org/model-device-alarm-knowledge#producesSignal">produces signal</a> <sup class="type-op" title="object property">op</sup> <span class="logic">o</span> <a href="#http://example.org/model-device-alarm-knowledge#hasOperationState" title="http://example.org/model-device-alarm-knowledge#hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+    </dd>
+    <dd>
+     <span class="logic">o</span> <a href="#http://example.org/model-device-alarm-knowledge#hasOperationState" title="http://example.org/model-device-alarm-knowledge#hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasPhase">
+  <h3>has phase<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasPhase</p>
+  <div class="comment">
+   <span class="markdown">The phase of the metric to which the alarm condition applies (e.g. mean, systolic, diastolic, end-expiratory).</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Metric" title="http://example.org/model-device-alarm-knowledge#Metric">Metric</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="http://www.w3.org/2004/02/skos/core#Concept" target="_blank" title="http://www.w3.org/2004/02/skos/core#Concept">Concept</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasPriority">
+  <h3>has priority<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasPriority</p>
+  <div class="comment">
+   <span class="markdown">The priority level of an alarm or alarm message.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Alarm" title="http://example.org/model-device-alarm-knowledge#Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="http://www.w3.org/2004/02/skos/core#Concept" target="_blank" title="http://www.w3.org/2004/02/skos/core#Concept">Concept</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasQualityState">
+  <h3>has quality state<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasQualityState</p>
+  <div class="comment">
+   <span class="markdown">The quality state of a signal, indicating measurement reliability.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Signal" title="http://example.org/model-device-alarm-knowledge#Signal">Signal</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="http://www.w3.org/2004/02/skos/core#Concept" target="_blank" title="http://www.w3.org/2004/02/skos/core#Concept">Concept</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasRate">
+  <h3>has rate<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasRate</p>
+  <div class="comment">
+   <span class="markdown">The rate deviation of the metric that raises the alarm (e.g. increased, decreased, critical decrease).</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Metric" title="http://example.org/model-device-alarm-knowledge#Metric">Metric</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="http://www.w3.org/2004/02/skos/core#Concept" target="_blank" title="http://www.w3.org/2004/02/skos/core#Concept">Concept</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasRhythm">
+  <h3>has rhythm<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasRhythm</p>
+  <div class="comment">
+   <span class="markdown">The rhythm pattern of the metric to which the alarm condition applies (e.g. irregular).</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Metric" title="http://example.org/model-device-alarm-knowledge#Metric">Metric</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="http://www.w3.org/2004/02/skos/core#Concept" target="_blank" title="http://www.w3.org/2004/02/skos/core#Concept">Concept</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasSensor">
+  <h3>has sensor<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasSensor</p>
+  <div class="comment">
+   <span class="markdown">Relates a functional unit to the physical sensor(s) it reads from (e.g. an ECG module to each of its 12 leads). NOT a sub-property of hasComponent: its domain is FunctionalUnit, not Device, and hasComponent's domain is fixed to Device — declaring it a sub-property would wrongly entail every FunctionalUnit is itself a Device. A sensor no longer belongs directly to a device (see FunctionalUnit below for why: the sensor is the physical probe, the functional unit is what analyses what it picks up). Deliberately NOT owl:InverseFunctionalProperty, unlike most of this file's other IFP-marked relations: 2_READOUT/outcome/inference.ttl's FunctionalUnit recipe axioms assert hasSensor via an owl:hasValue restriction, so every alarm typed to the same FunctionalUnit concept (e.g. every FU_PneumoTachograph alarm) entails hasSensor to the SAME shared sensor concept, not a fresh individual per alarm the way 2_READOUT/vocab_readout.py's own per-row blank nodes do. Confirmed by an isolated reasoner test: with InverseFunctionalProperty declared, prp-ifp forces every one of those alarms' FunctionalUnit individuals into owl:sameAs with each other — and would do the same across grounded, per-patient data in 4_OPERATIONAL if this property were ever reasoned over there, merging different patients' equipment. mda:producesSignal carries the same latent risk if a future recipe axiom (e.g. the pending ECG one) ever reuses one signal concept across two different sensor concepts — watch for it there too.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#FunctionalUnit" title="http://example.org/model-device-alarm-knowledge#FunctionalUnit">Functional unit</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Sensor" title="http://example.org/model-device-alarm-knowledge#Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasSensorOperationState">
+  <h3>has sensor operation state<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasSensorOperationState</p>
+  <div class="comment">
+   <span class="markdown">The operational state of a sensor, e.g. Enabled, Disabled, or Malfunction. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has super-properties
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#hasOperationState" title="http://example.org/model-device-alarm-knowledge#hasOperationState">has operation state</a> <sup class="type-op" title="object property">op</sup>
+    </dd>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Sensor" title="http://example.org/model-device-alarm-knowledge#Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="http://www.w3.org/2004/02/skos/core#Concept" target="_blank" title="http://www.w3.org/2004/02/skos/core#Concept">Concept</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#isMonitoredBy">
+  <h3>is monitored by<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#isMonitoredBy</p>
+  <div class="comment">
+   <span class="markdown">Relates a patient to the device currently monitoring them. No longer part of the blueprint's structural path to mda:Device (see mda:triggeredBy) — that routing asserted every alarm-raising device 'monitors' the patient, which overclaims for a therapeutic one. What remains is this property's own, separate justification: inverse-functional, a device monitors at most one patient at a time — a physical monitor is not shared between two patients simultaneously, even though it may serve different patients at different times — so a reasoner can catch a double-booking directly (as an entailed owl:sameAs between two asserted-distinct patients) rather than relying on generator discipline, the same pattern as mda:hasSensor/mda:producesSignal below. Only meaningful if isMonitoredBy is asserted per-instant, not as a standing fact for a patient's whole encounter — see 4_OPERATIONAL/op_knowledge.py, the only place it is still asserted.</span>
+  </div>
+  <div class="description">
+   <p><strong>has characteristics: </strong> inverse functional</p>
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Patient" title="http://example.org/model-device-alarm-knowledge#Patient">Patient</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Device" title="http://example.org/model-device-alarm-knowledge#Device">Device</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#isOfType">
+  <h3>is of type<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#isOfType</p>
+  <div class="comment">
+   <span class="markdown">Links a concrete alarm instance to its archetypal alarm type in the type catalogue, from which default structural knowledge (device type, sensor type, signal type) can be inherited. Functional: one alarm occurrence is of exactly one archetype.</span>
+  </div>
+  <div class="description">
+   <p><strong>has characteristics: </strong> functional</p>
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Alarm" title="http://example.org/model-device-alarm-knowledge#Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#AlarmType" title="http://example.org/model-device-alarm-knowledge#AlarmType">Alarm Type</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#isPropertyOf">
+  <h3>is property of<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#isPropertyOf</p>
+  <div class="comment">
+   <span class="markdown">Relates a physiological property to the process it characterises.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#PhysiologicalProperty" title="http://example.org/model-device-alarm-knowledge#PhysiologicalProperty">Physiological Property</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#PhysiologicalProcess" title="http://example.org/model-device-alarm-knowledge#PhysiologicalProcess">Physiological Process</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#organPartOfSystem">
+  <h3>organ part of system<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#organPartOfSystem</p>
+  <div class="comment">
+   <span class="markdown">Relates an organ to the organ system it belongs to.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Organ" title="http://example.org/model-device-alarm-knowledge#Organ">Organ</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#OrganSystem" title="http://example.org/model-device-alarm-knowledge#OrganSystem">Organ System</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#presentIn">
+  <h3>present in<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#presentIn</p>
+  <div class="comment">
+   <span class="markdown">Relates a physiological process to the organ it occurs in.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#PhysiologicalProcess" title="http://example.org/model-device-alarm-knowledge#PhysiologicalProcess">Physiological Process</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Organ" title="http://example.org/model-device-alarm-knowledge#Organ">Organ</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#producesMetric">
+  <h3>produces metric<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#producesMetric</p>
+  <div class="comment">
+   <span class="markdown">Relates a signal-analysis step to the metric it computes.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#SignalAnalysis" title="http://example.org/model-device-alarm-knowledge#SignalAnalysis">Signal analysis</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Metric" title="http://example.org/model-device-alarm-knowledge#Metric">Metric</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#producesSignal">
+  <h3>produces signal<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#producesSignal</p>
+  <div class="comment">
+   <span class="markdown">Relates a sensor OR a signal-analysis step to the signal it produces — a sensor's raw signal, or an analysis step's derived/intermediate signal (e.g. augmented lead aVF, combined from other leads). Inverse-functional: a signal has at most one producer, whichever kind produced it. Its domain is a union, so it cannot itself anchor 2_READOUT/vocab_readout.py's CSV/tree derivation (ontology_tree.py's derive_class_tree only follows a named rdfs:domain, the same limitation documented at mda:hasOperationState below) — mda:sensorProducesSignal is the single-domain sub-property that does. A signal-analysis step's own derived-signal output (the aVF case) is only ever hand-authored in inference.ttl, never CSV-driven, so it uses this general property directly and needs no sub-property of its own.</span>
+  </div>
+  <div class="description">
+   <p><strong>has characteristics: </strong> inverse functional</p>
+   <dl>
+    <dt>
+     has sub-properties
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#sensorProducesSignal" title="http://example.org/model-device-alarm-knowledge#sensorProducesSignal">sensor produces signal</a> <sup class="type-op" title="object property">op</sup>
+    </dd>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Sensor" title="http://example.org/model-device-alarm-knowledge#Sensor">Sensor</a> <sup class="type-c" title="class">c</sup> <span class="logic">or</span> <a href="#http://example.org/model-device-alarm-knowledge#SignalAnalysis" title="http://example.org/model-device-alarm-knowledge#SignalAnalysis">Signal analysis</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Signal" title="http://example.org/model-device-alarm-knowledge#Signal">Signal</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#sensorProducesSignal">
+  <h3>sensor produces signal<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#sensorProducesSignal</p>
+  <div class="comment">
+   <span class="markdown">The CSV/tree-facing case of mda:producesSignal: a sensor's own raw signal. A single-domain sub-property so 2_READOUT/vocab_readout.py's ontology-derived tree can attach Signal under Sensor unambiguously — see mda:producesSignal's comment. Every fact asserted through it still entails the general mda:producesSignal fact (and, transitively, mda:hasOperationState's propagation chain) via rdfs:subPropertyOf.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has super-properties
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#producesSignal" title="http://example.org/model-device-alarm-knowledge#producesSignal">produces signal</a> <sup class="type-op" title="object property">op</sup>
+    </dd>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Sensor" title="http://example.org/model-device-alarm-knowledge#Sensor">Sensor</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Signal" title="http://example.org/model-device-alarm-knowledge#Signal">Signal</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#targetsProcess">
+  <h3>targets process<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#targetsProcess</p>
+  <div class="comment">
+   <span class="markdown">Relates a therapeutic modality to the physiological process it targets.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#TherapeuticModality" title="http://example.org/model-device-alarm-knowledge#TherapeuticModality">Therapeutic Modality</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#PhysiologicalProcess" title="http://example.org/model-device-alarm-knowledge#PhysiologicalProcess">Physiological Process</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#triggeredBy">
+  <h3>triggered by<sup class="type-op" title="object property">op</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#objectproperties">Object Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#triggeredBy</p>
+  <div class="comment">
+   <span class="markdown">Relates an alarm message directly to the device whose technical structure it implicates — the sole path from AlarmMessage into the mda:Device subtree (mda:hasFunctionalUnit, mda:hasSensor, ...). Replaces routing that reach through mda:concernsPatient/mda:isMonitoredBy: that chain asserted every alarm-raising device 'monitors' the patient, which is false for a fundamentally therapeutic device (mda:MechanicalVentilator, mda:Dialysator, mda:ExtracorporealMembraneOxygenator, mda:Incubator/mda:Thermoregulator all administer a therapy — see mda:administers — rather than principally observe). mda:isMonitoredBy itself is UNCHANGED and still used, but only for its own actual justification: 4_OPERATIONAL/op_knowledge.py's per-instant double-booking check, asserted fresh at grounding time, never derived from or dependent on this blueprint-level structure. Functional, not inverse-functional: one message has exactly one triggering device, but one device triggers many messages over its lifetime — unlike mda:hasMessage's strict bijection.</span>
+  </div>
+  <div class="description">
+   <p><strong>has characteristics: </strong> functional</p>
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#AlarmMessage" title="http://example.org/model-device-alarm-knowledge#AlarmMessage">Alarm Message</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Device" title="http://example.org/model-device-alarm-knowledge#Device">Device</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+   </dl>
+  </div>
+ </div>
+</div><div xmlns:widoco="https://w3id.org/widoco/vocab#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="dataproperties">
+ <h3 id="dataproperties-headline" class="list">Data Properties</h3>
+ <ul class="hlist">
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasDuration" title="http://example.org/model-device-alarm-knowledge#hasDuration">has duration</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasEnd" title="http://example.org/model-device-alarm-knowledge#hasEnd">has end</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasLabel" title="http://example.org/model-device-alarm-knowledge#hasLabel">has label</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#hasStart" title="http://example.org/model-device-alarm-knowledge#hasStart">has start</a></li>
+ </ul>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasDuration">
+  <h3>has duration<sup class="type-dp" title="data property">dp</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#dataproperties">Data Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasDuration</p>
+  <div class="comment">
+   <span class="markdown">The duration of the alarm.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Alarm" title="http://example.org/model-device-alarm-knowledge#Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="http://www.w3.org/2001/XMLSchema#duration" target="_blank" title="http://www.w3.org/2001/XMLSchema#duration">duration</a>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasEnd">
+  <h3>has end<sup class="type-dp" title="data property">dp</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#dataproperties">Data Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasEnd</p>
+  <div class="comment">
+   <span class="markdown">The end time of the alarm.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Alarm" title="http://example.org/model-device-alarm-knowledge#Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="http://www.w3.org/2001/XMLSchema#dateTime" target="_blank" title="http://www.w3.org/2001/XMLSchema#dateTime">date Time</a>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasLabel">
+  <h3>has label<sup class="type-dp" title="data property">dp</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#dataproperties">Data Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasLabel</p>
+  <div class="comment">
+   <span class="markdown">The free-text label identifying an alarm type, exactly as it occurs in the source data (e.g. 'PHILIPSMONITOR - SpO2 geen pols') — a literal, not a concept: alarm labels routinely contain spaces and punctuation no SKOS notation can carry. mda:hasLabelConcept is the companion controlled-vocabulary reading of the same label — the two are deliberately BOTH kept, not alternatives: this ontology wants both the label as encountered and a stable, deduplicated vocabulary entry for it (the same label recurs across archetypes that differ only in priority). AlarmType is its only domain; a plain Alarm instance reaches its label via mda:isOfType.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#AlarmType" title="http://example.org/model-device-alarm-knowledge#AlarmType">Alarm Type</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#langString" target="_blank" title="http://www.w3.org/1999/02/22-rdf-syntax-ns#langString">lang String</a>
+    </dd>
+   </dl>
+  </div>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#hasStart">
+  <h3>has start<sup class="type-dp" title="data property">dp</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#dataproperties">Data Property ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#hasStart</p>
+  <div class="comment">
+   <span class="markdown">The start time of the alarm.</span>
+  </div>
+  <div class="description">
+   <dl>
+    <dt>
+     has domain
+    </dt>
+    <dd>
+     <a href="#http://example.org/model-device-alarm-knowledge#Alarm" title="http://example.org/model-device-alarm-knowledge#Alarm">Alarm</a> <sup class="type-c" title="class">c</sup>
+    </dd>
+    <dt>
+     has range
+    </dt>
+    <dd>
+     <a href="http://www.w3.org/2001/XMLSchema#dateTime" target="_blank" title="http://www.w3.org/2001/XMLSchema#dateTime">date Time</a>
+    </dd>
+   </dl>
+  </div>
+ </div>
+</div><div xmlns:widoco="https://w3id.org/widoco/vocab#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="namedindividuals">
+ <h3 id="namedindividuals" class="list">Named Individuals</h3>
+ <ul class="hlist">
+  <li><a href="#http://example.org/model-device-alarm-knowledge#Individuated" title="http://example.org/model-device-alarm-knowledge#Individuated">individuated</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#Referential" title="http://example.org/model-device-alarm-knowledge#Referential">referential</a></li>
+  <li><a href="#http://example.org/model-device-alarm-knowledge#Stateful" title="http://example.org/model-device-alarm-knowledge#Stateful">stateful</a></li>
+ </ul>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#Individuated">
+  <h3>individuated<sup class="type-ni" title="named individual">ni</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#namedindividuals">Named Individual ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#Individuated</p>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#Referential">
+  <h3>referential<sup class="type-ni" title="named individual">ni</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#namedindividuals">Named Individual ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#Referential</p>
+ </div>
+ <div class="entity" id="http://example.org/model-device-alarm-knowledge#Stateful">
+  <h3>stateful<sup class="type-ni" title="named individual">ni</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#namedindividuals">Named Individual ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://example.org/model-device-alarm-knowledge#Stateful</p>
+ </div>
+</div><div id="legend">
+<h2>Legend <span class="backlink"> back to <a href="#toc">ToC</a></span></h2>
+<div   class="entity">
+<sup class="type-c" title="Classes">c</sup>: Classes <br/>
+<sup class="type-op" title="Object Properties">op</sup>: Object Properties <br/>
+<sup class="type-dp" title="Data Properties">dp</sup>: Data Properties <br/>
+<sup class="type-ni" title="Named Individuals">ni</sup>: Named Individuals <br/>
+<sup class="type-ep" title="External Properties">ep</sup>: External Properties
+</div>
+</div>
+</div>
+    
+
+<!--REFERENCES SECTION-->
+  <div id="references">
+<h2 id="ref" class="list">References <span class="backlink"> back to <a href="#toc">ToC</a></span></h2>
+<span class="markdown">
+Add your references here. It is recommended to have them as a list.</span>
+
+</div>
+<div id="acknowledgments">
+<h2 id="ack" class="list">Acknowledgments <span class="backlink"> back to <a href="#toc">ToC</a></span></h2>
+<p>
+The authors would like to thank <a href="http://www.essepuntato.it/">Silvio Peroni</a> for developing <a href="http://www.essepuntato.it/lode">LODE</a>, a Live OWL Documentation Environment, which is used for representing the Cross Referencing Section of this document and <a href="https://w3id.org/people/dgarijo">Daniel Garijo</a> for developing <a href="https://github.com/dgarijo/Widoco">Widoco</a>, the program used to create the template used in this documentation.</p>
+</div>
+
+
+</div>
+</body>
+</html>

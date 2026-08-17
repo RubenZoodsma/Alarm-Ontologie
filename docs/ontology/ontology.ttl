@@ -1,0 +1,896 @@
+@prefix : <http://example.org/model-device-alarm-knowledge#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://example.org/model-device-alarm-knowledge#> .
+
+<http://example.org/model-device-alarm-knowledge#> rdf:type owl:Ontology ;
+                                                    <http://purl.org/dc/elements/1.1/description> "Conceptual model for the medical device alarm knowledge."@en ;
+                                                    <http://purl.org/dc/elements/1.1/license> <https://creativecommons.org/licenses/by/4.0/> ;
+                                                    <http://purl.org/dc/elements/1.1/title> "The ontology for the medical device alarm knowledge."@en ;
+                                                    <http://purl.org/dc/terms/created> "2026-07-08"^^xsd:date ;
+                                                    <http://purl.org/dc/terms/creator> "Ruben Zoodsma" ;
+                                                    <http://purl.org/vocab/vann/preferredNamespacePrefix> "mda" ;
+                                                    <http://purl.org/vocab/vann/preferredNamespaceUri> "http://example.org/model-device-alarm-knowledge#" ;
+                                                    owl:versionInfo "1.0.0" .
+
+#################################################################
+#    Annotation properties
+#################################################################
+
+###  http://example.org/model-device-alarm-knowledge#instantiatesClass
+:instantiatesClass rdf:type owl:AnnotationProperty ;
+                   <http://purl.org/dc/terms/identifier> "instantiatesClass" ;
+                   rdfs:comment "Koppelt een SKOS-conceptschema aan de ontologieklasse die zijn concepten specialiseren: een concept uit dit schema wordt gebruikt als het rdf:type van een instantie van die klasse."@nl ,
+                                "Links a SKOS concept scheme to the ontology class its concepts specialise: a concept from this scheme is used as the rdf:type of an instance of that class."@en ;
+                   rdfs:label "instantiates class"@en ,
+                              "instantieert klasse"@nl ;
+                   rdfs:range owl:Class ;
+                   rdfs:domain <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
+
+
+###  http://example.org/model-device-alarm-knowledge#nodeKind
+:nodeKind rdf:type owl:AnnotationProperty ;
+          <http://purl.org/dc/terms/identifier> "nodeKind" ;
+          rdfs:comment "Classificeert hoe instanties van een klasse in de gegenereerde graaf worden gerealiseerd: mda:Individuated, mda:Referential of mda:Stateful."@nl ,
+                       "Classifies how instances of a class are realised in the generated graph: mda:Individuated, mda:Referential, or mda:Stateful."@en ;
+          rdfs:label "knooppuntsoort"@nl ,
+                     "node kind"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#persistsPostAlarm
+:persistsPostAlarm rdf:type owl:AnnotationProperty ;
+                   <http://purl.org/dc/terms/identifier> "persistsPostAlarm" ;
+                   rdfs:comment "Markeert een objecteigenschap waarvan de afgeleide feiten over een technisch knooppunt blijven bestaan gedurende het PostAlarmValidScheme-venster nadat het alarm dat ze afleidde is beëindigd."@nl ,
+                                "Marks an object property whose entailed facts about a technical node persist for the PostAlarmValidScheme window after the alarm that entailed them ends, the same way mda:hasOperationState already did — see 4_OPERATIONAL/op_knowledge.py's inferred_states."@en ;
+                   rdfs:label "blijft bestaan na alarm"@nl ,
+                              "persists post alarm"@en ;
+                   rdfs:range xsd:boolean .
+
+
+###  http://example.org/model-device-alarm-knowledge#postAlarmValidityDuration
+:postAlarmValidityDuration rdf:type owl:AnnotationProperty ;
+                           <http://purl.org/dc/terms/identifier> "postAlarmValidityDuration" ;
+                           rdfs:comment "Duration after alarm end for which assertions from this scheme remain valid. Absence of this annotation on a scheme implies alarm-duration only (PT0S)."@en ,
+                                        "Duur na het alarm-einde gedurende welke beweringen geldig blijven. Afwezigheid impliceert alleen geldig tijdens alarm (PT0S)."@nl ;
+                           rdfs:label "post-alarm geldigheidsduur"@nl ,
+                                      "post-alarm validity duration"@en ;
+                           rdfs:range xsd:duration .
+
+
+###  http://example.org/model-device-alarm-knowledge#refinesParticularIdentity
+:refinesParticularIdentity rdf:type owl:AnnotationProperty ;
+                           <http://purl.org/dc/terms/identifier> "refinesParticularIdentity" ;
+                           rdfs:comment "Markeert een blad-eigenschap waarvan de waarde één gemunt deeltje onderscheidt van een ander van hetzelfde type onder dezelfde eigenaar in de werkelijke wereld — verwerkt in de IRI van het deeltje bij grondingstijd, niet in een vocabulaireconcept."@nl ,
+                                        "Marks a leaf property whose value distinguishes one minted particular from another of the same type under the same real-world owner — folded into the particular's IRI at grounding time, not into a vocabulary concept."@en ;
+                           rdfs:label "refines particular identity"@en ,
+                                      "verfijnt particuliere identiteit"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#refinesUniversalIdentity
+:refinesUniversalIdentity rdf:type owl:AnnotationProperty ;
+                          <http://purl.org/dc/terms/identifier> "refinesUniversalIdentity" ;
+                          rdfs:comment "Markeert een blad-eigenschap waarvan de waarde voorcoördineert tot een gedeeld universeel concept op vocabulaireniveau, in plaats van de per-alarm/per-eigenaar toestand te beschrijven. De waarde benoemt een soort, herbruikbaar over eigenaren heen — geen plaatsing."@nl ,
+                                       "Marks a leaf property whose value pre-coordinates into a shared universal concept at the vocabulary layer, rather than describing per-alarm/per-owner state. The value names a kind, reusable across owners — not a placement."@en ;
+                          rdfs:label "refines universal identity"@en ,
+                                     "verfijnt universele identiteit"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#situational
+:situational rdf:type owl:AnnotationProperty ;
+             <http://purl.org/dc/terms/identifier> "situational" ;
+             rdfs:comment "Markeert een objecteigenschap waarvan de afgeleide beweringen behoren tot een situationele export per alarm, in tegenstelling tot achtergrond-/taxonomische structuur die een reasoner raadpleegt maar die zelf nooit wordt geëxporteerd."@nl ,
+                          "Marks an object property whose entailed assertions belong in a per-alarm situational export, as opposed to background/taxonomic structure (e.g. rdfs:subClassOf) that a reasoner consults but that is never itself exported."@en ;
+             rdfs:label "situational"@en ,
+                        "situationeel"@nl ;
+             rdfs:range xsd:boolean .
+
+
+###  http://example.org/model-device-alarm-knowledge#valuesFromScheme
+:valuesFromScheme rdf:type owl:AnnotationProperty ;
+                  <http://purl.org/dc/terms/identifier> "valuesFromScheme" ;
+                  rdfs:comment "Koppelt een objecteigenschap aan het SKOS-conceptschema waaruit zijn waarden afkomstig zijn."@nl ,
+                               "Links an object property to the SKOS concept scheme from which its values are drawn."@en ;
+                  rdfs:label "values from scheme"@en ,
+                             "waarden uit schema"@nl ;
+                  rdfs:range <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
+
+
+###  http://purl.org/dc/elements/1.1/description
+<http://purl.org/dc/elements/1.1/description> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/elements/1.1/license
+<http://purl.org/dc/elements/1.1/license> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/elements/1.1/title
+<http://purl.org/dc/elements/1.1/title> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/created
+<http://purl.org/dc/terms/created> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/creator
+<http://purl.org/dc/terms/creator> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/identifier
+<http://purl.org/dc/terms/identifier> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/vocab/vann/preferredNamespacePrefix
+<http://purl.org/vocab/vann/preferredNamespacePrefix> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/vocab/vann/preferredNamespaceUri
+<http://purl.org/vocab/vann/preferredNamespaceUri> rdf:type owl:AnnotationProperty .
+
+
+#################################################################
+#    Datatypes
+#################################################################
+
+###  http://www.w3.org/2001/XMLSchema#date
+xsd:date rdf:type rdfs:Datatype .
+
+
+###  http://www.w3.org/2001/XMLSchema#duration
+xsd:duration rdf:type rdfs:Datatype .
+
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://example.org/model-device-alarm-knowledge#administers
+:administers rdf:type owl:ObjectProperty ;
+             rdfs:domain :Device ;
+             rdfs:range :TherapeuticModality ;
+             :situational "true"^^xsd:boolean ;
+             <http://purl.org/dc/terms/identifier> "administers" ;
+             rdfs:comment "Koppelt een apparaat aan de therapeutische modaliteit die het toedient."@nl ,
+                          "Relates a device to the therapeutic modality it administers."@en ;
+             rdfs:label "administers"@en ,
+                        "toegediend"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#analyzedBy
+:analyzedBy rdf:type owl:ObjectProperty ;
+            rdfs:domain :Signal ;
+            rdfs:range :SignalAnalysis ;
+            <http://purl.org/dc/terms/identifier> "analyzedBy" ;
+            rdfs:comment "Koppelt een signaal aan de signaalanalysestap die het verbruikt. De enige weg naar mda:SignalAnalysis — bewust niet ook rechtstreeks bereikbaar vanaf mda:FunctionalUnit (er bestaat geen performsAnalysis-achtige kortere weg), zodat er precies één pad naar een analysestap bestaat, altijd via het specifieke signaal (de specifieke signalen) dat het daadwerkelijk verbruikt. Functioneel niet: hetzelfde signaal kan meer dan één analysestap voeden."@nl ,
+                         "Relates a signal to the signal-analysis step that consumes it. The only edge reaching mda:SignalAnalysis — deliberately not also reachable directly from mda:FunctionalUnit (no performsAnalysis-style shortcut exists), so there is exactly one path to an analysis step, always through the specific signal(s) it actually consumes. A second, shorter path would let ontology_tree.py's shortest-path class-tree derivation silently prefer it over the precise one (the same failure mode mda:administers was introduced to avoid for mda:TherapeuticModality — see the Technical axioms note in inference.ttl). Not functional: the same signal can feed more than one analysis step (e.g. ECG lead II feeds both a heart-rate computation and an aVF derivation)."@en ;
+            rdfs:label "analyzed by"@en ,
+                       "geanalyseerd door"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#approximates
+:approximates rdf:type owl:ObjectProperty ;
+              rdfs:domain :Metric ;
+              rdfs:range :PhysiologicalProperty ;
+              :situational "true"^^xsd:boolean ;
+              <http://purl.org/dc/terms/identifier> "approximates" ;
+              rdfs:comment "Koppelt een metriek aan de fysiologische eigenschap die het benadert."@nl ,
+                           "Relates a metric to the physiological property it approximates."@en ;
+              rdfs:label "approximates"@en ,
+                         "benadert"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#concernsPatient
+:concernsPatient rdf:type owl:ObjectProperty ,
+                          owl:FunctionalProperty ;
+                 rdfs:domain :AlarmMessage ;
+                 rdfs:range :Patient ;
+                 <http://purl.org/dc/terms/identifier> "concernsPatient" ;
+                 rdfs:comment "Koppelt een alarmbericht aan de patiënt die het betreft — het gedeelde, persistente samenvoegankerpunt. Bewust een doodlopend pad: leidt niet langer via mda:isMonitoredBy naar mda:Device. Functioneel: één bericht betreft precies één patiënt."@nl ,
+                              "Relates an alarm message to the patient it concerns — the shared, persistent merge anchor. Deliberately a dead end: it no longer continues on to mda:Device via mda:isMonitoredBy (see mda:triggeredBy's comment for why). Functional: one message concerns exactly one patient — it is minted fresh per alarm precisely so it never needs to concern more than one."@en ;
+                 rdfs:label "betreft patiënt"@nl ,
+                            "concerns patient"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasAnatomicalPosition
+:hasAnatomicalPosition rdf:type owl:ObjectProperty ,
+                                owl:FunctionalProperty ;
+                       rdfs:domain :Sensor ;
+                       rdfs:range :AnatomicalPosition ;
+                       :refinesParticularIdentity "true"^^xsd:boolean ;
+                       <http://purl.org/dc/terms/identifier> "hasAnatomicalPosition" ;
+                       rdfs:comment "Koppelt een sensor aan zijn anatomische positie op het lichaam. Functioneel: een fysieke sensor bevindt zich op een gegeven moment op precies één positie."@nl ,
+                                    "Relates a sensor to its anatomical position on the body. Functional: a physical sensor occupies exactly one position at a time."@en ;
+                       rdfs:label "has anatomical position"@en ,
+                                  "heeft anatomische positie"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasCategory
+:hasCategory rdf:type owl:ObjectProperty ;
+             rdfs:domain :Alarm ;
+             rdfs:range <http://www.w3.org/2004/02/skos/core#Concept> ;
+             :valuesFromScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-category/Scheme> ;
+             <http://purl.org/dc/terms/identifier> "hasCategory" ;
+             rdfs:comment "De categorie van het alarm (beschrijvend, naast label en prioriteit)."@nl ,
+                          "The category of the alarm (a descriptive, alongside label and priority)."@en ;
+             rdfs:label "has category"@en ,
+                        "heeft categorie"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasComponent
+:hasComponent rdf:type owl:ObjectProperty ,
+                       owl:InverseFunctionalProperty ;
+              rdfs:domain :Device ;
+              rdfs:range :Component ;
+              <http://purl.org/dc/terms/identifier> "hasComponent" ;
+              rdfs:comment "Koppelt een apparaat aan zijn onderdelen, al dan niet sensorisch (bijv. een aansluitpoort, voedingseenheid, verwarmingselement of functionele eenheid). Invers-functioneel: een onderdeel behoort tot hoogstens één apparaat — er is geen aparte isComponentOf-eigenschap; bevraag alleen in deze richting."@nl ,
+                           "Relates a device to its components, sensing or not (e.g. a connection port, power unit, heating element, or functional unit). Inverse-functional: a component belongs to at most one device — no separate isComponentOf property is declared; query in this direction only."@en ;
+              rdfs:label "has component"@en ,
+                         "heeft onderdeel"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasComponentOperationState
+:hasComponentOperationState rdf:type owl:ObjectProperty ;
+                            rdfs:subPropertyOf :hasOperationState ;
+                            rdfs:domain :Component ;
+                            rdfs:range <http://www.w3.org/2004/02/skos/core#Concept> ;
+                            :valuesFromScheme <http://example.org/model-device-alarm-knowledge/vocab/operation-state/Scheme> ;
+                            <http://purl.org/dc/terms/identifier> "hasComponentOperationState" ;
+                            rdfs:comment "De operationele status van een niet-sensorisch onderdeel, bijv. Disconnected of Warning. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen."@nl ,
+                                         "The operational state of a non-sensing component, e.g. Disconnected or Warning. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously."@en ;
+                            rdfs:label "has component operation state"@en ,
+                                       "heeft onderdeeloperatiestatus"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasDeviceOperationState
+:hasDeviceOperationState rdf:type owl:ObjectProperty ;
+                         rdfs:subPropertyOf :hasOperationState ;
+                         rdfs:domain :Device ;
+                         rdfs:range <http://www.w3.org/2004/02/skos/core#Concept> ;
+                         :valuesFromScheme <http://example.org/model-device-alarm-knowledge/vocab/operation-state/Scheme> ;
+                         <http://purl.org/dc/terms/identifier> "hasDeviceOperationState" ;
+                         rdfs:comment "De operationele status van een apparaat zelf, bijv. Disconnected. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen."@nl ,
+                                      "The operational state of a device itself, e.g. Disconnected. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously."@en ;
+                         rdfs:label "has device operation state"@en ,
+                                    "heeft apparaatoperatiestatus"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasDeviceType
+:hasDeviceType rdf:type owl:ObjectProperty ;
+               rdfs:domain :Device ;
+               rdfs:range <http://www.w3.org/2004/02/skos/core#Concept> ;
+               :refinesUniversalIdentity "true"^^xsd:boolean ;
+               :valuesFromScheme <http://example.org/model-device-alarm-knowledge/vocab/device-type/Scheme> ;
+               <http://purl.org/dc/terms/identifier> "hasDeviceType" ;
+               rdfs:comment "Het specifieke type of de modelaanduiding van het apparaat (bijv. ServoU)."@nl ,
+                            "The specific type or model designation of the device (e.g. ServoU)."@en ;
+               rdfs:label "has device type"@en ,
+                          "heeft apparaattype"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasFunctionalUnit
+:hasFunctionalUnit rdf:type owl:ObjectProperty ;
+                   rdfs:subPropertyOf :hasComponent ;
+                   rdf:type owl:InverseFunctionalProperty ;
+                   rdfs:domain :Device ;
+                   rdfs:range :FunctionalUnit ;
+                   <http://purl.org/dc/terms/identifier> "hasFunctionalUnit" ;
+                   rdfs:comment "Koppelt een apparaat aan een functionele eenheid die het bevat (bijv. een ECG-module, een SpO2-module) — een subeigenschap van hasComponent, aangezien elke functionele eenheid een onderdeel is. Invers-functioneel: een functionele eenheid behoort tot hoogstens één apparaat."@nl ,
+                                "Relates a device to a functional unit it houses (e.g. an ECG module, an SpO2 module) — a sub-property of hasComponent, since every functional unit is a component. Inverse-functional: a functional unit belongs to at most one device."@en ;
+                   rdfs:label "has functional unit"@en ,
+                              "heeft functionele eenheid"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasLabelConcept
+:hasLabelConcept rdf:type owl:ObjectProperty ;
+                 rdfs:domain :AlarmType ;
+                 rdfs:range <http://www.w3.org/2004/02/skos/core#Concept> ;
+                 :valuesFromScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+                 <http://purl.org/dc/terms/identifier> "hasLabelConcept" ;
+                 rdfs:comment "Koppelt een alarmtype aan zijn gecontroleerde-vocabulaireconcept in het schema van mda:AlarmLabel — één concept per onderscheidend labelstring, gedeeld door elk archetype dat dat label gebruikt, ongeacht prioriteit."@nl ,
+                              "Relates an alarm type to its controlled-vocabulary concept in mda:AlarmLabel's scheme — one concept per distinct label string encountered, shared across every archetype that uses that label regardless of priority (2_READOUT/vocab_readout.py's label_concept_iri keys on the label alone, not the archetype). The companion of mda:hasLabel, not a replacement for it."@en ;
+                 rdfs:label "has label concept"@en ,
+                            "heeft labelconcept"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasLaterality
+:hasLaterality rdf:type owl:ObjectProperty ,
+                        owl:FunctionalProperty ;
+               rdfs:domain :Sensor ;
+               rdfs:range :Laterality ;
+               :refinesParticularIdentity "true"^^xsd:boolean ;
+               <http://purl.org/dc/terms/identifier> "hasLaterality" ;
+               rdfs:comment "Koppelt een sensor aan zijn lateraliteit (links, rechts, bilateraal). Functioneel: een fysieke sensor heeft op een gegeven moment precies één lateraliteit."@nl ,
+                            "Relates a sensor to its laterality (left, right, bilateral). Functional: a physical sensor has exactly one laterality at a time."@en ;
+               rdfs:label "has laterality"@en ,
+                          "heeft lateraliteit"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasManufacturer
+:hasManufacturer rdf:type owl:ObjectProperty ;
+                 rdfs:domain :Device ;
+                 rdfs:range <http://www.w3.org/2004/02/skos/core#Concept> ;
+                 :refinesUniversalIdentity "true"^^xsd:boolean ;
+                 :valuesFromScheme <http://example.org/model-device-alarm-knowledge/vocab/manufacturer/Scheme> ;
+                 <http://purl.org/dc/terms/identifier> "hasManufacturer" ;
+                 rdfs:comment "De fabrikant of productlijn van het apparaat."@nl ,
+                              "The manufacturer or product line of the device."@en ;
+                 rdfs:label "has manufacturer"@en ,
+                            "heeft fabrikant"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasMessage
+:hasMessage rdf:type owl:ObjectProperty ,
+                     owl:FunctionalProperty ,
+                     owl:InverseFunctionalProperty ;
+            rdfs:domain :Alarm ;
+            rdfs:range :AlarmMessage ;
+            <http://purl.org/dc/terms/identifier> "hasMessage" ;
+            rdfs:comment "Het bericht van het alarm: een per-alarm mda:AlarmMessage-knooppunt met de onafhankelijke facetten van de gebeurtenis — mda:concernsPatient en mda:triggeredBy — als nevengeschikte eigenschappen, geen van beide via de ander bereikt. Functioneel en invers-functioneel: één alarm heeft precies één bericht en één bericht hoort bij precies één alarm."@nl ,
+                         "The alarm's message: a per-alarm mda:AlarmMessage node carrying the occurrence's independent facets — mda:concernsPatient (who this alarm is about) and mda:triggeredBy (what caused it) — as siblings, neither reached through the other (see mda:triggeredBy's comment for why they used to be chained and no longer are). Distinct per alarm so many alarms can reference the same shared patient/device and merge there. Functional and inverse-functional: one alarm has exactly one message and one message belongs to exactly one alarm — alarm_iri/message_iri are minted from the same (device_id, start) key in 4_OPERATIONAL/op_knowledge.py precisely to keep this a bijection."@en ;
+            rdfs:label "has message"@en ,
+                       "heeft bericht"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasOperationState
+:hasOperationState rdf:type owl:ObjectProperty ;
+                   rdfs:domain [ rdf:type owl:Class ;
+                                 owl:unionOf ( :Component
+                                               :Device
+                                               :Sensor
+                                               :Signal
+                                               :TherapeuticModality
+                                             )
+                               ] ;
+                   rdfs:range <http://www.w3.org/2004/02/skos/core#Concept> ;
+                   owl:propertyChainAxiom ( :hasFunctionalUnit
+                                            :hasOperationState
+                                          ) ,
+                                          ( :hasSensor
+                                            :hasOperationState
+                                          ) ,
+                                          ( :producesSignal
+                                            :hasOperationState
+                                          ) ,
+                                          ( [ owl:inverseOf :administers
+                                            ]
+                                            :hasOperationState
+                                          ) ;
+                   :persistsPostAlarm "true"^^xsd:boolean ;
+                   <http://purl.org/dc/terms/identifier> "hasOperationState" ;
+                   rdfs:comment "De operationele status van een apparaat, sensor, signaal, onderdeel, of de therapeutische modaliteit die een apparaat toedient (dit laatste afgeleid van de status van het toedienende apparaat, niet direct toegekend)."@nl ,
+                                "The operational state of a device, sensor, signal, component, or the therapeutic modality a device administers (the latter inferred from the administering device's own state, not asserted directly)."@en ;
+                   rdfs:label "has operation state"@en ,
+                              "heeft operatiestatus"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasPhase
+:hasPhase rdf:type owl:ObjectProperty ;
+          rdfs:domain :Metric ;
+          rdfs:range <http://www.w3.org/2004/02/skos/core#Concept> ;
+          :refinesUniversalIdentity "true"^^xsd:boolean ;
+          :valuesFromScheme <http://example.org/model-device-alarm-knowledge/vocab/metric-phase/Scheme> ;
+          <http://purl.org/dc/terms/identifier> "hasPhase" ;
+          rdfs:comment "De fase van de metriek waarop de alarmconditie van toepassing is (bijv. gemiddeld, systolisch, diastolisch, eind-expiratoir)."@nl ,
+                       "The phase of the metric to which the alarm condition applies (e.g. mean, systolic, diastolic, end-expiratory)."@en ;
+          rdfs:label "has phase"@en ,
+                     "heeft fase"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasPriority
+:hasPriority rdf:type owl:ObjectProperty ;
+             rdfs:domain :Alarm ;
+             rdfs:range <http://www.w3.org/2004/02/skos/core#Concept> ;
+             :valuesFromScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-priority/Scheme> ;
+             <http://purl.org/dc/terms/identifier> "hasPriority" ;
+             rdfs:comment "Het prioriteitsniveau van een alarm of alarmbericht."@nl ,
+                          "The priority level of an alarm or alarm message."@en ;
+             rdfs:label "has priority"@en ,
+                        "heeft prioriteit"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasQualityState
+:hasQualityState rdf:type owl:ObjectProperty ;
+                 rdfs:domain :Signal ;
+                 rdfs:range <http://www.w3.org/2004/02/skos/core#Concept> ;
+                 :persistsPostAlarm "true"^^xsd:boolean ;
+                 :valuesFromScheme <http://example.org/model-device-alarm-knowledge/vocab/quality-state/Scheme> ;
+                 <http://purl.org/dc/terms/identifier> "hasQualityState" ;
+                 rdfs:comment "De kwaliteitsstatus van een signaal, die de meetbetrouwbaarheid aangeeft."@nl ,
+                              "The quality state of a signal, indicating measurement reliability."@en ;
+                 rdfs:label "has quality state"@en ,
+                            "heeft kwaliteitsstatus"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasRate
+:hasRate rdf:type owl:ObjectProperty ;
+         rdfs:domain :Metric ;
+         rdfs:range <http://www.w3.org/2004/02/skos/core#Concept> ;
+         :valuesFromScheme <http://example.org/model-device-alarm-knowledge/vocab/metric-rate/Scheme> ;
+         <http://purl.org/dc/terms/identifier> "hasRate" ;
+         rdfs:comment "De snelheidsafwijking van de metriek die het alarm veroorzaakt (bijv. verhoogd, verlaagd, kritieke daling)."@nl ,
+                      "The rate deviation of the metric that raises the alarm (e.g. increased, decreased, critical decrease)."@en ;
+         rdfs:label "has rate"@en ,
+                    "heeft snelheid"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasRhythm
+:hasRhythm rdf:type owl:ObjectProperty ;
+           rdfs:domain :Metric ;
+           rdfs:range <http://www.w3.org/2004/02/skos/core#Concept> ;
+           :valuesFromScheme <http://example.org/model-device-alarm-knowledge/vocab/rhythm/Scheme> ;
+           <http://purl.org/dc/terms/identifier> "hasRhythm" ;
+           rdfs:comment "Het ritmepatroon van de metriek waarop de alarmconditie van toepassing is (bijv. onregelmatig)."@nl ,
+                        "The rhythm pattern of the metric to which the alarm condition applies (e.g. irregular)."@en ;
+           rdfs:label "has rhythm"@en ,
+                      "heeft ritme"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasSensor
+:hasSensor rdf:type owl:ObjectProperty ;
+           rdfs:domain :FunctionalUnit ;
+           rdfs:range :Sensor ;
+           <http://purl.org/dc/terms/identifier> "hasSensor" ;
+           rdfs:comment "Koppelt een functionele eenheid aan de fysieke sensor(en) waarvan het afleest (bijv. een ECG-module aan elk van zijn 12 afleidingen). GEEN subeigenschap van hasComponent: het domein is FunctionalUnit, niet Device, en het domein van hasComponent ligt vast op Device. Een sensor behoort niet langer rechtstreeks tot een apparaat."@nl ,
+                        "Relates a functional unit to the physical sensor(s) it reads from (e.g. an ECG module to each of its 12 leads). NOT a sub-property of hasComponent: its domain is FunctionalUnit, not Device, and hasComponent's domain is fixed to Device — declaring it a sub-property would wrongly entail every FunctionalUnit is itself a Device. A sensor no longer belongs directly to a device (see FunctionalUnit below for why: the sensor is the physical probe, the functional unit is what analyses what it picks up). Deliberately NOT owl:InverseFunctionalProperty, unlike most of this file's other IFP-marked relations: 2_READOUT/outcome/inference.ttl's FunctionalUnit recipe axioms assert hasSensor via an owl:hasValue restriction, so every alarm typed to the same FunctionalUnit concept (e.g. every FU_PneumoTachograph alarm) entails hasSensor to the SAME shared sensor concept, not a fresh individual per alarm the way 2_READOUT/vocab_readout.py's own per-row blank nodes do. Confirmed by an isolated reasoner test: with InverseFunctionalProperty declared, prp-ifp forces every one of those alarms' FunctionalUnit individuals into owl:sameAs with each other — and would do the same across grounded, per-patient data in 4_OPERATIONAL if this property were ever reasoned over there, merging different patients' equipment. mda:producesSignal carries the same latent risk if a future recipe axiom (e.g. the pending ECG one) ever reuses one signal concept across two different sensor concepts — watch for it there too."@en ;
+           rdfs:label "has sensor"@en ,
+                      "heeft sensor"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasSensorOperationState
+:hasSensorOperationState rdf:type owl:ObjectProperty ;
+                         rdfs:subPropertyOf :hasOperationState ;
+                         rdfs:domain :Sensor ;
+                         rdfs:range <http://www.w3.org/2004/02/skos/core#Concept> ;
+                         :valuesFromScheme <http://example.org/model-device-alarm-knowledge/vocab/operation-state/Scheme> ;
+                         <http://purl.org/dc/terms/identifier> "hasSensorOperationState" ;
+                         rdfs:comment "De operationele status van een sensor, bijv. Enabled, Disabled of Malfunction. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen."@nl ,
+                                      "The operational state of a sensor, e.g. Enabled, Disabled, or Malfunction. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously."@en ;
+                         rdfs:label "has sensor operation state"@en ,
+                                    "heeft sensoroperatiestatus"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#isMonitoredBy
+:isMonitoredBy rdf:type owl:ObjectProperty ,
+                        owl:InverseFunctionalProperty ;
+               rdfs:domain :Patient ;
+               rdfs:range :Device ;
+               <http://purl.org/dc/terms/identifier> "isMonitoredBy" ;
+               rdfs:comment "Koppelt een patiënt aan het apparaat dat hen op dit moment bewaakt. Invers-functioneel: een apparaat bewaakt hoogstens één patiënt tegelijk."@nl ,
+                            "Relates a patient to the device currently monitoring them. No longer part of the blueprint's structural path to mda:Device (see mda:triggeredBy) — that routing asserted every alarm-raising device 'monitors' the patient, which overclaims for a therapeutic one. What remains is this property's own, separate justification: inverse-functional, a device monitors at most one patient at a time — a physical monitor is not shared between two patients simultaneously, even though it may serve different patients at different times — so a reasoner can catch a double-booking directly (as an entailed owl:sameAs between two asserted-distinct patients) rather than relying on generator discipline, the same pattern as mda:hasSensor/mda:producesSignal below. Only meaningful if isMonitoredBy is asserted per-instant, not as a standing fact for a patient's whole encounter — see 4_OPERATIONAL/op_knowledge.py, the only place it is still asserted."@en ;
+               rdfs:label "is monitored by"@en ,
+                          "wordt bewaakt door"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#isOfType
+:isOfType rdf:type owl:ObjectProperty ,
+                   owl:FunctionalProperty ;
+          rdfs:domain :Alarm ;
+          rdfs:range :AlarmType ;
+          <http://purl.org/dc/terms/identifier> "isOfType" ;
+          rdfs:comment "Koppelt een concrete alarminstantie aan zijn archetypische alarmtype in de typecatalogus, waaruit standaard structurele kennis (apparaattype, sensortype, signaaltype) kan worden geërfd. Functioneel: één alarminstantie is van precies één archetype."@nl ,
+                       "Links a concrete alarm instance to its archetypal alarm type in the type catalogue, from which default structural knowledge (device type, sensor type, signal type) can be inherited. Functional: one alarm occurrence is of exactly one archetype."@en ;
+          rdfs:label "is of type"@en ,
+                     "is van type"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#isPropertyOf
+:isPropertyOf rdf:type owl:ObjectProperty ;
+              rdfs:domain :PhysiologicalProperty ;
+              rdfs:range :PhysiologicalProcess ;
+              :situational "true"^^xsd:boolean ;
+              <http://purl.org/dc/terms/identifier> "isPropertyOf" ;
+              rdfs:comment "Koppelt een fysiologische eigenschap aan het proces dat het karakteriseert."@nl ,
+                           "Relates a physiological property to the process it characterises."@en ;
+              rdfs:label "is eigenschap van"@nl ,
+                         "is property of"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#organPartOfSystem
+:organPartOfSystem rdf:type owl:ObjectProperty ;
+                   rdfs:domain :Organ ;
+                   rdfs:range :OrganSystem ;
+                   :situational "true"^^xsd:boolean ;
+                   <http://purl.org/dc/terms/identifier> "organPartOfSystem" ;
+                   rdfs:comment "Koppelt een orgaan aan het orgaansysteem waartoe het behoort."@nl ,
+                                "Relates an organ to the organ system it belongs to."@en ;
+                   rdfs:label "orgaan deel van systeem"@nl ,
+                              "organ part of system"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#presentIn
+:presentIn rdf:type owl:ObjectProperty ;
+           rdfs:domain :PhysiologicalProcess ;
+           rdfs:range :Organ ;
+           :situational "true"^^xsd:boolean ;
+           <http://purl.org/dc/terms/identifier> "presentIn" ;
+           rdfs:comment "Koppelt een fysiologisch proces aan het orgaan waarin het plaatsvindt."@nl ,
+                        "Relates a physiological process to the organ it occurs in."@en ;
+           rdfs:label "aanwezig in"@nl ,
+                      "present in"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#producesMetric
+:producesMetric rdf:type owl:ObjectProperty ;
+                rdfs:domain :SignalAnalysis ;
+                rdfs:range :Metric ;
+                <http://purl.org/dc/terms/identifier> "producesMetric" ;
+                rdfs:comment "Koppelt een signaalanalysestap aan de metriek die het berekent."@nl ,
+                             "Relates a signal-analysis step to the metric it computes."@en ;
+                rdfs:label "produceert metriek"@nl ,
+                           "produces metric"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#producesSignal
+:producesSignal rdf:type owl:ObjectProperty ,
+                         owl:InverseFunctionalProperty ;
+                rdfs:domain [ rdf:type owl:Class ;
+                              owl:unionOf ( :Sensor
+                                            :SignalAnalysis
+                                          )
+                            ] ;
+                rdfs:range :Signal ;
+                <http://purl.org/dc/terms/identifier> "producesSignal" ;
+                rdfs:comment "Koppelt een sensor OF een signaalanalysestap aan het signaal dat het produceert — het ruwe signaal van een sensor, of het afgeleide/tussenliggende signaal van een analysestap (bijv. versterkte afleiding aVF, gecombineerd uit andere afleidingen). Invers-functioneel: een signaal heeft hoogstens één producent, ongeacht het soort."@nl ,
+                             "Relates a sensor OR a signal-analysis step to the signal it produces — a sensor's raw signal, or an analysis step's derived/intermediate signal (e.g. augmented lead aVF, combined from other leads). Inverse-functional: a signal has at most one producer, whichever kind produced it. Its domain is a union, so it cannot itself anchor 2_READOUT/vocab_readout.py's CSV/tree derivation (ontology_tree.py's derive_class_tree only follows a named rdfs:domain, the same limitation documented at mda:hasOperationState below) — mda:sensorProducesSignal is the single-domain sub-property that does. A signal-analysis step's own derived-signal output (the aVF case) is only ever hand-authored in inference.ttl, never CSV-driven, so it uses this general property directly and needs no sub-property of its own."@en ;
+                rdfs:label "produceert signaal"@nl ,
+                           "produces signal"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#sensorProducesSignal
+:sensorProducesSignal rdf:type owl:ObjectProperty ;
+                      rdfs:subPropertyOf :producesSignal ;
+                      rdfs:domain :Sensor ;
+                      rdfs:range :Signal ;
+                      <http://purl.org/dc/terms/identifier> "sensorProducesSignal" ;
+                      rdfs:comment "Het CSV/boom-gerichte geval van mda:producesSignal: het eigen ruwe signaal van een sensor. Een subeigenschap met één domein, zodat de door 2_READOUT/vocab_readout.py afgeleide boom Signal ondubbelzinnig onder Sensor kan hangen."@nl ,
+                                   "The CSV/tree-facing case of mda:producesSignal: a sensor's own raw signal. A single-domain sub-property so 2_READOUT/vocab_readout.py's ontology-derived tree can attach Signal under Sensor unambiguously — see mda:producesSignal's comment. Every fact asserted through it still entails the general mda:producesSignal fact (and, transitively, mda:hasOperationState's propagation chain) via rdfs:subPropertyOf."@en ;
+                      rdfs:label "sensor produceert signaal"@nl ,
+                                 "sensor produces signal"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#targetsProcess
+:targetsProcess rdf:type owl:ObjectProperty ;
+                rdfs:domain :TherapeuticModality ;
+                rdfs:range :PhysiologicalProcess ;
+                :situational "true"^^xsd:boolean ;
+                <http://purl.org/dc/terms/identifier> "targetsProcess" ;
+                rdfs:comment "Koppelt een therapeutische modaliteit aan het fysiologische proces waarop het zich richt."@nl ,
+                             "Relates a therapeutic modality to the physiological process it targets."@en ;
+                rdfs:label "richt zich op proces"@nl ,
+                           "targets process"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#triggeredBy
+:triggeredBy rdf:type owl:ObjectProperty ,
+                      owl:FunctionalProperty ;
+             rdfs:domain :AlarmMessage ;
+             rdfs:range :Device ;
+             <http://purl.org/dc/terms/identifier> "triggeredBy" ;
+             rdfs:comment "Koppelt een alarmbericht rechtstreeks aan het apparaat waarvan het de technische structuur impliceert — de enige weg van AlarmMessage naar de mda:Device-deelboom. Vervangt routering via mda:concernsPatient/mda:isMonitoredBy: die keten beweerde dat elk alarmerend apparaat de patiënt 'bewaakt', wat onjuist is voor een wezenlijk therapeutisch apparaat. mda:isMonitoredBy zelf is ONGEWIJZIGD en blijft gebruikt, maar uitsluitend voor de eigen operationele rechtvaardiging. Functioneel, niet invers-functioneel."@nl ,
+                          "Relates an alarm message directly to the device whose technical structure it implicates — the sole path from AlarmMessage into the mda:Device subtree (mda:hasFunctionalUnit, mda:hasSensor, ...). Replaces routing that reach through mda:concernsPatient/mda:isMonitoredBy: that chain asserted every alarm-raising device 'monitors' the patient, which is false for a fundamentally therapeutic device (mda:MechanicalVentilator, mda:Dialysator, mda:ExtracorporealMembraneOxygenator, mda:Incubator/mda:Thermoregulator all administer a therapy — see mda:administers — rather than principally observe). mda:isMonitoredBy itself is UNCHANGED and still used, but only for its own actual justification: 4_OPERATIONAL/op_knowledge.py's per-instant double-booking check, asserted fresh at grounding time, never derived from or dependent on this blueprint-level structure. Functional, not inverse-functional: one message has exactly one triggering device, but one device triggers many messages over its lifetime — unlike mda:hasMessage's strict bijection."@en ;
+             rdfs:label "triggered by"@en ,
+                        "veroorzaakt door"@nl .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://example.org/model-device-alarm-knowledge#hasDuration
+:hasDuration rdf:type owl:DatatypeProperty ;
+             rdfs:domain :Alarm ;
+             rdfs:range xsd:duration ;
+             <http://purl.org/dc/terms/identifier> "hasDuration" ;
+             rdfs:comment "De duur van het alarm."@nl ,
+                          "The duration of the alarm."@en ;
+             rdfs:label "has duration"@en ,
+                        "heeft duur"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasEnd
+:hasEnd rdf:type owl:DatatypeProperty ;
+        rdfs:domain :Alarm ;
+        rdfs:range xsd:dateTime ;
+        <http://purl.org/dc/terms/identifier> "hasEnd" ;
+        rdfs:comment "Het eindtijdstip van het alarm."@nl ,
+                     "The end time of the alarm."@en ;
+        rdfs:label "has end"@en ,
+                   "heeft einde"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasLabel
+:hasLabel rdf:type owl:DatatypeProperty ;
+          rdfs:domain :AlarmType ;
+          rdfs:range rdf:langString ;
+          <http://purl.org/dc/terms/identifier> "hasLabel" ;
+          rdfs:comment "Het vrije-tekstlabel dat een alarmtype identificeert, exact zoals het in de brondata voorkomt — een literal, geen concept. mda:hasLabelConcept is de bijbehorende gecontroleerde-vocabulaire lezing van hetzelfde label; beide worden bewust bijgehouden. AlarmType is het enige domein; een Alarm-instantie bereikt zijn label via mda:isOfType."@nl ,
+                       "The free-text label identifying an alarm type, exactly as it occurs in the source data (e.g. 'PHILIPSMONITOR - SpO2 geen pols') — a literal, not a concept: alarm labels routinely contain spaces and punctuation no SKOS notation can carry. mda:hasLabelConcept is the companion controlled-vocabulary reading of the same label — the two are deliberately BOTH kept, not alternatives: this ontology wants both the label as encountered and a stable, deduplicated vocabulary entry for it (the same label recurs across archetypes that differ only in priority). AlarmType is its only domain; a plain Alarm instance reaches its label via mda:isOfType."@en ;
+          rdfs:label "has label"@en ,
+                     "heeft label"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#hasStart
+:hasStart rdf:type owl:DatatypeProperty ;
+          rdfs:domain :Alarm ;
+          rdfs:range xsd:dateTime ;
+          <http://purl.org/dc/terms/identifier> "hasStart" ;
+          rdfs:comment "Het starttijdstip van het alarm."@nl ,
+                       "The start time of the alarm."@en ;
+          rdfs:label "has start"@en ,
+                     "heeft start"@nl .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://example.org/model-device-alarm-knowledge#Alarm
+:Alarm rdf:type owl:Class ;
+       <http://purl.org/dc/terms/identifier> "Alarm" ;
+       rdfs:comment "A notification or alert generated by a medical device."@en ,
+                    "Een melding of waarschuwing gegenereerd door een medisch apparaat."@nl ;
+       rdfs:label "Alarm"@en ,
+                  "Alarm"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#AlarmMessage
+:AlarmMessage rdf:type owl:Class ;
+              <http://purl.org/dc/terms/identifier> "AlarmMessage" ;
+              rdfs:comment "A per-alarm message node — the hub for this occurrence's independent facets: mda:concernsPatient (the shared, persistent patient — the merge anchor operational inference reasons across alarms over) and mda:triggeredBy (the device whose technical structure this alarm implicates), reached as siblings rather than one gatewaying the other."@en ,
+                           "Een per-alarm berichtknooppunt — het knooppunt voor de onafhankelijke facetten van deze gebeurtenis: mda:concernsPatient en mda:triggeredBy, als nevengeschikte eigenschappen bereikt."@nl ;
+              rdfs:label "Alarm Message"@en ,
+                         "Alarmbericht"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#AlarmType
+:AlarmType rdf:type owl:Class ;
+           rdfs:subClassOf :Alarm ;
+           <http://purl.org/dc/terms/identifier> "AlarmType" ;
+           rdfs:comment "A generic, archetypal alarm definition independent of any specific device instance or patient encounter. Captures the default device, sensor, and signal structure associated with a class of alarm."@en ,
+                        "Een generieke, archetypische alarmdefinitie, onafhankelijk van een specifieke apparaatinstantie of patiëntencounter. Legt de standaard apparaat-, sensor- en signaalstructuur vast die samenhangt met een klasse van alarmen."@nl ;
+           rdfs:label "Alarm Type"@en ,
+                      "Alarmtype"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#AnatomicalPosition
+:AnatomicalPosition rdf:type owl:Class ;
+                    <http://purl.org/dc/terms/identifier> "AnatomicalPosition" ;
+                    rdfs:comment "De anatomische positie van een sensor op het lichaam."@nl ,
+                                 "The anatomical position of a sensor on the body."@en ;
+                    rdfs:label "Anatomical Position"@en ,
+                               "Anatomische Positie"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#Component
+:Component rdf:type owl:Class ;
+           :nodeKind :Individuated ;
+           <http://purl.org/dc/terms/identifier> "Component" ;
+           rdfs:comment "A physical or functional part of a medical device (e.g. a connection port, power unit, or heating element). mda:Sensor is the specialisation that additionally produces a measurable signal — every sensor is a component, but not every component senses."@en ,
+                        "Een fysiek of functioneel onderdeel van een medisch apparaat (bijv. een aansluitpoort, voedingseenheid of verwarmingselement). mda:Sensor is de specialisatie die daarnaast een meetbaar signaal produceert — elke sensor is een onderdeel, maar niet elk onderdeel meet."@nl ;
+           rdfs:label "Component"@en ,
+                      "Onderdeel"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#CriticalComponent
+:CriticalComponent rdf:type owl:Class ;
+                   rdfs:subClassOf :Component ;
+                   <http://purl.org/dc/terms/identifier> "CriticalComponent" ;
+                   rdfs:comment "De subklasse van mda:Component waarvan het loskoppelen betekent dat het apparaat zelf niet beschikbaar is (bijv. de datapoort, de stroomaansluiting) — in tegenstelling tot een randonderdeel waarvan het loskoppelen slechts een subsysteemwaarschuwing is (bijv. een matrasverwarming)."@nl ,
+                                "The subclass of mda:Component whose own disconnection means the device itself is unavailable (e.g. the data-link port, the power inlet) — as opposed to a peripheral component whose disconnection is only a subsystem-level warning (e.g. a mattress heater). This class exists so the propagation rule using it can be precise: unconditionally true for CriticalComponent, never assumed for mda:Component as a whole — see mda:hasOperationState's comment below on why mda:hasComponent was deliberately dropped from its propertyChainAxiom. The rule itself, and which concrete vocabulary-level component types (e.g. component:ConnectionUnit, component:PowerUnit) are tagged as members of this class, both live in 2_READOUT/outcome/inference.ttl's Component operational-state propagation section — the rule's hasValue target (a specific operation-state concept) is catalogue vocabulary, so it cannot be asserted here, but this class it's written over is a plain structural distinction with no vocabulary dependency, so it belongs in this TBox, not duplicated per component type down there."@en ;
+                   rdfs:label "Critical component"@en ,
+                              "Kritiek onderdeel"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#Device
+:Device rdf:type owl:Class ;
+        :nodeKind :Individuated ;
+        <http://purl.org/dc/terms/identifier> "Device" ;
+        rdfs:comment "A medical device that generates alarms."@en ,
+                     "Een medisch apparaat dat alarmen genereert."@nl ;
+        rdfs:label "Apparaat"@nl ,
+                   "Device"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#FunctionalUnit
+:FunctionalUnit rdf:type owl:Class ;
+                rdfs:subClassOf :Component ;
+                owl:disjointWith :Sensor ;
+                :nodeKind :Individuated ;
+                <http://purl.org/dc/terms/identifier> "FunctionalUnit" ;
+                rdfs:comment "De module van een apparaat die de berekeningslogica voor een bepaalde meetmogelijkheid huisvest (bijv. een ECG-module, een SpO2-module) — in de volksmond vaak 'de sensor' genoemd, maar hier onderscheiden van mda:Sensor, dat enkel de fysieke probe is. Een functionele eenheid leest van één of meer sensoren en zet, via één of meer mda:SignalAnalysis-stappen, hun signalen om in metrieken. Een specialisatie van mda:Component. Disjunct verklaard met mda:Sensor vanwege precies die volkstaal-verwarring."@nl ,
+                             "The module of a device that houses the computation logic for a particular measurement capability (e.g. an ECG module, an SpO2 module) — often called 'the sensor' colloquially, but distinct here from mda:Sensor, which is only the physical probe. A functional unit reads from one or more sensors and, via one or more mda:SignalAnalysis steps, turns their signals into metrics. A specialisation of mda:Component. Declared disjoint with mda:Sensor precisely because of that colloquial conflation — the two are easy to confuse in exactly the way this class's own name tries to prevent, so a node accidentally typed as both is now an inconsistency a reasoner catches rather than a silent modelling error."@en ;
+                rdfs:label "Functional unit"@en ,
+                           "Functionele eenheid"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#Laterality
+:Laterality rdf:type owl:Class ;
+            <http://purl.org/dc/terms/identifier> "Laterality" ;
+            rdfs:comment "De lateraliteit (links, rechts, bilateraal) van een sensorpositie."@nl ,
+                         "The laterality (left, right, bilateral) of a sensor position."@en ;
+            rdfs:label "Lateraliteit"@nl ,
+                       "Laterality"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#Metric
+:Metric rdf:type owl:Class ;
+        :nodeKind :Stateful ;
+        <http://purl.org/dc/terms/identifier> "Metric" ;
+        rdfs:comment "A measurable quantity, computed from one or more signals by a mda:SignalAnalysis step."@en ,
+                     "Een meetbare grootheid, berekend uit één of meer signalen door een mda:SignalAnalysis-stap."@nl ;
+        rdfs:label "Metric"@en ,
+                   "Metriek"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#Organ
+:Organ rdf:type owl:Class ;
+       <http://purl.org/dc/terms/identifier> "Organ" ;
+       rdfs:comment "A biological organ."@en ,
+                    "Een biologisch orgaan."@nl ;
+       rdfs:label "Orgaan"@nl ,
+                  "Organ"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#OrganSystem
+:OrganSystem rdf:type owl:Class ;
+             <http://purl.org/dc/terms/identifier> "OrganSystem" ;
+             rdfs:comment "A system of related organs in the body."@en ,
+                          "Een systeem van gerelateerde organen in het lichaam."@nl ;
+             rdfs:label "Orgaansysteem"@nl ,
+                        "Organ System"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#Patient
+:Patient rdf:type owl:Class ;
+         :nodeKind :Individuated ;
+         <http://purl.org/dc/terms/identifier> "Patient" ;
+         rdfs:comment "A patient being monitored by medical devices."@en ,
+                      "Een patiënt die wordt bewaakt door medische apparaten."@nl ;
+         rdfs:label "Patient"@en ,
+                    "Patiënt"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#PhysiologicalProcess
+:PhysiologicalProcess rdf:type owl:Class ;
+                      <http://purl.org/dc/terms/identifier> "PhysiologicalProcess" ;
+                      rdfs:comment "A biological or physiological process occurring in the body."@en ,
+                                   "Een biologisch of fysiologisch proces dat in het lichaam plaatsvindt."@nl ;
+                      rdfs:label "Fysiologisch Proces"@nl ,
+                                 "Physiological Process"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#PhysiologicalProperty
+:PhysiologicalProperty rdf:type owl:Class ;
+                       <http://purl.org/dc/terms/identifier> "PhysiologicalProperty" ;
+                       rdfs:comment "A measurable property of a physiological process."@en ,
+                                    "Een meetbare eigenschap van een fysiologisch proces."@nl ;
+                       rdfs:label "Fysiologische Eigenschap"@nl ,
+                                  "Physiological Property"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#PostAlarmValidScheme
+:PostAlarmValidScheme rdf:type owl:Class ;
+                      rdfs:subClassOf <http://www.w3.org/2004/02/skos/core#ConceptScheme> ;
+                      :postAlarmValidityDuration "PT60S"^^xsd:duration ;
+                      <http://purl.org/dc/terms/identifier> "PostAlarmValidScheme" ;
+                      rdfs:comment "A SKOS concept scheme whose concepts remain valid for a fixed duration after an alarm ends."@en ,
+                                   "Een SKOS-conceptschema waarvan de concepten geldig blijven gedurende een vaste duur nadat een alarm is geëindigd."@nl ;
+                      rdfs:label "Post-alarm geldig schema"@nl ,
+                                 "Post-alarm valid scheme"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#Sensor
+:Sensor rdf:type owl:Class ;
+        rdfs:subClassOf :Component ;
+        :nodeKind :Individuated ;
+        <http://purl.org/dc/terms/identifier> "Sensor" ;
+        rdfs:comment "Het fysieke object dat geplaatst wordt om een signaal te genereren — bijv. een pulse-oximetrieklip, een ECG-afleiding, een temperatuurprobe. Het meet of berekent zelf niets: het produceert enkel een ruw signaal (mda:producesSignal). Dat signaal omzetten in een metriek is de taak van mda:FunctionalUnit, via mda:SignalAnalysis. Een specialisatie van mda:Component."@nl ,
+                     "The physical object placed to generate a signal — e.g. a pulse-oximetry clip, an ECG lead, a temperature probe. It does not itself measure or compute anything: it only produces a raw signal (mda:producesSignal). Turning that signal into a metric is mda:FunctionalUnit's job, via mda:SignalAnalysis. A specialisation of mda:Component. Declared disjoint with mda:FunctionalUnit (see its own comment) — asserted there, applies symmetrically."@en ;
+        rdfs:label "Sensor"@en ,
+                   "Sensor"@nl .
+
+
+###  http://example.org/model-device-alarm-knowledge#Signal
+:Signal rdf:type owl:Class ;
+        :nodeKind :Individuated ;
+        <http://purl.org/dc/terms/identifier> "Signal" ;
+        rdfs:comment "A signal — either raw, produced by a sensor, or derived/intermediate, produced by a mda:SignalAnalysis step from other signals (e.g. augmented lead aVF, combined from ECG leads I and II). No structural distinction between the two: a later analysis step consuming a signal doesn't need to know whether it came from a sensor or from an earlier analysis."@en ,
+                     "Een signaal — ofwel ruw, geproduceerd door een sensor, ofwel afgeleid/tussenliggend, geproduceerd door een mda:SignalAnalysis-stap uit andere signalen (bijv. versterkte afleiding aVF, gecombineerd uit ECG-afleidingen I en II). Geen structureel onderscheid tussen beide: een latere analysestap die een signaal verbruikt hoeft niet te weten of het van een sensor komt of van een eerdere analyse."@nl ;
+        rdfs:label "Signaal"@nl ,
+                   "Signal"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#SignalAnalysis
+:SignalAnalysis rdf:type owl:Class ;
+                <http://purl.org/dc/terms/identifier> "SignalAnalysis" ;
+                rdfs:comment "Eén berekeningsstap van een functionele eenheid: verbruikt één of meer signalen (bereikt via de inverse van mda:analyzedBy) en produceert ofwel een metriek (mda:producesMetric) ofwel een verder afgeleid signaal (mda:producesSignal) dat een latere stap op zijn beurt kan verbruiken. Zelf geen mda:Component — het is de berekening die een functionele eenheid uitvoert, geen fysiek onderdeel."@nl ,
+                             "One computation step of a functional unit: consumes one or more signals (reached via the inverse of mda:analyzedBy) and produces either a metric (mda:producesMetric) or a further, derived signal (mda:producesSignal) that a later step can itself consume. Not itself a mda:Component — it's the computation a functional unit performs, not a physical part."@en ;
+                rdfs:label "Signaalanalyse"@nl ,
+                           "Signal analysis"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#TherapeuticModality
+:TherapeuticModality rdf:type owl:Class ;
+                     <http://purl.org/dc/terms/identifier> "TherapeuticModality" ;
+                     rdfs:comment "A therapeutic intervention or treatment modality."@en ,
+                                  "Een therapeutische interventie of behandelingsmodaliteit."@nl ;
+                     rdfs:label "Therapeutic Modality"@en ,
+                                "Therapeutische Modaliteit"@nl .
+
+
+###  http://www.w3.org/2004/02/skos/core#Concept
+<http://www.w3.org/2004/02/skos/core#Concept> rdf:type owl:Class .
+
+
+###  http://www.w3.org/2004/02/skos/core#ConceptScheme
+<http://www.w3.org/2004/02/skos/core#ConceptScheme> rdf:type owl:Class .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://example.org/model-device-alarm-knowledge#Individuated
+:Individuated rdf:type owl:NamedIndividual ;
+              rdfs:label "individuated"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#Referential
+:Referential rdf:type owl:NamedIndividual ;
+             rdfs:label "referential"@en .
+
+
+###  http://example.org/model-device-alarm-knowledge#Stateful
+:Stateful rdf:type owl:NamedIndividual ;
+          rdfs:label "stateful"@en .
+
+
+#################################################################
+#    Annotations
+#################################################################
+
+<http://example.org/model-device-alarm-knowledge/vocab/anatomical-position/Scheme> :instantiatesClass :AnatomicalPosition .
+
+
+<http://example.org/model-device-alarm-knowledge/vocab/component/Scheme> :instantiatesClass :Component .
+
+
+<http://example.org/model-device-alarm-knowledge/vocab/device/Scheme> :instantiatesClass :Device .
+
+
+<http://example.org/model-device-alarm-knowledge/vocab/functional-unit/Scheme> :instantiatesClass :FunctionalUnit .
+
+
+<http://example.org/model-device-alarm-knowledge/vocab/laterality/Scheme> :instantiatesClass :Laterality .
+
+
+<http://example.org/model-device-alarm-knowledge/vocab/metric/Scheme> :instantiatesClass :Metric .
+
+
+<http://example.org/model-device-alarm-knowledge/vocab/organ-system/Scheme> :instantiatesClass :OrganSystem .
+
+
+<http://example.org/model-device-alarm-knowledge/vocab/organ/Scheme> :instantiatesClass :Organ .
+
+
+<http://example.org/model-device-alarm-knowledge/vocab/patient/Scheme> :instantiatesClass :Patient .
+
+
+<http://example.org/model-device-alarm-knowledge/vocab/physiological-process/Scheme> :instantiatesClass :PhysiologicalProcess .
+
+
+<http://example.org/model-device-alarm-knowledge/vocab/physiological-property/Scheme> :instantiatesClass :PhysiologicalProperty .
+
+
+<http://example.org/model-device-alarm-knowledge/vocab/sensor/Scheme> :instantiatesClass :Sensor .
+
+
+<http://example.org/model-device-alarm-knowledge/vocab/signal/Scheme> :instantiatesClass :Signal .
+
+
+<http://example.org/model-device-alarm-knowledge/vocab/therapeutic-modality/Scheme> :instantiatesClass :TherapeuticModality .
+
+
+###  Generated by the OWL API (version 5.1.18) https://github.com/owlcs/owlapi/
