@@ -20,7 +20,7 @@
 # pressure alarm and a venous-pressure alarm both -> VascularCompliance) —
 # the coarser convergence CQ3 shows exists at the vocabulary level.
 
-PREFIX mda: <http://example.org/model-device-alarm-knowledge#>
+PREFIX mda: <https://w3id.org/mda/ontology/>
 
 SELECT ?level ?concept (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
        (COUNT(DISTINCT ?a) AS ?matchCount) WHERE {

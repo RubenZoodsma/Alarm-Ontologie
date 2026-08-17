@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<rdf:RDF xmlns="http://example.org/model-device-alarm-knowledge#"
+<rdf:RDF xmlns="https://w3id.org/mda/ontology/"
      xml:base="http://example.org/model-device-alarm-knowledge"
      xmlns:dc="http://purl.org/dc/elements/1.1/"
      xmlns:owl="http://www.w3.org/2002/07/owl#"
@@ -9,15 +9,15 @@
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:vann="http://purl.org/vocab/vann/"
      xmlns:terms="http://purl.org/dc/terms/"
-     xmlns:model-device-alarm-knowledge="http://example.org/model-device-alarm-knowledge#">
-    <owl:Ontology rdf:about="http://example.org/model-device-alarm-knowledge#">
+     xmlns:model-device-alarm-knowledge="https://w3id.org/mda/ontology/">
+    <owl:Ontology rdf:about="https://w3id.org/mda/ontology/">
         <dc:description xml:lang="en">Conceptual model for the medical device alarm knowledge.</dc:description>
         <dc:license rdf:resource="https://creativecommons.org/licenses/by/4.0/"/>
         <dc:title xml:lang="en">The ontology for the medical device alarm knowledge.</dc:title>
         <terms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2026-07-08</terms:created>
         <terms:creator>Ruben Zoodsma</terms:creator>
         <vann:preferredNamespacePrefix>mda</vann:preferredNamespacePrefix>
-        <vann:preferredNamespaceUri>http://example.org/model-device-alarm-knowledge#</vann:preferredNamespaceUri>
+        <vann:preferredNamespaceUri>https://w3id.org/mda/ontology/</vann:preferredNamespaceUri>
         <owl:versionInfo>1.0.0</owl:versionInfo>
     </owl:Ontology>
     
@@ -35,10 +35,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#instantiatesClass -->
+    <!-- https://w3id.org/mda/ontology/instantiatesClass -->
 
 
-    <owl:AnnotationProperty rdf:about="http://example.org/model-device-alarm-knowledge#instantiatesClass">
+    <owl:AnnotationProperty rdf:about="https://w3id.org/mda/ontology/instantiatesClass">
         <terms:identifier>instantiatesClass</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een SKOS-conceptschema aan de ontologieklasse die zijn concepten specialiseren: een concept uit dit schema wordt gebruikt als het rdf:type van een instantie van die klasse.</rdfs:comment>
         <rdfs:comment xml:lang="en">Links a SKOS concept scheme to the ontology class its concepts specialise: a concept from this scheme is used as the rdf:type of an instance of that class.</rdfs:comment>
@@ -50,10 +50,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#nodeKind -->
+    <!-- https://w3id.org/mda/ontology/nodeKind -->
 
 
-    <owl:AnnotationProperty rdf:about="http://example.org/model-device-alarm-knowledge#nodeKind">
+    <owl:AnnotationProperty rdf:about="https://w3id.org/mda/ontology/nodeKind">
         <terms:identifier>nodeKind</terms:identifier>
         <rdfs:comment xml:lang="nl">Classificeert hoe instanties van een klasse in de gegenereerde graaf worden gerealiseerd: mda:Individuated, mda:Referential of mda:Stateful.</rdfs:comment>
         <rdfs:comment xml:lang="en">Classifies how instances of a class are realised in the generated graph: mda:Individuated, mda:Referential, or mda:Stateful.</rdfs:comment>
@@ -63,10 +63,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#persistsPostAlarm -->
+    <!-- https://w3id.org/mda/ontology/persistsPostAlarm -->
 
 
-    <owl:AnnotationProperty rdf:about="http://example.org/model-device-alarm-knowledge#persistsPostAlarm">
+    <owl:AnnotationProperty rdf:about="https://w3id.org/mda/ontology/persistsPostAlarm">
         <terms:identifier>persistsPostAlarm</terms:identifier>
         <rdfs:comment xml:lang="nl">Markeert een objecteigenschap waarvan de afgeleide feiten over een technisch knooppunt blijven bestaan gedurende het PostAlarmValidScheme-venster nadat het alarm dat ze afleidde is beëindigd.</rdfs:comment>
         <rdfs:comment xml:lang="en">Marks an object property whose entailed facts about a technical node persist for the PostAlarmValidScheme window after the alarm that entailed them ends, the same way mda:hasOperationState already did — see 4_OPERATIONAL/op_knowledge.py&apos;s inferred_states.</rdfs:comment>
@@ -77,10 +77,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#postAlarmValidityDuration -->
+    <!-- https://w3id.org/mda/ontology/postAlarmValidityDuration -->
 
 
-    <owl:AnnotationProperty rdf:about="http://example.org/model-device-alarm-knowledge#postAlarmValidityDuration">
+    <owl:AnnotationProperty rdf:about="https://w3id.org/mda/ontology/postAlarmValidityDuration">
         <terms:identifier>postAlarmValidityDuration</terms:identifier>
         <rdfs:comment xml:lang="en">Duration after alarm end for which assertions from this scheme remain valid. Absence of this annotation on a scheme implies alarm-duration only (PT0S).</rdfs:comment>
         <rdfs:comment xml:lang="nl">Duur na het alarm-einde gedurende welke beweringen geldig blijven. Afwezigheid impliceert alleen geldig tijdens alarm (PT0S).</rdfs:comment>
@@ -91,10 +91,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#refinesParticularIdentity -->
+    <!-- https://w3id.org/mda/ontology/refinesParticularIdentity -->
 
 
-    <owl:AnnotationProperty rdf:about="http://example.org/model-device-alarm-knowledge#refinesParticularIdentity">
+    <owl:AnnotationProperty rdf:about="https://w3id.org/mda/ontology/refinesParticularIdentity">
         <terms:identifier>refinesParticularIdentity</terms:identifier>
         <rdfs:comment xml:lang="nl">Markeert een blad-eigenschap waarvan de waarde één gemunt deeltje onderscheidt van een ander van hetzelfde type onder dezelfde eigenaar in de werkelijke wereld — verwerkt in de IRI van het deeltje bij grondingstijd, niet in een vocabulaireconcept.</rdfs:comment>
         <rdfs:comment xml:lang="en">Marks a leaf property whose value distinguishes one minted particular from another of the same type under the same real-world owner — folded into the particular&apos;s IRI at grounding time, not into a vocabulary concept.</rdfs:comment>
@@ -104,10 +104,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#refinesUniversalIdentity -->
+    <!-- https://w3id.org/mda/ontology/refinesUniversalIdentity -->
 
 
-    <owl:AnnotationProperty rdf:about="http://example.org/model-device-alarm-knowledge#refinesUniversalIdentity">
+    <owl:AnnotationProperty rdf:about="https://w3id.org/mda/ontology/refinesUniversalIdentity">
         <terms:identifier>refinesUniversalIdentity</terms:identifier>
         <rdfs:comment xml:lang="nl">Markeert een blad-eigenschap waarvan de waarde voorcoördineert tot een gedeeld universeel concept op vocabulaireniveau, in plaats van de per-alarm/per-eigenaar toestand te beschrijven. De waarde benoemt een soort, herbruikbaar over eigenaren heen — geen plaatsing.</rdfs:comment>
         <rdfs:comment xml:lang="en">Marks a leaf property whose value pre-coordinates into a shared universal concept at the vocabulary layer, rather than describing per-alarm/per-owner state. The value names a kind, reusable across owners — not a placement.</rdfs:comment>
@@ -117,10 +117,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#situational -->
+    <!-- https://w3id.org/mda/ontology/situational -->
 
 
-    <owl:AnnotationProperty rdf:about="http://example.org/model-device-alarm-knowledge#situational">
+    <owl:AnnotationProperty rdf:about="https://w3id.org/mda/ontology/situational">
         <terms:identifier>situational</terms:identifier>
         <rdfs:comment xml:lang="nl">Markeert een objecteigenschap waarvan de afgeleide beweringen behoren tot een situationele export per alarm, in tegenstelling tot achtergrond-/taxonomische structuur die een reasoner raadpleegt maar die zelf nooit wordt geëxporteerd.</rdfs:comment>
         <rdfs:comment xml:lang="en">Marks an object property whose entailed assertions belong in a per-alarm situational export, as opposed to background/taxonomic structure (e.g. rdfs:subClassOf) that a reasoner consults but that is never itself exported.</rdfs:comment>
@@ -131,10 +131,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#valuesFromScheme -->
+    <!-- https://w3id.org/mda/ontology/valuesFromScheme -->
 
 
-    <owl:AnnotationProperty rdf:about="http://example.org/model-device-alarm-knowledge#valuesFromScheme">
+    <owl:AnnotationProperty rdf:about="https://w3id.org/mda/ontology/valuesFromScheme">
         <terms:identifier>valuesFromScheme</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een objecteigenschap aan het SKOS-conceptschema waaruit zijn waarden afkomstig zijn.</rdfs:comment>
         <rdfs:comment xml:lang="en">Links an object property to the SKOS concept scheme from which its values are drawn.</rdfs:comment>
@@ -239,12 +239,12 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#administers -->
+    <!-- https://w3id.org/mda/ontology/administers -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#administers">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Device"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#TherapeuticModality"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/administers">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Device"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/TherapeuticModality"/>
         <situational rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</situational>
         <terms:identifier>administers</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een apparaat aan de therapeutische modaliteit die het toedient.</rdfs:comment>
@@ -255,12 +255,12 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#analyzedBy -->
+    <!-- https://w3id.org/mda/ontology/analyzedBy -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#analyzedBy">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Signal"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#SignalAnalysis"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/analyzedBy">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Signal"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/SignalAnalysis"/>
         <terms:identifier>analyzedBy</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een signaal aan de signaalanalysestap die het verbruikt. De enige weg naar mda:SignalAnalysis — bewust niet ook rechtstreeks bereikbaar vanaf mda:FunctionalUnit (er bestaat geen performsAnalysis-achtige kortere weg), zodat er precies één pad naar een analysestap bestaat, altijd via het specifieke signaal (de specifieke signalen) dat het daadwerkelijk verbruikt. Functioneel niet: hetzelfde signaal kan meer dan één analysestap voeden.</rdfs:comment>
         <rdfs:comment xml:lang="en">Relates a signal to the signal-analysis step that consumes it. The only edge reaching mda:SignalAnalysis — deliberately not also reachable directly from mda:FunctionalUnit (no performsAnalysis-style shortcut exists), so there is exactly one path to an analysis step, always through the specific signal(s) it actually consumes. A second, shorter path would let ontology_tree.py&apos;s shortest-path class-tree derivation silently prefer it over the precise one (the same failure mode mda:administers was introduced to avoid for mda:TherapeuticModality — see the Technical axioms note in inference.ttl). Not functional: the same signal can feed more than one analysis step (e.g. ECG lead II feeds both a heart-rate computation and an aVF derivation).</rdfs:comment>
@@ -270,12 +270,12 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#approximates -->
+    <!-- https://w3id.org/mda/ontology/approximates -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#approximates">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Metric"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#PhysiologicalProperty"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/approximates">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Metric"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/PhysiologicalProperty"/>
         <situational rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</situational>
         <terms:identifier>approximates</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een metriek aan de fysiologische eigenschap die het benadert.</rdfs:comment>
@@ -286,13 +286,13 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#concernsPatient -->
+    <!-- https://w3id.org/mda/ontology/concernsPatient -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#concernsPatient">
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/concernsPatient">
         <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#AlarmMessage"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#Patient"/>
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/AlarmMessage"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/Patient"/>
         <terms:identifier>concernsPatient</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een alarmbericht aan de patiënt die het betreft — het gedeelde, persistente samenvoegankerpunt. Bewust een doodlopend pad: leidt niet langer via mda:isMonitoredBy naar mda:Device. Functioneel: één bericht betreft precies één patiënt.</rdfs:comment>
         <rdfs:comment xml:lang="en">Relates an alarm message to the patient it concerns — the shared, persistent merge anchor. Deliberately a dead end: it no longer continues on to mda:Device via mda:isMonitoredBy (see mda:triggeredBy&apos;s comment for why). Functional: one message concerns exactly one patient — it is minted fresh per alarm precisely so it never needs to concern more than one.</rdfs:comment>
@@ -302,13 +302,13 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasAnatomicalPosition -->
+    <!-- https://w3id.org/mda/ontology/hasAnatomicalPosition -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasAnatomicalPosition">
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasAnatomicalPosition">
         <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Sensor"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#AnatomicalPosition"/>
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Sensor"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/AnatomicalPosition"/>
         <refinesParticularIdentity rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</refinesParticularIdentity>
         <terms:identifier>hasAnatomicalPosition</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een sensor aan zijn anatomische positie op het lichaam. Functioneel: een fysieke sensor bevindt zich op een gegeven moment op precies één positie.</rdfs:comment>
@@ -319,13 +319,13 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasCategory -->
+    <!-- https://w3id.org/mda/ontology/hasCategory -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasCategory">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Alarm"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasCategory">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Alarm"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <valuesFromScheme rdf:resource="http://example.org/model-device-alarm-knowledge/vocab/alarm-category/Scheme"/>
+        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/alarm-category/Scheme"/>
         <terms:identifier>hasCategory</terms:identifier>
         <rdfs:comment xml:lang="nl">De categorie van het alarm (beschrijvend, naast label en prioriteit).</rdfs:comment>
         <rdfs:comment xml:lang="en">The category of the alarm (a descriptive, alongside label and priority).</rdfs:comment>
@@ -335,13 +335,13 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasComponent -->
+    <!-- https://w3id.org/mda/ontology/hasComponent -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasComponent">
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasComponent">
         <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Device"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#Component"/>
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Device"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/Component"/>
         <terms:identifier>hasComponent</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een apparaat aan zijn onderdelen, al dan niet sensorisch (bijv. een aansluitpoort, voedingseenheid, verwarmingselement of functionele eenheid). Invers-functioneel: een onderdeel behoort tot hoogstens één apparaat — er is geen aparte isComponentOf-eigenschap; bevraag alleen in deze richting.</rdfs:comment>
         <rdfs:comment xml:lang="en">Relates a device to its components, sensing or not (e.g. a connection port, power unit, heating element, or functional unit). Inverse-functional: a component belongs to at most one device — no separate isComponentOf property is declared; query in this direction only.</rdfs:comment>
@@ -351,14 +351,14 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasComponentOperationState -->
+    <!-- https://w3id.org/mda/ontology/hasComponentOperationState -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasComponentOperationState">
-        <rdfs:subPropertyOf rdf:resource="http://example.org/model-device-alarm-knowledge#hasOperationState"/>
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Component"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasComponentOperationState">
+        <rdfs:subPropertyOf rdf:resource="https://w3id.org/mda/ontology/hasOperationState"/>
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Component"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <valuesFromScheme rdf:resource="http://example.org/model-device-alarm-knowledge/vocab/operation-state/Scheme"/>
+        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/operation-state/Scheme"/>
         <terms:identifier>hasComponentOperationState</terms:identifier>
         <rdfs:comment xml:lang="nl">De operationele status van een niet-sensorisch onderdeel, bijv. Disconnected of Warning. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen.</rdfs:comment>
         <rdfs:comment xml:lang="en">The operational state of a non-sensing component, e.g. Disconnected or Warning. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously.</rdfs:comment>
@@ -368,14 +368,14 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasDeviceOperationState -->
+    <!-- https://w3id.org/mda/ontology/hasDeviceOperationState -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasDeviceOperationState">
-        <rdfs:subPropertyOf rdf:resource="http://example.org/model-device-alarm-knowledge#hasOperationState"/>
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Device"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasDeviceOperationState">
+        <rdfs:subPropertyOf rdf:resource="https://w3id.org/mda/ontology/hasOperationState"/>
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Device"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <valuesFromScheme rdf:resource="http://example.org/model-device-alarm-knowledge/vocab/operation-state/Scheme"/>
+        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/operation-state/Scheme"/>
         <terms:identifier>hasDeviceOperationState</terms:identifier>
         <rdfs:comment xml:lang="nl">De operationele status van een apparaat zelf, bijv. Disconnected. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen.</rdfs:comment>
         <rdfs:comment xml:lang="en">The operational state of a device itself, e.g. Disconnected. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously.</rdfs:comment>
@@ -385,14 +385,14 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasDeviceType -->
+    <!-- https://w3id.org/mda/ontology/hasDeviceType -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasDeviceType">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Device"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasDeviceType">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Device"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
         <refinesUniversalIdentity rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</refinesUniversalIdentity>
-        <valuesFromScheme rdf:resource="http://example.org/model-device-alarm-knowledge/vocab/device-type/Scheme"/>
+        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/device-type/Scheme"/>
         <terms:identifier>hasDeviceType</terms:identifier>
         <rdfs:comment xml:lang="nl">Het specifieke type of de modelaanduiding van het apparaat (bijv. ServoU).</rdfs:comment>
         <rdfs:comment xml:lang="en">The specific type or model designation of the device (e.g. ServoU).</rdfs:comment>
@@ -402,14 +402,14 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasFunctionalUnit -->
+    <!-- https://w3id.org/mda/ontology/hasFunctionalUnit -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasFunctionalUnit">
-        <rdfs:subPropertyOf rdf:resource="http://example.org/model-device-alarm-knowledge#hasComponent"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasFunctionalUnit">
+        <rdfs:subPropertyOf rdf:resource="https://w3id.org/mda/ontology/hasComponent"/>
         <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Device"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#FunctionalUnit"/>
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Device"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/FunctionalUnit"/>
         <terms:identifier>hasFunctionalUnit</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een apparaat aan een functionele eenheid die het bevat (bijv. een ECG-module, een SpO2-module) — een subeigenschap van hasComponent, aangezien elke functionele eenheid een onderdeel is. Invers-functioneel: een functionele eenheid behoort tot hoogstens één apparaat.</rdfs:comment>
         <rdfs:comment xml:lang="en">Relates a device to a functional unit it houses (e.g. an ECG module, an SpO2 module) — a sub-property of hasComponent, since every functional unit is a component. Inverse-functional: a functional unit belongs to at most one device.</rdfs:comment>
@@ -419,13 +419,13 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasLabelConcept -->
+    <!-- https://w3id.org/mda/ontology/hasLabelConcept -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasLabelConcept">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#AlarmType"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasLabelConcept">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/AlarmType"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <valuesFromScheme rdf:resource="http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme"/>
+        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/alarm-label/Scheme"/>
         <terms:identifier>hasLabelConcept</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een alarmtype aan zijn gecontroleerde-vocabulaireconcept in het schema van mda:AlarmLabel — één concept per onderscheidend labelstring, gedeeld door elk archetype dat dat label gebruikt, ongeacht prioriteit.</rdfs:comment>
         <rdfs:comment xml:lang="en">Relates an alarm type to its controlled-vocabulary concept in mda:AlarmLabel&apos;s scheme — one concept per distinct label string encountered, shared across every archetype that uses that label regardless of priority (2_READOUT/vocab_readout.py&apos;s label_concept_iri keys on the label alone, not the archetype). The companion of mda:hasLabel, not a replacement for it.</rdfs:comment>
@@ -435,13 +435,13 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasLaterality -->
+    <!-- https://w3id.org/mda/ontology/hasLaterality -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasLaterality">
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasLaterality">
         <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Sensor"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#Laterality"/>
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Sensor"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/Laterality"/>
         <refinesParticularIdentity rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</refinesParticularIdentity>
         <terms:identifier>hasLaterality</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een sensor aan zijn lateraliteit (links, rechts, bilateraal). Functioneel: een fysieke sensor heeft op een gegeven moment precies één lateraliteit.</rdfs:comment>
@@ -452,14 +452,14 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasManufacturer -->
+    <!-- https://w3id.org/mda/ontology/hasManufacturer -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasManufacturer">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Device"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasManufacturer">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Device"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
         <refinesUniversalIdentity rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</refinesUniversalIdentity>
-        <valuesFromScheme rdf:resource="http://example.org/model-device-alarm-knowledge/vocab/manufacturer/Scheme"/>
+        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/manufacturer/Scheme"/>
         <terms:identifier>hasManufacturer</terms:identifier>
         <rdfs:comment xml:lang="nl">De fabrikant of productlijn van het apparaat.</rdfs:comment>
         <rdfs:comment xml:lang="en">The manufacturer or product line of the device.</rdfs:comment>
@@ -469,14 +469,14 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasMessage -->
+    <!-- https://w3id.org/mda/ontology/hasMessage -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasMessage">
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasMessage">
         <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
         <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Alarm"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#AlarmMessage"/>
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Alarm"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/AlarmMessage"/>
         <terms:identifier>hasMessage</terms:identifier>
         <rdfs:comment xml:lang="nl">Het bericht van het alarm: een per-alarm mda:AlarmMessage-knooppunt met de onafhankelijke facetten van de gebeurtenis — mda:concernsPatient en mda:triggeredBy — als nevengeschikte eigenschappen, geen van beide via de ander bereikt. Functioneel en invers-functioneel: één alarm heeft precies één bericht en één bericht hoort bij precies één alarm.</rdfs:comment>
         <rdfs:comment xml:lang="en">The alarm&apos;s message: a per-alarm mda:AlarmMessage node carrying the occurrence&apos;s independent facets — mda:concernsPatient (who this alarm is about) and mda:triggeredBy (what caused it) — as siblings, neither reached through the other (see mda:triggeredBy&apos;s comment for why they used to be chained and no longer are). Distinct per alarm so many alarms can reference the same shared patient/device and merge there. Functional and inverse-functional: one alarm has exactly one message and one message belongs to exactly one alarm — alarm_iri/message_iri are minted from the same (device_id, start) key in 4_OPERATIONAL/op_knowledge.py precisely to keep this a bijection.</rdfs:comment>
@@ -486,39 +486,39 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasOperationState -->
+    <!-- https://w3id.org/mda/ontology/hasOperationState -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasOperationState">
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasOperationState">
         <rdfs:domain>
             <owl:Class>
                 <owl:unionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge#Component"/>
-                    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge#Device"/>
-                    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge#Sensor"/>
-                    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge#Signal"/>
-                    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge#TherapeuticModality"/>
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology/Component"/>
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology/Device"/>
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology/Sensor"/>
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology/Signal"/>
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology/TherapeuticModality"/>
                 </owl:unionOf>
             </owl:Class>
         </rdfs:domain>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
         <owl:propertyChainAxiom rdf:parseType="Collection">
-            <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge#hasFunctionalUnit"/>
-            <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge#hasOperationState"/>
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology/hasFunctionalUnit"/>
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology/hasOperationState"/>
         </owl:propertyChainAxiom>
         <owl:propertyChainAxiom rdf:parseType="Collection">
-            <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge#hasSensor"/>
-            <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge#hasOperationState"/>
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology/hasSensor"/>
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology/hasOperationState"/>
         </owl:propertyChainAxiom>
         <owl:propertyChainAxiom rdf:parseType="Collection">
-            <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge#producesSignal"/>
-            <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge#hasOperationState"/>
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology/producesSignal"/>
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology/hasOperationState"/>
         </owl:propertyChainAxiom>
         <owl:propertyChainAxiom rdf:parseType="Collection">
             <rdf:Description>
-                <owl:inverseOf rdf:resource="http://example.org/model-device-alarm-knowledge#administers"/>
+                <owl:inverseOf rdf:resource="https://w3id.org/mda/ontology/administers"/>
             </rdf:Description>
-            <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge#hasOperationState"/>
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology/hasOperationState"/>
         </owl:propertyChainAxiom>
         <persistsPostAlarm rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</persistsPostAlarm>
         <terms:identifier>hasOperationState</terms:identifier>
@@ -530,14 +530,14 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasPhase -->
+    <!-- https://w3id.org/mda/ontology/hasPhase -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasPhase">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Metric"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasPhase">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Metric"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
         <refinesUniversalIdentity rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</refinesUniversalIdentity>
-        <valuesFromScheme rdf:resource="http://example.org/model-device-alarm-knowledge/vocab/metric-phase/Scheme"/>
+        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/metric-phase/Scheme"/>
         <terms:identifier>hasPhase</terms:identifier>
         <rdfs:comment xml:lang="nl">De fase van de metriek waarop de alarmconditie van toepassing is (bijv. gemiddeld, systolisch, diastolisch, eind-expiratoir).</rdfs:comment>
         <rdfs:comment xml:lang="en">The phase of the metric to which the alarm condition applies (e.g. mean, systolic, diastolic, end-expiratory).</rdfs:comment>
@@ -547,13 +547,13 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasPriority -->
+    <!-- https://w3id.org/mda/ontology/hasPriority -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasPriority">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Alarm"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasPriority">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Alarm"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <valuesFromScheme rdf:resource="http://example.org/model-device-alarm-knowledge/vocab/alarm-priority/Scheme"/>
+        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/alarm-priority/Scheme"/>
         <terms:identifier>hasPriority</terms:identifier>
         <rdfs:comment xml:lang="nl">Het prioriteitsniveau van een alarm of alarmbericht.</rdfs:comment>
         <rdfs:comment xml:lang="en">The priority level of an alarm or alarm message.</rdfs:comment>
@@ -563,14 +563,14 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasQualityState -->
+    <!-- https://w3id.org/mda/ontology/hasQualityState -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasQualityState">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Signal"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasQualityState">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Signal"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
         <persistsPostAlarm rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</persistsPostAlarm>
-        <valuesFromScheme rdf:resource="http://example.org/model-device-alarm-knowledge/vocab/quality-state/Scheme"/>
+        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/quality-state/Scheme"/>
         <terms:identifier>hasQualityState</terms:identifier>
         <rdfs:comment xml:lang="nl">De kwaliteitsstatus van een signaal, die de meetbetrouwbaarheid aangeeft.</rdfs:comment>
         <rdfs:comment xml:lang="en">The quality state of a signal, indicating measurement reliability.</rdfs:comment>
@@ -580,13 +580,13 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasRate -->
+    <!-- https://w3id.org/mda/ontology/hasRate -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasRate">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Metric"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasRate">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Metric"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <valuesFromScheme rdf:resource="http://example.org/model-device-alarm-knowledge/vocab/metric-rate/Scheme"/>
+        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/metric-rate/Scheme"/>
         <terms:identifier>hasRate</terms:identifier>
         <rdfs:comment xml:lang="nl">De snelheidsafwijking van de metriek die het alarm veroorzaakt (bijv. verhoogd, verlaagd, kritieke daling).</rdfs:comment>
         <rdfs:comment xml:lang="en">The rate deviation of the metric that raises the alarm (e.g. increased, decreased, critical decrease).</rdfs:comment>
@@ -596,13 +596,13 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasRhythm -->
+    <!-- https://w3id.org/mda/ontology/hasRhythm -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasRhythm">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Metric"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasRhythm">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Metric"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <valuesFromScheme rdf:resource="http://example.org/model-device-alarm-knowledge/vocab/rhythm/Scheme"/>
+        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/rhythm/Scheme"/>
         <terms:identifier>hasRhythm</terms:identifier>
         <rdfs:comment xml:lang="nl">Het ritmepatroon van de metriek waarop de alarmconditie van toepassing is (bijv. onregelmatig).</rdfs:comment>
         <rdfs:comment xml:lang="en">The rhythm pattern of the metric to which the alarm condition applies (e.g. irregular).</rdfs:comment>
@@ -612,12 +612,12 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasSensor -->
+    <!-- https://w3id.org/mda/ontology/hasSensor -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasSensor">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#FunctionalUnit"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#Sensor"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasSensor">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/FunctionalUnit"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/Sensor"/>
         <terms:identifier>hasSensor</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een functionele eenheid aan de fysieke sensor(en) waarvan het afleest (bijv. een ECG-module aan elk van zijn 12 afleidingen). GEEN subeigenschap van hasComponent: het domein is FunctionalUnit, niet Device, en het domein van hasComponent ligt vast op Device. Een sensor behoort niet langer rechtstreeks tot een apparaat.</rdfs:comment>
         <rdfs:comment xml:lang="en">Relates a functional unit to the physical sensor(s) it reads from (e.g. an ECG module to each of its 12 leads). NOT a sub-property of hasComponent: its domain is FunctionalUnit, not Device, and hasComponent&apos;s domain is fixed to Device — declaring it a sub-property would wrongly entail every FunctionalUnit is itself a Device. A sensor no longer belongs directly to a device (see FunctionalUnit below for why: the sensor is the physical probe, the functional unit is what analyses what it picks up). Deliberately NOT owl:InverseFunctionalProperty, unlike most of this file&apos;s other IFP-marked relations: 2_READOUT/outcome/inference.ttl&apos;s FunctionalUnit recipe axioms assert hasSensor via an owl:hasValue restriction, so every alarm typed to the same FunctionalUnit concept (e.g. every FU_PneumoTachograph alarm) entails hasSensor to the SAME shared sensor concept, not a fresh individual per alarm the way 2_READOUT/vocab_readout.py&apos;s own per-row blank nodes do. Confirmed by an isolated reasoner test: with InverseFunctionalProperty declared, prp-ifp forces every one of those alarms&apos; FunctionalUnit individuals into owl:sameAs with each other — and would do the same across grounded, per-patient data in 4_OPERATIONAL if this property were ever reasoned over there, merging different patients&apos; equipment. mda:producesSignal carries the same latent risk if a future recipe axiom (e.g. the pending ECG one) ever reuses one signal concept across two different sensor concepts — watch for it there too.</rdfs:comment>
@@ -627,14 +627,14 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasSensorOperationState -->
+    <!-- https://w3id.org/mda/ontology/hasSensorOperationState -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasSensorOperationState">
-        <rdfs:subPropertyOf rdf:resource="http://example.org/model-device-alarm-knowledge#hasOperationState"/>
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Sensor"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/hasSensorOperationState">
+        <rdfs:subPropertyOf rdf:resource="https://w3id.org/mda/ontology/hasOperationState"/>
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Sensor"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <valuesFromScheme rdf:resource="http://example.org/model-device-alarm-knowledge/vocab/operation-state/Scheme"/>
+        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/operation-state/Scheme"/>
         <terms:identifier>hasSensorOperationState</terms:identifier>
         <rdfs:comment xml:lang="nl">De operationele status van een sensor, bijv. Enabled, Disabled of Malfunction. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen.</rdfs:comment>
         <rdfs:comment xml:lang="en">The operational state of a sensor, e.g. Enabled, Disabled, or Malfunction. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously.</rdfs:comment>
@@ -644,13 +644,13 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#isMonitoredBy -->
+    <!-- https://w3id.org/mda/ontology/isMonitoredBy -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#isMonitoredBy">
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/isMonitoredBy">
         <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Patient"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#Device"/>
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Patient"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/Device"/>
         <terms:identifier>isMonitoredBy</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een patiënt aan het apparaat dat hen op dit moment bewaakt. Invers-functioneel: een apparaat bewaakt hoogstens één patiënt tegelijk.</rdfs:comment>
         <rdfs:comment xml:lang="en">Relates a patient to the device currently monitoring them. No longer part of the blueprint&apos;s structural path to mda:Device (see mda:triggeredBy) — that routing asserted every alarm-raising device &apos;monitors&apos; the patient, which overclaims for a therapeutic one. What remains is this property&apos;s own, separate justification: inverse-functional, a device monitors at most one patient at a time — a physical monitor is not shared between two patients simultaneously, even though it may serve different patients at different times — so a reasoner can catch a double-booking directly (as an entailed owl:sameAs between two asserted-distinct patients) rather than relying on generator discipline, the same pattern as mda:hasSensor/mda:producesSignal below. Only meaningful if isMonitoredBy is asserted per-instant, not as a standing fact for a patient&apos;s whole encounter — see 4_OPERATIONAL/op_knowledge.py, the only place it is still asserted.</rdfs:comment>
@@ -660,13 +660,13 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#isOfType -->
+    <!-- https://w3id.org/mda/ontology/isOfType -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#isOfType">
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/isOfType">
         <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Alarm"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#AlarmType"/>
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Alarm"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/AlarmType"/>
         <terms:identifier>isOfType</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een concrete alarminstantie aan zijn archetypische alarmtype in de typecatalogus, waaruit standaard structurele kennis (apparaattype, sensortype, signaaltype) kan worden geërfd. Functioneel: één alarminstantie is van precies één archetype.</rdfs:comment>
         <rdfs:comment xml:lang="en">Links a concrete alarm instance to its archetypal alarm type in the type catalogue, from which default structural knowledge (device type, sensor type, signal type) can be inherited. Functional: one alarm occurrence is of exactly one archetype.</rdfs:comment>
@@ -676,12 +676,12 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#isPropertyOf -->
+    <!-- https://w3id.org/mda/ontology/isPropertyOf -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#isPropertyOf">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#PhysiologicalProperty"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#PhysiologicalProcess"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/isPropertyOf">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/PhysiologicalProperty"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/PhysiologicalProcess"/>
         <situational rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</situational>
         <terms:identifier>isPropertyOf</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een fysiologische eigenschap aan het proces dat het karakteriseert.</rdfs:comment>
@@ -692,12 +692,12 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#organPartOfSystem -->
+    <!-- https://w3id.org/mda/ontology/organPartOfSystem -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#organPartOfSystem">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Organ"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#OrganSystem"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/organPartOfSystem">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Organ"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/OrganSystem"/>
         <situational rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</situational>
         <terms:identifier>organPartOfSystem</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een orgaan aan het orgaansysteem waartoe het behoort.</rdfs:comment>
@@ -708,12 +708,12 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#presentIn -->
+    <!-- https://w3id.org/mda/ontology/presentIn -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#presentIn">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#PhysiologicalProcess"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#Organ"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/presentIn">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/PhysiologicalProcess"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/Organ"/>
         <situational rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</situational>
         <terms:identifier>presentIn</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een fysiologisch proces aan het orgaan waarin het plaatsvindt.</rdfs:comment>
@@ -724,12 +724,12 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#producesMetric -->
+    <!-- https://w3id.org/mda/ontology/producesMetric -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#producesMetric">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#SignalAnalysis"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#Metric"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/producesMetric">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/SignalAnalysis"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/Metric"/>
         <terms:identifier>producesMetric</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een signaalanalysestap aan de metriek die het berekent.</rdfs:comment>
         <rdfs:comment xml:lang="en">Relates a signal-analysis step to the metric it computes.</rdfs:comment>
@@ -739,20 +739,20 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#producesSignal -->
+    <!-- https://w3id.org/mda/ontology/producesSignal -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#producesSignal">
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/producesSignal">
         <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
         <rdfs:domain>
             <owl:Class>
                 <owl:unionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge#Sensor"/>
-                    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge#SignalAnalysis"/>
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology/Sensor"/>
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology/SignalAnalysis"/>
                 </owl:unionOf>
             </owl:Class>
         </rdfs:domain>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#Signal"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/Signal"/>
         <terms:identifier>producesSignal</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een sensor OF een signaalanalysestap aan het signaal dat het produceert — het ruwe signaal van een sensor, of het afgeleide/tussenliggende signaal van een analysestap (bijv. versterkte afleiding aVF, gecombineerd uit andere afleidingen). Invers-functioneel: een signaal heeft hoogstens één producent, ongeacht het soort.</rdfs:comment>
         <rdfs:comment xml:lang="en">Relates a sensor OR a signal-analysis step to the signal it produces — a sensor&apos;s raw signal, or an analysis step&apos;s derived/intermediate signal (e.g. augmented lead aVF, combined from other leads). Inverse-functional: a signal has at most one producer, whichever kind produced it. Its domain is a union, so it cannot itself anchor 2_READOUT/vocab_readout.py&apos;s CSV/tree derivation (ontology_tree.py&apos;s derive_class_tree only follows a named rdfs:domain, the same limitation documented at mda:hasOperationState below) — mda:sensorProducesSignal is the single-domain sub-property that does. A signal-analysis step&apos;s own derived-signal output (the aVF case) is only ever hand-authored in inference.ttl, never CSV-driven, so it uses this general property directly and needs no sub-property of its own.</rdfs:comment>
@@ -762,13 +762,13 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#sensorProducesSignal -->
+    <!-- https://w3id.org/mda/ontology/sensorProducesSignal -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#sensorProducesSignal">
-        <rdfs:subPropertyOf rdf:resource="http://example.org/model-device-alarm-knowledge#producesSignal"/>
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Sensor"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#Signal"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/sensorProducesSignal">
+        <rdfs:subPropertyOf rdf:resource="https://w3id.org/mda/ontology/producesSignal"/>
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Sensor"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/Signal"/>
         <terms:identifier>sensorProducesSignal</terms:identifier>
         <rdfs:comment xml:lang="nl">Het CSV/boom-gerichte geval van mda:producesSignal: het eigen ruwe signaal van een sensor. Een subeigenschap met één domein, zodat de door 2_READOUT/vocab_readout.py afgeleide boom Signal ondubbelzinnig onder Sensor kan hangen.</rdfs:comment>
         <rdfs:comment xml:lang="en">The CSV/tree-facing case of mda:producesSignal: a sensor&apos;s own raw signal. A single-domain sub-property so 2_READOUT/vocab_readout.py&apos;s ontology-derived tree can attach Signal under Sensor unambiguously — see mda:producesSignal&apos;s comment. Every fact asserted through it still entails the general mda:producesSignal fact (and, transitively, mda:hasOperationState&apos;s propagation chain) via rdfs:subPropertyOf.</rdfs:comment>
@@ -778,12 +778,12 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#targetsProcess -->
+    <!-- https://w3id.org/mda/ontology/targetsProcess -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#targetsProcess">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#TherapeuticModality"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#PhysiologicalProcess"/>
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/targetsProcess">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/TherapeuticModality"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/PhysiologicalProcess"/>
         <situational rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</situational>
         <terms:identifier>targetsProcess</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een therapeutische modaliteit aan het fysiologische proces waarop het zich richt.</rdfs:comment>
@@ -794,13 +794,13 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#triggeredBy -->
+    <!-- https://w3id.org/mda/ontology/triggeredBy -->
 
 
-    <owl:ObjectProperty rdf:about="http://example.org/model-device-alarm-knowledge#triggeredBy">
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology/triggeredBy">
         <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#AlarmMessage"/>
-        <rdfs:range rdf:resource="http://example.org/model-device-alarm-knowledge#Device"/>
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/AlarmMessage"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology/Device"/>
         <terms:identifier>triggeredBy</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een alarmbericht rechtstreeks aan het apparaat waarvan het de technische structuur impliceert — de enige weg van AlarmMessage naar de mda:Device-deelboom. Vervangt routering via mda:concernsPatient/mda:isMonitoredBy: die keten beweerde dat elk alarmerend apparaat de patiënt &apos;bewaakt&apos;, wat onjuist is voor een wezenlijk therapeutisch apparaat. mda:isMonitoredBy zelf is ONGEWIJZIGD en blijft gebruikt, maar uitsluitend voor de eigen operationele rechtvaardiging. Functioneel, niet invers-functioneel.</rdfs:comment>
         <rdfs:comment xml:lang="en">Relates an alarm message directly to the device whose technical structure it implicates — the sole path from AlarmMessage into the mda:Device subtree (mda:hasFunctionalUnit, mda:hasSensor, ...). Replaces routing that reach through mda:concernsPatient/mda:isMonitoredBy: that chain asserted every alarm-raising device &apos;monitors&apos; the patient, which is false for a fundamentally therapeutic device (mda:MechanicalVentilator, mda:Dialysator, mda:ExtracorporealMembraneOxygenator, mda:Incubator/mda:Thermoregulator all administer a therapy — see mda:administers — rather than principally observe). mda:isMonitoredBy itself is UNCHANGED and still used, but only for its own actual justification: 4_OPERATIONAL/op_knowledge.py&apos;s per-instant double-booking check, asserted fresh at grounding time, never derived from or dependent on this blueprint-level structure. Functional, not inverse-functional: one message has exactly one triggering device, but one device triggers many messages over its lifetime — unlike mda:hasMessage&apos;s strict bijection.</rdfs:comment>
@@ -822,11 +822,11 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasDuration -->
+    <!-- https://w3id.org/mda/ontology/hasDuration -->
 
 
-    <owl:DatatypeProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasDuration">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Alarm"/>
+    <owl:DatatypeProperty rdf:about="https://w3id.org/mda/ontology/hasDuration">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Alarm"/>
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#duration"/>
         <terms:identifier>hasDuration</terms:identifier>
         <rdfs:comment xml:lang="nl">De duur van het alarm.</rdfs:comment>
@@ -837,11 +837,11 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasEnd -->
+    <!-- https://w3id.org/mda/ontology/hasEnd -->
 
 
-    <owl:DatatypeProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasEnd">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Alarm"/>
+    <owl:DatatypeProperty rdf:about="https://w3id.org/mda/ontology/hasEnd">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Alarm"/>
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
         <terms:identifier>hasEnd</terms:identifier>
         <rdfs:comment xml:lang="nl">Het eindtijdstip van het alarm.</rdfs:comment>
@@ -852,11 +852,11 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasLabel -->
+    <!-- https://w3id.org/mda/ontology/hasLabel -->
 
 
-    <owl:DatatypeProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasLabel">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#AlarmType"/>
+    <owl:DatatypeProperty rdf:about="https://w3id.org/mda/ontology/hasLabel">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/AlarmType"/>
         <rdfs:range rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"/>
         <terms:identifier>hasLabel</terms:identifier>
         <rdfs:comment xml:lang="nl">Het vrije-tekstlabel dat een alarmtype identificeert, exact zoals het in de brondata voorkomt — een literal, geen concept. mda:hasLabelConcept is de bijbehorende gecontroleerde-vocabulaire lezing van hetzelfde label; beide worden bewust bijgehouden. AlarmType is het enige domein; een Alarm-instantie bereikt zijn label via mda:isOfType.</rdfs:comment>
@@ -867,11 +867,11 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#hasStart -->
+    <!-- https://w3id.org/mda/ontology/hasStart -->
 
 
-    <owl:DatatypeProperty rdf:about="http://example.org/model-device-alarm-knowledge#hasStart">
-        <rdfs:domain rdf:resource="http://example.org/model-device-alarm-knowledge#Alarm"/>
+    <owl:DatatypeProperty rdf:about="https://w3id.org/mda/ontology/hasStart">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology/Alarm"/>
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
         <terms:identifier>hasStart</terms:identifier>
         <rdfs:comment xml:lang="nl">Het starttijdstip van het alarm.</rdfs:comment>
@@ -894,10 +894,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#Alarm -->
+    <!-- https://w3id.org/mda/ontology/Alarm -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#Alarm">
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/Alarm">
         <terms:identifier>Alarm</terms:identifier>
         <rdfs:comment xml:lang="en">A notification or alert generated by a medical device.</rdfs:comment>
         <rdfs:comment xml:lang="nl">Een melding of waarschuwing gegenereerd door een medisch apparaat.</rdfs:comment>
@@ -907,10 +907,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#AlarmMessage -->
+    <!-- https://w3id.org/mda/ontology/AlarmMessage -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#AlarmMessage">
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/AlarmMessage">
         <terms:identifier>AlarmMessage</terms:identifier>
         <rdfs:comment xml:lang="en">A per-alarm message node — the hub for this occurrence&apos;s independent facets: mda:concernsPatient (the shared, persistent patient — the merge anchor operational inference reasons across alarms over) and mda:triggeredBy (the device whose technical structure this alarm implicates), reached as siblings rather than one gatewaying the other.</rdfs:comment>
         <rdfs:comment xml:lang="nl">Een per-alarm berichtknooppunt — het knooppunt voor de onafhankelijke facetten van deze gebeurtenis: mda:concernsPatient en mda:triggeredBy, als nevengeschikte eigenschappen bereikt.</rdfs:comment>
@@ -920,11 +920,11 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#AlarmType -->
+    <!-- https://w3id.org/mda/ontology/AlarmType -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#AlarmType">
-        <rdfs:subClassOf rdf:resource="http://example.org/model-device-alarm-knowledge#Alarm"/>
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/AlarmType">
+        <rdfs:subClassOf rdf:resource="https://w3id.org/mda/ontology/Alarm"/>
         <terms:identifier>AlarmType</terms:identifier>
         <rdfs:comment xml:lang="en">A generic, archetypal alarm definition independent of any specific device instance or patient encounter. Captures the default device, sensor, and signal structure associated with a class of alarm.</rdfs:comment>
         <rdfs:comment xml:lang="nl">Een generieke, archetypische alarmdefinitie, onafhankelijk van een specifieke apparaatinstantie of patiëntencounter. Legt de standaard apparaat-, sensor- en signaalstructuur vast die samenhangt met een klasse van alarmen.</rdfs:comment>
@@ -934,10 +934,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#AnatomicalPosition -->
+    <!-- https://w3id.org/mda/ontology/AnatomicalPosition -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#AnatomicalPosition">
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/AnatomicalPosition">
         <terms:identifier>AnatomicalPosition</terms:identifier>
         <rdfs:comment xml:lang="nl">De anatomische positie van een sensor op het lichaam.</rdfs:comment>
         <rdfs:comment xml:lang="en">The anatomical position of a sensor on the body.</rdfs:comment>
@@ -947,11 +947,11 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#Component -->
+    <!-- https://w3id.org/mda/ontology/Component -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#Component">
-        <nodeKind rdf:resource="http://example.org/model-device-alarm-knowledge#Individuated"/>
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/Component">
+        <nodeKind rdf:resource="https://w3id.org/mda/ontology/Individuated"/>
         <terms:identifier>Component</terms:identifier>
         <rdfs:comment xml:lang="en">A physical or functional part of a medical device (e.g. a connection port, power unit, or heating element). mda:Sensor is the specialisation that additionally produces a measurable signal — every sensor is a component, but not every component senses.</rdfs:comment>
         <rdfs:comment xml:lang="nl">Een fysiek of functioneel onderdeel van een medisch apparaat (bijv. een aansluitpoort, voedingseenheid of verwarmingselement). mda:Sensor is de specialisatie die daarnaast een meetbaar signaal produceert — elke sensor is een onderdeel, maar niet elk onderdeel meet.</rdfs:comment>
@@ -961,11 +961,11 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#CriticalComponent -->
+    <!-- https://w3id.org/mda/ontology/CriticalComponent -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#CriticalComponent">
-        <rdfs:subClassOf rdf:resource="http://example.org/model-device-alarm-knowledge#Component"/>
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/CriticalComponent">
+        <rdfs:subClassOf rdf:resource="https://w3id.org/mda/ontology/Component"/>
         <terms:identifier>CriticalComponent</terms:identifier>
         <rdfs:comment xml:lang="nl">De subklasse van mda:Component waarvan het loskoppelen betekent dat het apparaat zelf niet beschikbaar is (bijv. de datapoort, de stroomaansluiting) — in tegenstelling tot een randonderdeel waarvan het loskoppelen slechts een subsysteemwaarschuwing is (bijv. een matrasverwarming).</rdfs:comment>
         <rdfs:comment xml:lang="en">The subclass of mda:Component whose own disconnection means the device itself is unavailable (e.g. the data-link port, the power inlet) — as opposed to a peripheral component whose disconnection is only a subsystem-level warning (e.g. a mattress heater). This class exists so the propagation rule using it can be precise: unconditionally true for CriticalComponent, never assumed for mda:Component as a whole — see mda:hasOperationState&apos;s comment below on why mda:hasComponent was deliberately dropped from its propertyChainAxiom. The rule itself, and which concrete vocabulary-level component types (e.g. component:ConnectionUnit, component:PowerUnit) are tagged as members of this class, both live in 2_READOUT/outcome/inference.ttl&apos;s Component operational-state propagation section — the rule&apos;s hasValue target (a specific operation-state concept) is catalogue vocabulary, so it cannot be asserted here, but this class it&apos;s written over is a plain structural distinction with no vocabulary dependency, so it belongs in this TBox, not duplicated per component type down there.</rdfs:comment>
@@ -975,11 +975,11 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#Device -->
+    <!-- https://w3id.org/mda/ontology/Device -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#Device">
-        <nodeKind rdf:resource="http://example.org/model-device-alarm-knowledge#Individuated"/>
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/Device">
+        <nodeKind rdf:resource="https://w3id.org/mda/ontology/Individuated"/>
         <terms:identifier>Device</terms:identifier>
         <rdfs:comment xml:lang="en">A medical device that generates alarms.</rdfs:comment>
         <rdfs:comment xml:lang="nl">Een medisch apparaat dat alarmen genereert.</rdfs:comment>
@@ -989,13 +989,13 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#FunctionalUnit -->
+    <!-- https://w3id.org/mda/ontology/FunctionalUnit -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#FunctionalUnit">
-        <rdfs:subClassOf rdf:resource="http://example.org/model-device-alarm-knowledge#Component"/>
-        <owl:disjointWith rdf:resource="http://example.org/model-device-alarm-knowledge#Sensor"/>
-        <nodeKind rdf:resource="http://example.org/model-device-alarm-knowledge#Individuated"/>
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/FunctionalUnit">
+        <rdfs:subClassOf rdf:resource="https://w3id.org/mda/ontology/Component"/>
+        <owl:disjointWith rdf:resource="https://w3id.org/mda/ontology/Sensor"/>
+        <nodeKind rdf:resource="https://w3id.org/mda/ontology/Individuated"/>
         <terms:identifier>FunctionalUnit</terms:identifier>
         <rdfs:comment xml:lang="nl">De module van een apparaat die de berekeningslogica voor een bepaalde meetmogelijkheid huisvest (bijv. een ECG-module, een SpO2-module) — in de volksmond vaak &apos;de sensor&apos; genoemd, maar hier onderscheiden van mda:Sensor, dat enkel de fysieke probe is. Een functionele eenheid leest van één of meer sensoren en zet, via één of meer mda:SignalAnalysis-stappen, hun signalen om in metrieken. Een specialisatie van mda:Component. Disjunct verklaard met mda:Sensor vanwege precies die volkstaal-verwarring.</rdfs:comment>
         <rdfs:comment xml:lang="en">The module of a device that houses the computation logic for a particular measurement capability (e.g. an ECG module, an SpO2 module) — often called &apos;the sensor&apos; colloquially, but distinct here from mda:Sensor, which is only the physical probe. A functional unit reads from one or more sensors and, via one or more mda:SignalAnalysis steps, turns their signals into metrics. A specialisation of mda:Component. Declared disjoint with mda:Sensor precisely because of that colloquial conflation — the two are easy to confuse in exactly the way this class&apos;s own name tries to prevent, so a node accidentally typed as both is now an inconsistency a reasoner catches rather than a silent modelling error.</rdfs:comment>
@@ -1005,10 +1005,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#Laterality -->
+    <!-- https://w3id.org/mda/ontology/Laterality -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#Laterality">
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/Laterality">
         <terms:identifier>Laterality</terms:identifier>
         <rdfs:comment xml:lang="nl">De lateraliteit (links, rechts, bilateraal) van een sensorpositie.</rdfs:comment>
         <rdfs:comment xml:lang="en">The laterality (left, right, bilateral) of a sensor position.</rdfs:comment>
@@ -1018,11 +1018,11 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#Metric -->
+    <!-- https://w3id.org/mda/ontology/Metric -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#Metric">
-        <nodeKind rdf:resource="http://example.org/model-device-alarm-knowledge#Stateful"/>
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/Metric">
+        <nodeKind rdf:resource="https://w3id.org/mda/ontology/Stateful"/>
         <terms:identifier>Metric</terms:identifier>
         <rdfs:comment xml:lang="en">A measurable quantity, computed from one or more signals by a mda:SignalAnalysis step.</rdfs:comment>
         <rdfs:comment xml:lang="nl">Een meetbare grootheid, berekend uit één of meer signalen door een mda:SignalAnalysis-stap.</rdfs:comment>
@@ -1032,10 +1032,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#Organ -->
+    <!-- https://w3id.org/mda/ontology/Organ -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#Organ">
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/Organ">
         <terms:identifier>Organ</terms:identifier>
         <rdfs:comment xml:lang="en">A biological organ.</rdfs:comment>
         <rdfs:comment xml:lang="nl">Een biologisch orgaan.</rdfs:comment>
@@ -1045,10 +1045,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#OrganSystem -->
+    <!-- https://w3id.org/mda/ontology/OrganSystem -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#OrganSystem">
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/OrganSystem">
         <terms:identifier>OrganSystem</terms:identifier>
         <rdfs:comment xml:lang="en">A system of related organs in the body.</rdfs:comment>
         <rdfs:comment xml:lang="nl">Een systeem van gerelateerde organen in het lichaam.</rdfs:comment>
@@ -1058,11 +1058,11 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#Patient -->
+    <!-- https://w3id.org/mda/ontology/Patient -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#Patient">
-        <nodeKind rdf:resource="http://example.org/model-device-alarm-knowledge#Individuated"/>
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/Patient">
+        <nodeKind rdf:resource="https://w3id.org/mda/ontology/Individuated"/>
         <terms:identifier>Patient</terms:identifier>
         <rdfs:comment xml:lang="en">A patient being monitored by medical devices.</rdfs:comment>
         <rdfs:comment xml:lang="nl">Een patiënt die wordt bewaakt door medische apparaten.</rdfs:comment>
@@ -1072,10 +1072,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#PhysiologicalProcess -->
+    <!-- https://w3id.org/mda/ontology/PhysiologicalProcess -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#PhysiologicalProcess">
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/PhysiologicalProcess">
         <terms:identifier>PhysiologicalProcess</terms:identifier>
         <rdfs:comment xml:lang="en">A biological or physiological process occurring in the body.</rdfs:comment>
         <rdfs:comment xml:lang="nl">Een biologisch of fysiologisch proces dat in het lichaam plaatsvindt.</rdfs:comment>
@@ -1085,10 +1085,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#PhysiologicalProperty -->
+    <!-- https://w3id.org/mda/ontology/PhysiologicalProperty -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#PhysiologicalProperty">
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/PhysiologicalProperty">
         <terms:identifier>PhysiologicalProperty</terms:identifier>
         <rdfs:comment xml:lang="en">A measurable property of a physiological process.</rdfs:comment>
         <rdfs:comment xml:lang="nl">Een meetbare eigenschap van een fysiologisch proces.</rdfs:comment>
@@ -1098,10 +1098,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#PostAlarmValidScheme -->
+    <!-- https://w3id.org/mda/ontology/PostAlarmValidScheme -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#PostAlarmValidScheme">
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/PostAlarmValidScheme">
         <rdfs:subClassOf rdf:resource="http://www.w3.org/2004/02/skos/core#ConceptScheme"/>
         <postAlarmValidityDuration rdf:datatype="http://www.w3.org/2001/XMLSchema#duration">PT60S</postAlarmValidityDuration>
         <terms:identifier>PostAlarmValidScheme</terms:identifier>
@@ -1113,12 +1113,12 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#Sensor -->
+    <!-- https://w3id.org/mda/ontology/Sensor -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#Sensor">
-        <rdfs:subClassOf rdf:resource="http://example.org/model-device-alarm-knowledge#Component"/>
-        <nodeKind rdf:resource="http://example.org/model-device-alarm-knowledge#Individuated"/>
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/Sensor">
+        <rdfs:subClassOf rdf:resource="https://w3id.org/mda/ontology/Component"/>
+        <nodeKind rdf:resource="https://w3id.org/mda/ontology/Individuated"/>
         <terms:identifier>Sensor</terms:identifier>
         <rdfs:comment xml:lang="nl">Het fysieke object dat geplaatst wordt om een signaal te genereren — bijv. een pulse-oximetrieklip, een ECG-afleiding, een temperatuurprobe. Het meet of berekent zelf niets: het produceert enkel een ruw signaal (mda:producesSignal). Dat signaal omzetten in een metriek is de taak van mda:FunctionalUnit, via mda:SignalAnalysis. Een specialisatie van mda:Component.</rdfs:comment>
         <rdfs:comment xml:lang="en">The physical object placed to generate a signal — e.g. a pulse-oximetry clip, an ECG lead, a temperature probe. It does not itself measure or compute anything: it only produces a raw signal (mda:producesSignal). Turning that signal into a metric is mda:FunctionalUnit&apos;s job, via mda:SignalAnalysis. A specialisation of mda:Component. Declared disjoint with mda:FunctionalUnit (see its own comment) — asserted there, applies symmetrically.</rdfs:comment>
@@ -1128,11 +1128,11 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#Signal -->
+    <!-- https://w3id.org/mda/ontology/Signal -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#Signal">
-        <nodeKind rdf:resource="http://example.org/model-device-alarm-knowledge#Individuated"/>
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/Signal">
+        <nodeKind rdf:resource="https://w3id.org/mda/ontology/Individuated"/>
         <terms:identifier>Signal</terms:identifier>
         <rdfs:comment xml:lang="en">A signal — either raw, produced by a sensor, or derived/intermediate, produced by a mda:SignalAnalysis step from other signals (e.g. augmented lead aVF, combined from ECG leads I and II). No structural distinction between the two: a later analysis step consuming a signal doesn&apos;t need to know whether it came from a sensor or from an earlier analysis.</rdfs:comment>
         <rdfs:comment xml:lang="nl">Een signaal — ofwel ruw, geproduceerd door een sensor, ofwel afgeleid/tussenliggend, geproduceerd door een mda:SignalAnalysis-stap uit andere signalen (bijv. versterkte afleiding aVF, gecombineerd uit ECG-afleidingen I en II). Geen structureel onderscheid tussen beide: een latere analysestap die een signaal verbruikt hoeft niet te weten of het van een sensor komt of van een eerdere analyse.</rdfs:comment>
@@ -1142,10 +1142,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#SignalAnalysis -->
+    <!-- https://w3id.org/mda/ontology/SignalAnalysis -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#SignalAnalysis">
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/SignalAnalysis">
         <terms:identifier>SignalAnalysis</terms:identifier>
         <rdfs:comment xml:lang="nl">Eén berekeningsstap van een functionele eenheid: verbruikt één of meer signalen (bereikt via de inverse van mda:analyzedBy) en produceert ofwel een metriek (mda:producesMetric) ofwel een verder afgeleid signaal (mda:producesSignal) dat een latere stap op zijn beurt kan verbruiken. Zelf geen mda:Component — het is de berekening die een functionele eenheid uitvoert, geen fysiek onderdeel.</rdfs:comment>
         <rdfs:comment xml:lang="en">One computation step of a functional unit: consumes one or more signals (reached via the inverse of mda:analyzedBy) and produces either a metric (mda:producesMetric) or a further, derived signal (mda:producesSignal) that a later step can itself consume. Not itself a mda:Component — it&apos;s the computation a functional unit performs, not a physical part.</rdfs:comment>
@@ -1155,10 +1155,10 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#TherapeuticModality -->
+    <!-- https://w3id.org/mda/ontology/TherapeuticModality -->
 
 
-    <owl:Class rdf:about="http://example.org/model-device-alarm-knowledge#TherapeuticModality">
+    <owl:Class rdf:about="https://w3id.org/mda/ontology/TherapeuticModality">
         <terms:identifier>TherapeuticModality</terms:identifier>
         <rdfs:comment xml:lang="en">A therapeutic intervention or treatment modality.</rdfs:comment>
         <rdfs:comment xml:lang="nl">Een therapeutische interventie of behandelingsmodaliteit.</rdfs:comment>
@@ -1194,28 +1194,28 @@
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#Individuated -->
+    <!-- https://w3id.org/mda/ontology/Individuated -->
 
 
-    <owl:NamedIndividual rdf:about="http://example.org/model-device-alarm-knowledge#Individuated">
+    <owl:NamedIndividual rdf:about="https://w3id.org/mda/ontology/Individuated">
         <rdfs:label xml:lang="en">individuated</rdfs:label>
     </owl:NamedIndividual>
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#Referential -->
+    <!-- https://w3id.org/mda/ontology/Referential -->
 
 
-    <owl:NamedIndividual rdf:about="http://example.org/model-device-alarm-knowledge#Referential">
+    <owl:NamedIndividual rdf:about="https://w3id.org/mda/ontology/Referential">
         <rdfs:label xml:lang="en">referential</rdfs:label>
     </owl:NamedIndividual>
     
 
 
-    <!-- http://example.org/model-device-alarm-knowledge#Stateful -->
+    <!-- https://w3id.org/mda/ontology/Stateful -->
 
 
-    <owl:NamedIndividual rdf:about="http://example.org/model-device-alarm-knowledge#Stateful">
+    <owl:NamedIndividual rdf:about="https://w3id.org/mda/ontology/Stateful">
         <rdfs:label xml:lang="en">stateful</rdfs:label>
     </owl:NamedIndividual>
     
@@ -1230,47 +1230,47 @@
      -->
 
 
-    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge/vocab/anatomical-position/Scheme">
-        <instantiatesClass rdf:resource="http://example.org/model-device-alarm-knowledge#AnatomicalPosition"/>
+    <rdf:Description rdf:about="https://w3id.org/mda/vocab/anatomical-position/Scheme">
+        <instantiatesClass rdf:resource="https://w3id.org/mda/ontology/AnatomicalPosition"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge/vocab/component/Scheme">
-        <instantiatesClass rdf:resource="http://example.org/model-device-alarm-knowledge#Component"/>
+    <rdf:Description rdf:about="https://w3id.org/mda/vocab/component/Scheme">
+        <instantiatesClass rdf:resource="https://w3id.org/mda/ontology/Component"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge/vocab/device/Scheme">
-        <instantiatesClass rdf:resource="http://example.org/model-device-alarm-knowledge#Device"/>
+    <rdf:Description rdf:about="https://w3id.org/mda/vocab/device/Scheme">
+        <instantiatesClass rdf:resource="https://w3id.org/mda/ontology/Device"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge/vocab/functional-unit/Scheme">
-        <instantiatesClass rdf:resource="http://example.org/model-device-alarm-knowledge#FunctionalUnit"/>
+    <rdf:Description rdf:about="https://w3id.org/mda/vocab/functional-unit/Scheme">
+        <instantiatesClass rdf:resource="https://w3id.org/mda/ontology/FunctionalUnit"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge/vocab/laterality/Scheme">
-        <instantiatesClass rdf:resource="http://example.org/model-device-alarm-knowledge#Laterality"/>
+    <rdf:Description rdf:about="https://w3id.org/mda/vocab/laterality/Scheme">
+        <instantiatesClass rdf:resource="https://w3id.org/mda/ontology/Laterality"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge/vocab/metric/Scheme">
-        <instantiatesClass rdf:resource="http://example.org/model-device-alarm-knowledge#Metric"/>
+    <rdf:Description rdf:about="https://w3id.org/mda/vocab/metric/Scheme">
+        <instantiatesClass rdf:resource="https://w3id.org/mda/ontology/Metric"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge/vocab/organ-system/Scheme">
-        <instantiatesClass rdf:resource="http://example.org/model-device-alarm-knowledge#OrganSystem"/>
+    <rdf:Description rdf:about="https://w3id.org/mda/vocab/organ-system/Scheme">
+        <instantiatesClass rdf:resource="https://w3id.org/mda/ontology/OrganSystem"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge/vocab/organ/Scheme">
-        <instantiatesClass rdf:resource="http://example.org/model-device-alarm-knowledge#Organ"/>
+    <rdf:Description rdf:about="https://w3id.org/mda/vocab/organ/Scheme">
+        <instantiatesClass rdf:resource="https://w3id.org/mda/ontology/Organ"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge/vocab/patient/Scheme">
-        <instantiatesClass rdf:resource="http://example.org/model-device-alarm-knowledge#Patient"/>
+    <rdf:Description rdf:about="https://w3id.org/mda/vocab/patient/Scheme">
+        <instantiatesClass rdf:resource="https://w3id.org/mda/ontology/Patient"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge/vocab/physiological-process/Scheme">
-        <instantiatesClass rdf:resource="http://example.org/model-device-alarm-knowledge#PhysiologicalProcess"/>
+    <rdf:Description rdf:about="https://w3id.org/mda/vocab/physiological-process/Scheme">
+        <instantiatesClass rdf:resource="https://w3id.org/mda/ontology/PhysiologicalProcess"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge/vocab/physiological-property/Scheme">
-        <instantiatesClass rdf:resource="http://example.org/model-device-alarm-knowledge#PhysiologicalProperty"/>
+    <rdf:Description rdf:about="https://w3id.org/mda/vocab/physiological-property/Scheme">
+        <instantiatesClass rdf:resource="https://w3id.org/mda/ontology/PhysiologicalProperty"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge/vocab/sensor/Scheme">
-        <instantiatesClass rdf:resource="http://example.org/model-device-alarm-knowledge#Sensor"/>
+    <rdf:Description rdf:about="https://w3id.org/mda/vocab/sensor/Scheme">
+        <instantiatesClass rdf:resource="https://w3id.org/mda/ontology/Sensor"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge/vocab/signal/Scheme">
-        <instantiatesClass rdf:resource="http://example.org/model-device-alarm-knowledge#Signal"/>
+    <rdf:Description rdf:about="https://w3id.org/mda/vocab/signal/Scheme">
+        <instantiatesClass rdf:resource="https://w3id.org/mda/ontology/Signal"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://example.org/model-device-alarm-knowledge/vocab/therapeutic-modality/Scheme">
-        <instantiatesClass rdf:resource="http://example.org/model-device-alarm-knowledge#TherapeuticModality"/>
+    <rdf:Description rdf:about="https://w3id.org/mda/vocab/therapeutic-modality/Scheme">
+        <instantiatesClass rdf:resource="https://w3id.org/mda/ontology/TherapeuticModality"/>
     </rdf:Description>
 </rdf:RDF>
 

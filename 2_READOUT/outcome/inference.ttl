@@ -34,25 +34,25 @@
 # any alarm archetype carrying a copy of it.
 ####################################################################
 
-@prefix mda:        <http://example.org/model-device-alarm-knowledge#> .
+@prefix mda:        <https://w3id.org/mda/ontology/> .
 @prefix owl:        <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
 
-@prefix device:      <http://example.org/model-device-alarm-knowledge/vocab/device/> .
-@prefix component:   <http://example.org/model-device-alarm-knowledge/vocab/component/> .
-@prefix opstate:     <http://example.org/model-device-alarm-knowledge/vocab/operation-state/> .
-@prefix therapeuticModality: <http://example.org/model-device-alarm-knowledge/vocab/therapeutic-modality/> .
-@prefix functionalUnit: <http://example.org/model-device-alarm-knowledge/vocab/functional-unit/> .
-@prefix sensor:      <http://example.org/model-device-alarm-knowledge/vocab/sensor/> .
-@prefix signal:      <http://example.org/model-device-alarm-knowledge/vocab/signal/> .
-@prefix signalAnalysis: <http://example.org/model-device-alarm-knowledge/vocab/signal-analysis/> .
-@prefix metric:      <http://example.org/model-device-alarm-knowledge/vocab/metric/> .
-@prefix metricRate:  <http://example.org/model-device-alarm-knowledge/vocab/metric-rate/> .
-@prefix qualitystate: <http://example.org/model-device-alarm-knowledge/vocab/quality-state/> .
-@prefix physiologicalProperty: <http://example.org/model-device-alarm-knowledge/vocab/physiological-property/> .
-@prefix physiologicalProcess:  <http://example.org/model-device-alarm-knowledge/vocab/physiological-process/> .
-@prefix organ:       <http://example.org/model-device-alarm-knowledge/vocab/organ/> .
-@prefix organSystem: <http://example.org/model-device-alarm-knowledge/vocab/organ-system/> .
+@prefix device:      <https://w3id.org/mda/vocab/device/> .
+@prefix component:   <https://w3id.org/mda/vocab/component/> .
+@prefix opstate:     <https://w3id.org/mda/vocab/operation-state/> .
+@prefix therapeuticModality: <https://w3id.org/mda/vocab/therapeutic-modality/> .
+@prefix functionalUnit: <https://w3id.org/mda/vocab/functional-unit/> .
+@prefix sensor:      <https://w3id.org/mda/vocab/sensor/> .
+@prefix signal:      <https://w3id.org/mda/vocab/signal/> .
+@prefix signalAnalysis: <https://w3id.org/mda/vocab/signal-analysis/> .
+@prefix metric:      <https://w3id.org/mda/vocab/metric/> .
+@prefix metricRate:  <https://w3id.org/mda/vocab/metric-rate/> .
+@prefix qualitystate: <https://w3id.org/mda/vocab/quality-state/> .
+@prefix physiologicalProperty: <https://w3id.org/mda/vocab/physiological-property/> .
+@prefix physiologicalProcess:  <https://w3id.org/mda/vocab/physiological-process/> .
+@prefix organ:       <https://w3id.org/mda/vocab/organ/> .
+@prefix organSystem: <https://w3id.org/mda/vocab/organ-system/> .
 
 
 ####################################################################

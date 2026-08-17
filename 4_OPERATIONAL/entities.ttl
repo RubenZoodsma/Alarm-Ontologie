@@ -12,13 +12,13 @@
 # Regenerated from scratch on every run — do not hand-edit; author
 # real-world facts in a separate file or downstream of minting.
 
-@prefix component: <http://example.org/model-device-alarm-knowledge/vocab/component/> .
-@prefix device: <http://example.org/model-device-alarm-knowledge/vocab/device/> .
-@prefix functional-unit: <http://example.org/model-device-alarm-knowledge/vocab/functional-unit/> .
+@prefix component: <https://w3id.org/mda/vocab/component/> .
+@prefix device: <https://w3id.org/mda/vocab/device/> .
+@prefix functional-unit: <https://w3id.org/mda/vocab/functional-unit/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix scaffold: <http://example.org/model-device-alarm-knowledge/scaffold/> .
-@prefix sensor: <http://example.org/model-device-alarm-knowledge/vocab/sensor/> .
-@prefix signal: <http://example.org/model-device-alarm-knowledge/vocab/signal/> .
+@prefix scaffold: <https://w3id.org/mda/scaffold/> .
+@prefix sensor: <https://w3id.org/mda/vocab/sensor/> .
+@prefix signal: <https://w3id.org/mda/vocab/signal/> .
 
 scaffold:Component_ConnectionUnit a component:ConnectionUnit ;
     rdfs:label "Connection Unit (type catalogue entry)"@en .

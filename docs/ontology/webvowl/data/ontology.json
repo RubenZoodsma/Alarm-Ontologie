@@ -6,7 +6,7 @@
     "title" : {
       "en" : "The ontology for the medical device alarm knowledge."
     },
-    "iri" : "http://example.org/model-device-alarm-knowledge#",
+    "iri" : "https://w3id.org/mda/ontology/",
     "version" : "1.0.0",
     "author" : [ "Ruben Zoodsma" ],
     "description" : {
@@ -40,7 +40,7 @@
       "preferredNamespaceUri" : [ {
         "identifier" : "preferredNamespaceUri",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge#",
+        "value" : "https://w3id.org/mda/ontology/",
         "type" : "label"
       } ],
       "versionInfo" : [ {
@@ -153,7 +153,7 @@
     "attributes" : [ "external" ],
     "id" : "2"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#Laterality",
+    "iri" : "https://w3id.org/mda/ontology/Laterality",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -175,7 +175,7 @@
     },
     "id" : "22"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#Signal",
+    "iri" : "https://w3id.org/mda/ontology/Signal",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -188,7 +188,7 @@
       "nodeKind" : [ {
         "identifier" : "nodeKind",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge#Individuated",
+        "value" : "https://w3id.org/mda/ontology/Individuated",
         "type" : "iri"
       } ]
     },
@@ -203,7 +203,7 @@
     },
     "id" : "12"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#TherapeuticModality",
+    "iri" : "https://w3id.org/mda/ontology/TherapeuticModality",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -235,7 +235,7 @@
     "attributes" : [ "external" ],
     "id" : "37"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#Alarm",
+    "iri" : "https://w3id.org/mda/ontology/Alarm",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -258,7 +258,7 @@
     },
     "id" : "10"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#Metric",
+    "iri" : "https://w3id.org/mda/ontology/Metric",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -271,7 +271,7 @@
       "nodeKind" : [ {
         "identifier" : "nodeKind",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge#Stateful",
+        "value" : "https://w3id.org/mda/ontology/Stateful",
         "type" : "iri"
       } ]
     },
@@ -286,7 +286,7 @@
     },
     "id" : "29"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#Organ",
+    "iri" : "https://w3id.org/mda/ontology/Organ",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -308,7 +308,7 @@
     },
     "id" : "45"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#CriticalComponent",
+    "iri" : "https://w3id.org/mda/ontology/CriticalComponent",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -331,7 +331,7 @@
     "id" : "48",
     "superClasses" : [ "31" ]
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#AlarmMessage",
+    "iri" : "https://w3id.org/mda/ontology/AlarmMessage",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -353,7 +353,7 @@
     },
     "id" : "4"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#Component",
+    "iri" : "https://w3id.org/mda/ontology/Component",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -366,7 +366,7 @@
       "nodeKind" : [ {
         "identifier" : "nodeKind",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge#Individuated",
+        "value" : "https://w3id.org/mda/ontology/Individuated",
         "type" : "iri"
       } ]
     },
@@ -382,7 +382,7 @@
     },
     "id" : "31"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#Patient",
+    "iri" : "https://w3id.org/mda/ontology/Patient",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -395,7 +395,7 @@
       "nodeKind" : [ {
         "identifier" : "nodeKind",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge#Individuated",
+        "value" : "https://w3id.org/mda/ontology/Individuated",
         "type" : "iri"
       } ]
     },
@@ -410,7 +410,7 @@
     },
     "id" : "51"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#SignalAnalysis",
+    "iri" : "https://w3id.org/mda/ontology/SignalAnalysis",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -465,7 +465,7 @@
       "IRI-based" : "dateTime"
     }
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#OrganSystem",
+    "iri" : "https://w3id.org/mda/ontology/OrganSystem",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -492,7 +492,7 @@
     "attributes" : [ "union", "anonymous" ],
     "id" : "14"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#FunctionalUnit",
+    "iri" : "https://w3id.org/mda/ontology/FunctionalUnit",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -505,7 +505,7 @@
       "nodeKind" : [ {
         "identifier" : "nodeKind",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge#Individuated",
+        "value" : "https://w3id.org/mda/ontology/Individuated",
         "type" : "iri"
       } ]
     },
@@ -521,7 +521,7 @@
     "id" : "40",
     "superClasses" : [ "31" ]
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#PhysiologicalProcess",
+    "iri" : "https://w3id.org/mda/ontology/PhysiologicalProcess",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -543,7 +543,7 @@
     },
     "id" : "8"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#AlarmType",
+    "iri" : "https://w3id.org/mda/ontology/AlarmType",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -566,7 +566,7 @@
     "id" : "1",
     "superClasses" : [ "10" ]
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#PhysiologicalProperty",
+    "iri" : "https://w3id.org/mda/ontology/PhysiologicalProperty",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -588,7 +588,7 @@
     },
     "id" : "7"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#AnatomicalPosition",
+    "iri" : "https://w3id.org/mda/ontology/AnatomicalPosition",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -610,7 +610,7 @@
     },
     "id" : "25"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#Device",
+    "iri" : "https://w3id.org/mda/ontology/Device",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -623,7 +623,7 @@
       "nodeKind" : [ {
         "identifier" : "nodeKind",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge#Individuated",
+        "value" : "https://w3id.org/mda/ontology/Individuated",
         "type" : "iri"
       } ]
     },
@@ -638,7 +638,7 @@
     },
     "id" : "5"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#PostAlarmValidScheme",
+    "iri" : "https://w3id.org/mda/ontology/PostAlarmValidScheme",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -667,7 +667,7 @@
     "id" : "38",
     "superClasses" : [ "37" ]
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#Sensor",
+    "iri" : "https://w3id.org/mda/ontology/Sensor",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "instances" : 0,
     "annotations" : {
@@ -680,7 +680,7 @@
       "nodeKind" : [ {
         "identifier" : "nodeKind",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge#Individuated",
+        "value" : "https://w3id.org/mda/ontology/Individuated",
         "type" : "iri"
       } ]
     },
@@ -827,7 +827,7 @@
     "type" : "owl:objectProperty"
   } ],
   "propertyAttribute" : [ {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasLabelConcept",
+    "iri" : "https://w3id.org/mda/ontology/hasLabelConcept",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "2",
     "annotations" : {
@@ -840,7 +840,7 @@
       "valuesFromScheme" : [ {
         "identifier" : "valuesFromScheme",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme",
+        "value" : "https://w3id.org/mda/vocab/alarm-label/Scheme",
         "type" : "iri"
       } ]
     },
@@ -857,7 +857,7 @@
     "attributes" : [ "object" ],
     "id" : "0"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#triggeredBy",
+    "iri" : "https://w3id.org/mda/ontology/triggeredBy",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "5",
     "annotations" : {
@@ -881,7 +881,7 @@
     "attributes" : [ "object", "functional" ],
     "id" : "3"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#isPropertyOf",
+    "iri" : "https://w3id.org/mda/ontology/isPropertyOf",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "8",
     "annotations" : {
@@ -911,7 +911,7 @@
     "attributes" : [ "object" ],
     "id" : "6"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#isOfType",
+    "iri" : "https://w3id.org/mda/ontology/isOfType",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "1",
     "annotations" : {
@@ -935,7 +935,7 @@
     "attributes" : [ "object", "functional" ],
     "id" : "9"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasQualityState",
+    "iri" : "https://w3id.org/mda/ontology/hasQualityState",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "2",
     "annotations" : {
@@ -948,7 +948,7 @@
       "valuesFromScheme" : [ {
         "identifier" : "valuesFromScheme",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge/vocab/quality-state/Scheme",
+        "value" : "https://w3id.org/mda/vocab/quality-state/Scheme",
         "type" : "iri"
       } ],
       "persistsPostAlarm" : [ {
@@ -971,7 +971,7 @@
     "attributes" : [ "object" ],
     "id" : "11"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasOperationState",
+    "iri" : "https://w3id.org/mda/ontology/hasOperationState",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "2",
     "annotations" : {
@@ -1002,7 +1002,7 @@
     "attributes" : [ "object" ],
     "id" : "13"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasLabel",
+    "iri" : "https://w3id.org/mda/ontology/hasLabel",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "19",
     "annotations" : {
@@ -1026,7 +1026,7 @@
     "attributes" : [ "datatype" ],
     "id" : "18"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasStart",
+    "iri" : "https://w3id.org/mda/ontology/hasStart",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "21",
     "annotations" : {
@@ -1050,7 +1050,7 @@
     "attributes" : [ "datatype" ],
     "id" : "20"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasAnatomicalPosition",
+    "iri" : "https://w3id.org/mda/ontology/hasAnatomicalPosition",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "25",
     "annotations" : {
@@ -1080,7 +1080,7 @@
     "attributes" : [ "object", "functional" ],
     "id" : "23"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#administers",
+    "iri" : "https://w3id.org/mda/ontology/administers",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "26",
     "annotations" : {
@@ -1110,7 +1110,7 @@
     "attributes" : [ "object" ],
     "id" : "27"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasRate",
+    "iri" : "https://w3id.org/mda/ontology/hasRate",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "2",
     "annotations" : {
@@ -1123,7 +1123,7 @@
       "valuesFromScheme" : [ {
         "identifier" : "valuesFromScheme",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge/vocab/metric-rate/Scheme",
+        "value" : "https://w3id.org/mda/vocab/metric-rate/Scheme",
         "type" : "iri"
       } ]
     },
@@ -1140,7 +1140,7 @@
     "attributes" : [ "object" ],
     "id" : "28"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasComponent",
+    "iri" : "https://w3id.org/mda/ontology/hasComponent",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "31",
     "annotations" : {
@@ -1165,7 +1165,7 @@
     "attributes" : [ "object", "inverse functional" ],
     "id" : "30"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#analyzedBy",
+    "iri" : "https://w3id.org/mda/ontology/analyzedBy",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "34",
     "annotations" : {
@@ -1189,7 +1189,7 @@
     "attributes" : [ "object" ],
     "id" : "33"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasSensorOperationState",
+    "iri" : "https://w3id.org/mda/ontology/hasSensorOperationState",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "2",
     "annotations" : {
@@ -1202,7 +1202,7 @@
       "valuesFromScheme" : [ {
         "identifier" : "valuesFromScheme",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge/vocab/operation-state/Scheme",
+        "value" : "https://w3id.org/mda/vocab/operation-state/Scheme",
         "type" : "iri"
       } ]
     },
@@ -1220,7 +1220,7 @@
     "attributes" : [ "object" ],
     "id" : "17"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasMessage",
+    "iri" : "https://w3id.org/mda/ontology/hasMessage",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "4",
     "annotations" : {
@@ -1244,7 +1244,7 @@
     "attributes" : [ "object", "inverse functional", "functional" ],
     "id" : "35"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasComponentOperationState",
+    "iri" : "https://w3id.org/mda/ontology/hasComponentOperationState",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "2",
     "annotations" : {
@@ -1257,7 +1257,7 @@
       "valuesFromScheme" : [ {
         "identifier" : "valuesFromScheme",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge/vocab/operation-state/Scheme",
+        "value" : "https://w3id.org/mda/vocab/operation-state/Scheme",
         "type" : "iri"
       } ]
     },
@@ -1275,7 +1275,7 @@
     "attributes" : [ "object" ],
     "id" : "15"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasDeviceType",
+    "iri" : "https://w3id.org/mda/ontology/hasDeviceType",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "2",
     "annotations" : {
@@ -1288,7 +1288,7 @@
       "valuesFromScheme" : [ {
         "identifier" : "valuesFromScheme",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge/vocab/device-type/Scheme",
+        "value" : "https://w3id.org/mda/vocab/device-type/Scheme",
         "type" : "iri"
       } ],
       "refinesUniversalIdentity" : [ {
@@ -1311,7 +1311,7 @@
     "attributes" : [ "object" ],
     "id" : "36"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasSensor",
+    "iri" : "https://w3id.org/mda/ontology/hasSensor",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "24",
     "annotations" : {
@@ -1335,7 +1335,7 @@
     "attributes" : [ "object" ],
     "id" : "39"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasDeviceOperationState",
+    "iri" : "https://w3id.org/mda/ontology/hasDeviceOperationState",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "2",
     "annotations" : {
@@ -1348,7 +1348,7 @@
       "valuesFromScheme" : [ {
         "identifier" : "valuesFromScheme",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge/vocab/operation-state/Scheme",
+        "value" : "https://w3id.org/mda/vocab/operation-state/Scheme",
         "type" : "iri"
       } ]
     },
@@ -1366,7 +1366,7 @@
     "attributes" : [ "object" ],
     "id" : "16"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasFunctionalUnit",
+    "iri" : "https://w3id.org/mda/ontology/hasFunctionalUnit",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "40",
     "annotations" : {
@@ -1391,7 +1391,7 @@
     "attributes" : [ "object", "inverse functional" ],
     "id" : "32"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasDuration",
+    "iri" : "https://w3id.org/mda/ontology/hasDuration",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "42",
     "annotations" : {
@@ -1415,7 +1415,7 @@
     "attributes" : [ "datatype" ],
     "id" : "41"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasPhase",
+    "iri" : "https://w3id.org/mda/ontology/hasPhase",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "2",
     "annotations" : {
@@ -1428,7 +1428,7 @@
       "valuesFromScheme" : [ {
         "identifier" : "valuesFromScheme",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge/vocab/metric-phase/Scheme",
+        "value" : "https://w3id.org/mda/vocab/metric-phase/Scheme",
         "type" : "iri"
       } ],
       "refinesUniversalIdentity" : [ {
@@ -1451,7 +1451,7 @@
     "attributes" : [ "object" ],
     "id" : "43"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#organPartOfSystem",
+    "iri" : "https://w3id.org/mda/ontology/organPartOfSystem",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "46",
     "annotations" : {
@@ -1486,7 +1486,7 @@
     "attributes" : [ "object", "anonymous" ],
     "id" : "47"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasManufacturer",
+    "iri" : "https://w3id.org/mda/ontology/hasManufacturer",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "2",
     "annotations" : {
@@ -1499,7 +1499,7 @@
       "valuesFromScheme" : [ {
         "identifier" : "valuesFromScheme",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge/vocab/manufacturer/Scheme",
+        "value" : "https://w3id.org/mda/vocab/manufacturer/Scheme",
         "type" : "iri"
       } ],
       "refinesUniversalIdentity" : [ {
@@ -1527,7 +1527,7 @@
     "attributes" : [ "object", "anonymous" ],
     "id" : "50"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasLaterality",
+    "iri" : "https://w3id.org/mda/ontology/hasLaterality",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "22",
     "annotations" : {
@@ -1557,7 +1557,7 @@
     "attributes" : [ "object", "functional" ],
     "id" : "52"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasEnd",
+    "iri" : "https://w3id.org/mda/ontology/hasEnd",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "54",
     "annotations" : {
@@ -1581,7 +1581,7 @@
     "attributes" : [ "datatype" ],
     "id" : "53"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasCategory",
+    "iri" : "https://w3id.org/mda/ontology/hasCategory",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "2",
     "annotations" : {
@@ -1594,7 +1594,7 @@
       "valuesFromScheme" : [ {
         "identifier" : "valuesFromScheme",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge/vocab/alarm-category/Scheme",
+        "value" : "https://w3id.org/mda/vocab/alarm-category/Scheme",
         "type" : "iri"
       } ]
     },
@@ -1626,7 +1626,7 @@
     "attributes" : [ "object", "anonymous" ],
     "id" : "59"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#producesMetric",
+    "iri" : "https://w3id.org/mda/ontology/producesMetric",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "29",
     "annotations" : {
@@ -1655,7 +1655,7 @@
     "attributes" : [ "object", "anonymous" ],
     "id" : "61"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#approximates",
+    "iri" : "https://w3id.org/mda/ontology/approximates",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "7",
     "annotations" : {
@@ -1685,7 +1685,7 @@
     "attributes" : [ "object" ],
     "id" : "62"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#presentIn",
+    "iri" : "https://w3id.org/mda/ontology/presentIn",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "45",
     "annotations" : {
@@ -1715,7 +1715,7 @@
     "attributes" : [ "object" ],
     "id" : "63"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#isMonitoredBy",
+    "iri" : "https://w3id.org/mda/ontology/isMonitoredBy",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "5",
     "annotations" : {
@@ -1739,7 +1739,7 @@
     "attributes" : [ "object", "inverse functional" ],
     "id" : "64"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasRhythm",
+    "iri" : "https://w3id.org/mda/ontology/hasRhythm",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "2",
     "annotations" : {
@@ -1752,7 +1752,7 @@
       "valuesFromScheme" : [ {
         "identifier" : "valuesFromScheme",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge/vocab/rhythm/Scheme",
+        "value" : "https://w3id.org/mda/vocab/rhythm/Scheme",
         "type" : "iri"
       } ]
     },
@@ -1769,7 +1769,7 @@
     "attributes" : [ "object" ],
     "id" : "65"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#concernsPatient",
+    "iri" : "https://w3id.org/mda/ontology/concernsPatient",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "51",
     "annotations" : {
@@ -1793,7 +1793,7 @@
     "attributes" : [ "object", "functional" ],
     "id" : "66"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#producesSignal",
+    "iri" : "https://w3id.org/mda/ontology/producesSignal",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "12",
     "annotations" : {
@@ -1818,7 +1818,7 @@
     "attributes" : [ "object", "inverse functional" ],
     "id" : "67"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#targetsProcess",
+    "iri" : "https://w3id.org/mda/ontology/targetsProcess",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "8",
     "annotations" : {
@@ -1848,7 +1848,7 @@
     "attributes" : [ "object" ],
     "id" : "69"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#hasPriority",
+    "iri" : "https://w3id.org/mda/ontology/hasPriority",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "2",
     "annotations" : {
@@ -1861,7 +1861,7 @@
       "valuesFromScheme" : [ {
         "identifier" : "valuesFromScheme",
         "language" : "undefined",
-        "value" : "http://example.org/model-device-alarm-knowledge/vocab/alarm-priority/Scheme",
+        "value" : "https://w3id.org/mda/vocab/alarm-priority/Scheme",
         "type" : "iri"
       } ]
     },
@@ -1878,7 +1878,7 @@
     "attributes" : [ "object" ],
     "id" : "70"
   }, {
-    "iri" : "http://example.org/model-device-alarm-knowledge#sensorProducesSignal",
+    "iri" : "https://w3id.org/mda/ontology/sensorProducesSignal",
     "baseIri" : "http://example.org/model-device-alarm-knowledge",
     "range" : "12",
     "annotations" : {

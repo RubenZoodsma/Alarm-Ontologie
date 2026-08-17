@@ -1,28 +1,28 @@
-@prefix alarmcat: <http://example.org/model-device-alarm-knowledge/vocab/alarm-category/> .
-@prefix alarmprio: <http://example.org/model-device-alarm-knowledge/vocab/alarm-priority/> .
-@prefix anatomicalPosition: <http://example.org/model-device-alarm-knowledge/vocab/anatomical-position/> .
-@prefix component: <http://example.org/model-device-alarm-knowledge/vocab/component/> .
-@prefix device: <http://example.org/model-device-alarm-knowledge/vocab/device/> .
-@prefix deviceType: <http://example.org/model-device-alarm-knowledge/vocab/device-type/> .
-@prefix functionalUnit: <http://example.org/model-device-alarm-knowledge/vocab/functional-unit/> .
-@prefix manufacturer: <http://example.org/model-device-alarm-knowledge/vocab/manufacturer/> .
-@prefix mda: <http://example.org/model-device-alarm-knowledge#> .
-@prefix metric: <http://example.org/model-device-alarm-knowledge/vocab/metric/> .
-@prefix metricPhase: <http://example.org/model-device-alarm-knowledge/vocab/metric-phase/> .
-@prefix metricRate: <http://example.org/model-device-alarm-knowledge/vocab/metric-rate/> .
-@prefix opstate: <http://example.org/model-device-alarm-knowledge/vocab/operation-state/> .
-@prefix organ: <http://example.org/model-device-alarm-knowledge/vocab/organ/> .
-@prefix organSystem: <http://example.org/model-device-alarm-knowledge/vocab/organ-system/> .
+@prefix alarmcat: <https://w3id.org/mda/vocab/alarm-category/> .
+@prefix alarmprio: <https://w3id.org/mda/vocab/alarm-priority/> .
+@prefix anatomicalPosition: <https://w3id.org/mda/vocab/anatomical-position/> .
+@prefix component: <https://w3id.org/mda/vocab/component/> .
+@prefix device: <https://w3id.org/mda/vocab/device/> .
+@prefix deviceType: <https://w3id.org/mda/vocab/device-type/> .
+@prefix functionalUnit: <https://w3id.org/mda/vocab/functional-unit/> .
+@prefix manufacturer: <https://w3id.org/mda/vocab/manufacturer/> .
+@prefix mda: <https://w3id.org/mda/ontology/> .
+@prefix metric: <https://w3id.org/mda/vocab/metric/> .
+@prefix metricPhase: <https://w3id.org/mda/vocab/metric-phase/> .
+@prefix metricRate: <https://w3id.org/mda/vocab/metric-rate/> .
+@prefix opstate: <https://w3id.org/mda/vocab/operation-state/> .
+@prefix organ: <https://w3id.org/mda/vocab/organ/> .
+@prefix organSystem: <https://w3id.org/mda/vocab/organ-system/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix physiologicalProcess: <http://example.org/model-device-alarm-knowledge/vocab/physiological-process/> .
-@prefix physiologicalProperty: <http://example.org/model-device-alarm-knowledge/vocab/physiological-property/> .
-@prefix qualitystate: <http://example.org/model-device-alarm-knowledge/vocab/quality-state/> .
+@prefix physiologicalProcess: <https://w3id.org/mda/vocab/physiological-process/> .
+@prefix physiologicalProperty: <https://w3id.org/mda/vocab/physiological-property/> .
+@prefix qualitystate: <https://w3id.org/mda/vocab/quality-state/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix sensor: <http://example.org/model-device-alarm-knowledge/vocab/sensor/> .
-@prefix signal: <http://example.org/model-device-alarm-knowledge/vocab/signal/> .
+@prefix sensor: <https://w3id.org/mda/vocab/sensor/> .
+@prefix signal: <https://w3id.org/mda/vocab/signal/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix therapeuticModality: <http://example.org/model-device-alarm-knowledge/vocab/therapeutic-modality/> .
+@prefix therapeuticModality: <https://w3id.org/mda/vocab/therapeutic-modality/> .
 
 alarmcat:Physiological a skos:Concept ;
     skos:broader alarmcat:AlarmCategory ;
@@ -51,315 +51,315 @@ alarmcat:Unknown a skos:Concept ;
     skos:prefLabel "Unknown"@en,
         "Unknown"@nl .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/CardiohelpPvenOnderWaarschuwingsgrens> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/CardiohelpPvenOnderWaarschuwingsgrens> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "CARDIOHELP - pVen onder waarschuwingsgrens" ;
     skos:prefLabel "CARDIOHELP - pVen onder waarschuwingsgrens"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/CardiohelpVerbindingVerbroken> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/CardiohelpVerbindingVerbroken> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "CARDIOHELP - Verbinding verbroken" ;
     skos:prefLabel "CARDIOHELP - Verbinding verbroken"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/CriticoolVerbindingVerbroken> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/CriticoolVerbindingVerbroken> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "CRITICOOL - Verbinding verbroken" ;
     skos:prefLabel "CRITICOOL - Verbinding verbroken"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/DatexohmedacomventilatorMvexpHigh> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/DatexohmedacomventilatorMvexpHigh> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "DATEXOHMEDACOMVENTILATOR - MVexp High" ;
     skos:prefLabel "DATEXOHMEDACOMVENTILATOR - MVexp High"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/DatexohmedacomventilatorPatientDisconnected> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/DatexohmedacomventilatorPatientDisconnected> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "DATEXOHMEDACOMVENTILATOR - Patient Disconnected" ;
     skos:prefLabel "DATEXOHMEDACOMVENTILATOR - Patient Disconnected"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/DatexohmedacomventilatorPlimitReached> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/DatexohmedacomventilatorPlimitReached> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "DATEXOHMEDACOMVENTILATOR - Plimit Reached" ;
     skos:prefLabel "DATEXOHMEDACOMVENTILATOR - Plimit Reached"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/DatexohmedacomventilatorRrHigh> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/DatexohmedacomventilatorRrHigh> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "DATEXOHMEDACOMVENTILATOR - RR High" ;
     skos:prefLabel "DATEXOHMEDACOMVENTILATOR - RR High"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/DatexohmedacomventilatorVtexpHigh> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/DatexohmedacomventilatorVtexpHigh> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "DATEXOHMEDACOMVENTILATOR - VTexp High" ;
     skos:prefLabel "DATEXOHMEDACOMVENTILATOR - VTexp High"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/EdwardsVerbindingVerbroken> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/EdwardsVerbindingVerbroken> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "EDWARDS - Verbinding verbroken" ;
     skos:prefLabel "EDWARDS - Verbinding verbroken"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Hulbus345> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/Hulbus345> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "HULBUS - 345" ;
     skos:prefLabel "HULBUS - 345"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/HulbusLeakTooHigh> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/HulbusLeakTooHigh> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "HULBUS - Leak too high" ;
     skos:prefLabel "HULBUS - Leak too high"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/HulbusVteHigh> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/HulbusVteHigh> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "HULBUS - Vte high" ;
     skos:prefLabel "HULBUS - Vte high"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusAirTemperatureHigh> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/MedibusAirTemperatureHigh> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "MEDIBUS - Air temperature high" ;
     skos:prefLabel "MEDIBUS - Air temperature high"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusAirTemperatureLow> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/MedibusAirTemperatureLow> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "MEDIBUS - Air temperature low" ;
     skos:prefLabel "MEDIBUS - Air temperature low"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusCheckPatient> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/MedibusCheckPatient> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "MEDIBUS - Check patient" ;
     skos:prefLabel "MEDIBUS - Check patient"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusHumidityLow> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/MedibusHumidityLow> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "MEDIBUS - Humidity low" ;
     skos:prefLabel "MEDIBUS - Humidity low"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusHumiditySensorInoperable> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/MedibusHumiditySensorInoperable> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "MEDIBUS - Humidity Sensor inoperable" ;
     skos:prefLabel "MEDIBUS - Humidity Sensor inoperable"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusMattressTemperatureSettingDeviation> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/MedibusMattressTemperatureSettingDeviation> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "MEDIBUS - Mattress temperature  setting deviation" ;
     skos:prefLabel "MEDIBUS - Mattress temperature  setting deviation"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusRadiantHeaterAfter15MinsOperation> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/MedibusRadiantHeaterAfter15MinsOperation> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "MEDIBUS - Radiant heater after 15 mins. operation" ;
     skos:prefLabel "MEDIBUS - Radiant heater after 15 mins. operation"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusSlagvolumeHoog> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/MedibusSlagvolumeHoog> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "MEDIBUS - Slagvolume hoog" ;
     skos:prefLabel "MEDIBUS - Slagvolume hoog"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusVerbindingVerbroken> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/MedibusVerbindingVerbroken> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "MEDIBUS - Verbinding verbroken" ;
     skos:prefLabel "MEDIBUS - Verbinding verbroken"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MedibusVolumeNietConstant> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/MedibusVolumeNietConstant> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "MEDIBUS - Volume niet constant" ;
     skos:prefLabel "MEDIBUS - Volume niet constant"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MonitorArtStatischeDruk> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/MonitorArtStatischeDruk> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "Monitor - ART statische druk" ;
     skos:prefLabel "Monitor - ART statische druk"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MonitorHogeArtmean> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/MonitorHogeArtmean> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "Monitor - Hoge ARTmean" ;
     skos:prefLabel "Monitor - Hoge ARTmean"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MonitorLageArtmean> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/MonitorLageArtmean> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "Monitor - Lage ARTmean" ;
     skos:prefLabel "Monitor - Lage ARTmean"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MonitorLageSpo2> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/MonitorLageSpo2> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "Monitor - Lage SpO2" ;
     skos:prefLabel "Monitor - Lage SpO2"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/MonitorSpo2SensorUit> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/MonitorSpo2SensorUit> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "Monitor - SpO2 sensor uit" ;
     skos:prefLabel "Monitor - SpO2 sensor uit"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorAbpVerkleinen> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/PhilipsmonitorAbpVerkleinen> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "PHILIPSMONITOR - ABP verkleinen" ;
     skos:prefLabel "PHILIPSMONITOR - ABP verkleinen"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorCo2WijzigSchaalL> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/PhilipsmonitorCo2WijzigSchaalL> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "PHILIPSMONITOR - CO2 wijzig schaal l" ;
     skos:prefLabel "PHILIPSMONITOR - CO2 wijzig schaal l"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorDesaturatie> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/PhilipsmonitorDesaturatie> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "PHILIPSMONITOR - Desaturatie" ;
     skos:prefLabel "PHILIPSMONITOR - Desaturatie"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorExtremeTachy> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/PhilipsmonitorExtremeTachy> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "PHILIPSMONITOR - Extreme Tachy" ;
     skos:prefLabel "PHILIPSMONITOR - Extreme Tachy"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorHfHoog> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/PhilipsmonitorHfHoog> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "PHILIPSMONITOR - HF hoog" ;
     skos:prefLabel "PHILIPSMONITOR - HF hoog"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorLageHartfreq> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/PhilipsmonitorLageHartfreq> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "PHILIPSMONITOR - Lage hartfreq." ;
     skos:prefLabel "PHILIPSMONITOR - Lage hartfreq."@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorNietTeLerenEcg> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/PhilipsmonitorNietTeLerenEcg> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "PHILIPSMONITOR - Niet te leren ECG" ;
     skos:prefLabel "PHILIPSMONITOR - Niet te leren ECG"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorRespElektrLos> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/PhilipsmonitorRespElektrLos> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "PHILIPSMONITOR - Resp elektr.los" ;
     skos:prefLabel "PHILIPSMONITOR - Resp elektr.los"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorSpo2GeenPols> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/PhilipsmonitorSpo2GeenPols> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "PHILIPSMONITOR - SpO2 geen pols" ;
     skos:prefLabel "PHILIPSMONITOR - SpO2 geen pols"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorSpo2Hoog> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/PhilipsmonitorSpo2Hoog> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "PHILIPSMONITOR - SpO2 hoog" ;
     skos:prefLabel "PHILIPSMONITOR - SpO2 hoog"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorSpo2Laag> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/PhilipsmonitorSpo2Laag> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "PHILIPSMONITOR - SpO2 laag" ;
     skos:prefLabel "PHILIPSMONITOR - SpO2 laag"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorSpo2LagePfi> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/PhilipsmonitorSpo2LagePfi> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "PHILIPSMONITOR - SpO2 lage PFI" ;
     skos:prefLabel "PHILIPSMONITOR - SpO2 lage PFI"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PhilipsmonitorStoringInSpo2> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/PhilipsmonitorStoringInSpo2> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "PHILIPSMONITOR - Storing in SpO2" ;
     skos:prefLabel "PHILIPSMONITOR - Storing in SpO2"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/PrismaflexAlgemeneSysteemfout> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/PrismaflexAlgemeneSysteemfout> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "PRISMAFLEX - Algemene systeemfout" ;
     skos:prefLabel "PRISMAFLEX - Algemene systeemfout"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServoiAdemfrequentieHoog> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/ServoiAdemfrequentieHoog> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "SERVOI - Ademfrequentie: Hoog" ;
     skos:prefLabel "SERVOI - Ademfrequentie: Hoog"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServoiExpMinuutvolume> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/ServoiExpMinuutvolume> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "SERVOI - Exp. Minuutvolume" ;
     skos:prefLabel "SERVOI - Exp. Minuutvolume"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServoiVerbindingVerbroken> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/ServoiVerbindingVerbroken> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "SERVOI - Verbinding verbroken" ;
     skos:prefLabel "SERVOI - Verbinding verbroken"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServouAdemfrequentieHoog> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/ServouAdemfrequentieHoog> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "SERVOU - Ademfrequentie hoog" ;
     skos:prefLabel "SERVOU - Ademfrequentie hoog"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServouAdemfrequentieLaag> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/ServouAdemfrequentieLaag> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "SERVOU - Ademfrequentie laag" ;
     skos:prefLabel "SERVOU - Ademfrequentie laag"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServouBeademingsdrukHoog> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/ServouBeademingsdrukHoog> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "SERVOU - Beademingsdruk hoog" ;
     skos:prefLabel "SERVOU - Beademingsdruk hoog"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServouExpMinuutvolLaag> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/ServouExpMinuutvolLaag> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "SERVOU - Exp. minuutvol. laag" ;
     skos:prefLabel "SERVOU - Exp. minuutvol. laag"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServouPeepLaag> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/ServouPeepLaag> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "SERVOU - PEEP laag" ;
     skos:prefLabel "SERVOU - PEEP laag"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/ServouVolumeUitBlokkade> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/ServouVolumeUitBlokkade> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "SERVOU - Volume uit blokkade" ;
     skos:prefLabel "SERVOU - Volume uit blokkade"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Trilogy0X79> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/Trilogy0X79> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "TRILOGY - 0x79" ;
     skos:prefLabel "TRILOGY - 0x79"@en .
 
-<http://example.org/model-device-alarm-knowledge/vocab/alarm-label/TrilogyNetspanningAfwezig> a skos:Concept ;
-    skos:broader <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <http://example.org/model-device-alarm-knowledge/vocab/alarm-label/Scheme> ;
+<https://w3id.org/mda/vocab/alarm-label/TrilogyNetspanningAfwezig> a skos:Concept ;
+    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
+    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "TRILOGY - Netspanning afwezig" ;
     skos:prefLabel "TRILOGY - Netspanning afwezig"@en .
 

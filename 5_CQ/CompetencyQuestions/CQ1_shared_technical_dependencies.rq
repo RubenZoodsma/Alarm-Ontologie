@@ -14,7 +14,7 @@
 # the OWL-RL closure every archetype also gains entailed superclass types
 # like mda:Device, which would flood this with meaningless broad matches).
 
-PREFIX mda: <http://example.org/model-device-alarm-knowledge#>
+PREFIX mda: <https://w3id.org/mda/ontology/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 

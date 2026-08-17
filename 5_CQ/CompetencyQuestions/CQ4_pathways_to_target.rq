@@ -21,9 +21,9 @@
 # alarms, through three distinct metric pathways (ABP/ABP_Mean -> ArterialPressure,
 # VenousPressure -> VenousPressure, PulseFlowIndex -> TissuePerfusion).
 
-PREFIX mda: <http://example.org/model-device-alarm-knowledge#>
+PREFIX mda: <https://w3id.org/mda/ontology/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-PREFIX physiologicalProcess: <http://example.org/model-device-alarm-knowledge/vocab/physiological-process/>
+PREFIX physiologicalProcess: <https://w3id.org/mda/vocab/physiological-process/>
 
 SELECT ?label ?metricConcept ?property WHERE {
   VALUES ?target { physiologicalProcess:VascularCompliance }
