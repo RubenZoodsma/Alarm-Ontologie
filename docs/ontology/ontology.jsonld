@@ -3,30 +3,30 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2002/07/owl#unionOf" : [ {
     "@list" : [ {
-      "@id" : "https://w3id.org/mda/ontology/Component"
+      "@id" : "https://w3id.org/mda/Component"
     }, {
-      "@id" : "https://w3id.org/mda/ontology/Device"
+      "@id" : "https://w3id.org/mda/Device"
     }, {
-      "@id" : "https://w3id.org/mda/ontology/Sensor"
+      "@id" : "https://w3id.org/mda/Sensor"
     }, {
-      "@id" : "https://w3id.org/mda/ontology/Signal"
+      "@id" : "https://w3id.org/mda/Signal"
     }, {
-      "@id" : "https://w3id.org/mda/ontology/TherapeuticModality"
+      "@id" : "https://w3id.org/mda/TherapeuticModality"
     } ]
   } ]
 }, {
   "@id" : "_:genid15",
   "http://www.w3.org/2002/07/owl#inverseOf" : [ {
-    "@id" : "https://w3id.org/mda/ontology/administers"
+    "@id" : "https://w3id.org/mda/administers"
   } ]
 }, {
   "@id" : "_:genid16",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2002/07/owl#unionOf" : [ {
     "@list" : [ {
-      "@id" : "https://w3id.org/mda/ontology/Sensor"
+      "@id" : "https://w3id.org/mda/Sensor"
     }, {
-      "@id" : "https://w3id.org/mda/ontology/SignalAnalysis"
+      "@id" : "https://w3id.org/mda/SignalAnalysis"
     } ]
   } ]
 }, {
@@ -103,7 +103,7 @@
     "@value" : "1.0.0"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/Alarm",
+  "@id" : "https://w3id.org/mda/Alarm",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "Alarm"
@@ -123,7 +123,7 @@
     "@value" : "Alarm"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/AlarmMessage",
+  "@id" : "https://w3id.org/mda/AlarmMessage",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "AlarmMessage"
@@ -143,7 +143,7 @@
     "@value" : "Alarmbericht"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/AlarmType",
+  "@id" : "https://w3id.org/mda/AlarmType",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "AlarmType"
@@ -163,10 +163,10 @@
     "@value" : "Alarmtype"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Alarm"
+    "@id" : "https://w3id.org/mda/Alarm"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/AnatomicalPosition",
+  "@id" : "https://w3id.org/mda/AnatomicalPosition",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "AnatomicalPosition"
@@ -186,7 +186,7 @@
     "@value" : "Anatomische Positie"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/Component",
+  "@id" : "https://w3id.org/mda/Component",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "Component"
@@ -205,11 +205,11 @@
     "@language" : "nl",
     "@value" : "Onderdeel"
   } ],
-  "https://w3id.org/mda/ontology/nodeKind" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Individuated"
+  "https://w3id.org/mda/nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/Individuated"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/CriticalComponent",
+  "@id" : "https://w3id.org/mda/CriticalComponent",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "CriticalComponent"
@@ -229,10 +229,10 @@
     "@value" : "Kritiek onderdeel"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Component"
+    "@id" : "https://w3id.org/mda/Component"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/Device",
+  "@id" : "https://w3id.org/mda/Device",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "Device"
@@ -251,11 +251,11 @@
     "@language" : "en",
     "@value" : "Device"
   } ],
-  "https://w3id.org/mda/ontology/nodeKind" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Individuated"
+  "https://w3id.org/mda/nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/Individuated"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/FunctionalUnit",
+  "@id" : "https://w3id.org/mda/FunctionalUnit",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "FunctionalUnit"
@@ -275,23 +275,23 @@
     "@value" : "Functionele eenheid"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Component"
+    "@id" : "https://w3id.org/mda/Component"
   } ],
   "http://www.w3.org/2002/07/owl#disjointWith" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Sensor"
+    "@id" : "https://w3id.org/mda/Sensor"
   } ],
-  "https://w3id.org/mda/ontology/nodeKind" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Individuated"
+  "https://w3id.org/mda/nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/Individuated"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/Individuated",
+  "@id" : "https://w3id.org/mda/Individuated",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
     "@value" : "individuated"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/Laterality",
+  "@id" : "https://w3id.org/mda/Laterality",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "Laterality"
@@ -311,7 +311,7 @@
     "@value" : "Laterality"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/Metric",
+  "@id" : "https://w3id.org/mda/Metric",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "Metric"
@@ -330,11 +330,11 @@
     "@language" : "nl",
     "@value" : "Metriek"
   } ],
-  "https://w3id.org/mda/ontology/nodeKind" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Stateful"
+  "https://w3id.org/mda/nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/Stateful"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/Organ",
+  "@id" : "https://w3id.org/mda/Organ",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "Organ"
@@ -354,7 +354,7 @@
     "@value" : "Organ"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/OrganSystem",
+  "@id" : "https://w3id.org/mda/OrganSystem",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "OrganSystem"
@@ -374,7 +374,7 @@
     "@value" : "Organ System"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/Patient",
+  "@id" : "https://w3id.org/mda/Patient",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "Patient"
@@ -393,11 +393,11 @@
     "@language" : "nl",
     "@value" : "Patiënt"
   } ],
-  "https://w3id.org/mda/ontology/nodeKind" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Individuated"
+  "https://w3id.org/mda/nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/Individuated"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/PhysiologicalProcess",
+  "@id" : "https://w3id.org/mda/PhysiologicalProcess",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "PhysiologicalProcess"
@@ -417,7 +417,7 @@
     "@value" : "Physiological Process"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/PhysiologicalProperty",
+  "@id" : "https://w3id.org/mda/PhysiologicalProperty",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "PhysiologicalProperty"
@@ -437,7 +437,7 @@
     "@value" : "Physiological Property"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/PostAlarmValidScheme",
+  "@id" : "https://w3id.org/mda/PostAlarmValidScheme",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "PostAlarmValidScheme"
@@ -459,19 +459,19 @@
   "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#ConceptScheme"
   } ],
-  "https://w3id.org/mda/ontology/postAlarmValidityDuration" : [ {
+  "https://w3id.org/mda/postAlarmValidityDuration" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#duration",
     "@value" : "PT60S"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/Referential",
+  "@id" : "https://w3id.org/mda/Referential",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
     "@value" : "referential"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/Sensor",
+  "@id" : "https://w3id.org/mda/Sensor",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "Sensor"
@@ -491,13 +491,13 @@
     "@value" : "Sensor"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Component"
+    "@id" : "https://w3id.org/mda/Component"
   } ],
-  "https://w3id.org/mda/ontology/nodeKind" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Individuated"
+  "https://w3id.org/mda/nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/Individuated"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/Signal",
+  "@id" : "https://w3id.org/mda/Signal",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "Signal"
@@ -516,11 +516,11 @@
     "@language" : "en",
     "@value" : "Signal"
   } ],
-  "https://w3id.org/mda/ontology/nodeKind" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Individuated"
+  "https://w3id.org/mda/nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/Individuated"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/SignalAnalysis",
+  "@id" : "https://w3id.org/mda/SignalAnalysis",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "SignalAnalysis"
@@ -540,14 +540,14 @@
     "@value" : "Signal analysis"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/Stateful",
+  "@id" : "https://w3id.org/mda/Stateful",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
     "@value" : "stateful"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/TherapeuticModality",
+  "@id" : "https://w3id.org/mda/TherapeuticModality",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "TherapeuticModality"
@@ -567,7 +567,7 @@
     "@value" : "Therapeutische Modaliteit"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/administers",
+  "@id" : "https://w3id.org/mda/administers",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "administers"
@@ -580,7 +580,7 @@
     "@value" : "Relates a device to the therapeutic modality it administers."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Device"
+    "@id" : "https://w3id.org/mda/Device"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -590,14 +590,14 @@
     "@value" : "toegediend"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/TherapeuticModality"
+    "@id" : "https://w3id.org/mda/TherapeuticModality"
   } ],
-  "https://w3id.org/mda/ontology/situational" : [ {
+  "https://w3id.org/mda/situational" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
     "@value" : "true"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/analyzedBy",
+  "@id" : "https://w3id.org/mda/analyzedBy",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "analyzedBy"
@@ -610,7 +610,7 @@
     "@value" : "Relates a signal to the signal-analysis step that consumes it. The only edge reaching mda:SignalAnalysis — deliberately not also reachable directly from mda:FunctionalUnit (no performsAnalysis-style shortcut exists), so there is exactly one path to an analysis step, always through the specific signal(s) it actually consumes. A second, shorter path would let ontology_tree.py's shortest-path class-tree derivation silently prefer it over the precise one (the same failure mode mda:administers was introduced to avoid for mda:TherapeuticModality — see the Technical axioms note in inference.ttl). Not functional: the same signal can feed more than one analysis step (e.g. ECG lead II feeds both a heart-rate computation and an aVF derivation)."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Signal"
+    "@id" : "https://w3id.org/mda/Signal"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -620,10 +620,10 @@
     "@value" : "geanalyseerd door"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/SignalAnalysis"
+    "@id" : "https://w3id.org/mda/SignalAnalysis"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/approximates",
+  "@id" : "https://w3id.org/mda/approximates",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "approximates"
@@ -636,7 +636,7 @@
     "@value" : "Relates a metric to the physiological property it approximates."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Metric"
+    "@id" : "https://w3id.org/mda/Metric"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -646,14 +646,14 @@
     "@value" : "benadert"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/PhysiologicalProperty"
+    "@id" : "https://w3id.org/mda/PhysiologicalProperty"
   } ],
-  "https://w3id.org/mda/ontology/situational" : [ {
+  "https://w3id.org/mda/situational" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
     "@value" : "true"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/concernsPatient",
+  "@id" : "https://w3id.org/mda/concernsPatient",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty", "http://www.w3.org/2002/07/owl#FunctionalProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "concernsPatient"
@@ -666,7 +666,7 @@
     "@value" : "Relates an alarm message to the patient it concerns — the shared, persistent merge anchor. Deliberately a dead end: it no longer continues on to mda:Device via mda:isMonitoredBy (see mda:triggeredBy's comment for why). Functional: one message concerns exactly one patient — it is minted fresh per alarm precisely so it never needs to concern more than one."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/AlarmMessage"
+    "@id" : "https://w3id.org/mda/AlarmMessage"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "nl",
@@ -676,10 +676,10 @@
     "@value" : "concerns patient"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Patient"
+    "@id" : "https://w3id.org/mda/Patient"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasAnatomicalPosition",
+  "@id" : "https://w3id.org/mda/hasAnatomicalPosition",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty", "http://www.w3.org/2002/07/owl#FunctionalProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasAnatomicalPosition"
@@ -692,7 +692,7 @@
     "@value" : "Relates a sensor to its anatomical position on the body. Functional: a physical sensor occupies exactly one position at a time."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Sensor"
+    "@id" : "https://w3id.org/mda/Sensor"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -702,14 +702,14 @@
     "@value" : "heeft anatomische positie"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/AnatomicalPosition"
+    "@id" : "https://w3id.org/mda/AnatomicalPosition"
   } ],
-  "https://w3id.org/mda/ontology/refinesParticularIdentity" : [ {
+  "https://w3id.org/mda/refinesParticularIdentity" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
     "@value" : "true"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasCategory",
+  "@id" : "https://w3id.org/mda/hasCategory",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasCategory"
@@ -722,7 +722,7 @@
     "@value" : "The category of the alarm (a descriptive, alongside label and priority)."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Alarm"
+    "@id" : "https://w3id.org/mda/Alarm"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -734,11 +734,11 @@
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
   } ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+  "https://w3id.org/mda/valuesFromScheme" : [ {
     "@id" : "https://w3id.org/mda/vocab/alarm-category/Scheme"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasComponent",
+  "@id" : "https://w3id.org/mda/hasComponent",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty", "http://www.w3.org/2002/07/owl#InverseFunctionalProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasComponent"
@@ -751,7 +751,7 @@
     "@value" : "Relates a device to its components, sensing or not (e.g. a connection port, power unit, heating element, or functional unit). Inverse-functional: a component belongs to at most one device — no separate isComponentOf property is declared; query in this direction only."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Device"
+    "@id" : "https://w3id.org/mda/Device"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -761,10 +761,10 @@
     "@value" : "heeft onderdeel"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Component"
+    "@id" : "https://w3id.org/mda/Component"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasComponentOperationState",
+  "@id" : "https://w3id.org/mda/hasComponentOperationState",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasComponentOperationState"
@@ -777,7 +777,7 @@
     "@value" : "The operational state of a non-sensing component, e.g. Disconnected or Warning. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Component"
+    "@id" : "https://w3id.org/mda/Component"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -790,13 +790,13 @@
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subPropertyOf" : [ {
-    "@id" : "https://w3id.org/mda/ontology/hasOperationState"
+    "@id" : "https://w3id.org/mda/hasOperationState"
   } ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+  "https://w3id.org/mda/valuesFromScheme" : [ {
     "@id" : "https://w3id.org/mda/vocab/operation-state/Scheme"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasDeviceOperationState",
+  "@id" : "https://w3id.org/mda/hasDeviceOperationState",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasDeviceOperationState"
@@ -809,7 +809,7 @@
     "@value" : "The operational state of a device itself, e.g. Disconnected. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Device"
+    "@id" : "https://w3id.org/mda/Device"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -822,13 +822,13 @@
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subPropertyOf" : [ {
-    "@id" : "https://w3id.org/mda/ontology/hasOperationState"
+    "@id" : "https://w3id.org/mda/hasOperationState"
   } ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+  "https://w3id.org/mda/valuesFromScheme" : [ {
     "@id" : "https://w3id.org/mda/vocab/operation-state/Scheme"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasDeviceType",
+  "@id" : "https://w3id.org/mda/hasDeviceType",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasDeviceType"
@@ -841,7 +841,7 @@
     "@value" : "The specific type or model designation of the device (e.g. ServoU)."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Device"
+    "@id" : "https://w3id.org/mda/Device"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -853,15 +853,15 @@
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
   } ],
-  "https://w3id.org/mda/ontology/refinesUniversalIdentity" : [ {
+  "https://w3id.org/mda/refinesUniversalIdentity" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
     "@value" : "true"
   } ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+  "https://w3id.org/mda/valuesFromScheme" : [ {
     "@id" : "https://w3id.org/mda/vocab/device-type/Scheme"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasDuration",
+  "@id" : "https://w3id.org/mda/hasDuration",
   "@type" : [ "http://www.w3.org/2002/07/owl#DatatypeProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasDuration"
@@ -874,7 +874,7 @@
     "@value" : "The duration of the alarm."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Alarm"
+    "@id" : "https://w3id.org/mda/Alarm"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -887,7 +887,7 @@
     "@id" : "http://www.w3.org/2001/XMLSchema#duration"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasEnd",
+  "@id" : "https://w3id.org/mda/hasEnd",
   "@type" : [ "http://www.w3.org/2002/07/owl#DatatypeProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasEnd"
@@ -900,7 +900,7 @@
     "@value" : "The end time of the alarm."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Alarm"
+    "@id" : "https://w3id.org/mda/Alarm"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -913,7 +913,7 @@
     "@id" : "http://www.w3.org/2001/XMLSchema#dateTime"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasFunctionalUnit",
+  "@id" : "https://w3id.org/mda/hasFunctionalUnit",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty", "http://www.w3.org/2002/07/owl#InverseFunctionalProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasFunctionalUnit"
@@ -926,7 +926,7 @@
     "@value" : "Relates a device to a functional unit it houses (e.g. an ECG module, an SpO2 module) — a sub-property of hasComponent, since every functional unit is a component. Inverse-functional: a functional unit belongs to at most one device."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Device"
+    "@id" : "https://w3id.org/mda/Device"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -936,13 +936,13 @@
     "@value" : "heeft functionele eenheid"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/FunctionalUnit"
+    "@id" : "https://w3id.org/mda/FunctionalUnit"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subPropertyOf" : [ {
-    "@id" : "https://w3id.org/mda/ontology/hasComponent"
+    "@id" : "https://w3id.org/mda/hasComponent"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasLabel",
+  "@id" : "https://w3id.org/mda/hasLabel",
   "@type" : [ "http://www.w3.org/2002/07/owl#DatatypeProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasLabel"
@@ -955,7 +955,7 @@
     "@value" : "The free-text label identifying an alarm type, exactly as it occurs in the source data (e.g. 'PHILIPSMONITOR - SpO2 geen pols') — a literal, not a concept: alarm labels routinely contain spaces and punctuation no SKOS notation can carry. mda:hasLabelConcept is the companion controlled-vocabulary reading of the same label — the two are deliberately BOTH kept, not alternatives: this ontology wants both the label as encountered and a stable, deduplicated vocabulary entry for it (the same label recurs across archetypes that differ only in priority). AlarmType is its only domain; a plain Alarm instance reaches its label via mda:isOfType."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/AlarmType"
+    "@id" : "https://w3id.org/mda/AlarmType"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -968,7 +968,7 @@
     "@id" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasLabelConcept",
+  "@id" : "https://w3id.org/mda/hasLabelConcept",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasLabelConcept"
@@ -981,7 +981,7 @@
     "@value" : "Relates an alarm type to its controlled-vocabulary concept in mda:AlarmLabel's scheme — one concept per distinct label string encountered, shared across every archetype that uses that label regardless of priority (2_READOUT/vocab_readout.py's label_concept_iri keys on the label alone, not the archetype). The companion of mda:hasLabel, not a replacement for it."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/AlarmType"
+    "@id" : "https://w3id.org/mda/AlarmType"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -993,11 +993,11 @@
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
   } ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+  "https://w3id.org/mda/valuesFromScheme" : [ {
     "@id" : "https://w3id.org/mda/vocab/alarm-label/Scheme"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasLaterality",
+  "@id" : "https://w3id.org/mda/hasLaterality",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty", "http://www.w3.org/2002/07/owl#FunctionalProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasLaterality"
@@ -1010,7 +1010,7 @@
     "@value" : "Relates a sensor to its laterality (left, right, bilateral). Functional: a physical sensor has exactly one laterality at a time."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Sensor"
+    "@id" : "https://w3id.org/mda/Sensor"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -1020,14 +1020,14 @@
     "@value" : "heeft lateraliteit"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Laterality"
+    "@id" : "https://w3id.org/mda/Laterality"
   } ],
-  "https://w3id.org/mda/ontology/refinesParticularIdentity" : [ {
+  "https://w3id.org/mda/refinesParticularIdentity" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
     "@value" : "true"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasManufacturer",
+  "@id" : "https://w3id.org/mda/hasManufacturer",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasManufacturer"
@@ -1040,7 +1040,7 @@
     "@value" : "The manufacturer or product line of the device."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Device"
+    "@id" : "https://w3id.org/mda/Device"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -1052,15 +1052,15 @@
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
   } ],
-  "https://w3id.org/mda/ontology/refinesUniversalIdentity" : [ {
+  "https://w3id.org/mda/refinesUniversalIdentity" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
     "@value" : "true"
   } ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+  "https://w3id.org/mda/valuesFromScheme" : [ {
     "@id" : "https://w3id.org/mda/vocab/manufacturer/Scheme"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasMessage",
+  "@id" : "https://w3id.org/mda/hasMessage",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty", "http://www.w3.org/2002/07/owl#FunctionalProperty", "http://www.w3.org/2002/07/owl#InverseFunctionalProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasMessage"
@@ -1073,7 +1073,7 @@
     "@value" : "The alarm's message: a per-alarm mda:AlarmMessage node carrying the occurrence's independent facets — mda:concernsPatient (who this alarm is about) and mda:triggeredBy (what caused it) — as siblings, neither reached through the other (see mda:triggeredBy's comment for why they used to be chained and no longer are). Distinct per alarm so many alarms can reference the same shared patient/device and merge there. Functional and inverse-functional: one alarm has exactly one message and one message belongs to exactly one alarm — alarm_iri/message_iri are minted from the same (device_id, start) key in 4_OPERATIONAL/op_knowledge.py precisely to keep this a bijection."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Alarm"
+    "@id" : "https://w3id.org/mda/Alarm"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -1083,10 +1083,10 @@
     "@value" : "heeft bericht"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/AlarmMessage"
+    "@id" : "https://w3id.org/mda/AlarmMessage"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasOperationState",
+  "@id" : "https://w3id.org/mda/hasOperationState",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasOperationState"
@@ -1113,35 +1113,35 @@
   } ],
   "http://www.w3.org/2002/07/owl#propertyChainAxiom" : [ {
     "@list" : [ {
-      "@id" : "https://w3id.org/mda/ontology/hasFunctionalUnit"
+      "@id" : "https://w3id.org/mda/hasFunctionalUnit"
     }, {
-      "@id" : "https://w3id.org/mda/ontology/hasOperationState"
+      "@id" : "https://w3id.org/mda/hasOperationState"
     } ]
   }, {
     "@list" : [ {
-      "@id" : "https://w3id.org/mda/ontology/hasSensor"
+      "@id" : "https://w3id.org/mda/hasSensor"
     }, {
-      "@id" : "https://w3id.org/mda/ontology/hasOperationState"
+      "@id" : "https://w3id.org/mda/hasOperationState"
     } ]
   }, {
     "@list" : [ {
-      "@id" : "https://w3id.org/mda/ontology/producesSignal"
+      "@id" : "https://w3id.org/mda/producesSignal"
     }, {
-      "@id" : "https://w3id.org/mda/ontology/hasOperationState"
+      "@id" : "https://w3id.org/mda/hasOperationState"
     } ]
   }, {
     "@list" : [ {
       "@id" : "_:genid15"
     }, {
-      "@id" : "https://w3id.org/mda/ontology/hasOperationState"
+      "@id" : "https://w3id.org/mda/hasOperationState"
     } ]
   } ],
-  "https://w3id.org/mda/ontology/persistsPostAlarm" : [ {
+  "https://w3id.org/mda/persistsPostAlarm" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
     "@value" : "true"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasPhase",
+  "@id" : "https://w3id.org/mda/hasPhase",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasPhase"
@@ -1154,7 +1154,7 @@
     "@value" : "The phase of the metric to which the alarm condition applies (e.g. mean, systolic, diastolic, end-expiratory)."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Metric"
+    "@id" : "https://w3id.org/mda/Metric"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -1166,15 +1166,15 @@
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
   } ],
-  "https://w3id.org/mda/ontology/refinesUniversalIdentity" : [ {
+  "https://w3id.org/mda/refinesUniversalIdentity" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
     "@value" : "true"
   } ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+  "https://w3id.org/mda/valuesFromScheme" : [ {
     "@id" : "https://w3id.org/mda/vocab/metric-phase/Scheme"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasPriority",
+  "@id" : "https://w3id.org/mda/hasPriority",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasPriority"
@@ -1187,7 +1187,7 @@
     "@value" : "The priority level of an alarm or alarm message."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Alarm"
+    "@id" : "https://w3id.org/mda/Alarm"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -1199,11 +1199,11 @@
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
   } ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+  "https://w3id.org/mda/valuesFromScheme" : [ {
     "@id" : "https://w3id.org/mda/vocab/alarm-priority/Scheme"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasQualityState",
+  "@id" : "https://w3id.org/mda/hasQualityState",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasQualityState"
@@ -1216,7 +1216,7 @@
     "@value" : "The quality state of a signal, indicating measurement reliability."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Signal"
+    "@id" : "https://w3id.org/mda/Signal"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -1228,15 +1228,15 @@
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
   } ],
-  "https://w3id.org/mda/ontology/persistsPostAlarm" : [ {
+  "https://w3id.org/mda/persistsPostAlarm" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
     "@value" : "true"
   } ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+  "https://w3id.org/mda/valuesFromScheme" : [ {
     "@id" : "https://w3id.org/mda/vocab/quality-state/Scheme"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasRate",
+  "@id" : "https://w3id.org/mda/hasRate",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasRate"
@@ -1249,7 +1249,7 @@
     "@value" : "The rate deviation of the metric that raises the alarm (e.g. increased, decreased, critical decrease)."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Metric"
+    "@id" : "https://w3id.org/mda/Metric"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -1261,11 +1261,11 @@
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
   } ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+  "https://w3id.org/mda/valuesFromScheme" : [ {
     "@id" : "https://w3id.org/mda/vocab/metric-rate/Scheme"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasRhythm",
+  "@id" : "https://w3id.org/mda/hasRhythm",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasRhythm"
@@ -1278,7 +1278,7 @@
     "@value" : "The rhythm pattern of the metric to which the alarm condition applies (e.g. irregular)."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Metric"
+    "@id" : "https://w3id.org/mda/Metric"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -1290,11 +1290,11 @@
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
   } ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+  "https://w3id.org/mda/valuesFromScheme" : [ {
     "@id" : "https://w3id.org/mda/vocab/rhythm/Scheme"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasSensor",
+  "@id" : "https://w3id.org/mda/hasSensor",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasSensor"
@@ -1307,7 +1307,7 @@
     "@value" : "Relates a functional unit to the physical sensor(s) it reads from (e.g. an ECG module to each of its 12 leads). NOT a sub-property of hasComponent: its domain is FunctionalUnit, not Device, and hasComponent's domain is fixed to Device — declaring it a sub-property would wrongly entail every FunctionalUnit is itself a Device. A sensor no longer belongs directly to a device (see FunctionalUnit below for why: the sensor is the physical probe, the functional unit is what analyses what it picks up). Deliberately NOT owl:InverseFunctionalProperty, unlike most of this file's other IFP-marked relations: 2_READOUT/outcome/inference.ttl's FunctionalUnit recipe axioms assert hasSensor via an owl:hasValue restriction, so every alarm typed to the same FunctionalUnit concept (e.g. every FU_PneumoTachograph alarm) entails hasSensor to the SAME shared sensor concept, not a fresh individual per alarm the way 2_READOUT/vocab_readout.py's own per-row blank nodes do. Confirmed by an isolated reasoner test: with InverseFunctionalProperty declared, prp-ifp forces every one of those alarms' FunctionalUnit individuals into owl:sameAs with each other — and would do the same across grounded, per-patient data in 4_OPERATIONAL if this property were ever reasoned over there, merging different patients' equipment. mda:producesSignal carries the same latent risk if a future recipe axiom (e.g. the pending ECG one) ever reuses one signal concept across two different sensor concepts — watch for it there too."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/FunctionalUnit"
+    "@id" : "https://w3id.org/mda/FunctionalUnit"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -1317,10 +1317,10 @@
     "@value" : "heeft sensor"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Sensor"
+    "@id" : "https://w3id.org/mda/Sensor"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasSensorOperationState",
+  "@id" : "https://w3id.org/mda/hasSensorOperationState",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasSensorOperationState"
@@ -1333,7 +1333,7 @@
     "@value" : "The operational state of a sensor, e.g. Enabled, Disabled, or Malfunction. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Sensor"
+    "@id" : "https://w3id.org/mda/Sensor"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -1346,13 +1346,13 @@
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subPropertyOf" : [ {
-    "@id" : "https://w3id.org/mda/ontology/hasOperationState"
+    "@id" : "https://w3id.org/mda/hasOperationState"
   } ],
-  "https://w3id.org/mda/ontology/valuesFromScheme" : [ {
+  "https://w3id.org/mda/valuesFromScheme" : [ {
     "@id" : "https://w3id.org/mda/vocab/operation-state/Scheme"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/hasStart",
+  "@id" : "https://w3id.org/mda/hasStart",
   "@type" : [ "http://www.w3.org/2002/07/owl#DatatypeProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "hasStart"
@@ -1365,7 +1365,7 @@
     "@value" : "The start time of the alarm."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Alarm"
+    "@id" : "https://w3id.org/mda/Alarm"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -1378,7 +1378,7 @@
     "@id" : "http://www.w3.org/2001/XMLSchema#dateTime"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/instantiatesClass",
+  "@id" : "https://w3id.org/mda/instantiatesClass",
   "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "instantiatesClass"
@@ -1404,7 +1404,7 @@
     "@id" : "http://www.w3.org/2002/07/owl#Class"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/isMonitoredBy",
+  "@id" : "https://w3id.org/mda/isMonitoredBy",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty", "http://www.w3.org/2002/07/owl#InverseFunctionalProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "isMonitoredBy"
@@ -1417,7 +1417,7 @@
     "@value" : "Relates a patient to the device currently monitoring them. No longer part of the blueprint's structural path to mda:Device (see mda:triggeredBy) — that routing asserted every alarm-raising device 'monitors' the patient, which overclaims for a therapeutic one. What remains is this property's own, separate justification: inverse-functional, a device monitors at most one patient at a time — a physical monitor is not shared between two patients simultaneously, even though it may serve different patients at different times — so a reasoner can catch a double-booking directly (as an entailed owl:sameAs between two asserted-distinct patients) rather than relying on generator discipline, the same pattern as mda:hasSensor/mda:producesSignal below. Only meaningful if isMonitoredBy is asserted per-instant, not as a standing fact for a patient's whole encounter — see 4_OPERATIONAL/op_knowledge.py, the only place it is still asserted."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Patient"
+    "@id" : "https://w3id.org/mda/Patient"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -1427,10 +1427,10 @@
     "@value" : "wordt bewaakt door"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Device"
+    "@id" : "https://w3id.org/mda/Device"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/isOfType",
+  "@id" : "https://w3id.org/mda/isOfType",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty", "http://www.w3.org/2002/07/owl#FunctionalProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "isOfType"
@@ -1443,7 +1443,7 @@
     "@value" : "Links a concrete alarm instance to its archetypal alarm type in the type catalogue, from which default structural knowledge (device type, sensor type, signal type) can be inherited. Functional: one alarm occurrence is of exactly one archetype."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Alarm"
+    "@id" : "https://w3id.org/mda/Alarm"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -1453,10 +1453,10 @@
     "@value" : "is van type"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/AlarmType"
+    "@id" : "https://w3id.org/mda/AlarmType"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/isPropertyOf",
+  "@id" : "https://w3id.org/mda/isPropertyOf",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "isPropertyOf"
@@ -1469,7 +1469,7 @@
     "@value" : "Relates a physiological property to the process it characterises."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/PhysiologicalProperty"
+    "@id" : "https://w3id.org/mda/PhysiologicalProperty"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "nl",
@@ -1479,14 +1479,14 @@
     "@value" : "is property of"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/PhysiologicalProcess"
+    "@id" : "https://w3id.org/mda/PhysiologicalProcess"
   } ],
-  "https://w3id.org/mda/ontology/situational" : [ {
+  "https://w3id.org/mda/situational" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
     "@value" : "true"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/nodeKind",
+  "@id" : "https://w3id.org/mda/nodeKind",
   "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "nodeKind"
@@ -1506,7 +1506,7 @@
     "@value" : "node kind"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/organPartOfSystem",
+  "@id" : "https://w3id.org/mda/organPartOfSystem",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "organPartOfSystem"
@@ -1519,7 +1519,7 @@
     "@value" : "Relates an organ to the organ system it belongs to."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Organ"
+    "@id" : "https://w3id.org/mda/Organ"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "nl",
@@ -1529,14 +1529,14 @@
     "@value" : "organ part of system"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/OrganSystem"
+    "@id" : "https://w3id.org/mda/OrganSystem"
   } ],
-  "https://w3id.org/mda/ontology/situational" : [ {
+  "https://w3id.org/mda/situational" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
     "@value" : "true"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/persistsPostAlarm",
+  "@id" : "https://w3id.org/mda/persistsPostAlarm",
   "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "persistsPostAlarm"
@@ -1559,7 +1559,7 @@
     "@id" : "http://www.w3.org/2001/XMLSchema#boolean"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/postAlarmValidityDuration",
+  "@id" : "https://w3id.org/mda/postAlarmValidityDuration",
   "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "postAlarmValidityDuration"
@@ -1582,7 +1582,7 @@
     "@id" : "http://www.w3.org/2001/XMLSchema#duration"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/presentIn",
+  "@id" : "https://w3id.org/mda/presentIn",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "presentIn"
@@ -1595,7 +1595,7 @@
     "@value" : "Relates a physiological process to the organ it occurs in."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/PhysiologicalProcess"
+    "@id" : "https://w3id.org/mda/PhysiologicalProcess"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "nl",
@@ -1605,14 +1605,14 @@
     "@value" : "present in"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Organ"
+    "@id" : "https://w3id.org/mda/Organ"
   } ],
-  "https://w3id.org/mda/ontology/situational" : [ {
+  "https://w3id.org/mda/situational" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
     "@value" : "true"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/producesMetric",
+  "@id" : "https://w3id.org/mda/producesMetric",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "producesMetric"
@@ -1625,7 +1625,7 @@
     "@value" : "Relates a signal-analysis step to the metric it computes."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/SignalAnalysis"
+    "@id" : "https://w3id.org/mda/SignalAnalysis"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "nl",
@@ -1635,10 +1635,10 @@
     "@value" : "produces metric"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Metric"
+    "@id" : "https://w3id.org/mda/Metric"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/producesSignal",
+  "@id" : "https://w3id.org/mda/producesSignal",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty", "http://www.w3.org/2002/07/owl#InverseFunctionalProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "producesSignal"
@@ -1661,10 +1661,10 @@
     "@value" : "produces signal"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Signal"
+    "@id" : "https://w3id.org/mda/Signal"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/refinesParticularIdentity",
+  "@id" : "https://w3id.org/mda/refinesParticularIdentity",
   "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "refinesParticularIdentity"
@@ -1684,7 +1684,7 @@
     "@value" : "verfijnt particuliere identiteit"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/refinesUniversalIdentity",
+  "@id" : "https://w3id.org/mda/refinesUniversalIdentity",
   "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "refinesUniversalIdentity"
@@ -1704,7 +1704,7 @@
     "@value" : "verfijnt universele identiteit"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/sensorProducesSignal",
+  "@id" : "https://w3id.org/mda/sensorProducesSignal",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "sensorProducesSignal"
@@ -1717,7 +1717,7 @@
     "@value" : "The CSV/tree-facing case of mda:producesSignal: a sensor's own raw signal. A single-domain sub-property so 2_READOUT/vocab_readout.py's ontology-derived tree can attach Signal under Sensor unambiguously — see mda:producesSignal's comment. Every fact asserted through it still entails the general mda:producesSignal fact (and, transitively, mda:hasOperationState's propagation chain) via rdfs:subPropertyOf."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Sensor"
+    "@id" : "https://w3id.org/mda/Sensor"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "nl",
@@ -1727,13 +1727,13 @@
     "@value" : "sensor produces signal"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Signal"
+    "@id" : "https://w3id.org/mda/Signal"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subPropertyOf" : [ {
-    "@id" : "https://w3id.org/mda/ontology/producesSignal"
+    "@id" : "https://w3id.org/mda/producesSignal"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/situational",
+  "@id" : "https://w3id.org/mda/situational",
   "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "situational"
@@ -1756,7 +1756,7 @@
     "@id" : "http://www.w3.org/2001/XMLSchema#boolean"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/targetsProcess",
+  "@id" : "https://w3id.org/mda/targetsProcess",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "targetsProcess"
@@ -1769,7 +1769,7 @@
     "@value" : "Relates a therapeutic modality to the physiological process it targets."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/TherapeuticModality"
+    "@id" : "https://w3id.org/mda/TherapeuticModality"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "nl",
@@ -1779,14 +1779,14 @@
     "@value" : "targets process"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/PhysiologicalProcess"
+    "@id" : "https://w3id.org/mda/PhysiologicalProcess"
   } ],
-  "https://w3id.org/mda/ontology/situational" : [ {
+  "https://w3id.org/mda/situational" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
     "@value" : "true"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/triggeredBy",
+  "@id" : "https://w3id.org/mda/triggeredBy",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty", "http://www.w3.org/2002/07/owl#FunctionalProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "triggeredBy"
@@ -1799,7 +1799,7 @@
     "@value" : "Relates an alarm message directly to the device whose technical structure it implicates — the sole path from AlarmMessage into the mda:Device subtree (mda:hasFunctionalUnit, mda:hasSensor, ...). Replaces routing that reach through mda:concernsPatient/mda:isMonitoredBy: that chain asserted every alarm-raising device 'monitors' the patient, which is false for a fundamentally therapeutic device (mda:MechanicalVentilator, mda:Dialysator, mda:ExtracorporealMembraneOxygenator, mda:Incubator/mda:Thermoregulator all administer a therapy — see mda:administers — rather than principally observe). mda:isMonitoredBy itself is UNCHANGED and still used, but only for its own actual justification: 4_OPERATIONAL/op_knowledge.py's per-instant double-booking check, asserted fresh at grounding time, never derived from or dependent on this blueprint-level structure. Functional, not inverse-functional: one message has exactly one triggering device, but one device triggers many messages over its lifetime — unlike mda:hasMessage's strict bijection."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology/AlarmMessage"
+    "@id" : "https://w3id.org/mda/AlarmMessage"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -1809,10 +1809,10 @@
     "@value" : "veroorzaakt door"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Device"
+    "@id" : "https://w3id.org/mda/Device"
   } ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/valuesFromScheme",
+  "@id" : "https://w3id.org/mda/valuesFromScheme",
   "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
     "@value" : "valuesFromScheme"
@@ -1836,72 +1836,72 @@
   } ]
 }, {
   "@id" : "https://w3id.org/mda/vocab/anatomical-position/Scheme",
-  "https://w3id.org/mda/ontology/instantiatesClass" : [ {
-    "@id" : "https://w3id.org/mda/ontology/AnatomicalPosition"
+  "https://w3id.org/mda/instantiatesClass" : [ {
+    "@id" : "https://w3id.org/mda/AnatomicalPosition"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/vocab/component/Scheme",
-  "https://w3id.org/mda/ontology/instantiatesClass" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Component"
+  "https://w3id.org/mda/instantiatesClass" : [ {
+    "@id" : "https://w3id.org/mda/Component"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/vocab/device/Scheme",
-  "https://w3id.org/mda/ontology/instantiatesClass" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Device"
+  "https://w3id.org/mda/instantiatesClass" : [ {
+    "@id" : "https://w3id.org/mda/Device"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/vocab/functional-unit/Scheme",
-  "https://w3id.org/mda/ontology/instantiatesClass" : [ {
-    "@id" : "https://w3id.org/mda/ontology/FunctionalUnit"
+  "https://w3id.org/mda/instantiatesClass" : [ {
+    "@id" : "https://w3id.org/mda/FunctionalUnit"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/vocab/laterality/Scheme",
-  "https://w3id.org/mda/ontology/instantiatesClass" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Laterality"
+  "https://w3id.org/mda/instantiatesClass" : [ {
+    "@id" : "https://w3id.org/mda/Laterality"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/vocab/metric/Scheme",
-  "https://w3id.org/mda/ontology/instantiatesClass" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Metric"
+  "https://w3id.org/mda/instantiatesClass" : [ {
+    "@id" : "https://w3id.org/mda/Metric"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/vocab/organ-system/Scheme",
-  "https://w3id.org/mda/ontology/instantiatesClass" : [ {
-    "@id" : "https://w3id.org/mda/ontology/OrganSystem"
+  "https://w3id.org/mda/instantiatesClass" : [ {
+    "@id" : "https://w3id.org/mda/OrganSystem"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/vocab/organ/Scheme",
-  "https://w3id.org/mda/ontology/instantiatesClass" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Organ"
+  "https://w3id.org/mda/instantiatesClass" : [ {
+    "@id" : "https://w3id.org/mda/Organ"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/vocab/patient/Scheme",
-  "https://w3id.org/mda/ontology/instantiatesClass" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Patient"
+  "https://w3id.org/mda/instantiatesClass" : [ {
+    "@id" : "https://w3id.org/mda/Patient"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/vocab/physiological-process/Scheme",
-  "https://w3id.org/mda/ontology/instantiatesClass" : [ {
-    "@id" : "https://w3id.org/mda/ontology/PhysiologicalProcess"
+  "https://w3id.org/mda/instantiatesClass" : [ {
+    "@id" : "https://w3id.org/mda/PhysiologicalProcess"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/vocab/physiological-property/Scheme",
-  "https://w3id.org/mda/ontology/instantiatesClass" : [ {
-    "@id" : "https://w3id.org/mda/ontology/PhysiologicalProperty"
+  "https://w3id.org/mda/instantiatesClass" : [ {
+    "@id" : "https://w3id.org/mda/PhysiologicalProperty"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/vocab/sensor/Scheme",
-  "https://w3id.org/mda/ontology/instantiatesClass" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Sensor"
+  "https://w3id.org/mda/instantiatesClass" : [ {
+    "@id" : "https://w3id.org/mda/Sensor"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/vocab/signal/Scheme",
-  "https://w3id.org/mda/ontology/instantiatesClass" : [ {
-    "@id" : "https://w3id.org/mda/ontology/Signal"
+  "https://w3id.org/mda/instantiatesClass" : [ {
+    "@id" : "https://w3id.org/mda/Signal"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/vocab/therapeutic-modality/Scheme",
-  "https://w3id.org/mda/ontology/instantiatesClass" : [ {
-    "@id" : "https://w3id.org/mda/ontology/TherapeuticModality"
+  "https://w3id.org/mda/instantiatesClass" : [ {
+    "@id" : "https://w3id.org/mda/TherapeuticModality"
   } ]
 } ]

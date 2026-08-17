@@ -44,75 +44,75 @@
 # http://purl.org/vocab/vann/preferredNamespaceUri
 <http://purl.org/vocab/vann/preferredNamespaceUri> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
 # 
-# https://w3id.org/mda/ontology/instantiatesClass
-<https://w3id.org/mda/ontology/instantiatesClass> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
-<https://w3id.org/mda/ontology/instantiatesClass> <http://purl.org/dc/terms/identifier> "instantiatesClass" .
-<https://w3id.org/mda/ontology/instantiatesClass> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een SKOS-conceptschema aan de ontologieklasse die zijn concepten specialiseren: een concept uit dit schema wordt gebruikt als het rdf:type van een instantie van die klasse."@nl .
-<https://w3id.org/mda/ontology/instantiatesClass> <http://www.w3.org/2000/01/rdf-schema#comment> "Links a SKOS concept scheme to the ontology class its concepts specialise: a concept from this scheme is used as the rdf:type of an instance of that class."@en .
-<https://w3id.org/mda/ontology/instantiatesClass> <http://www.w3.org/2000/01/rdf-schema#label> "instantiates class"@en .
-<https://w3id.org/mda/ontology/instantiatesClass> <http://www.w3.org/2000/01/rdf-schema#label> "instantieert klasse"@nl .
-<https://w3id.org/mda/ontology/instantiatesClass> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/instantiatesClass> <http://www.w3.org/2000/01/rdf-schema#domain> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
+# https://w3id.org/mda/instantiatesClass
+<https://w3id.org/mda/instantiatesClass> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<https://w3id.org/mda/instantiatesClass> <http://purl.org/dc/terms/identifier> "instantiatesClass" .
+<https://w3id.org/mda/instantiatesClass> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een SKOS-conceptschema aan de ontologieklasse die zijn concepten specialiseren: een concept uit dit schema wordt gebruikt als het rdf:type van een instantie van die klasse."@nl .
+<https://w3id.org/mda/instantiatesClass> <http://www.w3.org/2000/01/rdf-schema#comment> "Links a SKOS concept scheme to the ontology class its concepts specialise: a concept from this scheme is used as the rdf:type of an instance of that class."@en .
+<https://w3id.org/mda/instantiatesClass> <http://www.w3.org/2000/01/rdf-schema#label> "instantiates class"@en .
+<https://w3id.org/mda/instantiatesClass> <http://www.w3.org/2000/01/rdf-schema#label> "instantieert klasse"@nl .
+<https://w3id.org/mda/instantiatesClass> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/instantiatesClass> <http://www.w3.org/2000/01/rdf-schema#domain> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
 # 
-# https://w3id.org/mda/ontology/nodeKind
-<https://w3id.org/mda/ontology/nodeKind> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
-<https://w3id.org/mda/ontology/nodeKind> <http://purl.org/dc/terms/identifier> "nodeKind" .
-<https://w3id.org/mda/ontology/nodeKind> <http://www.w3.org/2000/01/rdf-schema#comment> "Classificeert hoe instanties van een klasse in de gegenereerde graaf worden gerealiseerd: mda:Individuated, mda:Referential of mda:Stateful."@nl .
-<https://w3id.org/mda/ontology/nodeKind> <http://www.w3.org/2000/01/rdf-schema#comment> "Classifies how instances of a class are realised in the generated graph: mda:Individuated, mda:Referential, or mda:Stateful."@en .
-<https://w3id.org/mda/ontology/nodeKind> <http://www.w3.org/2000/01/rdf-schema#label> "knooppuntsoort"@nl .
-<https://w3id.org/mda/ontology/nodeKind> <http://www.w3.org/2000/01/rdf-schema#label> "node kind"@en .
+# https://w3id.org/mda/nodeKind
+<https://w3id.org/mda/nodeKind> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<https://w3id.org/mda/nodeKind> <http://purl.org/dc/terms/identifier> "nodeKind" .
+<https://w3id.org/mda/nodeKind> <http://www.w3.org/2000/01/rdf-schema#comment> "Classificeert hoe instanties van een klasse in de gegenereerde graaf worden gerealiseerd: mda:Individuated, mda:Referential of mda:Stateful."@nl .
+<https://w3id.org/mda/nodeKind> <http://www.w3.org/2000/01/rdf-schema#comment> "Classifies how instances of a class are realised in the generated graph: mda:Individuated, mda:Referential, or mda:Stateful."@en .
+<https://w3id.org/mda/nodeKind> <http://www.w3.org/2000/01/rdf-schema#label> "knooppuntsoort"@nl .
+<https://w3id.org/mda/nodeKind> <http://www.w3.org/2000/01/rdf-schema#label> "node kind"@en .
 # 
-# https://w3id.org/mda/ontology/persistsPostAlarm
-<https://w3id.org/mda/ontology/persistsPostAlarm> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
-<https://w3id.org/mda/ontology/persistsPostAlarm> <http://purl.org/dc/terms/identifier> "persistsPostAlarm" .
-<https://w3id.org/mda/ontology/persistsPostAlarm> <http://www.w3.org/2000/01/rdf-schema#comment> "Markeert een objecteigenschap waarvan de afgeleide feiten over een technisch knooppunt blijven bestaan gedurende het PostAlarmValidScheme-venster nadat het alarm dat ze afleidde is beëindigd."@nl .
-<https://w3id.org/mda/ontology/persistsPostAlarm> <http://www.w3.org/2000/01/rdf-schema#comment> "Marks an object property whose entailed facts about a technical node persist for the PostAlarmValidScheme window after the alarm that entailed them ends, the same way mda:hasOperationState already did — see 4_OPERATIONAL/op_knowledge.py's inferred_states."@en .
-<https://w3id.org/mda/ontology/persistsPostAlarm> <http://www.w3.org/2000/01/rdf-schema#label> "blijft bestaan na alarm"@nl .
-<https://w3id.org/mda/ontology/persistsPostAlarm> <http://www.w3.org/2000/01/rdf-schema#label> "persists post alarm"@en .
-<https://w3id.org/mda/ontology/persistsPostAlarm> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#boolean> .
+# https://w3id.org/mda/persistsPostAlarm
+<https://w3id.org/mda/persistsPostAlarm> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<https://w3id.org/mda/persistsPostAlarm> <http://purl.org/dc/terms/identifier> "persistsPostAlarm" .
+<https://w3id.org/mda/persistsPostAlarm> <http://www.w3.org/2000/01/rdf-schema#comment> "Markeert een objecteigenschap waarvan de afgeleide feiten over een technisch knooppunt blijven bestaan gedurende het PostAlarmValidScheme-venster nadat het alarm dat ze afleidde is beëindigd."@nl .
+<https://w3id.org/mda/persistsPostAlarm> <http://www.w3.org/2000/01/rdf-schema#comment> "Marks an object property whose entailed facts about a technical node persist for the PostAlarmValidScheme window after the alarm that entailed them ends, the same way mda:hasOperationState already did — see 4_OPERATIONAL/op_knowledge.py's inferred_states."@en .
+<https://w3id.org/mda/persistsPostAlarm> <http://www.w3.org/2000/01/rdf-schema#label> "blijft bestaan na alarm"@nl .
+<https://w3id.org/mda/persistsPostAlarm> <http://www.w3.org/2000/01/rdf-schema#label> "persists post alarm"@en .
+<https://w3id.org/mda/persistsPostAlarm> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#boolean> .
 # 
-# https://w3id.org/mda/ontology/postAlarmValidityDuration
-<https://w3id.org/mda/ontology/postAlarmValidityDuration> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
-<https://w3id.org/mda/ontology/postAlarmValidityDuration> <http://purl.org/dc/terms/identifier> "postAlarmValidityDuration" .
-<https://w3id.org/mda/ontology/postAlarmValidityDuration> <http://www.w3.org/2000/01/rdf-schema#comment> "Duration after alarm end for which assertions from this scheme remain valid. Absence of this annotation on a scheme implies alarm-duration only (PT0S)."@en .
-<https://w3id.org/mda/ontology/postAlarmValidityDuration> <http://www.w3.org/2000/01/rdf-schema#comment> "Duur na het alarm-einde gedurende welke beweringen geldig blijven. Afwezigheid impliceert alleen geldig tijdens alarm (PT0S)."@nl .
-<https://w3id.org/mda/ontology/postAlarmValidityDuration> <http://www.w3.org/2000/01/rdf-schema#label> "post-alarm geldigheidsduur"@nl .
-<https://w3id.org/mda/ontology/postAlarmValidityDuration> <http://www.w3.org/2000/01/rdf-schema#label> "post-alarm validity duration"@en .
-<https://w3id.org/mda/ontology/postAlarmValidityDuration> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#duration> .
+# https://w3id.org/mda/postAlarmValidityDuration
+<https://w3id.org/mda/postAlarmValidityDuration> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<https://w3id.org/mda/postAlarmValidityDuration> <http://purl.org/dc/terms/identifier> "postAlarmValidityDuration" .
+<https://w3id.org/mda/postAlarmValidityDuration> <http://www.w3.org/2000/01/rdf-schema#comment> "Duration after alarm end for which assertions from this scheme remain valid. Absence of this annotation on a scheme implies alarm-duration only (PT0S)."@en .
+<https://w3id.org/mda/postAlarmValidityDuration> <http://www.w3.org/2000/01/rdf-schema#comment> "Duur na het alarm-einde gedurende welke beweringen geldig blijven. Afwezigheid impliceert alleen geldig tijdens alarm (PT0S)."@nl .
+<https://w3id.org/mda/postAlarmValidityDuration> <http://www.w3.org/2000/01/rdf-schema#label> "post-alarm geldigheidsduur"@nl .
+<https://w3id.org/mda/postAlarmValidityDuration> <http://www.w3.org/2000/01/rdf-schema#label> "post-alarm validity duration"@en .
+<https://w3id.org/mda/postAlarmValidityDuration> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#duration> .
 # 
-# https://w3id.org/mda/ontology/refinesParticularIdentity
-<https://w3id.org/mda/ontology/refinesParticularIdentity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
-<https://w3id.org/mda/ontology/refinesParticularIdentity> <http://purl.org/dc/terms/identifier> "refinesParticularIdentity" .
-<https://w3id.org/mda/ontology/refinesParticularIdentity> <http://www.w3.org/2000/01/rdf-schema#comment> "Markeert een blad-eigenschap waarvan de waarde één gemunt deeltje onderscheidt van een ander van hetzelfde type onder dezelfde eigenaar in de werkelijke wereld — verwerkt in de IRI van het deeltje bij grondingstijd, niet in een vocabulaireconcept."@nl .
-<https://w3id.org/mda/ontology/refinesParticularIdentity> <http://www.w3.org/2000/01/rdf-schema#comment> "Marks a leaf property whose value distinguishes one minted particular from another of the same type under the same real-world owner — folded into the particular's IRI at grounding time, not into a vocabulary concept."@en .
-<https://w3id.org/mda/ontology/refinesParticularIdentity> <http://www.w3.org/2000/01/rdf-schema#label> "refines particular identity"@en .
-<https://w3id.org/mda/ontology/refinesParticularIdentity> <http://www.w3.org/2000/01/rdf-schema#label> "verfijnt particuliere identiteit"@nl .
+# https://w3id.org/mda/refinesParticularIdentity
+<https://w3id.org/mda/refinesParticularIdentity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<https://w3id.org/mda/refinesParticularIdentity> <http://purl.org/dc/terms/identifier> "refinesParticularIdentity" .
+<https://w3id.org/mda/refinesParticularIdentity> <http://www.w3.org/2000/01/rdf-schema#comment> "Markeert een blad-eigenschap waarvan de waarde één gemunt deeltje onderscheidt van een ander van hetzelfde type onder dezelfde eigenaar in de werkelijke wereld — verwerkt in de IRI van het deeltje bij grondingstijd, niet in een vocabulaireconcept."@nl .
+<https://w3id.org/mda/refinesParticularIdentity> <http://www.w3.org/2000/01/rdf-schema#comment> "Marks a leaf property whose value distinguishes one minted particular from another of the same type under the same real-world owner — folded into the particular's IRI at grounding time, not into a vocabulary concept."@en .
+<https://w3id.org/mda/refinesParticularIdentity> <http://www.w3.org/2000/01/rdf-schema#label> "refines particular identity"@en .
+<https://w3id.org/mda/refinesParticularIdentity> <http://www.w3.org/2000/01/rdf-schema#label> "verfijnt particuliere identiteit"@nl .
 # 
-# https://w3id.org/mda/ontology/refinesUniversalIdentity
-<https://w3id.org/mda/ontology/refinesUniversalIdentity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
-<https://w3id.org/mda/ontology/refinesUniversalIdentity> <http://purl.org/dc/terms/identifier> "refinesUniversalIdentity" .
-<https://w3id.org/mda/ontology/refinesUniversalIdentity> <http://www.w3.org/2000/01/rdf-schema#comment> "Markeert een blad-eigenschap waarvan de waarde voorcoördineert tot een gedeeld universeel concept op vocabulaireniveau, in plaats van de per-alarm/per-eigenaar toestand te beschrijven. De waarde benoemt een soort, herbruikbaar over eigenaren heen — geen plaatsing."@nl .
-<https://w3id.org/mda/ontology/refinesUniversalIdentity> <http://www.w3.org/2000/01/rdf-schema#comment> "Marks a leaf property whose value pre-coordinates into a shared universal concept at the vocabulary layer, rather than describing per-alarm/per-owner state. The value names a kind, reusable across owners — not a placement."@en .
-<https://w3id.org/mda/ontology/refinesUniversalIdentity> <http://www.w3.org/2000/01/rdf-schema#label> "refines universal identity"@en .
-<https://w3id.org/mda/ontology/refinesUniversalIdentity> <http://www.w3.org/2000/01/rdf-schema#label> "verfijnt universele identiteit"@nl .
+# https://w3id.org/mda/refinesUniversalIdentity
+<https://w3id.org/mda/refinesUniversalIdentity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<https://w3id.org/mda/refinesUniversalIdentity> <http://purl.org/dc/terms/identifier> "refinesUniversalIdentity" .
+<https://w3id.org/mda/refinesUniversalIdentity> <http://www.w3.org/2000/01/rdf-schema#comment> "Markeert een blad-eigenschap waarvan de waarde voorcoördineert tot een gedeeld universeel concept op vocabulaireniveau, in plaats van de per-alarm/per-eigenaar toestand te beschrijven. De waarde benoemt een soort, herbruikbaar over eigenaren heen — geen plaatsing."@nl .
+<https://w3id.org/mda/refinesUniversalIdentity> <http://www.w3.org/2000/01/rdf-schema#comment> "Marks a leaf property whose value pre-coordinates into a shared universal concept at the vocabulary layer, rather than describing per-alarm/per-owner state. The value names a kind, reusable across owners — not a placement."@en .
+<https://w3id.org/mda/refinesUniversalIdentity> <http://www.w3.org/2000/01/rdf-schema#label> "refines universal identity"@en .
+<https://w3id.org/mda/refinesUniversalIdentity> <http://www.w3.org/2000/01/rdf-schema#label> "verfijnt universele identiteit"@nl .
 # 
-# https://w3id.org/mda/ontology/situational
-<https://w3id.org/mda/ontology/situational> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
-<https://w3id.org/mda/ontology/situational> <http://purl.org/dc/terms/identifier> "situational" .
-<https://w3id.org/mda/ontology/situational> <http://www.w3.org/2000/01/rdf-schema#comment> "Markeert een objecteigenschap waarvan de afgeleide beweringen behoren tot een situationele export per alarm, in tegenstelling tot achtergrond-/taxonomische structuur die een reasoner raadpleegt maar die zelf nooit wordt geëxporteerd."@nl .
-<https://w3id.org/mda/ontology/situational> <http://www.w3.org/2000/01/rdf-schema#comment> "Marks an object property whose entailed assertions belong in a per-alarm situational export, as opposed to background/taxonomic structure (e.g. rdfs:subClassOf) that a reasoner consults but that is never itself exported."@en .
-<https://w3id.org/mda/ontology/situational> <http://www.w3.org/2000/01/rdf-schema#label> "situational"@en .
-<https://w3id.org/mda/ontology/situational> <http://www.w3.org/2000/01/rdf-schema#label> "situationeel"@nl .
-<https://w3id.org/mda/ontology/situational> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#boolean> .
+# https://w3id.org/mda/situational
+<https://w3id.org/mda/situational> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<https://w3id.org/mda/situational> <http://purl.org/dc/terms/identifier> "situational" .
+<https://w3id.org/mda/situational> <http://www.w3.org/2000/01/rdf-schema#comment> "Markeert een objecteigenschap waarvan de afgeleide beweringen behoren tot een situationele export per alarm, in tegenstelling tot achtergrond-/taxonomische structuur die een reasoner raadpleegt maar die zelf nooit wordt geëxporteerd."@nl .
+<https://w3id.org/mda/situational> <http://www.w3.org/2000/01/rdf-schema#comment> "Marks an object property whose entailed assertions belong in a per-alarm situational export, as opposed to background/taxonomic structure (e.g. rdfs:subClassOf) that a reasoner consults but that is never itself exported."@en .
+<https://w3id.org/mda/situational> <http://www.w3.org/2000/01/rdf-schema#label> "situational"@en .
+<https://w3id.org/mda/situational> <http://www.w3.org/2000/01/rdf-schema#label> "situationeel"@nl .
+<https://w3id.org/mda/situational> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#boolean> .
 # 
-# https://w3id.org/mda/ontology/valuesFromScheme
-<https://w3id.org/mda/ontology/valuesFromScheme> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
-<https://w3id.org/mda/ontology/valuesFromScheme> <http://purl.org/dc/terms/identifier> "valuesFromScheme" .
-<https://w3id.org/mda/ontology/valuesFromScheme> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een objecteigenschap aan het SKOS-conceptschema waaruit zijn waarden afkomstig zijn."@nl .
-<https://w3id.org/mda/ontology/valuesFromScheme> <http://www.w3.org/2000/01/rdf-schema#comment> "Links an object property to the SKOS concept scheme from which its values are drawn."@en .
-<https://w3id.org/mda/ontology/valuesFromScheme> <http://www.w3.org/2000/01/rdf-schema#label> "values from scheme"@en .
-<https://w3id.org/mda/ontology/valuesFromScheme> <http://www.w3.org/2000/01/rdf-schema#label> "waarden uit schema"@nl .
-<https://w3id.org/mda/ontology/valuesFromScheme> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
+# https://w3id.org/mda/valuesFromScheme
+<https://w3id.org/mda/valuesFromScheme> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+<https://w3id.org/mda/valuesFromScheme> <http://purl.org/dc/terms/identifier> "valuesFromScheme" .
+<https://w3id.org/mda/valuesFromScheme> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een objecteigenschap aan het SKOS-conceptschema waaruit zijn waarden afkomstig zijn."@nl .
+<https://w3id.org/mda/valuesFromScheme> <http://www.w3.org/2000/01/rdf-schema#comment> "Links an object property to the SKOS concept scheme from which its values are drawn."@en .
+<https://w3id.org/mda/valuesFromScheme> <http://www.w3.org/2000/01/rdf-schema#label> "values from scheme"@en .
+<https://w3id.org/mda/valuesFromScheme> <http://www.w3.org/2000/01/rdf-schema#label> "waarden uit schema"@nl .
+<https://w3id.org/mda/valuesFromScheme> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
 # 
 # 
 # 
@@ -138,431 +138,431 @@
 # #################################################################
 # 
 # 
-# https://w3id.org/mda/ontology/administers
-<https://w3id.org/mda/ontology/administers> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/administers> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Device> .
-<https://w3id.org/mda/ontology/administers> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/TherapeuticModality> .
-<https://w3id.org/mda/ontology/administers> <http://purl.org/dc/terms/identifier> "administers" .
-<https://w3id.org/mda/ontology/administers> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een apparaat aan de therapeutische modaliteit die het toedient."@nl .
-<https://w3id.org/mda/ontology/administers> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a device to the therapeutic modality it administers."@en .
-<https://w3id.org/mda/ontology/administers> <http://www.w3.org/2000/01/rdf-schema#label> "administers"@en .
-<https://w3id.org/mda/ontology/administers> <http://www.w3.org/2000/01/rdf-schema#label> "toegediend"@nl .
-<https://w3id.org/mda/ontology/administers> <https://w3id.org/mda/ontology/situational> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+# https://w3id.org/mda/administers
+<https://w3id.org/mda/administers> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/administers> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Device> .
+<https://w3id.org/mda/administers> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/TherapeuticModality> .
+<https://w3id.org/mda/administers> <http://purl.org/dc/terms/identifier> "administers" .
+<https://w3id.org/mda/administers> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een apparaat aan de therapeutische modaliteit die het toedient."@nl .
+<https://w3id.org/mda/administers> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a device to the therapeutic modality it administers."@en .
+<https://w3id.org/mda/administers> <http://www.w3.org/2000/01/rdf-schema#label> "administers"@en .
+<https://w3id.org/mda/administers> <http://www.w3.org/2000/01/rdf-schema#label> "toegediend"@nl .
+<https://w3id.org/mda/administers> <https://w3id.org/mda/situational> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
 # 
-# https://w3id.org/mda/ontology/analyzedBy
-<https://w3id.org/mda/ontology/analyzedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/analyzedBy> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Signal> .
-<https://w3id.org/mda/ontology/analyzedBy> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/SignalAnalysis> .
-<https://w3id.org/mda/ontology/analyzedBy> <http://purl.org/dc/terms/identifier> "analyzedBy" .
-<https://w3id.org/mda/ontology/analyzedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een signaal aan de signaalanalysestap die het verbruikt. De enige weg naar mda:SignalAnalysis — bewust niet ook rechtstreeks bereikbaar vanaf mda:FunctionalUnit (er bestaat geen performsAnalysis-achtige kortere weg), zodat er precies één pad naar een analysestap bestaat, altijd via het specifieke signaal (de specifieke signalen) dat het daadwerkelijk verbruikt. Functioneel niet: hetzelfde signaal kan meer dan één analysestap voeden."@nl .
-<https://w3id.org/mda/ontology/analyzedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a signal to the signal-analysis step that consumes it. The only edge reaching mda:SignalAnalysis — deliberately not also reachable directly from mda:FunctionalUnit (no performsAnalysis-style shortcut exists), so there is exactly one path to an analysis step, always through the specific signal(s) it actually consumes. A second, shorter path would let ontology_tree.py's shortest-path class-tree derivation silently prefer it over the precise one (the same failure mode mda:administers was introduced to avoid for mda:TherapeuticModality — see the Technical axioms note in inference.ttl). Not functional: the same signal can feed more than one analysis step (e.g. ECG lead II feeds both a heart-rate computation and an aVF derivation)."@en .
-<https://w3id.org/mda/ontology/analyzedBy> <http://www.w3.org/2000/01/rdf-schema#label> "analyzed by"@en .
-<https://w3id.org/mda/ontology/analyzedBy> <http://www.w3.org/2000/01/rdf-schema#label> "geanalyseerd door"@nl .
+# https://w3id.org/mda/analyzedBy
+<https://w3id.org/mda/analyzedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/analyzedBy> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Signal> .
+<https://w3id.org/mda/analyzedBy> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/SignalAnalysis> .
+<https://w3id.org/mda/analyzedBy> <http://purl.org/dc/terms/identifier> "analyzedBy" .
+<https://w3id.org/mda/analyzedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een signaal aan de signaalanalysestap die het verbruikt. De enige weg naar mda:SignalAnalysis — bewust niet ook rechtstreeks bereikbaar vanaf mda:FunctionalUnit (er bestaat geen performsAnalysis-achtige kortere weg), zodat er precies één pad naar een analysestap bestaat, altijd via het specifieke signaal (de specifieke signalen) dat het daadwerkelijk verbruikt. Functioneel niet: hetzelfde signaal kan meer dan één analysestap voeden."@nl .
+<https://w3id.org/mda/analyzedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a signal to the signal-analysis step that consumes it. The only edge reaching mda:SignalAnalysis — deliberately not also reachable directly from mda:FunctionalUnit (no performsAnalysis-style shortcut exists), so there is exactly one path to an analysis step, always through the specific signal(s) it actually consumes. A second, shorter path would let ontology_tree.py's shortest-path class-tree derivation silently prefer it over the precise one (the same failure mode mda:administers was introduced to avoid for mda:TherapeuticModality — see the Technical axioms note in inference.ttl). Not functional: the same signal can feed more than one analysis step (e.g. ECG lead II feeds both a heart-rate computation and an aVF derivation)."@en .
+<https://w3id.org/mda/analyzedBy> <http://www.w3.org/2000/01/rdf-schema#label> "analyzed by"@en .
+<https://w3id.org/mda/analyzedBy> <http://www.w3.org/2000/01/rdf-schema#label> "geanalyseerd door"@nl .
 # 
-# https://w3id.org/mda/ontology/approximates
-<https://w3id.org/mda/ontology/approximates> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/approximates> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Metric> .
-<https://w3id.org/mda/ontology/approximates> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/PhysiologicalProperty> .
-<https://w3id.org/mda/ontology/approximates> <http://purl.org/dc/terms/identifier> "approximates" .
-<https://w3id.org/mda/ontology/approximates> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een metriek aan de fysiologische eigenschap die het benadert."@nl .
-<https://w3id.org/mda/ontology/approximates> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a metric to the physiological property it approximates."@en .
-<https://w3id.org/mda/ontology/approximates> <http://www.w3.org/2000/01/rdf-schema#label> "approximates"@en .
-<https://w3id.org/mda/ontology/approximates> <http://www.w3.org/2000/01/rdf-schema#label> "benadert"@nl .
-<https://w3id.org/mda/ontology/approximates> <https://w3id.org/mda/ontology/situational> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+# https://w3id.org/mda/approximates
+<https://w3id.org/mda/approximates> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/approximates> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Metric> .
+<https://w3id.org/mda/approximates> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/PhysiologicalProperty> .
+<https://w3id.org/mda/approximates> <http://purl.org/dc/terms/identifier> "approximates" .
+<https://w3id.org/mda/approximates> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een metriek aan de fysiologische eigenschap die het benadert."@nl .
+<https://w3id.org/mda/approximates> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a metric to the physiological property it approximates."@en .
+<https://w3id.org/mda/approximates> <http://www.w3.org/2000/01/rdf-schema#label> "approximates"@en .
+<https://w3id.org/mda/approximates> <http://www.w3.org/2000/01/rdf-schema#label> "benadert"@nl .
+<https://w3id.org/mda/approximates> <https://w3id.org/mda/situational> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
 # 
-# https://w3id.org/mda/ontology/concernsPatient
-<https://w3id.org/mda/ontology/concernsPatient> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/concernsPatient> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#FunctionalProperty> .
-<https://w3id.org/mda/ontology/concernsPatient> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/AlarmMessage> .
-<https://w3id.org/mda/ontology/concernsPatient> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/Patient> .
-<https://w3id.org/mda/ontology/concernsPatient> <http://purl.org/dc/terms/identifier> "concernsPatient" .
-<https://w3id.org/mda/ontology/concernsPatient> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een alarmbericht aan de patiënt die het betreft — het gedeelde, persistente samenvoegankerpunt. Bewust een doodlopend pad: leidt niet langer via mda:isMonitoredBy naar mda:Device. Functioneel: één bericht betreft precies één patiënt."@nl .
-<https://w3id.org/mda/ontology/concernsPatient> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates an alarm message to the patient it concerns — the shared, persistent merge anchor. Deliberately a dead end: it no longer continues on to mda:Device via mda:isMonitoredBy (see mda:triggeredBy's comment for why). Functional: one message concerns exactly one patient — it is minted fresh per alarm precisely so it never needs to concern more than one."@en .
-<https://w3id.org/mda/ontology/concernsPatient> <http://www.w3.org/2000/01/rdf-schema#label> "betreft patiënt"@nl .
-<https://w3id.org/mda/ontology/concernsPatient> <http://www.w3.org/2000/01/rdf-schema#label> "concerns patient"@en .
+# https://w3id.org/mda/concernsPatient
+<https://w3id.org/mda/concernsPatient> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/concernsPatient> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#FunctionalProperty> .
+<https://w3id.org/mda/concernsPatient> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/AlarmMessage> .
+<https://w3id.org/mda/concernsPatient> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/Patient> .
+<https://w3id.org/mda/concernsPatient> <http://purl.org/dc/terms/identifier> "concernsPatient" .
+<https://w3id.org/mda/concernsPatient> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een alarmbericht aan de patiënt die het betreft — het gedeelde, persistente samenvoegankerpunt. Bewust een doodlopend pad: leidt niet langer via mda:isMonitoredBy naar mda:Device. Functioneel: één bericht betreft precies één patiënt."@nl .
+<https://w3id.org/mda/concernsPatient> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates an alarm message to the patient it concerns — the shared, persistent merge anchor. Deliberately a dead end: it no longer continues on to mda:Device via mda:isMonitoredBy (see mda:triggeredBy's comment for why). Functional: one message concerns exactly one patient — it is minted fresh per alarm precisely so it never needs to concern more than one."@en .
+<https://w3id.org/mda/concernsPatient> <http://www.w3.org/2000/01/rdf-schema#label> "betreft patiënt"@nl .
+<https://w3id.org/mda/concernsPatient> <http://www.w3.org/2000/01/rdf-schema#label> "concerns patient"@en .
 # 
-# https://w3id.org/mda/ontology/hasAnatomicalPosition
-<https://w3id.org/mda/ontology/hasAnatomicalPosition> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasAnatomicalPosition> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#FunctionalProperty> .
-<https://w3id.org/mda/ontology/hasAnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Sensor> .
-<https://w3id.org/mda/ontology/hasAnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/AnatomicalPosition> .
-<https://w3id.org/mda/ontology/hasAnatomicalPosition> <http://purl.org/dc/terms/identifier> "hasAnatomicalPosition" .
-<https://w3id.org/mda/ontology/hasAnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een sensor aan zijn anatomische positie op het lichaam. Functioneel: een fysieke sensor bevindt zich op een gegeven moment op precies één positie."@nl .
-<https://w3id.org/mda/ontology/hasAnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a sensor to its anatomical position on the body. Functional: a physical sensor occupies exactly one position at a time."@en .
-<https://w3id.org/mda/ontology/hasAnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#label> "has anatomical position"@en .
-<https://w3id.org/mda/ontology/hasAnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#label> "heeft anatomische positie"@nl .
-<https://w3id.org/mda/ontology/hasAnatomicalPosition> <https://w3id.org/mda/ontology/refinesParticularIdentity> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+# https://w3id.org/mda/hasAnatomicalPosition
+<https://w3id.org/mda/hasAnatomicalPosition> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasAnatomicalPosition> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#FunctionalProperty> .
+<https://w3id.org/mda/hasAnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Sensor> .
+<https://w3id.org/mda/hasAnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/AnatomicalPosition> .
+<https://w3id.org/mda/hasAnatomicalPosition> <http://purl.org/dc/terms/identifier> "hasAnatomicalPosition" .
+<https://w3id.org/mda/hasAnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een sensor aan zijn anatomische positie op het lichaam. Functioneel: een fysieke sensor bevindt zich op een gegeven moment op precies één positie."@nl .
+<https://w3id.org/mda/hasAnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a sensor to its anatomical position on the body. Functional: a physical sensor occupies exactly one position at a time."@en .
+<https://w3id.org/mda/hasAnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#label> "has anatomical position"@en .
+<https://w3id.org/mda/hasAnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#label> "heeft anatomische positie"@nl .
+<https://w3id.org/mda/hasAnatomicalPosition> <https://w3id.org/mda/refinesParticularIdentity> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
 # 
-# https://w3id.org/mda/ontology/hasCategory
-<https://w3id.org/mda/ontology/hasCategory> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasCategory> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Alarm> .
-<https://w3id.org/mda/ontology/hasCategory> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+# https://w3id.org/mda/hasCategory
+<https://w3id.org/mda/hasCategory> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasCategory> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Alarm> .
+<https://w3id.org/mda/hasCategory> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
 <http://www.w3.org/2004/02/skos/core#Concept> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/hasCategory> <http://purl.org/dc/terms/identifier> "hasCategory" .
-<https://w3id.org/mda/ontology/hasCategory> <http://www.w3.org/2000/01/rdf-schema#comment> "De categorie van het alarm (beschrijvend, naast label en prioriteit)."@nl .
-<https://w3id.org/mda/ontology/hasCategory> <http://www.w3.org/2000/01/rdf-schema#comment> "The category of the alarm (a descriptive, alongside label and priority)."@en .
-<https://w3id.org/mda/ontology/hasCategory> <http://www.w3.org/2000/01/rdf-schema#label> "has category"@en .
-<https://w3id.org/mda/ontology/hasCategory> <http://www.w3.org/2000/01/rdf-schema#label> "heeft categorie"@nl .
-<https://w3id.org/mda/ontology/hasCategory> <https://w3id.org/mda/ontology/valuesFromScheme> <https://w3id.org/mda/vocab/alarm-category/Scheme> .
+<https://w3id.org/mda/hasCategory> <http://purl.org/dc/terms/identifier> "hasCategory" .
+<https://w3id.org/mda/hasCategory> <http://www.w3.org/2000/01/rdf-schema#comment> "De categorie van het alarm (beschrijvend, naast label en prioriteit)."@nl .
+<https://w3id.org/mda/hasCategory> <http://www.w3.org/2000/01/rdf-schema#comment> "The category of the alarm (a descriptive, alongside label and priority)."@en .
+<https://w3id.org/mda/hasCategory> <http://www.w3.org/2000/01/rdf-schema#label> "has category"@en .
+<https://w3id.org/mda/hasCategory> <http://www.w3.org/2000/01/rdf-schema#label> "heeft categorie"@nl .
+<https://w3id.org/mda/hasCategory> <https://w3id.org/mda/valuesFromScheme> <https://w3id.org/mda/vocab/alarm-category/Scheme> .
 # 
-# https://w3id.org/mda/ontology/hasComponent
-<https://w3id.org/mda/ontology/hasComponent> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasComponent> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#InverseFunctionalProperty> .
-<https://w3id.org/mda/ontology/hasComponent> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Device> .
-<https://w3id.org/mda/ontology/hasComponent> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/Component> .
-<https://w3id.org/mda/ontology/hasComponent> <http://purl.org/dc/terms/identifier> "hasComponent" .
-<https://w3id.org/mda/ontology/hasComponent> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een apparaat aan zijn onderdelen, al dan niet sensorisch (bijv. een aansluitpoort, voedingseenheid, verwarmingselement of functionele eenheid). Invers-functioneel: een onderdeel behoort tot hoogstens één apparaat — er is geen aparte isComponentOf-eigenschap; bevraag alleen in deze richting."@nl .
-<https://w3id.org/mda/ontology/hasComponent> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a device to its components, sensing or not (e.g. a connection port, power unit, heating element, or functional unit). Inverse-functional: a component belongs to at most one device — no separate isComponentOf property is declared; query in this direction only."@en .
-<https://w3id.org/mda/ontology/hasComponent> <http://www.w3.org/2000/01/rdf-schema#label> "has component"@en .
-<https://w3id.org/mda/ontology/hasComponent> <http://www.w3.org/2000/01/rdf-schema#label> "heeft onderdeel"@nl .
+# https://w3id.org/mda/hasComponent
+<https://w3id.org/mda/hasComponent> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasComponent> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#InverseFunctionalProperty> .
+<https://w3id.org/mda/hasComponent> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Device> .
+<https://w3id.org/mda/hasComponent> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/Component> .
+<https://w3id.org/mda/hasComponent> <http://purl.org/dc/terms/identifier> "hasComponent" .
+<https://w3id.org/mda/hasComponent> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een apparaat aan zijn onderdelen, al dan niet sensorisch (bijv. een aansluitpoort, voedingseenheid, verwarmingselement of functionele eenheid). Invers-functioneel: een onderdeel behoort tot hoogstens één apparaat — er is geen aparte isComponentOf-eigenschap; bevraag alleen in deze richting."@nl .
+<https://w3id.org/mda/hasComponent> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a device to its components, sensing or not (e.g. a connection port, power unit, heating element, or functional unit). Inverse-functional: a component belongs to at most one device — no separate isComponentOf property is declared; query in this direction only."@en .
+<https://w3id.org/mda/hasComponent> <http://www.w3.org/2000/01/rdf-schema#label> "has component"@en .
+<https://w3id.org/mda/hasComponent> <http://www.w3.org/2000/01/rdf-schema#label> "heeft onderdeel"@nl .
 # 
-# https://w3id.org/mda/ontology/hasComponentOperationState
-<https://w3id.org/mda/ontology/hasComponentOperationState> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasComponentOperationState> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <https://w3id.org/mda/ontology/hasOperationState> .
-<https://w3id.org/mda/ontology/hasComponentOperationState> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Component> .
-<https://w3id.org/mda/ontology/hasComponentOperationState> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/mda/ontology/hasComponentOperationState> <http://purl.org/dc/terms/identifier> "hasComponentOperationState" .
-<https://w3id.org/mda/ontology/hasComponentOperationState> <http://www.w3.org/2000/01/rdf-schema#comment> "De operationele status van een niet-sensorisch onderdeel, bijv. Disconnected of Warning. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen."@nl .
-<https://w3id.org/mda/ontology/hasComponentOperationState> <http://www.w3.org/2000/01/rdf-schema#comment> "The operational state of a non-sensing component, e.g. Disconnected or Warning. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously."@en .
-<https://w3id.org/mda/ontology/hasComponentOperationState> <http://www.w3.org/2000/01/rdf-schema#label> "has component operation state"@en .
-<https://w3id.org/mda/ontology/hasComponentOperationState> <http://www.w3.org/2000/01/rdf-schema#label> "heeft onderdeeloperatiestatus"@nl .
-<https://w3id.org/mda/ontology/hasComponentOperationState> <https://w3id.org/mda/ontology/valuesFromScheme> <https://w3id.org/mda/vocab/operation-state/Scheme> .
+# https://w3id.org/mda/hasComponentOperationState
+<https://w3id.org/mda/hasComponentOperationState> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasComponentOperationState> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <https://w3id.org/mda/hasOperationState> .
+<https://w3id.org/mda/hasComponentOperationState> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Component> .
+<https://w3id.org/mda/hasComponentOperationState> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/mda/hasComponentOperationState> <http://purl.org/dc/terms/identifier> "hasComponentOperationState" .
+<https://w3id.org/mda/hasComponentOperationState> <http://www.w3.org/2000/01/rdf-schema#comment> "De operationele status van een niet-sensorisch onderdeel, bijv. Disconnected of Warning. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen."@nl .
+<https://w3id.org/mda/hasComponentOperationState> <http://www.w3.org/2000/01/rdf-schema#comment> "The operational state of a non-sensing component, e.g. Disconnected or Warning. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously."@en .
+<https://w3id.org/mda/hasComponentOperationState> <http://www.w3.org/2000/01/rdf-schema#label> "has component operation state"@en .
+<https://w3id.org/mda/hasComponentOperationState> <http://www.w3.org/2000/01/rdf-schema#label> "heeft onderdeeloperatiestatus"@nl .
+<https://w3id.org/mda/hasComponentOperationState> <https://w3id.org/mda/valuesFromScheme> <https://w3id.org/mda/vocab/operation-state/Scheme> .
 # 
-# https://w3id.org/mda/ontology/hasDeviceOperationState
-<https://w3id.org/mda/ontology/hasDeviceOperationState> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasDeviceOperationState> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <https://w3id.org/mda/ontology/hasOperationState> .
-<https://w3id.org/mda/ontology/hasDeviceOperationState> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Device> .
-<https://w3id.org/mda/ontology/hasDeviceOperationState> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/mda/ontology/hasDeviceOperationState> <http://purl.org/dc/terms/identifier> "hasDeviceOperationState" .
-<https://w3id.org/mda/ontology/hasDeviceOperationState> <http://www.w3.org/2000/01/rdf-schema#comment> "De operationele status van een apparaat zelf, bijv. Disconnected. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen."@nl .
-<https://w3id.org/mda/ontology/hasDeviceOperationState> <http://www.w3.org/2000/01/rdf-schema#comment> "The operational state of a device itself, e.g. Disconnected. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously."@en .
-<https://w3id.org/mda/ontology/hasDeviceOperationState> <http://www.w3.org/2000/01/rdf-schema#label> "has device operation state"@en .
-<https://w3id.org/mda/ontology/hasDeviceOperationState> <http://www.w3.org/2000/01/rdf-schema#label> "heeft apparaatoperatiestatus"@nl .
-<https://w3id.org/mda/ontology/hasDeviceOperationState> <https://w3id.org/mda/ontology/valuesFromScheme> <https://w3id.org/mda/vocab/operation-state/Scheme> .
+# https://w3id.org/mda/hasDeviceOperationState
+<https://w3id.org/mda/hasDeviceOperationState> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasDeviceOperationState> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <https://w3id.org/mda/hasOperationState> .
+<https://w3id.org/mda/hasDeviceOperationState> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Device> .
+<https://w3id.org/mda/hasDeviceOperationState> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/mda/hasDeviceOperationState> <http://purl.org/dc/terms/identifier> "hasDeviceOperationState" .
+<https://w3id.org/mda/hasDeviceOperationState> <http://www.w3.org/2000/01/rdf-schema#comment> "De operationele status van een apparaat zelf, bijv. Disconnected. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen."@nl .
+<https://w3id.org/mda/hasDeviceOperationState> <http://www.w3.org/2000/01/rdf-schema#comment> "The operational state of a device itself, e.g. Disconnected. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously."@en .
+<https://w3id.org/mda/hasDeviceOperationState> <http://www.w3.org/2000/01/rdf-schema#label> "has device operation state"@en .
+<https://w3id.org/mda/hasDeviceOperationState> <http://www.w3.org/2000/01/rdf-schema#label> "heeft apparaatoperatiestatus"@nl .
+<https://w3id.org/mda/hasDeviceOperationState> <https://w3id.org/mda/valuesFromScheme> <https://w3id.org/mda/vocab/operation-state/Scheme> .
 # 
-# https://w3id.org/mda/ontology/hasDeviceType
-<https://w3id.org/mda/ontology/hasDeviceType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasDeviceType> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Device> .
-<https://w3id.org/mda/ontology/hasDeviceType> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/mda/ontology/hasDeviceType> <http://purl.org/dc/terms/identifier> "hasDeviceType" .
-<https://w3id.org/mda/ontology/hasDeviceType> <http://www.w3.org/2000/01/rdf-schema#comment> "Het specifieke type of de modelaanduiding van het apparaat (bijv. ServoU)."@nl .
-<https://w3id.org/mda/ontology/hasDeviceType> <http://www.w3.org/2000/01/rdf-schema#comment> "The specific type or model designation of the device (e.g. ServoU)."@en .
-<https://w3id.org/mda/ontology/hasDeviceType> <http://www.w3.org/2000/01/rdf-schema#label> "has device type"@en .
-<https://w3id.org/mda/ontology/hasDeviceType> <http://www.w3.org/2000/01/rdf-schema#label> "heeft apparaattype"@nl .
-<https://w3id.org/mda/ontology/hasDeviceType> <https://w3id.org/mda/ontology/refinesUniversalIdentity> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
-<https://w3id.org/mda/ontology/hasDeviceType> <https://w3id.org/mda/ontology/valuesFromScheme> <https://w3id.org/mda/vocab/device-type/Scheme> .
+# https://w3id.org/mda/hasDeviceType
+<https://w3id.org/mda/hasDeviceType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasDeviceType> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Device> .
+<https://w3id.org/mda/hasDeviceType> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/mda/hasDeviceType> <http://purl.org/dc/terms/identifier> "hasDeviceType" .
+<https://w3id.org/mda/hasDeviceType> <http://www.w3.org/2000/01/rdf-schema#comment> "Het specifieke type of de modelaanduiding van het apparaat (bijv. ServoU)."@nl .
+<https://w3id.org/mda/hasDeviceType> <http://www.w3.org/2000/01/rdf-schema#comment> "The specific type or model designation of the device (e.g. ServoU)."@en .
+<https://w3id.org/mda/hasDeviceType> <http://www.w3.org/2000/01/rdf-schema#label> "has device type"@en .
+<https://w3id.org/mda/hasDeviceType> <http://www.w3.org/2000/01/rdf-schema#label> "heeft apparaattype"@nl .
+<https://w3id.org/mda/hasDeviceType> <https://w3id.org/mda/refinesUniversalIdentity> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<https://w3id.org/mda/hasDeviceType> <https://w3id.org/mda/valuesFromScheme> <https://w3id.org/mda/vocab/device-type/Scheme> .
 # 
-# https://w3id.org/mda/ontology/hasFunctionalUnit
-<https://w3id.org/mda/ontology/hasFunctionalUnit> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasFunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <https://w3id.org/mda/ontology/hasComponent> .
-<https://w3id.org/mda/ontology/hasFunctionalUnit> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#InverseFunctionalProperty> .
-<https://w3id.org/mda/ontology/hasFunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Device> .
-<https://w3id.org/mda/ontology/hasFunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/FunctionalUnit> .
-<https://w3id.org/mda/ontology/hasFunctionalUnit> <http://purl.org/dc/terms/identifier> "hasFunctionalUnit" .
-<https://w3id.org/mda/ontology/hasFunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een apparaat aan een functionele eenheid die het bevat (bijv. een ECG-module, een SpO2-module) — een subeigenschap van hasComponent, aangezien elke functionele eenheid een onderdeel is. Invers-functioneel: een functionele eenheid behoort tot hoogstens één apparaat."@nl .
-<https://w3id.org/mda/ontology/hasFunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a device to a functional unit it houses (e.g. an ECG module, an SpO2 module) — a sub-property of hasComponent, since every functional unit is a component. Inverse-functional: a functional unit belongs to at most one device."@en .
-<https://w3id.org/mda/ontology/hasFunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#label> "has functional unit"@en .
-<https://w3id.org/mda/ontology/hasFunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#label> "heeft functionele eenheid"@nl .
+# https://w3id.org/mda/hasFunctionalUnit
+<https://w3id.org/mda/hasFunctionalUnit> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasFunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <https://w3id.org/mda/hasComponent> .
+<https://w3id.org/mda/hasFunctionalUnit> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#InverseFunctionalProperty> .
+<https://w3id.org/mda/hasFunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Device> .
+<https://w3id.org/mda/hasFunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/FunctionalUnit> .
+<https://w3id.org/mda/hasFunctionalUnit> <http://purl.org/dc/terms/identifier> "hasFunctionalUnit" .
+<https://w3id.org/mda/hasFunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een apparaat aan een functionele eenheid die het bevat (bijv. een ECG-module, een SpO2-module) — een subeigenschap van hasComponent, aangezien elke functionele eenheid een onderdeel is. Invers-functioneel: een functionele eenheid behoort tot hoogstens één apparaat."@nl .
+<https://w3id.org/mda/hasFunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a device to a functional unit it houses (e.g. an ECG module, an SpO2 module) — a sub-property of hasComponent, since every functional unit is a component. Inverse-functional: a functional unit belongs to at most one device."@en .
+<https://w3id.org/mda/hasFunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#label> "has functional unit"@en .
+<https://w3id.org/mda/hasFunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#label> "heeft functionele eenheid"@nl .
 # 
-# https://w3id.org/mda/ontology/hasLabelConcept
-<https://w3id.org/mda/ontology/hasLabelConcept> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasLabelConcept> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/AlarmType> .
-<https://w3id.org/mda/ontology/hasLabelConcept> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/mda/ontology/hasLabelConcept> <http://purl.org/dc/terms/identifier> "hasLabelConcept" .
-<https://w3id.org/mda/ontology/hasLabelConcept> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een alarmtype aan zijn gecontroleerde-vocabulaireconcept in het schema van mda:AlarmLabel — één concept per onderscheidend labelstring, gedeeld door elk archetype dat dat label gebruikt, ongeacht prioriteit."@nl .
-<https://w3id.org/mda/ontology/hasLabelConcept> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates an alarm type to its controlled-vocabulary concept in mda:AlarmLabel's scheme — one concept per distinct label string encountered, shared across every archetype that uses that label regardless of priority (2_READOUT/vocab_readout.py's label_concept_iri keys on the label alone, not the archetype). The companion of mda:hasLabel, not a replacement for it."@en .
-<https://w3id.org/mda/ontology/hasLabelConcept> <http://www.w3.org/2000/01/rdf-schema#label> "has label concept"@en .
-<https://w3id.org/mda/ontology/hasLabelConcept> <http://www.w3.org/2000/01/rdf-schema#label> "heeft labelconcept"@nl .
-<https://w3id.org/mda/ontology/hasLabelConcept> <https://w3id.org/mda/ontology/valuesFromScheme> <https://w3id.org/mda/vocab/alarm-label/Scheme> .
+# https://w3id.org/mda/hasLabelConcept
+<https://w3id.org/mda/hasLabelConcept> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasLabelConcept> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/AlarmType> .
+<https://w3id.org/mda/hasLabelConcept> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/mda/hasLabelConcept> <http://purl.org/dc/terms/identifier> "hasLabelConcept" .
+<https://w3id.org/mda/hasLabelConcept> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een alarmtype aan zijn gecontroleerde-vocabulaireconcept in het schema van mda:AlarmLabel — één concept per onderscheidend labelstring, gedeeld door elk archetype dat dat label gebruikt, ongeacht prioriteit."@nl .
+<https://w3id.org/mda/hasLabelConcept> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates an alarm type to its controlled-vocabulary concept in mda:AlarmLabel's scheme — one concept per distinct label string encountered, shared across every archetype that uses that label regardless of priority (2_READOUT/vocab_readout.py's label_concept_iri keys on the label alone, not the archetype). The companion of mda:hasLabel, not a replacement for it."@en .
+<https://w3id.org/mda/hasLabelConcept> <http://www.w3.org/2000/01/rdf-schema#label> "has label concept"@en .
+<https://w3id.org/mda/hasLabelConcept> <http://www.w3.org/2000/01/rdf-schema#label> "heeft labelconcept"@nl .
+<https://w3id.org/mda/hasLabelConcept> <https://w3id.org/mda/valuesFromScheme> <https://w3id.org/mda/vocab/alarm-label/Scheme> .
 # 
-# https://w3id.org/mda/ontology/hasLaterality
-<https://w3id.org/mda/ontology/hasLaterality> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasLaterality> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#FunctionalProperty> .
-<https://w3id.org/mda/ontology/hasLaterality> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Sensor> .
-<https://w3id.org/mda/ontology/hasLaterality> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/Laterality> .
-<https://w3id.org/mda/ontology/hasLaterality> <http://purl.org/dc/terms/identifier> "hasLaterality" .
-<https://w3id.org/mda/ontology/hasLaterality> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een sensor aan zijn lateraliteit (links, rechts, bilateraal). Functioneel: een fysieke sensor heeft op een gegeven moment precies één lateraliteit."@nl .
-<https://w3id.org/mda/ontology/hasLaterality> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a sensor to its laterality (left, right, bilateral). Functional: a physical sensor has exactly one laterality at a time."@en .
-<https://w3id.org/mda/ontology/hasLaterality> <http://www.w3.org/2000/01/rdf-schema#label> "has laterality"@en .
-<https://w3id.org/mda/ontology/hasLaterality> <http://www.w3.org/2000/01/rdf-schema#label> "heeft lateraliteit"@nl .
-<https://w3id.org/mda/ontology/hasLaterality> <https://w3id.org/mda/ontology/refinesParticularIdentity> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+# https://w3id.org/mda/hasLaterality
+<https://w3id.org/mda/hasLaterality> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasLaterality> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#FunctionalProperty> .
+<https://w3id.org/mda/hasLaterality> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Sensor> .
+<https://w3id.org/mda/hasLaterality> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/Laterality> .
+<https://w3id.org/mda/hasLaterality> <http://purl.org/dc/terms/identifier> "hasLaterality" .
+<https://w3id.org/mda/hasLaterality> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een sensor aan zijn lateraliteit (links, rechts, bilateraal). Functioneel: een fysieke sensor heeft op een gegeven moment precies één lateraliteit."@nl .
+<https://w3id.org/mda/hasLaterality> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a sensor to its laterality (left, right, bilateral). Functional: a physical sensor has exactly one laterality at a time."@en .
+<https://w3id.org/mda/hasLaterality> <http://www.w3.org/2000/01/rdf-schema#label> "has laterality"@en .
+<https://w3id.org/mda/hasLaterality> <http://www.w3.org/2000/01/rdf-schema#label> "heeft lateraliteit"@nl .
+<https://w3id.org/mda/hasLaterality> <https://w3id.org/mda/refinesParticularIdentity> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
 # 
-# https://w3id.org/mda/ontology/hasManufacturer
-<https://w3id.org/mda/ontology/hasManufacturer> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasManufacturer> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Device> .
-<https://w3id.org/mda/ontology/hasManufacturer> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/mda/ontology/hasManufacturer> <http://purl.org/dc/terms/identifier> "hasManufacturer" .
-<https://w3id.org/mda/ontology/hasManufacturer> <http://www.w3.org/2000/01/rdf-schema#comment> "De fabrikant of productlijn van het apparaat."@nl .
-<https://w3id.org/mda/ontology/hasManufacturer> <http://www.w3.org/2000/01/rdf-schema#comment> "The manufacturer or product line of the device."@en .
-<https://w3id.org/mda/ontology/hasManufacturer> <http://www.w3.org/2000/01/rdf-schema#label> "has manufacturer"@en .
-<https://w3id.org/mda/ontology/hasManufacturer> <http://www.w3.org/2000/01/rdf-schema#label> "heeft fabrikant"@nl .
-<https://w3id.org/mda/ontology/hasManufacturer> <https://w3id.org/mda/ontology/refinesUniversalIdentity> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
-<https://w3id.org/mda/ontology/hasManufacturer> <https://w3id.org/mda/ontology/valuesFromScheme> <https://w3id.org/mda/vocab/manufacturer/Scheme> .
+# https://w3id.org/mda/hasManufacturer
+<https://w3id.org/mda/hasManufacturer> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasManufacturer> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Device> .
+<https://w3id.org/mda/hasManufacturer> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/mda/hasManufacturer> <http://purl.org/dc/terms/identifier> "hasManufacturer" .
+<https://w3id.org/mda/hasManufacturer> <http://www.w3.org/2000/01/rdf-schema#comment> "De fabrikant of productlijn van het apparaat."@nl .
+<https://w3id.org/mda/hasManufacturer> <http://www.w3.org/2000/01/rdf-schema#comment> "The manufacturer or product line of the device."@en .
+<https://w3id.org/mda/hasManufacturer> <http://www.w3.org/2000/01/rdf-schema#label> "has manufacturer"@en .
+<https://w3id.org/mda/hasManufacturer> <http://www.w3.org/2000/01/rdf-schema#label> "heeft fabrikant"@nl .
+<https://w3id.org/mda/hasManufacturer> <https://w3id.org/mda/refinesUniversalIdentity> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<https://w3id.org/mda/hasManufacturer> <https://w3id.org/mda/valuesFromScheme> <https://w3id.org/mda/vocab/manufacturer/Scheme> .
 # 
-# https://w3id.org/mda/ontology/hasMessage
-<https://w3id.org/mda/ontology/hasMessage> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasMessage> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#FunctionalProperty> .
-<https://w3id.org/mda/ontology/hasMessage> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#InverseFunctionalProperty> .
-<https://w3id.org/mda/ontology/hasMessage> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Alarm> .
-<https://w3id.org/mda/ontology/hasMessage> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/AlarmMessage> .
-<https://w3id.org/mda/ontology/hasMessage> <http://purl.org/dc/terms/identifier> "hasMessage" .
-<https://w3id.org/mda/ontology/hasMessage> <http://www.w3.org/2000/01/rdf-schema#comment> "Het bericht van het alarm: een per-alarm mda:AlarmMessage-knooppunt met de onafhankelijke facetten van de gebeurtenis — mda:concernsPatient en mda:triggeredBy — als nevengeschikte eigenschappen, geen van beide via de ander bereikt. Functioneel en invers-functioneel: één alarm heeft precies één bericht en één bericht hoort bij precies één alarm."@nl .
-<https://w3id.org/mda/ontology/hasMessage> <http://www.w3.org/2000/01/rdf-schema#comment> "The alarm's message: a per-alarm mda:AlarmMessage node carrying the occurrence's independent facets — mda:concernsPatient (who this alarm is about) and mda:triggeredBy (what caused it) — as siblings, neither reached through the other (see mda:triggeredBy's comment for why they used to be chained and no longer are). Distinct per alarm so many alarms can reference the same shared patient/device and merge there. Functional and inverse-functional: one alarm has exactly one message and one message belongs to exactly one alarm — alarm_iri/message_iri are minted from the same (device_id, start) key in 4_OPERATIONAL/op_knowledge.py precisely to keep this a bijection."@en .
-<https://w3id.org/mda/ontology/hasMessage> <http://www.w3.org/2000/01/rdf-schema#label> "has message"@en .
-<https://w3id.org/mda/ontology/hasMessage> <http://www.w3.org/2000/01/rdf-schema#label> "heeft bericht"@nl .
+# https://w3id.org/mda/hasMessage
+<https://w3id.org/mda/hasMessage> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasMessage> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#FunctionalProperty> .
+<https://w3id.org/mda/hasMessage> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#InverseFunctionalProperty> .
+<https://w3id.org/mda/hasMessage> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Alarm> .
+<https://w3id.org/mda/hasMessage> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/AlarmMessage> .
+<https://w3id.org/mda/hasMessage> <http://purl.org/dc/terms/identifier> "hasMessage" .
+<https://w3id.org/mda/hasMessage> <http://www.w3.org/2000/01/rdf-schema#comment> "Het bericht van het alarm: een per-alarm mda:AlarmMessage-knooppunt met de onafhankelijke facetten van de gebeurtenis — mda:concernsPatient en mda:triggeredBy — als nevengeschikte eigenschappen, geen van beide via de ander bereikt. Functioneel en invers-functioneel: één alarm heeft precies één bericht en één bericht hoort bij precies één alarm."@nl .
+<https://w3id.org/mda/hasMessage> <http://www.w3.org/2000/01/rdf-schema#comment> "The alarm's message: a per-alarm mda:AlarmMessage node carrying the occurrence's independent facets — mda:concernsPatient (who this alarm is about) and mda:triggeredBy (what caused it) — as siblings, neither reached through the other (see mda:triggeredBy's comment for why they used to be chained and no longer are). Distinct per alarm so many alarms can reference the same shared patient/device and merge there. Functional and inverse-functional: one alarm has exactly one message and one message belongs to exactly one alarm — alarm_iri/message_iri are minted from the same (device_id, start) key in 4_OPERATIONAL/op_knowledge.py precisely to keep this a bijection."@en .
+<https://w3id.org/mda/hasMessage> <http://www.w3.org/2000/01/rdf-schema#label> "has message"@en .
+<https://w3id.org/mda/hasMessage> <http://www.w3.org/2000/01/rdf-schema#label> "heeft bericht"@nl .
 # 
-# https://w3id.org/mda/ontology/hasOperationState
-<https://w3id.org/mda/ontology/hasOperationState> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasOperationState> <http://www.w3.org/2000/01/rdf-schema#domain> _:genid1 .
+# https://w3id.org/mda/hasOperationState
+<https://w3id.org/mda/hasOperationState> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasOperationState> <http://www.w3.org/2000/01/rdf-schema#domain> _:genid1 .
 _:genid1 <http://www.w3.org/2002/07/owl#unionOf> _:genid6 .
 _:genid6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid5 .
 _:genid5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid4 .
 _:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid3 .
 _:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid2 .
 _:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-_:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/ontology/TherapeuticModality> .
+_:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/TherapeuticModality> .
 _:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
-_:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/ontology/Signal> .
+_:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/Signal> .
 _:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
-_:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/ontology/Sensor> .
+_:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/Sensor> .
 _:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
-_:genid5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/ontology/Device> .
+_:genid5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/Device> .
 _:genid5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
-_:genid6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/ontology/Component> .
+_:genid6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/Component> .
 _:genid6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
 _:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/hasOperationState> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/mda/ontology/hasOperationState> <http://www.w3.org/2002/07/owl#propertyChainAxiom> _:genid8 .
+<https://w3id.org/mda/hasOperationState> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/mda/hasOperationState> <http://www.w3.org/2002/07/owl#propertyChainAxiom> _:genid8 .
 _:genid8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid7 .
 _:genid7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-_:genid7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/ontology/hasOperationState> .
+_:genid7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/hasOperationState> .
 _:genid7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
-_:genid8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/ontology/hasFunctionalUnit> .
+_:genid8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/hasFunctionalUnit> .
 _:genid8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
-<https://w3id.org/mda/ontology/hasOperationState> <http://www.w3.org/2002/07/owl#propertyChainAxiom> _:genid10 .
+<https://w3id.org/mda/hasOperationState> <http://www.w3.org/2002/07/owl#propertyChainAxiom> _:genid10 .
 _:genid10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid9 .
 _:genid9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-_:genid9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/ontology/hasOperationState> .
+_:genid9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/hasOperationState> .
 _:genid9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
-_:genid10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/ontology/hasSensor> .
+_:genid10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/hasSensor> .
 _:genid10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
-<https://w3id.org/mda/ontology/hasOperationState> <http://www.w3.org/2002/07/owl#propertyChainAxiom> _:genid12 .
+<https://w3id.org/mda/hasOperationState> <http://www.w3.org/2002/07/owl#propertyChainAxiom> _:genid12 .
 _:genid12 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid11 .
 _:genid11 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-_:genid11 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/ontology/hasOperationState> .
+_:genid11 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/hasOperationState> .
 _:genid11 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
-_:genid12 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/ontology/producesSignal> .
+_:genid12 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/producesSignal> .
 _:genid12 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
-<https://w3id.org/mda/ontology/hasOperationState> <http://www.w3.org/2002/07/owl#propertyChainAxiom> _:genid14 .
+<https://w3id.org/mda/hasOperationState> <http://www.w3.org/2002/07/owl#propertyChainAxiom> _:genid14 .
 _:genid14 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid13 .
 _:genid13 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-_:genid13 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/ontology/hasOperationState> .
+_:genid13 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/hasOperationState> .
 _:genid13 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
 _:genid14 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:genid15 .
-_:genid15 <http://www.w3.org/2002/07/owl#inverseOf> <https://w3id.org/mda/ontology/administers> .
+_:genid15 <http://www.w3.org/2002/07/owl#inverseOf> <https://w3id.org/mda/administers> .
 _:genid14 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
-<https://w3id.org/mda/ontology/hasOperationState> <http://purl.org/dc/terms/identifier> "hasOperationState" .
-<https://w3id.org/mda/ontology/hasOperationState> <http://www.w3.org/2000/01/rdf-schema#comment> "De operationele status van een apparaat, sensor, signaal, onderdeel, of de therapeutische modaliteit die een apparaat toedient (dit laatste afgeleid van de status van het toedienende apparaat, niet direct toegekend)."@nl .
-<https://w3id.org/mda/ontology/hasOperationState> <http://www.w3.org/2000/01/rdf-schema#comment> "The operational state of a device, sensor, signal, component, or the therapeutic modality a device administers (the latter inferred from the administering device's own state, not asserted directly)."@en .
-<https://w3id.org/mda/ontology/hasOperationState> <http://www.w3.org/2000/01/rdf-schema#label> "has operation state"@en .
-<https://w3id.org/mda/ontology/hasOperationState> <http://www.w3.org/2000/01/rdf-schema#label> "heeft operatiestatus"@nl .
-<https://w3id.org/mda/ontology/hasOperationState> <https://w3id.org/mda/ontology/persistsPostAlarm> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<https://w3id.org/mda/hasOperationState> <http://purl.org/dc/terms/identifier> "hasOperationState" .
+<https://w3id.org/mda/hasOperationState> <http://www.w3.org/2000/01/rdf-schema#comment> "De operationele status van een apparaat, sensor, signaal, onderdeel, of de therapeutische modaliteit die een apparaat toedient (dit laatste afgeleid van de status van het toedienende apparaat, niet direct toegekend)."@nl .
+<https://w3id.org/mda/hasOperationState> <http://www.w3.org/2000/01/rdf-schema#comment> "The operational state of a device, sensor, signal, component, or the therapeutic modality a device administers (the latter inferred from the administering device's own state, not asserted directly)."@en .
+<https://w3id.org/mda/hasOperationState> <http://www.w3.org/2000/01/rdf-schema#label> "has operation state"@en .
+<https://w3id.org/mda/hasOperationState> <http://www.w3.org/2000/01/rdf-schema#label> "heeft operatiestatus"@nl .
+<https://w3id.org/mda/hasOperationState> <https://w3id.org/mda/persistsPostAlarm> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
 # 
-# https://w3id.org/mda/ontology/hasPhase
-<https://w3id.org/mda/ontology/hasPhase> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasPhase> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Metric> .
-<https://w3id.org/mda/ontology/hasPhase> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/mda/ontology/hasPhase> <http://purl.org/dc/terms/identifier> "hasPhase" .
-<https://w3id.org/mda/ontology/hasPhase> <http://www.w3.org/2000/01/rdf-schema#comment> "De fase van de metriek waarop de alarmconditie van toepassing is (bijv. gemiddeld, systolisch, diastolisch, eind-expiratoir)."@nl .
-<https://w3id.org/mda/ontology/hasPhase> <http://www.w3.org/2000/01/rdf-schema#comment> "The phase of the metric to which the alarm condition applies (e.g. mean, systolic, diastolic, end-expiratory)."@en .
-<https://w3id.org/mda/ontology/hasPhase> <http://www.w3.org/2000/01/rdf-schema#label> "has phase"@en .
-<https://w3id.org/mda/ontology/hasPhase> <http://www.w3.org/2000/01/rdf-schema#label> "heeft fase"@nl .
-<https://w3id.org/mda/ontology/hasPhase> <https://w3id.org/mda/ontology/refinesUniversalIdentity> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
-<https://w3id.org/mda/ontology/hasPhase> <https://w3id.org/mda/ontology/valuesFromScheme> <https://w3id.org/mda/vocab/metric-phase/Scheme> .
+# https://w3id.org/mda/hasPhase
+<https://w3id.org/mda/hasPhase> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasPhase> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Metric> .
+<https://w3id.org/mda/hasPhase> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/mda/hasPhase> <http://purl.org/dc/terms/identifier> "hasPhase" .
+<https://w3id.org/mda/hasPhase> <http://www.w3.org/2000/01/rdf-schema#comment> "De fase van de metriek waarop de alarmconditie van toepassing is (bijv. gemiddeld, systolisch, diastolisch, eind-expiratoir)."@nl .
+<https://w3id.org/mda/hasPhase> <http://www.w3.org/2000/01/rdf-schema#comment> "The phase of the metric to which the alarm condition applies (e.g. mean, systolic, diastolic, end-expiratory)."@en .
+<https://w3id.org/mda/hasPhase> <http://www.w3.org/2000/01/rdf-schema#label> "has phase"@en .
+<https://w3id.org/mda/hasPhase> <http://www.w3.org/2000/01/rdf-schema#label> "heeft fase"@nl .
+<https://w3id.org/mda/hasPhase> <https://w3id.org/mda/refinesUniversalIdentity> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<https://w3id.org/mda/hasPhase> <https://w3id.org/mda/valuesFromScheme> <https://w3id.org/mda/vocab/metric-phase/Scheme> .
 # 
-# https://w3id.org/mda/ontology/hasPriority
-<https://w3id.org/mda/ontology/hasPriority> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasPriority> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Alarm> .
-<https://w3id.org/mda/ontology/hasPriority> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/mda/ontology/hasPriority> <http://purl.org/dc/terms/identifier> "hasPriority" .
-<https://w3id.org/mda/ontology/hasPriority> <http://www.w3.org/2000/01/rdf-schema#comment> "Het prioriteitsniveau van een alarm of alarmbericht."@nl .
-<https://w3id.org/mda/ontology/hasPriority> <http://www.w3.org/2000/01/rdf-schema#comment> "The priority level of an alarm or alarm message."@en .
-<https://w3id.org/mda/ontology/hasPriority> <http://www.w3.org/2000/01/rdf-schema#label> "has priority"@en .
-<https://w3id.org/mda/ontology/hasPriority> <http://www.w3.org/2000/01/rdf-schema#label> "heeft prioriteit"@nl .
-<https://w3id.org/mda/ontology/hasPriority> <https://w3id.org/mda/ontology/valuesFromScheme> <https://w3id.org/mda/vocab/alarm-priority/Scheme> .
+# https://w3id.org/mda/hasPriority
+<https://w3id.org/mda/hasPriority> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasPriority> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Alarm> .
+<https://w3id.org/mda/hasPriority> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/mda/hasPriority> <http://purl.org/dc/terms/identifier> "hasPriority" .
+<https://w3id.org/mda/hasPriority> <http://www.w3.org/2000/01/rdf-schema#comment> "Het prioriteitsniveau van een alarm of alarmbericht."@nl .
+<https://w3id.org/mda/hasPriority> <http://www.w3.org/2000/01/rdf-schema#comment> "The priority level of an alarm or alarm message."@en .
+<https://w3id.org/mda/hasPriority> <http://www.w3.org/2000/01/rdf-schema#label> "has priority"@en .
+<https://w3id.org/mda/hasPriority> <http://www.w3.org/2000/01/rdf-schema#label> "heeft prioriteit"@nl .
+<https://w3id.org/mda/hasPriority> <https://w3id.org/mda/valuesFromScheme> <https://w3id.org/mda/vocab/alarm-priority/Scheme> .
 # 
-# https://w3id.org/mda/ontology/hasQualityState
-<https://w3id.org/mda/ontology/hasQualityState> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasQualityState> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Signal> .
-<https://w3id.org/mda/ontology/hasQualityState> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/mda/ontology/hasQualityState> <http://purl.org/dc/terms/identifier> "hasQualityState" .
-<https://w3id.org/mda/ontology/hasQualityState> <http://www.w3.org/2000/01/rdf-schema#comment> "De kwaliteitsstatus van een signaal, die de meetbetrouwbaarheid aangeeft."@nl .
-<https://w3id.org/mda/ontology/hasQualityState> <http://www.w3.org/2000/01/rdf-schema#comment> "The quality state of a signal, indicating measurement reliability."@en .
-<https://w3id.org/mda/ontology/hasQualityState> <http://www.w3.org/2000/01/rdf-schema#label> "has quality state"@en .
-<https://w3id.org/mda/ontology/hasQualityState> <http://www.w3.org/2000/01/rdf-schema#label> "heeft kwaliteitsstatus"@nl .
-<https://w3id.org/mda/ontology/hasQualityState> <https://w3id.org/mda/ontology/persistsPostAlarm> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
-<https://w3id.org/mda/ontology/hasQualityState> <https://w3id.org/mda/ontology/valuesFromScheme> <https://w3id.org/mda/vocab/quality-state/Scheme> .
+# https://w3id.org/mda/hasQualityState
+<https://w3id.org/mda/hasQualityState> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasQualityState> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Signal> .
+<https://w3id.org/mda/hasQualityState> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/mda/hasQualityState> <http://purl.org/dc/terms/identifier> "hasQualityState" .
+<https://w3id.org/mda/hasQualityState> <http://www.w3.org/2000/01/rdf-schema#comment> "De kwaliteitsstatus van een signaal, die de meetbetrouwbaarheid aangeeft."@nl .
+<https://w3id.org/mda/hasQualityState> <http://www.w3.org/2000/01/rdf-schema#comment> "The quality state of a signal, indicating measurement reliability."@en .
+<https://w3id.org/mda/hasQualityState> <http://www.w3.org/2000/01/rdf-schema#label> "has quality state"@en .
+<https://w3id.org/mda/hasQualityState> <http://www.w3.org/2000/01/rdf-schema#label> "heeft kwaliteitsstatus"@nl .
+<https://w3id.org/mda/hasQualityState> <https://w3id.org/mda/persistsPostAlarm> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<https://w3id.org/mda/hasQualityState> <https://w3id.org/mda/valuesFromScheme> <https://w3id.org/mda/vocab/quality-state/Scheme> .
 # 
-# https://w3id.org/mda/ontology/hasRate
-<https://w3id.org/mda/ontology/hasRate> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasRate> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Metric> .
-<https://w3id.org/mda/ontology/hasRate> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/mda/ontology/hasRate> <http://purl.org/dc/terms/identifier> "hasRate" .
-<https://w3id.org/mda/ontology/hasRate> <http://www.w3.org/2000/01/rdf-schema#comment> "De snelheidsafwijking van de metriek die het alarm veroorzaakt (bijv. verhoogd, verlaagd, kritieke daling)."@nl .
-<https://w3id.org/mda/ontology/hasRate> <http://www.w3.org/2000/01/rdf-schema#comment> "The rate deviation of the metric that raises the alarm (e.g. increased, decreased, critical decrease)."@en .
-<https://w3id.org/mda/ontology/hasRate> <http://www.w3.org/2000/01/rdf-schema#label> "has rate"@en .
-<https://w3id.org/mda/ontology/hasRate> <http://www.w3.org/2000/01/rdf-schema#label> "heeft snelheid"@nl .
-<https://w3id.org/mda/ontology/hasRate> <https://w3id.org/mda/ontology/valuesFromScheme> <https://w3id.org/mda/vocab/metric-rate/Scheme> .
+# https://w3id.org/mda/hasRate
+<https://w3id.org/mda/hasRate> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasRate> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Metric> .
+<https://w3id.org/mda/hasRate> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/mda/hasRate> <http://purl.org/dc/terms/identifier> "hasRate" .
+<https://w3id.org/mda/hasRate> <http://www.w3.org/2000/01/rdf-schema#comment> "De snelheidsafwijking van de metriek die het alarm veroorzaakt (bijv. verhoogd, verlaagd, kritieke daling)."@nl .
+<https://w3id.org/mda/hasRate> <http://www.w3.org/2000/01/rdf-schema#comment> "The rate deviation of the metric that raises the alarm (e.g. increased, decreased, critical decrease)."@en .
+<https://w3id.org/mda/hasRate> <http://www.w3.org/2000/01/rdf-schema#label> "has rate"@en .
+<https://w3id.org/mda/hasRate> <http://www.w3.org/2000/01/rdf-schema#label> "heeft snelheid"@nl .
+<https://w3id.org/mda/hasRate> <https://w3id.org/mda/valuesFromScheme> <https://w3id.org/mda/vocab/metric-rate/Scheme> .
 # 
-# https://w3id.org/mda/ontology/hasRhythm
-<https://w3id.org/mda/ontology/hasRhythm> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasRhythm> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Metric> .
-<https://w3id.org/mda/ontology/hasRhythm> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/mda/ontology/hasRhythm> <http://purl.org/dc/terms/identifier> "hasRhythm" .
-<https://w3id.org/mda/ontology/hasRhythm> <http://www.w3.org/2000/01/rdf-schema#comment> "Het ritmepatroon van de metriek waarop de alarmconditie van toepassing is (bijv. onregelmatig)."@nl .
-<https://w3id.org/mda/ontology/hasRhythm> <http://www.w3.org/2000/01/rdf-schema#comment> "The rhythm pattern of the metric to which the alarm condition applies (e.g. irregular)."@en .
-<https://w3id.org/mda/ontology/hasRhythm> <http://www.w3.org/2000/01/rdf-schema#label> "has rhythm"@en .
-<https://w3id.org/mda/ontology/hasRhythm> <http://www.w3.org/2000/01/rdf-schema#label> "heeft ritme"@nl .
-<https://w3id.org/mda/ontology/hasRhythm> <https://w3id.org/mda/ontology/valuesFromScheme> <https://w3id.org/mda/vocab/rhythm/Scheme> .
+# https://w3id.org/mda/hasRhythm
+<https://w3id.org/mda/hasRhythm> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasRhythm> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Metric> .
+<https://w3id.org/mda/hasRhythm> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/mda/hasRhythm> <http://purl.org/dc/terms/identifier> "hasRhythm" .
+<https://w3id.org/mda/hasRhythm> <http://www.w3.org/2000/01/rdf-schema#comment> "Het ritmepatroon van de metriek waarop de alarmconditie van toepassing is (bijv. onregelmatig)."@nl .
+<https://w3id.org/mda/hasRhythm> <http://www.w3.org/2000/01/rdf-schema#comment> "The rhythm pattern of the metric to which the alarm condition applies (e.g. irregular)."@en .
+<https://w3id.org/mda/hasRhythm> <http://www.w3.org/2000/01/rdf-schema#label> "has rhythm"@en .
+<https://w3id.org/mda/hasRhythm> <http://www.w3.org/2000/01/rdf-schema#label> "heeft ritme"@nl .
+<https://w3id.org/mda/hasRhythm> <https://w3id.org/mda/valuesFromScheme> <https://w3id.org/mda/vocab/rhythm/Scheme> .
 # 
-# https://w3id.org/mda/ontology/hasSensor
-<https://w3id.org/mda/ontology/hasSensor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasSensor> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/FunctionalUnit> .
-<https://w3id.org/mda/ontology/hasSensor> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/Sensor> .
-<https://w3id.org/mda/ontology/hasSensor> <http://purl.org/dc/terms/identifier> "hasSensor" .
-<https://w3id.org/mda/ontology/hasSensor> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een functionele eenheid aan de fysieke sensor(en) waarvan het afleest (bijv. een ECG-module aan elk van zijn 12 afleidingen). GEEN subeigenschap van hasComponent: het domein is FunctionalUnit, niet Device, en het domein van hasComponent ligt vast op Device. Een sensor behoort niet langer rechtstreeks tot een apparaat."@nl .
-<https://w3id.org/mda/ontology/hasSensor> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a functional unit to the physical sensor(s) it reads from (e.g. an ECG module to each of its 12 leads). NOT a sub-property of hasComponent: its domain is FunctionalUnit, not Device, and hasComponent's domain is fixed to Device — declaring it a sub-property would wrongly entail every FunctionalUnit is itself a Device. A sensor no longer belongs directly to a device (see FunctionalUnit below for why: the sensor is the physical probe, the functional unit is what analyses what it picks up). Deliberately NOT owl:InverseFunctionalProperty, unlike most of this file's other IFP-marked relations: 2_READOUT/outcome/inference.ttl's FunctionalUnit recipe axioms assert hasSensor via an owl:hasValue restriction, so every alarm typed to the same FunctionalUnit concept (e.g. every FU_PneumoTachograph alarm) entails hasSensor to the SAME shared sensor concept, not a fresh individual per alarm the way 2_READOUT/vocab_readout.py's own per-row blank nodes do. Confirmed by an isolated reasoner test: with InverseFunctionalProperty declared, prp-ifp forces every one of those alarms' FunctionalUnit individuals into owl:sameAs with each other — and would do the same across grounded, per-patient data in 4_OPERATIONAL if this property were ever reasoned over there, merging different patients' equipment. mda:producesSignal carries the same latent risk if a future recipe axiom (e.g. the pending ECG one) ever reuses one signal concept across two different sensor concepts — watch for it there too."@en .
-<https://w3id.org/mda/ontology/hasSensor> <http://www.w3.org/2000/01/rdf-schema#label> "has sensor"@en .
-<https://w3id.org/mda/ontology/hasSensor> <http://www.w3.org/2000/01/rdf-schema#label> "heeft sensor"@nl .
+# https://w3id.org/mda/hasSensor
+<https://w3id.org/mda/hasSensor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasSensor> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/FunctionalUnit> .
+<https://w3id.org/mda/hasSensor> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/Sensor> .
+<https://w3id.org/mda/hasSensor> <http://purl.org/dc/terms/identifier> "hasSensor" .
+<https://w3id.org/mda/hasSensor> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een functionele eenheid aan de fysieke sensor(en) waarvan het afleest (bijv. een ECG-module aan elk van zijn 12 afleidingen). GEEN subeigenschap van hasComponent: het domein is FunctionalUnit, niet Device, en het domein van hasComponent ligt vast op Device. Een sensor behoort niet langer rechtstreeks tot een apparaat."@nl .
+<https://w3id.org/mda/hasSensor> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a functional unit to the physical sensor(s) it reads from (e.g. an ECG module to each of its 12 leads). NOT a sub-property of hasComponent: its domain is FunctionalUnit, not Device, and hasComponent's domain is fixed to Device — declaring it a sub-property would wrongly entail every FunctionalUnit is itself a Device. A sensor no longer belongs directly to a device (see FunctionalUnit below for why: the sensor is the physical probe, the functional unit is what analyses what it picks up). Deliberately NOT owl:InverseFunctionalProperty, unlike most of this file's other IFP-marked relations: 2_READOUT/outcome/inference.ttl's FunctionalUnit recipe axioms assert hasSensor via an owl:hasValue restriction, so every alarm typed to the same FunctionalUnit concept (e.g. every FU_PneumoTachograph alarm) entails hasSensor to the SAME shared sensor concept, not a fresh individual per alarm the way 2_READOUT/vocab_readout.py's own per-row blank nodes do. Confirmed by an isolated reasoner test: with InverseFunctionalProperty declared, prp-ifp forces every one of those alarms' FunctionalUnit individuals into owl:sameAs with each other — and would do the same across grounded, per-patient data in 4_OPERATIONAL if this property were ever reasoned over there, merging different patients' equipment. mda:producesSignal carries the same latent risk if a future recipe axiom (e.g. the pending ECG one) ever reuses one signal concept across two different sensor concepts — watch for it there too."@en .
+<https://w3id.org/mda/hasSensor> <http://www.w3.org/2000/01/rdf-schema#label> "has sensor"@en .
+<https://w3id.org/mda/hasSensor> <http://www.w3.org/2000/01/rdf-schema#label> "heeft sensor"@nl .
 # 
-# https://w3id.org/mda/ontology/hasSensorOperationState
-<https://w3id.org/mda/ontology/hasSensorOperationState> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/hasSensorOperationState> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <https://w3id.org/mda/ontology/hasOperationState> .
-<https://w3id.org/mda/ontology/hasSensorOperationState> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Sensor> .
-<https://w3id.org/mda/ontology/hasSensorOperationState> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
-<https://w3id.org/mda/ontology/hasSensorOperationState> <http://purl.org/dc/terms/identifier> "hasSensorOperationState" .
-<https://w3id.org/mda/ontology/hasSensorOperationState> <http://www.w3.org/2000/01/rdf-schema#comment> "De operationele status van een sensor, bijv. Enabled, Disabled of Malfunction. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen."@nl .
-<https://w3id.org/mda/ontology/hasSensorOperationState> <http://www.w3.org/2000/01/rdf-schema#comment> "The operational state of a sensor, e.g. Enabled, Disabled, or Malfunction. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously."@en .
-<https://w3id.org/mda/ontology/hasSensorOperationState> <http://www.w3.org/2000/01/rdf-schema#label> "has sensor operation state"@en .
-<https://w3id.org/mda/ontology/hasSensorOperationState> <http://www.w3.org/2000/01/rdf-schema#label> "heeft sensoroperatiestatus"@nl .
-<https://w3id.org/mda/ontology/hasSensorOperationState> <https://w3id.org/mda/ontology/valuesFromScheme> <https://w3id.org/mda/vocab/operation-state/Scheme> .
+# https://w3id.org/mda/hasSensorOperationState
+<https://w3id.org/mda/hasSensorOperationState> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/hasSensorOperationState> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <https://w3id.org/mda/hasOperationState> .
+<https://w3id.org/mda/hasSensorOperationState> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Sensor> .
+<https://w3id.org/mda/hasSensorOperationState> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2004/02/skos/core#Concept> .
+<https://w3id.org/mda/hasSensorOperationState> <http://purl.org/dc/terms/identifier> "hasSensorOperationState" .
+<https://w3id.org/mda/hasSensorOperationState> <http://www.w3.org/2000/01/rdf-schema#comment> "De operationele status van een sensor, bijv. Enabled, Disabled of Malfunction. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen."@nl .
+<https://w3id.org/mda/hasSensorOperationState> <http://www.w3.org/2000/01/rdf-schema#comment> "The operational state of a sensor, e.g. Enabled, Disabled, or Malfunction. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously."@en .
+<https://w3id.org/mda/hasSensorOperationState> <http://www.w3.org/2000/01/rdf-schema#label> "has sensor operation state"@en .
+<https://w3id.org/mda/hasSensorOperationState> <http://www.w3.org/2000/01/rdf-schema#label> "heeft sensoroperatiestatus"@nl .
+<https://w3id.org/mda/hasSensorOperationState> <https://w3id.org/mda/valuesFromScheme> <https://w3id.org/mda/vocab/operation-state/Scheme> .
 # 
-# https://w3id.org/mda/ontology/isMonitoredBy
-<https://w3id.org/mda/ontology/isMonitoredBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/isMonitoredBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#InverseFunctionalProperty> .
-<https://w3id.org/mda/ontology/isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Patient> .
-<https://w3id.org/mda/ontology/isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/Device> .
-<https://w3id.org/mda/ontology/isMonitoredBy> <http://purl.org/dc/terms/identifier> "isMonitoredBy" .
-<https://w3id.org/mda/ontology/isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een patiënt aan het apparaat dat hen op dit moment bewaakt. Invers-functioneel: een apparaat bewaakt hoogstens één patiënt tegelijk."@nl .
-<https://w3id.org/mda/ontology/isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a patient to the device currently monitoring them. No longer part of the blueprint's structural path to mda:Device (see mda:triggeredBy) — that routing asserted every alarm-raising device 'monitors' the patient, which overclaims for a therapeutic one. What remains is this property's own, separate justification: inverse-functional, a device monitors at most one patient at a time — a physical monitor is not shared between two patients simultaneously, even though it may serve different patients at different times — so a reasoner can catch a double-booking directly (as an entailed owl:sameAs between two asserted-distinct patients) rather than relying on generator discipline, the same pattern as mda:hasSensor/mda:producesSignal below. Only meaningful if isMonitoredBy is asserted per-instant, not as a standing fact for a patient's whole encounter — see 4_OPERATIONAL/op_knowledge.py, the only place it is still asserted."@en .
-<https://w3id.org/mda/ontology/isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#label> "is monitored by"@en .
-<https://w3id.org/mda/ontology/isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#label> "wordt bewaakt door"@nl .
+# https://w3id.org/mda/isMonitoredBy
+<https://w3id.org/mda/isMonitoredBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/isMonitoredBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#InverseFunctionalProperty> .
+<https://w3id.org/mda/isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Patient> .
+<https://w3id.org/mda/isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/Device> .
+<https://w3id.org/mda/isMonitoredBy> <http://purl.org/dc/terms/identifier> "isMonitoredBy" .
+<https://w3id.org/mda/isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een patiënt aan het apparaat dat hen op dit moment bewaakt. Invers-functioneel: een apparaat bewaakt hoogstens één patiënt tegelijk."@nl .
+<https://w3id.org/mda/isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a patient to the device currently monitoring them. No longer part of the blueprint's structural path to mda:Device (see mda:triggeredBy) — that routing asserted every alarm-raising device 'monitors' the patient, which overclaims for a therapeutic one. What remains is this property's own, separate justification: inverse-functional, a device monitors at most one patient at a time — a physical monitor is not shared between two patients simultaneously, even though it may serve different patients at different times — so a reasoner can catch a double-booking directly (as an entailed owl:sameAs between two asserted-distinct patients) rather than relying on generator discipline, the same pattern as mda:hasSensor/mda:producesSignal below. Only meaningful if isMonitoredBy is asserted per-instant, not as a standing fact for a patient's whole encounter — see 4_OPERATIONAL/op_knowledge.py, the only place it is still asserted."@en .
+<https://w3id.org/mda/isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#label> "is monitored by"@en .
+<https://w3id.org/mda/isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#label> "wordt bewaakt door"@nl .
 # 
-# https://w3id.org/mda/ontology/isOfType
-<https://w3id.org/mda/ontology/isOfType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/isOfType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#FunctionalProperty> .
-<https://w3id.org/mda/ontology/isOfType> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Alarm> .
-<https://w3id.org/mda/ontology/isOfType> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/AlarmType> .
-<https://w3id.org/mda/ontology/isOfType> <http://purl.org/dc/terms/identifier> "isOfType" .
-<https://w3id.org/mda/ontology/isOfType> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een concrete alarminstantie aan zijn archetypische alarmtype in de typecatalogus, waaruit standaard structurele kennis (apparaattype, sensortype, signaaltype) kan worden geërfd. Functioneel: één alarminstantie is van precies één archetype."@nl .
-<https://w3id.org/mda/ontology/isOfType> <http://www.w3.org/2000/01/rdf-schema#comment> "Links a concrete alarm instance to its archetypal alarm type in the type catalogue, from which default structural knowledge (device type, sensor type, signal type) can be inherited. Functional: one alarm occurrence is of exactly one archetype."@en .
-<https://w3id.org/mda/ontology/isOfType> <http://www.w3.org/2000/01/rdf-schema#label> "is of type"@en .
-<https://w3id.org/mda/ontology/isOfType> <http://www.w3.org/2000/01/rdf-schema#label> "is van type"@nl .
+# https://w3id.org/mda/isOfType
+<https://w3id.org/mda/isOfType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/isOfType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#FunctionalProperty> .
+<https://w3id.org/mda/isOfType> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Alarm> .
+<https://w3id.org/mda/isOfType> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/AlarmType> .
+<https://w3id.org/mda/isOfType> <http://purl.org/dc/terms/identifier> "isOfType" .
+<https://w3id.org/mda/isOfType> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een concrete alarminstantie aan zijn archetypische alarmtype in de typecatalogus, waaruit standaard structurele kennis (apparaattype, sensortype, signaaltype) kan worden geërfd. Functioneel: één alarminstantie is van precies één archetype."@nl .
+<https://w3id.org/mda/isOfType> <http://www.w3.org/2000/01/rdf-schema#comment> "Links a concrete alarm instance to its archetypal alarm type in the type catalogue, from which default structural knowledge (device type, sensor type, signal type) can be inherited. Functional: one alarm occurrence is of exactly one archetype."@en .
+<https://w3id.org/mda/isOfType> <http://www.w3.org/2000/01/rdf-schema#label> "is of type"@en .
+<https://w3id.org/mda/isOfType> <http://www.w3.org/2000/01/rdf-schema#label> "is van type"@nl .
 # 
-# https://w3id.org/mda/ontology/isPropertyOf
-<https://w3id.org/mda/ontology/isPropertyOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/isPropertyOf> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/PhysiologicalProperty> .
-<https://w3id.org/mda/ontology/isPropertyOf> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/PhysiologicalProcess> .
-<https://w3id.org/mda/ontology/isPropertyOf> <http://purl.org/dc/terms/identifier> "isPropertyOf" .
-<https://w3id.org/mda/ontology/isPropertyOf> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een fysiologische eigenschap aan het proces dat het karakteriseert."@nl .
-<https://w3id.org/mda/ontology/isPropertyOf> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a physiological property to the process it characterises."@en .
-<https://w3id.org/mda/ontology/isPropertyOf> <http://www.w3.org/2000/01/rdf-schema#label> "is eigenschap van"@nl .
-<https://w3id.org/mda/ontology/isPropertyOf> <http://www.w3.org/2000/01/rdf-schema#label> "is property of"@en .
-<https://w3id.org/mda/ontology/isPropertyOf> <https://w3id.org/mda/ontology/situational> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+# https://w3id.org/mda/isPropertyOf
+<https://w3id.org/mda/isPropertyOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/isPropertyOf> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/PhysiologicalProperty> .
+<https://w3id.org/mda/isPropertyOf> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/PhysiologicalProcess> .
+<https://w3id.org/mda/isPropertyOf> <http://purl.org/dc/terms/identifier> "isPropertyOf" .
+<https://w3id.org/mda/isPropertyOf> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een fysiologische eigenschap aan het proces dat het karakteriseert."@nl .
+<https://w3id.org/mda/isPropertyOf> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a physiological property to the process it characterises."@en .
+<https://w3id.org/mda/isPropertyOf> <http://www.w3.org/2000/01/rdf-schema#label> "is eigenschap van"@nl .
+<https://w3id.org/mda/isPropertyOf> <http://www.w3.org/2000/01/rdf-schema#label> "is property of"@en .
+<https://w3id.org/mda/isPropertyOf> <https://w3id.org/mda/situational> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
 # 
-# https://w3id.org/mda/ontology/organPartOfSystem
-<https://w3id.org/mda/ontology/organPartOfSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/organPartOfSystem> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Organ> .
-<https://w3id.org/mda/ontology/organPartOfSystem> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/OrganSystem> .
-<https://w3id.org/mda/ontology/organPartOfSystem> <http://purl.org/dc/terms/identifier> "organPartOfSystem" .
-<https://w3id.org/mda/ontology/organPartOfSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een orgaan aan het orgaansysteem waartoe het behoort."@nl .
-<https://w3id.org/mda/ontology/organPartOfSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates an organ to the organ system it belongs to."@en .
-<https://w3id.org/mda/ontology/organPartOfSystem> <http://www.w3.org/2000/01/rdf-schema#label> "orgaan deel van systeem"@nl .
-<https://w3id.org/mda/ontology/organPartOfSystem> <http://www.w3.org/2000/01/rdf-schema#label> "organ part of system"@en .
-<https://w3id.org/mda/ontology/organPartOfSystem> <https://w3id.org/mda/ontology/situational> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+# https://w3id.org/mda/organPartOfSystem
+<https://w3id.org/mda/organPartOfSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/organPartOfSystem> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Organ> .
+<https://w3id.org/mda/organPartOfSystem> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/OrganSystem> .
+<https://w3id.org/mda/organPartOfSystem> <http://purl.org/dc/terms/identifier> "organPartOfSystem" .
+<https://w3id.org/mda/organPartOfSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een orgaan aan het orgaansysteem waartoe het behoort."@nl .
+<https://w3id.org/mda/organPartOfSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates an organ to the organ system it belongs to."@en .
+<https://w3id.org/mda/organPartOfSystem> <http://www.w3.org/2000/01/rdf-schema#label> "orgaan deel van systeem"@nl .
+<https://w3id.org/mda/organPartOfSystem> <http://www.w3.org/2000/01/rdf-schema#label> "organ part of system"@en .
+<https://w3id.org/mda/organPartOfSystem> <https://w3id.org/mda/situational> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
 # 
-# https://w3id.org/mda/ontology/presentIn
-<https://w3id.org/mda/ontology/presentIn> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/presentIn> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/PhysiologicalProcess> .
-<https://w3id.org/mda/ontology/presentIn> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/Organ> .
-<https://w3id.org/mda/ontology/presentIn> <http://purl.org/dc/terms/identifier> "presentIn" .
-<https://w3id.org/mda/ontology/presentIn> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een fysiologisch proces aan het orgaan waarin het plaatsvindt."@nl .
-<https://w3id.org/mda/ontology/presentIn> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a physiological process to the organ it occurs in."@en .
-<https://w3id.org/mda/ontology/presentIn> <http://www.w3.org/2000/01/rdf-schema#label> "aanwezig in"@nl .
-<https://w3id.org/mda/ontology/presentIn> <http://www.w3.org/2000/01/rdf-schema#label> "present in"@en .
-<https://w3id.org/mda/ontology/presentIn> <https://w3id.org/mda/ontology/situational> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+# https://w3id.org/mda/presentIn
+<https://w3id.org/mda/presentIn> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/presentIn> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/PhysiologicalProcess> .
+<https://w3id.org/mda/presentIn> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/Organ> .
+<https://w3id.org/mda/presentIn> <http://purl.org/dc/terms/identifier> "presentIn" .
+<https://w3id.org/mda/presentIn> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een fysiologisch proces aan het orgaan waarin het plaatsvindt."@nl .
+<https://w3id.org/mda/presentIn> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a physiological process to the organ it occurs in."@en .
+<https://w3id.org/mda/presentIn> <http://www.w3.org/2000/01/rdf-schema#label> "aanwezig in"@nl .
+<https://w3id.org/mda/presentIn> <http://www.w3.org/2000/01/rdf-schema#label> "present in"@en .
+<https://w3id.org/mda/presentIn> <https://w3id.org/mda/situational> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
 # 
-# https://w3id.org/mda/ontology/producesMetric
-<https://w3id.org/mda/ontology/producesMetric> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/producesMetric> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/SignalAnalysis> .
-<https://w3id.org/mda/ontology/producesMetric> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/Metric> .
-<https://w3id.org/mda/ontology/producesMetric> <http://purl.org/dc/terms/identifier> "producesMetric" .
-<https://w3id.org/mda/ontology/producesMetric> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een signaalanalysestap aan de metriek die het berekent."@nl .
-<https://w3id.org/mda/ontology/producesMetric> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a signal-analysis step to the metric it computes."@en .
-<https://w3id.org/mda/ontology/producesMetric> <http://www.w3.org/2000/01/rdf-schema#label> "produceert metriek"@nl .
-<https://w3id.org/mda/ontology/producesMetric> <http://www.w3.org/2000/01/rdf-schema#label> "produces metric"@en .
+# https://w3id.org/mda/producesMetric
+<https://w3id.org/mda/producesMetric> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/producesMetric> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/SignalAnalysis> .
+<https://w3id.org/mda/producesMetric> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/Metric> .
+<https://w3id.org/mda/producesMetric> <http://purl.org/dc/terms/identifier> "producesMetric" .
+<https://w3id.org/mda/producesMetric> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een signaalanalysestap aan de metriek die het berekent."@nl .
+<https://w3id.org/mda/producesMetric> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a signal-analysis step to the metric it computes."@en .
+<https://w3id.org/mda/producesMetric> <http://www.w3.org/2000/01/rdf-schema#label> "produceert metriek"@nl .
+<https://w3id.org/mda/producesMetric> <http://www.w3.org/2000/01/rdf-schema#label> "produces metric"@en .
 # 
-# https://w3id.org/mda/ontology/producesSignal
-<https://w3id.org/mda/ontology/producesSignal> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/producesSignal> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#InverseFunctionalProperty> .
-<https://w3id.org/mda/ontology/producesSignal> <http://www.w3.org/2000/01/rdf-schema#domain> _:genid16 .
+# https://w3id.org/mda/producesSignal
+<https://w3id.org/mda/producesSignal> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/producesSignal> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#InverseFunctionalProperty> .
+<https://w3id.org/mda/producesSignal> <http://www.w3.org/2000/01/rdf-schema#domain> _:genid16 .
 _:genid16 <http://www.w3.org/2002/07/owl#unionOf> _:genid18 .
 _:genid18 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid17 .
 _:genid17 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-_:genid17 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/ontology/SignalAnalysis> .
+_:genid17 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/SignalAnalysis> .
 _:genid17 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
-_:genid18 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/ontology/Sensor> .
+_:genid18 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://w3id.org/mda/Sensor> .
 _:genid18 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
 _:genid16 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/producesSignal> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/Signal> .
-<https://w3id.org/mda/ontology/producesSignal> <http://purl.org/dc/terms/identifier> "producesSignal" .
-<https://w3id.org/mda/ontology/producesSignal> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een sensor OF een signaalanalysestap aan het signaal dat het produceert — het ruwe signaal van een sensor, of het afgeleide/tussenliggende signaal van een analysestap (bijv. versterkte afleiding aVF, gecombineerd uit andere afleidingen). Invers-functioneel: een signaal heeft hoogstens één producent, ongeacht het soort."@nl .
-<https://w3id.org/mda/ontology/producesSignal> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a sensor OR a signal-analysis step to the signal it produces — a sensor's raw signal, or an analysis step's derived/intermediate signal (e.g. augmented lead aVF, combined from other leads). Inverse-functional: a signal has at most one producer, whichever kind produced it. Its domain is a union, so it cannot itself anchor 2_READOUT/vocab_readout.py's CSV/tree derivation (ontology_tree.py's derive_class_tree only follows a named rdfs:domain, the same limitation documented at mda:hasOperationState below) — mda:sensorProducesSignal is the single-domain sub-property that does. A signal-analysis step's own derived-signal output (the aVF case) is only ever hand-authored in inference.ttl, never CSV-driven, so it uses this general property directly and needs no sub-property of its own."@en .
-<https://w3id.org/mda/ontology/producesSignal> <http://www.w3.org/2000/01/rdf-schema#label> "produceert signaal"@nl .
-<https://w3id.org/mda/ontology/producesSignal> <http://www.w3.org/2000/01/rdf-schema#label> "produces signal"@en .
+<https://w3id.org/mda/producesSignal> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/Signal> .
+<https://w3id.org/mda/producesSignal> <http://purl.org/dc/terms/identifier> "producesSignal" .
+<https://w3id.org/mda/producesSignal> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een sensor OF een signaalanalysestap aan het signaal dat het produceert — het ruwe signaal van een sensor, of het afgeleide/tussenliggende signaal van een analysestap (bijv. versterkte afleiding aVF, gecombineerd uit andere afleidingen). Invers-functioneel: een signaal heeft hoogstens één producent, ongeacht het soort."@nl .
+<https://w3id.org/mda/producesSignal> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a sensor OR a signal-analysis step to the signal it produces — a sensor's raw signal, or an analysis step's derived/intermediate signal (e.g. augmented lead aVF, combined from other leads). Inverse-functional: a signal has at most one producer, whichever kind produced it. Its domain is a union, so it cannot itself anchor 2_READOUT/vocab_readout.py's CSV/tree derivation (ontology_tree.py's derive_class_tree only follows a named rdfs:domain, the same limitation documented at mda:hasOperationState below) — mda:sensorProducesSignal is the single-domain sub-property that does. A signal-analysis step's own derived-signal output (the aVF case) is only ever hand-authored in inference.ttl, never CSV-driven, so it uses this general property directly and needs no sub-property of its own."@en .
+<https://w3id.org/mda/producesSignal> <http://www.w3.org/2000/01/rdf-schema#label> "produceert signaal"@nl .
+<https://w3id.org/mda/producesSignal> <http://www.w3.org/2000/01/rdf-schema#label> "produces signal"@en .
 # 
-# https://w3id.org/mda/ontology/sensorProducesSignal
-<https://w3id.org/mda/ontology/sensorProducesSignal> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/sensorProducesSignal> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <https://w3id.org/mda/ontology/producesSignal> .
-<https://w3id.org/mda/ontology/sensorProducesSignal> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Sensor> .
-<https://w3id.org/mda/ontology/sensorProducesSignal> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/Signal> .
-<https://w3id.org/mda/ontology/sensorProducesSignal> <http://purl.org/dc/terms/identifier> "sensorProducesSignal" .
-<https://w3id.org/mda/ontology/sensorProducesSignal> <http://www.w3.org/2000/01/rdf-schema#comment> "Het CSV/boom-gerichte geval van mda:producesSignal: het eigen ruwe signaal van een sensor. Een subeigenschap met één domein, zodat de door 2_READOUT/vocab_readout.py afgeleide boom Signal ondubbelzinnig onder Sensor kan hangen."@nl .
-<https://w3id.org/mda/ontology/sensorProducesSignal> <http://www.w3.org/2000/01/rdf-schema#comment> "The CSV/tree-facing case of mda:producesSignal: a sensor's own raw signal. A single-domain sub-property so 2_READOUT/vocab_readout.py's ontology-derived tree can attach Signal under Sensor unambiguously — see mda:producesSignal's comment. Every fact asserted through it still entails the general mda:producesSignal fact (and, transitively, mda:hasOperationState's propagation chain) via rdfs:subPropertyOf."@en .
-<https://w3id.org/mda/ontology/sensorProducesSignal> <http://www.w3.org/2000/01/rdf-schema#label> "sensor produceert signaal"@nl .
-<https://w3id.org/mda/ontology/sensorProducesSignal> <http://www.w3.org/2000/01/rdf-schema#label> "sensor produces signal"@en .
+# https://w3id.org/mda/sensorProducesSignal
+<https://w3id.org/mda/sensorProducesSignal> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/sensorProducesSignal> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <https://w3id.org/mda/producesSignal> .
+<https://w3id.org/mda/sensorProducesSignal> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Sensor> .
+<https://w3id.org/mda/sensorProducesSignal> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/Signal> .
+<https://w3id.org/mda/sensorProducesSignal> <http://purl.org/dc/terms/identifier> "sensorProducesSignal" .
+<https://w3id.org/mda/sensorProducesSignal> <http://www.w3.org/2000/01/rdf-schema#comment> "Het CSV/boom-gerichte geval van mda:producesSignal: het eigen ruwe signaal van een sensor. Een subeigenschap met één domein, zodat de door 2_READOUT/vocab_readout.py afgeleide boom Signal ondubbelzinnig onder Sensor kan hangen."@nl .
+<https://w3id.org/mda/sensorProducesSignal> <http://www.w3.org/2000/01/rdf-schema#comment> "The CSV/tree-facing case of mda:producesSignal: a sensor's own raw signal. A single-domain sub-property so 2_READOUT/vocab_readout.py's ontology-derived tree can attach Signal under Sensor unambiguously — see mda:producesSignal's comment. Every fact asserted through it still entails the general mda:producesSignal fact (and, transitively, mda:hasOperationState's propagation chain) via rdfs:subPropertyOf."@en .
+<https://w3id.org/mda/sensorProducesSignal> <http://www.w3.org/2000/01/rdf-schema#label> "sensor produceert signaal"@nl .
+<https://w3id.org/mda/sensorProducesSignal> <http://www.w3.org/2000/01/rdf-schema#label> "sensor produces signal"@en .
 # 
-# https://w3id.org/mda/ontology/targetsProcess
-<https://w3id.org/mda/ontology/targetsProcess> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/targetsProcess> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/TherapeuticModality> .
-<https://w3id.org/mda/ontology/targetsProcess> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/PhysiologicalProcess> .
-<https://w3id.org/mda/ontology/targetsProcess> <http://purl.org/dc/terms/identifier> "targetsProcess" .
-<https://w3id.org/mda/ontology/targetsProcess> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een therapeutische modaliteit aan het fysiologische proces waarop het zich richt."@nl .
-<https://w3id.org/mda/ontology/targetsProcess> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a therapeutic modality to the physiological process it targets."@en .
-<https://w3id.org/mda/ontology/targetsProcess> <http://www.w3.org/2000/01/rdf-schema#label> "richt zich op proces"@nl .
-<https://w3id.org/mda/ontology/targetsProcess> <http://www.w3.org/2000/01/rdf-schema#label> "targets process"@en .
-<https://w3id.org/mda/ontology/targetsProcess> <https://w3id.org/mda/ontology/situational> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+# https://w3id.org/mda/targetsProcess
+<https://w3id.org/mda/targetsProcess> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/targetsProcess> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/TherapeuticModality> .
+<https://w3id.org/mda/targetsProcess> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/PhysiologicalProcess> .
+<https://w3id.org/mda/targetsProcess> <http://purl.org/dc/terms/identifier> "targetsProcess" .
+<https://w3id.org/mda/targetsProcess> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een therapeutische modaliteit aan het fysiologische proces waarop het zich richt."@nl .
+<https://w3id.org/mda/targetsProcess> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates a therapeutic modality to the physiological process it targets."@en .
+<https://w3id.org/mda/targetsProcess> <http://www.w3.org/2000/01/rdf-schema#label> "richt zich op proces"@nl .
+<https://w3id.org/mda/targetsProcess> <http://www.w3.org/2000/01/rdf-schema#label> "targets process"@en .
+<https://w3id.org/mda/targetsProcess> <https://w3id.org/mda/situational> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
 # 
-# https://w3id.org/mda/ontology/triggeredBy
-<https://w3id.org/mda/ontology/triggeredBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://w3id.org/mda/ontology/triggeredBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#FunctionalProperty> .
-<https://w3id.org/mda/ontology/triggeredBy> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/AlarmMessage> .
-<https://w3id.org/mda/ontology/triggeredBy> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/ontology/Device> .
-<https://w3id.org/mda/ontology/triggeredBy> <http://purl.org/dc/terms/identifier> "triggeredBy" .
-<https://w3id.org/mda/ontology/triggeredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een alarmbericht rechtstreeks aan het apparaat waarvan het de technische structuur impliceert — de enige weg van AlarmMessage naar de mda:Device-deelboom. Vervangt routering via mda:concernsPatient/mda:isMonitoredBy: die keten beweerde dat elk alarmerend apparaat de patiënt 'bewaakt', wat onjuist is voor een wezenlijk therapeutisch apparaat. mda:isMonitoredBy zelf is ONGEWIJZIGD en blijft gebruikt, maar uitsluitend voor de eigen operationele rechtvaardiging. Functioneel, niet invers-functioneel."@nl .
-<https://w3id.org/mda/ontology/triggeredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates an alarm message directly to the device whose technical structure it implicates — the sole path from AlarmMessage into the mda:Device subtree (mda:hasFunctionalUnit, mda:hasSensor, ...). Replaces routing that reach through mda:concernsPatient/mda:isMonitoredBy: that chain asserted every alarm-raising device 'monitors' the patient, which is false for a fundamentally therapeutic device (mda:MechanicalVentilator, mda:Dialysator, mda:ExtracorporealMembraneOxygenator, mda:Incubator/mda:Thermoregulator all administer a therapy — see mda:administers — rather than principally observe). mda:isMonitoredBy itself is UNCHANGED and still used, but only for its own actual justification: 4_OPERATIONAL/op_knowledge.py's per-instant double-booking check, asserted fresh at grounding time, never derived from or dependent on this blueprint-level structure. Functional, not inverse-functional: one message has exactly one triggering device, but one device triggers many messages over its lifetime — unlike mda:hasMessage's strict bijection."@en .
-<https://w3id.org/mda/ontology/triggeredBy> <http://www.w3.org/2000/01/rdf-schema#label> "triggered by"@en .
-<https://w3id.org/mda/ontology/triggeredBy> <http://www.w3.org/2000/01/rdf-schema#label> "veroorzaakt door"@nl .
+# https://w3id.org/mda/triggeredBy
+<https://w3id.org/mda/triggeredBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://w3id.org/mda/triggeredBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#FunctionalProperty> .
+<https://w3id.org/mda/triggeredBy> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/AlarmMessage> .
+<https://w3id.org/mda/triggeredBy> <http://www.w3.org/2000/01/rdf-schema#range> <https://w3id.org/mda/Device> .
+<https://w3id.org/mda/triggeredBy> <http://purl.org/dc/terms/identifier> "triggeredBy" .
+<https://w3id.org/mda/triggeredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Koppelt een alarmbericht rechtstreeks aan het apparaat waarvan het de technische structuur impliceert — de enige weg van AlarmMessage naar de mda:Device-deelboom. Vervangt routering via mda:concernsPatient/mda:isMonitoredBy: die keten beweerde dat elk alarmerend apparaat de patiënt 'bewaakt', wat onjuist is voor een wezenlijk therapeutisch apparaat. mda:isMonitoredBy zelf is ONGEWIJZIGD en blijft gebruikt, maar uitsluitend voor de eigen operationele rechtvaardiging. Functioneel, niet invers-functioneel."@nl .
+<https://w3id.org/mda/triggeredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates an alarm message directly to the device whose technical structure it implicates — the sole path from AlarmMessage into the mda:Device subtree (mda:hasFunctionalUnit, mda:hasSensor, ...). Replaces routing that reach through mda:concernsPatient/mda:isMonitoredBy: that chain asserted every alarm-raising device 'monitors' the patient, which is false for a fundamentally therapeutic device (mda:MechanicalVentilator, mda:Dialysator, mda:ExtracorporealMembraneOxygenator, mda:Incubator/mda:Thermoregulator all administer a therapy — see mda:administers — rather than principally observe). mda:isMonitoredBy itself is UNCHANGED and still used, but only for its own actual justification: 4_OPERATIONAL/op_knowledge.py's per-instant double-booking check, asserted fresh at grounding time, never derived from or dependent on this blueprint-level structure. Functional, not inverse-functional: one message has exactly one triggering device, but one device triggers many messages over its lifetime — unlike mda:hasMessage's strict bijection."@en .
+<https://w3id.org/mda/triggeredBy> <http://www.w3.org/2000/01/rdf-schema#label> "triggered by"@en .
+<https://w3id.org/mda/triggeredBy> <http://www.w3.org/2000/01/rdf-schema#label> "veroorzaakt door"@nl .
 # 
 # 
 # 
@@ -573,45 +573,45 @@ _:genid16 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # #################################################################
 # 
 # 
-# https://w3id.org/mda/ontology/hasDuration
-<https://w3id.org/mda/ontology/hasDuration> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
-<https://w3id.org/mda/ontology/hasDuration> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Alarm> .
-<https://w3id.org/mda/ontology/hasDuration> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#duration> .
-<https://w3id.org/mda/ontology/hasDuration> <http://purl.org/dc/terms/identifier> "hasDuration" .
-<https://w3id.org/mda/ontology/hasDuration> <http://www.w3.org/2000/01/rdf-schema#comment> "De duur van het alarm."@nl .
-<https://w3id.org/mda/ontology/hasDuration> <http://www.w3.org/2000/01/rdf-schema#comment> "The duration of the alarm."@en .
-<https://w3id.org/mda/ontology/hasDuration> <http://www.w3.org/2000/01/rdf-schema#label> "has duration"@en .
-<https://w3id.org/mda/ontology/hasDuration> <http://www.w3.org/2000/01/rdf-schema#label> "heeft duur"@nl .
+# https://w3id.org/mda/hasDuration
+<https://w3id.org/mda/hasDuration> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<https://w3id.org/mda/hasDuration> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Alarm> .
+<https://w3id.org/mda/hasDuration> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#duration> .
+<https://w3id.org/mda/hasDuration> <http://purl.org/dc/terms/identifier> "hasDuration" .
+<https://w3id.org/mda/hasDuration> <http://www.w3.org/2000/01/rdf-schema#comment> "De duur van het alarm."@nl .
+<https://w3id.org/mda/hasDuration> <http://www.w3.org/2000/01/rdf-schema#comment> "The duration of the alarm."@en .
+<https://w3id.org/mda/hasDuration> <http://www.w3.org/2000/01/rdf-schema#label> "has duration"@en .
+<https://w3id.org/mda/hasDuration> <http://www.w3.org/2000/01/rdf-schema#label> "heeft duur"@nl .
 # 
-# https://w3id.org/mda/ontology/hasEnd
-<https://w3id.org/mda/ontology/hasEnd> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
-<https://w3id.org/mda/ontology/hasEnd> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Alarm> .
-<https://w3id.org/mda/ontology/hasEnd> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://w3id.org/mda/ontology/hasEnd> <http://purl.org/dc/terms/identifier> "hasEnd" .
-<https://w3id.org/mda/ontology/hasEnd> <http://www.w3.org/2000/01/rdf-schema#comment> "Het eindtijdstip van het alarm."@nl .
-<https://w3id.org/mda/ontology/hasEnd> <http://www.w3.org/2000/01/rdf-schema#comment> "The end time of the alarm."@en .
-<https://w3id.org/mda/ontology/hasEnd> <http://www.w3.org/2000/01/rdf-schema#label> "has end"@en .
-<https://w3id.org/mda/ontology/hasEnd> <http://www.w3.org/2000/01/rdf-schema#label> "heeft einde"@nl .
+# https://w3id.org/mda/hasEnd
+<https://w3id.org/mda/hasEnd> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<https://w3id.org/mda/hasEnd> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Alarm> .
+<https://w3id.org/mda/hasEnd> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://w3id.org/mda/hasEnd> <http://purl.org/dc/terms/identifier> "hasEnd" .
+<https://w3id.org/mda/hasEnd> <http://www.w3.org/2000/01/rdf-schema#comment> "Het eindtijdstip van het alarm."@nl .
+<https://w3id.org/mda/hasEnd> <http://www.w3.org/2000/01/rdf-schema#comment> "The end time of the alarm."@en .
+<https://w3id.org/mda/hasEnd> <http://www.w3.org/2000/01/rdf-schema#label> "has end"@en .
+<https://w3id.org/mda/hasEnd> <http://www.w3.org/2000/01/rdf-schema#label> "heeft einde"@nl .
 # 
-# https://w3id.org/mda/ontology/hasLabel
-<https://w3id.org/mda/ontology/hasLabel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
-<https://w3id.org/mda/ontology/hasLabel> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/AlarmType> .
-<https://w3id.org/mda/ontology/hasLabel> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/1999/02/22-rdf-syntax-ns#langString> .
-<https://w3id.org/mda/ontology/hasLabel> <http://purl.org/dc/terms/identifier> "hasLabel" .
-<https://w3id.org/mda/ontology/hasLabel> <http://www.w3.org/2000/01/rdf-schema#comment> "Het vrije-tekstlabel dat een alarmtype identificeert, exact zoals het in de brondata voorkomt — een literal, geen concept. mda:hasLabelConcept is de bijbehorende gecontroleerde-vocabulaire lezing van hetzelfde label; beide worden bewust bijgehouden. AlarmType is het enige domein; een Alarm-instantie bereikt zijn label via mda:isOfType."@nl .
-<https://w3id.org/mda/ontology/hasLabel> <http://www.w3.org/2000/01/rdf-schema#comment> "The free-text label identifying an alarm type, exactly as it occurs in the source data (e.g. 'PHILIPSMONITOR - SpO2 geen pols') — a literal, not a concept: alarm labels routinely contain spaces and punctuation no SKOS notation can carry. mda:hasLabelConcept is the companion controlled-vocabulary reading of the same label — the two are deliberately BOTH kept, not alternatives: this ontology wants both the label as encountered and a stable, deduplicated vocabulary entry for it (the same label recurs across archetypes that differ only in priority). AlarmType is its only domain; a plain Alarm instance reaches its label via mda:isOfType."@en .
-<https://w3id.org/mda/ontology/hasLabel> <http://www.w3.org/2000/01/rdf-schema#label> "has label"@en .
-<https://w3id.org/mda/ontology/hasLabel> <http://www.w3.org/2000/01/rdf-schema#label> "heeft label"@nl .
+# https://w3id.org/mda/hasLabel
+<https://w3id.org/mda/hasLabel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<https://w3id.org/mda/hasLabel> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/AlarmType> .
+<https://w3id.org/mda/hasLabel> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/1999/02/22-rdf-syntax-ns#langString> .
+<https://w3id.org/mda/hasLabel> <http://purl.org/dc/terms/identifier> "hasLabel" .
+<https://w3id.org/mda/hasLabel> <http://www.w3.org/2000/01/rdf-schema#comment> "Het vrije-tekstlabel dat een alarmtype identificeert, exact zoals het in de brondata voorkomt — een literal, geen concept. mda:hasLabelConcept is de bijbehorende gecontroleerde-vocabulaire lezing van hetzelfde label; beide worden bewust bijgehouden. AlarmType is het enige domein; een Alarm-instantie bereikt zijn label via mda:isOfType."@nl .
+<https://w3id.org/mda/hasLabel> <http://www.w3.org/2000/01/rdf-schema#comment> "The free-text label identifying an alarm type, exactly as it occurs in the source data (e.g. 'PHILIPSMONITOR - SpO2 geen pols') — a literal, not a concept: alarm labels routinely contain spaces and punctuation no SKOS notation can carry. mda:hasLabelConcept is the companion controlled-vocabulary reading of the same label — the two are deliberately BOTH kept, not alternatives: this ontology wants both the label as encountered and a stable, deduplicated vocabulary entry for it (the same label recurs across archetypes that differ only in priority). AlarmType is its only domain; a plain Alarm instance reaches its label via mda:isOfType."@en .
+<https://w3id.org/mda/hasLabel> <http://www.w3.org/2000/01/rdf-schema#label> "has label"@en .
+<https://w3id.org/mda/hasLabel> <http://www.w3.org/2000/01/rdf-schema#label> "heeft label"@nl .
 # 
-# https://w3id.org/mda/ontology/hasStart
-<https://w3id.org/mda/ontology/hasStart> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
-<https://w3id.org/mda/ontology/hasStart> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/ontology/Alarm> .
-<https://w3id.org/mda/ontology/hasStart> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://w3id.org/mda/ontology/hasStart> <http://purl.org/dc/terms/identifier> "hasStart" .
-<https://w3id.org/mda/ontology/hasStart> <http://www.w3.org/2000/01/rdf-schema#comment> "Het starttijdstip van het alarm."@nl .
-<https://w3id.org/mda/ontology/hasStart> <http://www.w3.org/2000/01/rdf-schema#comment> "The start time of the alarm."@en .
-<https://w3id.org/mda/ontology/hasStart> <http://www.w3.org/2000/01/rdf-schema#label> "has start"@en .
-<https://w3id.org/mda/ontology/hasStart> <http://www.w3.org/2000/01/rdf-schema#label> "heeft start"@nl .
+# https://w3id.org/mda/hasStart
+<https://w3id.org/mda/hasStart> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<https://w3id.org/mda/hasStart> <http://www.w3.org/2000/01/rdf-schema#domain> <https://w3id.org/mda/Alarm> .
+<https://w3id.org/mda/hasStart> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://w3id.org/mda/hasStart> <http://purl.org/dc/terms/identifier> "hasStart" .
+<https://w3id.org/mda/hasStart> <http://www.w3.org/2000/01/rdf-schema#comment> "Het starttijdstip van het alarm."@nl .
+<https://w3id.org/mda/hasStart> <http://www.w3.org/2000/01/rdf-schema#comment> "The start time of the alarm."@en .
+<https://w3id.org/mda/hasStart> <http://www.w3.org/2000/01/rdf-schema#label> "has start"@en .
+<https://w3id.org/mda/hasStart> <http://www.w3.org/2000/01/rdf-schema#label> "heeft start"@nl .
 # 
 # 
 # 
@@ -627,179 +627,179 @@ _:genid16 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # http://www.w3.org/2004/02/skos/core#ConceptScheme
 <http://www.w3.org/2004/02/skos/core#ConceptScheme> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 # 
-# https://w3id.org/mda/ontology/Alarm
-<https://w3id.org/mda/ontology/Alarm> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/Alarm> <http://purl.org/dc/terms/identifier> "Alarm" .
-<https://w3id.org/mda/ontology/Alarm> <http://www.w3.org/2000/01/rdf-schema#comment> "A notification or alert generated by a medical device."@en .
-<https://w3id.org/mda/ontology/Alarm> <http://www.w3.org/2000/01/rdf-schema#comment> "Een melding of waarschuwing gegenereerd door een medisch apparaat."@nl .
-<https://w3id.org/mda/ontology/Alarm> <http://www.w3.org/2000/01/rdf-schema#label> "Alarm"@en .
-<https://w3id.org/mda/ontology/Alarm> <http://www.w3.org/2000/01/rdf-schema#label> "Alarm"@nl .
+# https://w3id.org/mda/Alarm
+<https://w3id.org/mda/Alarm> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/Alarm> <http://purl.org/dc/terms/identifier> "Alarm" .
+<https://w3id.org/mda/Alarm> <http://www.w3.org/2000/01/rdf-schema#comment> "A notification or alert generated by a medical device."@en .
+<https://w3id.org/mda/Alarm> <http://www.w3.org/2000/01/rdf-schema#comment> "Een melding of waarschuwing gegenereerd door een medisch apparaat."@nl .
+<https://w3id.org/mda/Alarm> <http://www.w3.org/2000/01/rdf-schema#label> "Alarm"@en .
+<https://w3id.org/mda/Alarm> <http://www.w3.org/2000/01/rdf-schema#label> "Alarm"@nl .
 # 
-# https://w3id.org/mda/ontology/AlarmMessage
-<https://w3id.org/mda/ontology/AlarmMessage> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/AlarmMessage> <http://purl.org/dc/terms/identifier> "AlarmMessage" .
-<https://w3id.org/mda/ontology/AlarmMessage> <http://www.w3.org/2000/01/rdf-schema#comment> "A per-alarm message node — the hub for this occurrence's independent facets: mda:concernsPatient (the shared, persistent patient — the merge anchor operational inference reasons across alarms over) and mda:triggeredBy (the device whose technical structure this alarm implicates), reached as siblings rather than one gatewaying the other."@en .
-<https://w3id.org/mda/ontology/AlarmMessage> <http://www.w3.org/2000/01/rdf-schema#comment> "Een per-alarm berichtknooppunt — het knooppunt voor de onafhankelijke facetten van deze gebeurtenis: mda:concernsPatient en mda:triggeredBy, als nevengeschikte eigenschappen bereikt."@nl .
-<https://w3id.org/mda/ontology/AlarmMessage> <http://www.w3.org/2000/01/rdf-schema#label> "Alarm Message"@en .
-<https://w3id.org/mda/ontology/AlarmMessage> <http://www.w3.org/2000/01/rdf-schema#label> "Alarmbericht"@nl .
+# https://w3id.org/mda/AlarmMessage
+<https://w3id.org/mda/AlarmMessage> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/AlarmMessage> <http://purl.org/dc/terms/identifier> "AlarmMessage" .
+<https://w3id.org/mda/AlarmMessage> <http://www.w3.org/2000/01/rdf-schema#comment> "A per-alarm message node — the hub for this occurrence's independent facets: mda:concernsPatient (the shared, persistent patient — the merge anchor operational inference reasons across alarms over) and mda:triggeredBy (the device whose technical structure this alarm implicates), reached as siblings rather than one gatewaying the other."@en .
+<https://w3id.org/mda/AlarmMessage> <http://www.w3.org/2000/01/rdf-schema#comment> "Een per-alarm berichtknooppunt — het knooppunt voor de onafhankelijke facetten van deze gebeurtenis: mda:concernsPatient en mda:triggeredBy, als nevengeschikte eigenschappen bereikt."@nl .
+<https://w3id.org/mda/AlarmMessage> <http://www.w3.org/2000/01/rdf-schema#label> "Alarm Message"@en .
+<https://w3id.org/mda/AlarmMessage> <http://www.w3.org/2000/01/rdf-schema#label> "Alarmbericht"@nl .
 # 
-# https://w3id.org/mda/ontology/AlarmType
-<https://w3id.org/mda/ontology/AlarmType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/AlarmType> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <https://w3id.org/mda/ontology/Alarm> .
-<https://w3id.org/mda/ontology/AlarmType> <http://purl.org/dc/terms/identifier> "AlarmType" .
-<https://w3id.org/mda/ontology/AlarmType> <http://www.w3.org/2000/01/rdf-schema#comment> "A generic, archetypal alarm definition independent of any specific device instance or patient encounter. Captures the default device, sensor, and signal structure associated with a class of alarm."@en .
-<https://w3id.org/mda/ontology/AlarmType> <http://www.w3.org/2000/01/rdf-schema#comment> "Een generieke, archetypische alarmdefinitie, onafhankelijk van een specifieke apparaatinstantie of patiëntencounter. Legt de standaard apparaat-, sensor- en signaalstructuur vast die samenhangt met een klasse van alarmen."@nl .
-<https://w3id.org/mda/ontology/AlarmType> <http://www.w3.org/2000/01/rdf-schema#label> "Alarm Type"@en .
-<https://w3id.org/mda/ontology/AlarmType> <http://www.w3.org/2000/01/rdf-schema#label> "Alarmtype"@nl .
+# https://w3id.org/mda/AlarmType
+<https://w3id.org/mda/AlarmType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/AlarmType> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <https://w3id.org/mda/Alarm> .
+<https://w3id.org/mda/AlarmType> <http://purl.org/dc/terms/identifier> "AlarmType" .
+<https://w3id.org/mda/AlarmType> <http://www.w3.org/2000/01/rdf-schema#comment> "A generic, archetypal alarm definition independent of any specific device instance or patient encounter. Captures the default device, sensor, and signal structure associated with a class of alarm."@en .
+<https://w3id.org/mda/AlarmType> <http://www.w3.org/2000/01/rdf-schema#comment> "Een generieke, archetypische alarmdefinitie, onafhankelijk van een specifieke apparaatinstantie of patiëntencounter. Legt de standaard apparaat-, sensor- en signaalstructuur vast die samenhangt met een klasse van alarmen."@nl .
+<https://w3id.org/mda/AlarmType> <http://www.w3.org/2000/01/rdf-schema#label> "Alarm Type"@en .
+<https://w3id.org/mda/AlarmType> <http://www.w3.org/2000/01/rdf-schema#label> "Alarmtype"@nl .
 # 
-# https://w3id.org/mda/ontology/AnatomicalPosition
-<https://w3id.org/mda/ontology/AnatomicalPosition> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/AnatomicalPosition> <http://purl.org/dc/terms/identifier> "AnatomicalPosition" .
-<https://w3id.org/mda/ontology/AnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#comment> "De anatomische positie van een sensor op het lichaam."@nl .
-<https://w3id.org/mda/ontology/AnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#comment> "The anatomical position of a sensor on the body."@en .
-<https://w3id.org/mda/ontology/AnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#label> "Anatomical Position"@en .
-<https://w3id.org/mda/ontology/AnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#label> "Anatomische Positie"@nl .
+# https://w3id.org/mda/AnatomicalPosition
+<https://w3id.org/mda/AnatomicalPosition> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/AnatomicalPosition> <http://purl.org/dc/terms/identifier> "AnatomicalPosition" .
+<https://w3id.org/mda/AnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#comment> "De anatomische positie van een sensor op het lichaam."@nl .
+<https://w3id.org/mda/AnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#comment> "The anatomical position of a sensor on the body."@en .
+<https://w3id.org/mda/AnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#label> "Anatomical Position"@en .
+<https://w3id.org/mda/AnatomicalPosition> <http://www.w3.org/2000/01/rdf-schema#label> "Anatomische Positie"@nl .
 # 
-# https://w3id.org/mda/ontology/Component
-<https://w3id.org/mda/ontology/Component> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/Component> <http://purl.org/dc/terms/identifier> "Component" .
-<https://w3id.org/mda/ontology/Component> <http://www.w3.org/2000/01/rdf-schema#comment> "A physical or functional part of a medical device (e.g. a connection port, power unit, or heating element). mda:Sensor is the specialisation that additionally produces a measurable signal — every sensor is a component, but not every component senses."@en .
-<https://w3id.org/mda/ontology/Component> <http://www.w3.org/2000/01/rdf-schema#comment> "Een fysiek of functioneel onderdeel van een medisch apparaat (bijv. een aansluitpoort, voedingseenheid of verwarmingselement). mda:Sensor is de specialisatie die daarnaast een meetbaar signaal produceert — elke sensor is een onderdeel, maar niet elk onderdeel meet."@nl .
-<https://w3id.org/mda/ontology/Component> <http://www.w3.org/2000/01/rdf-schema#label> "Component"@en .
-<https://w3id.org/mda/ontology/Component> <http://www.w3.org/2000/01/rdf-schema#label> "Onderdeel"@nl .
-<https://w3id.org/mda/ontology/Component> <https://w3id.org/mda/ontology/nodeKind> <https://w3id.org/mda/ontology/Individuated> .
+# https://w3id.org/mda/Component
+<https://w3id.org/mda/Component> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/Component> <http://purl.org/dc/terms/identifier> "Component" .
+<https://w3id.org/mda/Component> <http://www.w3.org/2000/01/rdf-schema#comment> "A physical or functional part of a medical device (e.g. a connection port, power unit, or heating element). mda:Sensor is the specialisation that additionally produces a measurable signal — every sensor is a component, but not every component senses."@en .
+<https://w3id.org/mda/Component> <http://www.w3.org/2000/01/rdf-schema#comment> "Een fysiek of functioneel onderdeel van een medisch apparaat (bijv. een aansluitpoort, voedingseenheid of verwarmingselement). mda:Sensor is de specialisatie die daarnaast een meetbaar signaal produceert — elke sensor is een onderdeel, maar niet elk onderdeel meet."@nl .
+<https://w3id.org/mda/Component> <http://www.w3.org/2000/01/rdf-schema#label> "Component"@en .
+<https://w3id.org/mda/Component> <http://www.w3.org/2000/01/rdf-schema#label> "Onderdeel"@nl .
+<https://w3id.org/mda/Component> <https://w3id.org/mda/nodeKind> <https://w3id.org/mda/Individuated> .
 # 
-# https://w3id.org/mda/ontology/CriticalComponent
-<https://w3id.org/mda/ontology/CriticalComponent> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/CriticalComponent> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <https://w3id.org/mda/ontology/Component> .
-<https://w3id.org/mda/ontology/CriticalComponent> <http://purl.org/dc/terms/identifier> "CriticalComponent" .
-<https://w3id.org/mda/ontology/CriticalComponent> <http://www.w3.org/2000/01/rdf-schema#comment> "De subklasse van mda:Component waarvan het loskoppelen betekent dat het apparaat zelf niet beschikbaar is (bijv. de datapoort, de stroomaansluiting) — in tegenstelling tot een randonderdeel waarvan het loskoppelen slechts een subsysteemwaarschuwing is (bijv. een matrasverwarming)."@nl .
-<https://w3id.org/mda/ontology/CriticalComponent> <http://www.w3.org/2000/01/rdf-schema#comment> "The subclass of mda:Component whose own disconnection means the device itself is unavailable (e.g. the data-link port, the power inlet) — as opposed to a peripheral component whose disconnection is only a subsystem-level warning (e.g. a mattress heater). This class exists so the propagation rule using it can be precise: unconditionally true for CriticalComponent, never assumed for mda:Component as a whole — see mda:hasOperationState's comment below on why mda:hasComponent was deliberately dropped from its propertyChainAxiom. The rule itself, and which concrete vocabulary-level component types (e.g. component:ConnectionUnit, component:PowerUnit) are tagged as members of this class, both live in 2_READOUT/outcome/inference.ttl's Component operational-state propagation section — the rule's hasValue target (a specific operation-state concept) is catalogue vocabulary, so it cannot be asserted here, but this class it's written over is a plain structural distinction with no vocabulary dependency, so it belongs in this TBox, not duplicated per component type down there."@en .
-<https://w3id.org/mda/ontology/CriticalComponent> <http://www.w3.org/2000/01/rdf-schema#label> "Critical component"@en .
-<https://w3id.org/mda/ontology/CriticalComponent> <http://www.w3.org/2000/01/rdf-schema#label> "Kritiek onderdeel"@nl .
+# https://w3id.org/mda/CriticalComponent
+<https://w3id.org/mda/CriticalComponent> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/CriticalComponent> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <https://w3id.org/mda/Component> .
+<https://w3id.org/mda/CriticalComponent> <http://purl.org/dc/terms/identifier> "CriticalComponent" .
+<https://w3id.org/mda/CriticalComponent> <http://www.w3.org/2000/01/rdf-schema#comment> "De subklasse van mda:Component waarvan het loskoppelen betekent dat het apparaat zelf niet beschikbaar is (bijv. de datapoort, de stroomaansluiting) — in tegenstelling tot een randonderdeel waarvan het loskoppelen slechts een subsysteemwaarschuwing is (bijv. een matrasverwarming)."@nl .
+<https://w3id.org/mda/CriticalComponent> <http://www.w3.org/2000/01/rdf-schema#comment> "The subclass of mda:Component whose own disconnection means the device itself is unavailable (e.g. the data-link port, the power inlet) — as opposed to a peripheral component whose disconnection is only a subsystem-level warning (e.g. a mattress heater). This class exists so the propagation rule using it can be precise: unconditionally true for CriticalComponent, never assumed for mda:Component as a whole — see mda:hasOperationState's comment below on why mda:hasComponent was deliberately dropped from its propertyChainAxiom. The rule itself, and which concrete vocabulary-level component types (e.g. component:ConnectionUnit, component:PowerUnit) are tagged as members of this class, both live in 2_READOUT/outcome/inference.ttl's Component operational-state propagation section — the rule's hasValue target (a specific operation-state concept) is catalogue vocabulary, so it cannot be asserted here, but this class it's written over is a plain structural distinction with no vocabulary dependency, so it belongs in this TBox, not duplicated per component type down there."@en .
+<https://w3id.org/mda/CriticalComponent> <http://www.w3.org/2000/01/rdf-schema#label> "Critical component"@en .
+<https://w3id.org/mda/CriticalComponent> <http://www.w3.org/2000/01/rdf-schema#label> "Kritiek onderdeel"@nl .
 # 
-# https://w3id.org/mda/ontology/Device
-<https://w3id.org/mda/ontology/Device> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/Device> <http://purl.org/dc/terms/identifier> "Device" .
-<https://w3id.org/mda/ontology/Device> <http://www.w3.org/2000/01/rdf-schema#comment> "A medical device that generates alarms."@en .
-<https://w3id.org/mda/ontology/Device> <http://www.w3.org/2000/01/rdf-schema#comment> "Een medisch apparaat dat alarmen genereert."@nl .
-<https://w3id.org/mda/ontology/Device> <http://www.w3.org/2000/01/rdf-schema#label> "Apparaat"@nl .
-<https://w3id.org/mda/ontology/Device> <http://www.w3.org/2000/01/rdf-schema#label> "Device"@en .
-<https://w3id.org/mda/ontology/Device> <https://w3id.org/mda/ontology/nodeKind> <https://w3id.org/mda/ontology/Individuated> .
+# https://w3id.org/mda/Device
+<https://w3id.org/mda/Device> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/Device> <http://purl.org/dc/terms/identifier> "Device" .
+<https://w3id.org/mda/Device> <http://www.w3.org/2000/01/rdf-schema#comment> "A medical device that generates alarms."@en .
+<https://w3id.org/mda/Device> <http://www.w3.org/2000/01/rdf-schema#comment> "Een medisch apparaat dat alarmen genereert."@nl .
+<https://w3id.org/mda/Device> <http://www.w3.org/2000/01/rdf-schema#label> "Apparaat"@nl .
+<https://w3id.org/mda/Device> <http://www.w3.org/2000/01/rdf-schema#label> "Device"@en .
+<https://w3id.org/mda/Device> <https://w3id.org/mda/nodeKind> <https://w3id.org/mda/Individuated> .
 # 
-# https://w3id.org/mda/ontology/FunctionalUnit
-<https://w3id.org/mda/ontology/FunctionalUnit> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/FunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <https://w3id.org/mda/ontology/Component> .
-<https://w3id.org/mda/ontology/FunctionalUnit> <http://www.w3.org/2002/07/owl#disjointWith> <https://w3id.org/mda/ontology/Sensor> .
-<https://w3id.org/mda/ontology/FunctionalUnit> <http://purl.org/dc/terms/identifier> "FunctionalUnit" .
-<https://w3id.org/mda/ontology/FunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#comment> "De module van een apparaat die de berekeningslogica voor een bepaalde meetmogelijkheid huisvest (bijv. een ECG-module, een SpO2-module) — in de volksmond vaak 'de sensor' genoemd, maar hier onderscheiden van mda:Sensor, dat enkel de fysieke probe is. Een functionele eenheid leest van één of meer sensoren en zet, via één of meer mda:SignalAnalysis-stappen, hun signalen om in metrieken. Een specialisatie van mda:Component. Disjunct verklaard met mda:Sensor vanwege precies die volkstaal-verwarring."@nl .
-<https://w3id.org/mda/ontology/FunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#comment> "The module of a device that houses the computation logic for a particular measurement capability (e.g. an ECG module, an SpO2 module) — often called 'the sensor' colloquially, but distinct here from mda:Sensor, which is only the physical probe. A functional unit reads from one or more sensors and, via one or more mda:SignalAnalysis steps, turns their signals into metrics. A specialisation of mda:Component. Declared disjoint with mda:Sensor precisely because of that colloquial conflation — the two are easy to confuse in exactly the way this class's own name tries to prevent, so a node accidentally typed as both is now an inconsistency a reasoner catches rather than a silent modelling error."@en .
-<https://w3id.org/mda/ontology/FunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#label> "Functional unit"@en .
-<https://w3id.org/mda/ontology/FunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#label> "Functionele eenheid"@nl .
-<https://w3id.org/mda/ontology/FunctionalUnit> <https://w3id.org/mda/ontology/nodeKind> <https://w3id.org/mda/ontology/Individuated> .
+# https://w3id.org/mda/FunctionalUnit
+<https://w3id.org/mda/FunctionalUnit> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/FunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <https://w3id.org/mda/Component> .
+<https://w3id.org/mda/FunctionalUnit> <http://www.w3.org/2002/07/owl#disjointWith> <https://w3id.org/mda/Sensor> .
+<https://w3id.org/mda/FunctionalUnit> <http://purl.org/dc/terms/identifier> "FunctionalUnit" .
+<https://w3id.org/mda/FunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#comment> "De module van een apparaat die de berekeningslogica voor een bepaalde meetmogelijkheid huisvest (bijv. een ECG-module, een SpO2-module) — in de volksmond vaak 'de sensor' genoemd, maar hier onderscheiden van mda:Sensor, dat enkel de fysieke probe is. Een functionele eenheid leest van één of meer sensoren en zet, via één of meer mda:SignalAnalysis-stappen, hun signalen om in metrieken. Een specialisatie van mda:Component. Disjunct verklaard met mda:Sensor vanwege precies die volkstaal-verwarring."@nl .
+<https://w3id.org/mda/FunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#comment> "The module of a device that houses the computation logic for a particular measurement capability (e.g. an ECG module, an SpO2 module) — often called 'the sensor' colloquially, but distinct here from mda:Sensor, which is only the physical probe. A functional unit reads from one or more sensors and, via one or more mda:SignalAnalysis steps, turns their signals into metrics. A specialisation of mda:Component. Declared disjoint with mda:Sensor precisely because of that colloquial conflation — the two are easy to confuse in exactly the way this class's own name tries to prevent, so a node accidentally typed as both is now an inconsistency a reasoner catches rather than a silent modelling error."@en .
+<https://w3id.org/mda/FunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#label> "Functional unit"@en .
+<https://w3id.org/mda/FunctionalUnit> <http://www.w3.org/2000/01/rdf-schema#label> "Functionele eenheid"@nl .
+<https://w3id.org/mda/FunctionalUnit> <https://w3id.org/mda/nodeKind> <https://w3id.org/mda/Individuated> .
 # 
-# https://w3id.org/mda/ontology/Laterality
-<https://w3id.org/mda/ontology/Laterality> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/Laterality> <http://purl.org/dc/terms/identifier> "Laterality" .
-<https://w3id.org/mda/ontology/Laterality> <http://www.w3.org/2000/01/rdf-schema#comment> "De lateraliteit (links, rechts, bilateraal) van een sensorpositie."@nl .
-<https://w3id.org/mda/ontology/Laterality> <http://www.w3.org/2000/01/rdf-schema#comment> "The laterality (left, right, bilateral) of a sensor position."@en .
-<https://w3id.org/mda/ontology/Laterality> <http://www.w3.org/2000/01/rdf-schema#label> "Lateraliteit"@nl .
-<https://w3id.org/mda/ontology/Laterality> <http://www.w3.org/2000/01/rdf-schema#label> "Laterality"@en .
+# https://w3id.org/mda/Laterality
+<https://w3id.org/mda/Laterality> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/Laterality> <http://purl.org/dc/terms/identifier> "Laterality" .
+<https://w3id.org/mda/Laterality> <http://www.w3.org/2000/01/rdf-schema#comment> "De lateraliteit (links, rechts, bilateraal) van een sensorpositie."@nl .
+<https://w3id.org/mda/Laterality> <http://www.w3.org/2000/01/rdf-schema#comment> "The laterality (left, right, bilateral) of a sensor position."@en .
+<https://w3id.org/mda/Laterality> <http://www.w3.org/2000/01/rdf-schema#label> "Lateraliteit"@nl .
+<https://w3id.org/mda/Laterality> <http://www.w3.org/2000/01/rdf-schema#label> "Laterality"@en .
 # 
-# https://w3id.org/mda/ontology/Metric
-<https://w3id.org/mda/ontology/Metric> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/Metric> <http://purl.org/dc/terms/identifier> "Metric" .
-<https://w3id.org/mda/ontology/Metric> <http://www.w3.org/2000/01/rdf-schema#comment> "A measurable quantity, computed from one or more signals by a mda:SignalAnalysis step."@en .
-<https://w3id.org/mda/ontology/Metric> <http://www.w3.org/2000/01/rdf-schema#comment> "Een meetbare grootheid, berekend uit één of meer signalen door een mda:SignalAnalysis-stap."@nl .
-<https://w3id.org/mda/ontology/Metric> <http://www.w3.org/2000/01/rdf-schema#label> "Metric"@en .
-<https://w3id.org/mda/ontology/Metric> <http://www.w3.org/2000/01/rdf-schema#label> "Metriek"@nl .
-<https://w3id.org/mda/ontology/Metric> <https://w3id.org/mda/ontology/nodeKind> <https://w3id.org/mda/ontology/Stateful> .
+# https://w3id.org/mda/Metric
+<https://w3id.org/mda/Metric> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/Metric> <http://purl.org/dc/terms/identifier> "Metric" .
+<https://w3id.org/mda/Metric> <http://www.w3.org/2000/01/rdf-schema#comment> "A measurable quantity, computed from one or more signals by a mda:SignalAnalysis step."@en .
+<https://w3id.org/mda/Metric> <http://www.w3.org/2000/01/rdf-schema#comment> "Een meetbare grootheid, berekend uit één of meer signalen door een mda:SignalAnalysis-stap."@nl .
+<https://w3id.org/mda/Metric> <http://www.w3.org/2000/01/rdf-schema#label> "Metric"@en .
+<https://w3id.org/mda/Metric> <http://www.w3.org/2000/01/rdf-schema#label> "Metriek"@nl .
+<https://w3id.org/mda/Metric> <https://w3id.org/mda/nodeKind> <https://w3id.org/mda/Stateful> .
 # 
-# https://w3id.org/mda/ontology/Organ
-<https://w3id.org/mda/ontology/Organ> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/Organ> <http://purl.org/dc/terms/identifier> "Organ" .
-<https://w3id.org/mda/ontology/Organ> <http://www.w3.org/2000/01/rdf-schema#comment> "A biological organ."@en .
-<https://w3id.org/mda/ontology/Organ> <http://www.w3.org/2000/01/rdf-schema#comment> "Een biologisch orgaan."@nl .
-<https://w3id.org/mda/ontology/Organ> <http://www.w3.org/2000/01/rdf-schema#label> "Orgaan"@nl .
-<https://w3id.org/mda/ontology/Organ> <http://www.w3.org/2000/01/rdf-schema#label> "Organ"@en .
+# https://w3id.org/mda/Organ
+<https://w3id.org/mda/Organ> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/Organ> <http://purl.org/dc/terms/identifier> "Organ" .
+<https://w3id.org/mda/Organ> <http://www.w3.org/2000/01/rdf-schema#comment> "A biological organ."@en .
+<https://w3id.org/mda/Organ> <http://www.w3.org/2000/01/rdf-schema#comment> "Een biologisch orgaan."@nl .
+<https://w3id.org/mda/Organ> <http://www.w3.org/2000/01/rdf-schema#label> "Orgaan"@nl .
+<https://w3id.org/mda/Organ> <http://www.w3.org/2000/01/rdf-schema#label> "Organ"@en .
 # 
-# https://w3id.org/mda/ontology/OrganSystem
-<https://w3id.org/mda/ontology/OrganSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/OrganSystem> <http://purl.org/dc/terms/identifier> "OrganSystem" .
-<https://w3id.org/mda/ontology/OrganSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "A system of related organs in the body."@en .
-<https://w3id.org/mda/ontology/OrganSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Een systeem van gerelateerde organen in het lichaam."@nl .
-<https://w3id.org/mda/ontology/OrganSystem> <http://www.w3.org/2000/01/rdf-schema#label> "Orgaansysteem"@nl .
-<https://w3id.org/mda/ontology/OrganSystem> <http://www.w3.org/2000/01/rdf-schema#label> "Organ System"@en .
+# https://w3id.org/mda/OrganSystem
+<https://w3id.org/mda/OrganSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/OrganSystem> <http://purl.org/dc/terms/identifier> "OrganSystem" .
+<https://w3id.org/mda/OrganSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "A system of related organs in the body."@en .
+<https://w3id.org/mda/OrganSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Een systeem van gerelateerde organen in het lichaam."@nl .
+<https://w3id.org/mda/OrganSystem> <http://www.w3.org/2000/01/rdf-schema#label> "Orgaansysteem"@nl .
+<https://w3id.org/mda/OrganSystem> <http://www.w3.org/2000/01/rdf-schema#label> "Organ System"@en .
 # 
-# https://w3id.org/mda/ontology/Patient
-<https://w3id.org/mda/ontology/Patient> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/Patient> <http://purl.org/dc/terms/identifier> "Patient" .
-<https://w3id.org/mda/ontology/Patient> <http://www.w3.org/2000/01/rdf-schema#comment> "A patient being monitored by medical devices."@en .
-<https://w3id.org/mda/ontology/Patient> <http://www.w3.org/2000/01/rdf-schema#comment> "Een patiënt die wordt bewaakt door medische apparaten."@nl .
-<https://w3id.org/mda/ontology/Patient> <http://www.w3.org/2000/01/rdf-schema#label> "Patient"@en .
-<https://w3id.org/mda/ontology/Patient> <http://www.w3.org/2000/01/rdf-schema#label> "Patiënt"@nl .
-<https://w3id.org/mda/ontology/Patient> <https://w3id.org/mda/ontology/nodeKind> <https://w3id.org/mda/ontology/Individuated> .
+# https://w3id.org/mda/Patient
+<https://w3id.org/mda/Patient> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/Patient> <http://purl.org/dc/terms/identifier> "Patient" .
+<https://w3id.org/mda/Patient> <http://www.w3.org/2000/01/rdf-schema#comment> "A patient being monitored by medical devices."@en .
+<https://w3id.org/mda/Patient> <http://www.w3.org/2000/01/rdf-schema#comment> "Een patiënt die wordt bewaakt door medische apparaten."@nl .
+<https://w3id.org/mda/Patient> <http://www.w3.org/2000/01/rdf-schema#label> "Patient"@en .
+<https://w3id.org/mda/Patient> <http://www.w3.org/2000/01/rdf-schema#label> "Patiënt"@nl .
+<https://w3id.org/mda/Patient> <https://w3id.org/mda/nodeKind> <https://w3id.org/mda/Individuated> .
 # 
-# https://w3id.org/mda/ontology/PhysiologicalProcess
-<https://w3id.org/mda/ontology/PhysiologicalProcess> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/PhysiologicalProcess> <http://purl.org/dc/terms/identifier> "PhysiologicalProcess" .
-<https://w3id.org/mda/ontology/PhysiologicalProcess> <http://www.w3.org/2000/01/rdf-schema#comment> "A biological or physiological process occurring in the body."@en .
-<https://w3id.org/mda/ontology/PhysiologicalProcess> <http://www.w3.org/2000/01/rdf-schema#comment> "Een biologisch of fysiologisch proces dat in het lichaam plaatsvindt."@nl .
-<https://w3id.org/mda/ontology/PhysiologicalProcess> <http://www.w3.org/2000/01/rdf-schema#label> "Fysiologisch Proces"@nl .
-<https://w3id.org/mda/ontology/PhysiologicalProcess> <http://www.w3.org/2000/01/rdf-schema#label> "Physiological Process"@en .
+# https://w3id.org/mda/PhysiologicalProcess
+<https://w3id.org/mda/PhysiologicalProcess> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/PhysiologicalProcess> <http://purl.org/dc/terms/identifier> "PhysiologicalProcess" .
+<https://w3id.org/mda/PhysiologicalProcess> <http://www.w3.org/2000/01/rdf-schema#comment> "A biological or physiological process occurring in the body."@en .
+<https://w3id.org/mda/PhysiologicalProcess> <http://www.w3.org/2000/01/rdf-schema#comment> "Een biologisch of fysiologisch proces dat in het lichaam plaatsvindt."@nl .
+<https://w3id.org/mda/PhysiologicalProcess> <http://www.w3.org/2000/01/rdf-schema#label> "Fysiologisch Proces"@nl .
+<https://w3id.org/mda/PhysiologicalProcess> <http://www.w3.org/2000/01/rdf-schema#label> "Physiological Process"@en .
 # 
-# https://w3id.org/mda/ontology/PhysiologicalProperty
-<https://w3id.org/mda/ontology/PhysiologicalProperty> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/PhysiologicalProperty> <http://purl.org/dc/terms/identifier> "PhysiologicalProperty" .
-<https://w3id.org/mda/ontology/PhysiologicalProperty> <http://www.w3.org/2000/01/rdf-schema#comment> "A measurable property of a physiological process."@en .
-<https://w3id.org/mda/ontology/PhysiologicalProperty> <http://www.w3.org/2000/01/rdf-schema#comment> "Een meetbare eigenschap van een fysiologisch proces."@nl .
-<https://w3id.org/mda/ontology/PhysiologicalProperty> <http://www.w3.org/2000/01/rdf-schema#label> "Fysiologische Eigenschap"@nl .
-<https://w3id.org/mda/ontology/PhysiologicalProperty> <http://www.w3.org/2000/01/rdf-schema#label> "Physiological Property"@en .
+# https://w3id.org/mda/PhysiologicalProperty
+<https://w3id.org/mda/PhysiologicalProperty> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/PhysiologicalProperty> <http://purl.org/dc/terms/identifier> "PhysiologicalProperty" .
+<https://w3id.org/mda/PhysiologicalProperty> <http://www.w3.org/2000/01/rdf-schema#comment> "A measurable property of a physiological process."@en .
+<https://w3id.org/mda/PhysiologicalProperty> <http://www.w3.org/2000/01/rdf-schema#comment> "Een meetbare eigenschap van een fysiologisch proces."@nl .
+<https://w3id.org/mda/PhysiologicalProperty> <http://www.w3.org/2000/01/rdf-schema#label> "Fysiologische Eigenschap"@nl .
+<https://w3id.org/mda/PhysiologicalProperty> <http://www.w3.org/2000/01/rdf-schema#label> "Physiological Property"@en .
 # 
-# https://w3id.org/mda/ontology/PostAlarmValidScheme
-<https://w3id.org/mda/ontology/PostAlarmValidScheme> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/PostAlarmValidScheme> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
-<https://w3id.org/mda/ontology/PostAlarmValidScheme> <http://purl.org/dc/terms/identifier> "PostAlarmValidScheme" .
-<https://w3id.org/mda/ontology/PostAlarmValidScheme> <http://www.w3.org/2000/01/rdf-schema#comment> "A SKOS concept scheme whose concepts remain valid for a fixed duration after an alarm ends."@en .
-<https://w3id.org/mda/ontology/PostAlarmValidScheme> <http://www.w3.org/2000/01/rdf-schema#comment> "Een SKOS-conceptschema waarvan de concepten geldig blijven gedurende een vaste duur nadat een alarm is geëindigd."@nl .
-<https://w3id.org/mda/ontology/PostAlarmValidScheme> <http://www.w3.org/2000/01/rdf-schema#label> "Post-alarm geldig schema"@nl .
-<https://w3id.org/mda/ontology/PostAlarmValidScheme> <http://www.w3.org/2000/01/rdf-schema#label> "Post-alarm valid scheme"@en .
-<https://w3id.org/mda/ontology/PostAlarmValidScheme> <https://w3id.org/mda/ontology/postAlarmValidityDuration> "PT60S"^^<http://www.w3.org/2001/XMLSchema#duration> .
+# https://w3id.org/mda/PostAlarmValidScheme
+<https://w3id.org/mda/PostAlarmValidScheme> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/PostAlarmValidScheme> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
+<https://w3id.org/mda/PostAlarmValidScheme> <http://purl.org/dc/terms/identifier> "PostAlarmValidScheme" .
+<https://w3id.org/mda/PostAlarmValidScheme> <http://www.w3.org/2000/01/rdf-schema#comment> "A SKOS concept scheme whose concepts remain valid for a fixed duration after an alarm ends."@en .
+<https://w3id.org/mda/PostAlarmValidScheme> <http://www.w3.org/2000/01/rdf-schema#comment> "Een SKOS-conceptschema waarvan de concepten geldig blijven gedurende een vaste duur nadat een alarm is geëindigd."@nl .
+<https://w3id.org/mda/PostAlarmValidScheme> <http://www.w3.org/2000/01/rdf-schema#label> "Post-alarm geldig schema"@nl .
+<https://w3id.org/mda/PostAlarmValidScheme> <http://www.w3.org/2000/01/rdf-schema#label> "Post-alarm valid scheme"@en .
+<https://w3id.org/mda/PostAlarmValidScheme> <https://w3id.org/mda/postAlarmValidityDuration> "PT60S"^^<http://www.w3.org/2001/XMLSchema#duration> .
 # 
-# https://w3id.org/mda/ontology/Sensor
-<https://w3id.org/mda/ontology/Sensor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/Sensor> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <https://w3id.org/mda/ontology/Component> .
-<https://w3id.org/mda/ontology/Sensor> <http://purl.org/dc/terms/identifier> "Sensor" .
-<https://w3id.org/mda/ontology/Sensor> <http://www.w3.org/2000/01/rdf-schema#comment> "Het fysieke object dat geplaatst wordt om een signaal te genereren — bijv. een pulse-oximetrieklip, een ECG-afleiding, een temperatuurprobe. Het meet of berekent zelf niets: het produceert enkel een ruw signaal (mda:producesSignal). Dat signaal omzetten in een metriek is de taak van mda:FunctionalUnit, via mda:SignalAnalysis. Een specialisatie van mda:Component."@nl .
-<https://w3id.org/mda/ontology/Sensor> <http://www.w3.org/2000/01/rdf-schema#comment> "The physical object placed to generate a signal — e.g. a pulse-oximetry clip, an ECG lead, a temperature probe. It does not itself measure or compute anything: it only produces a raw signal (mda:producesSignal). Turning that signal into a metric is mda:FunctionalUnit's job, via mda:SignalAnalysis. A specialisation of mda:Component. Declared disjoint with mda:FunctionalUnit (see its own comment) — asserted there, applies symmetrically."@en .
-<https://w3id.org/mda/ontology/Sensor> <http://www.w3.org/2000/01/rdf-schema#label> "Sensor"@en .
-<https://w3id.org/mda/ontology/Sensor> <http://www.w3.org/2000/01/rdf-schema#label> "Sensor"@nl .
-<https://w3id.org/mda/ontology/Sensor> <https://w3id.org/mda/ontology/nodeKind> <https://w3id.org/mda/ontology/Individuated> .
+# https://w3id.org/mda/Sensor
+<https://w3id.org/mda/Sensor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/Sensor> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <https://w3id.org/mda/Component> .
+<https://w3id.org/mda/Sensor> <http://purl.org/dc/terms/identifier> "Sensor" .
+<https://w3id.org/mda/Sensor> <http://www.w3.org/2000/01/rdf-schema#comment> "Het fysieke object dat geplaatst wordt om een signaal te genereren — bijv. een pulse-oximetrieklip, een ECG-afleiding, een temperatuurprobe. Het meet of berekent zelf niets: het produceert enkel een ruw signaal (mda:producesSignal). Dat signaal omzetten in een metriek is de taak van mda:FunctionalUnit, via mda:SignalAnalysis. Een specialisatie van mda:Component."@nl .
+<https://w3id.org/mda/Sensor> <http://www.w3.org/2000/01/rdf-schema#comment> "The physical object placed to generate a signal — e.g. a pulse-oximetry clip, an ECG lead, a temperature probe. It does not itself measure or compute anything: it only produces a raw signal (mda:producesSignal). Turning that signal into a metric is mda:FunctionalUnit's job, via mda:SignalAnalysis. A specialisation of mda:Component. Declared disjoint with mda:FunctionalUnit (see its own comment) — asserted there, applies symmetrically."@en .
+<https://w3id.org/mda/Sensor> <http://www.w3.org/2000/01/rdf-schema#label> "Sensor"@en .
+<https://w3id.org/mda/Sensor> <http://www.w3.org/2000/01/rdf-schema#label> "Sensor"@nl .
+<https://w3id.org/mda/Sensor> <https://w3id.org/mda/nodeKind> <https://w3id.org/mda/Individuated> .
 # 
-# https://w3id.org/mda/ontology/Signal
-<https://w3id.org/mda/ontology/Signal> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/Signal> <http://purl.org/dc/terms/identifier> "Signal" .
-<https://w3id.org/mda/ontology/Signal> <http://www.w3.org/2000/01/rdf-schema#comment> "A signal — either raw, produced by a sensor, or derived/intermediate, produced by a mda:SignalAnalysis step from other signals (e.g. augmented lead aVF, combined from ECG leads I and II). No structural distinction between the two: a later analysis step consuming a signal doesn't need to know whether it came from a sensor or from an earlier analysis."@en .
-<https://w3id.org/mda/ontology/Signal> <http://www.w3.org/2000/01/rdf-schema#comment> "Een signaal — ofwel ruw, geproduceerd door een sensor, ofwel afgeleid/tussenliggend, geproduceerd door een mda:SignalAnalysis-stap uit andere signalen (bijv. versterkte afleiding aVF, gecombineerd uit ECG-afleidingen I en II). Geen structureel onderscheid tussen beide: een latere analysestap die een signaal verbruikt hoeft niet te weten of het van een sensor komt of van een eerdere analyse."@nl .
-<https://w3id.org/mda/ontology/Signal> <http://www.w3.org/2000/01/rdf-schema#label> "Signaal"@nl .
-<https://w3id.org/mda/ontology/Signal> <http://www.w3.org/2000/01/rdf-schema#label> "Signal"@en .
-<https://w3id.org/mda/ontology/Signal> <https://w3id.org/mda/ontology/nodeKind> <https://w3id.org/mda/ontology/Individuated> .
+# https://w3id.org/mda/Signal
+<https://w3id.org/mda/Signal> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/Signal> <http://purl.org/dc/terms/identifier> "Signal" .
+<https://w3id.org/mda/Signal> <http://www.w3.org/2000/01/rdf-schema#comment> "A signal — either raw, produced by a sensor, or derived/intermediate, produced by a mda:SignalAnalysis step from other signals (e.g. augmented lead aVF, combined from ECG leads I and II). No structural distinction between the two: a later analysis step consuming a signal doesn't need to know whether it came from a sensor or from an earlier analysis."@en .
+<https://w3id.org/mda/Signal> <http://www.w3.org/2000/01/rdf-schema#comment> "Een signaal — ofwel ruw, geproduceerd door een sensor, ofwel afgeleid/tussenliggend, geproduceerd door een mda:SignalAnalysis-stap uit andere signalen (bijv. versterkte afleiding aVF, gecombineerd uit ECG-afleidingen I en II). Geen structureel onderscheid tussen beide: een latere analysestap die een signaal verbruikt hoeft niet te weten of het van een sensor komt of van een eerdere analyse."@nl .
+<https://w3id.org/mda/Signal> <http://www.w3.org/2000/01/rdf-schema#label> "Signaal"@nl .
+<https://w3id.org/mda/Signal> <http://www.w3.org/2000/01/rdf-schema#label> "Signal"@en .
+<https://w3id.org/mda/Signal> <https://w3id.org/mda/nodeKind> <https://w3id.org/mda/Individuated> .
 # 
-# https://w3id.org/mda/ontology/SignalAnalysis
-<https://w3id.org/mda/ontology/SignalAnalysis> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/SignalAnalysis> <http://purl.org/dc/terms/identifier> "SignalAnalysis" .
-<https://w3id.org/mda/ontology/SignalAnalysis> <http://www.w3.org/2000/01/rdf-schema#comment> "Eén berekeningsstap van een functionele eenheid: verbruikt één of meer signalen (bereikt via de inverse van mda:analyzedBy) en produceert ofwel een metriek (mda:producesMetric) ofwel een verder afgeleid signaal (mda:producesSignal) dat een latere stap op zijn beurt kan verbruiken. Zelf geen mda:Component — het is de berekening die een functionele eenheid uitvoert, geen fysiek onderdeel."@nl .
-<https://w3id.org/mda/ontology/SignalAnalysis> <http://www.w3.org/2000/01/rdf-schema#comment> "One computation step of a functional unit: consumes one or more signals (reached via the inverse of mda:analyzedBy) and produces either a metric (mda:producesMetric) or a further, derived signal (mda:producesSignal) that a later step can itself consume. Not itself a mda:Component — it's the computation a functional unit performs, not a physical part."@en .
-<https://w3id.org/mda/ontology/SignalAnalysis> <http://www.w3.org/2000/01/rdf-schema#label> "Signaalanalyse"@nl .
-<https://w3id.org/mda/ontology/SignalAnalysis> <http://www.w3.org/2000/01/rdf-schema#label> "Signal analysis"@en .
+# https://w3id.org/mda/SignalAnalysis
+<https://w3id.org/mda/SignalAnalysis> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/SignalAnalysis> <http://purl.org/dc/terms/identifier> "SignalAnalysis" .
+<https://w3id.org/mda/SignalAnalysis> <http://www.w3.org/2000/01/rdf-schema#comment> "Eén berekeningsstap van een functionele eenheid: verbruikt één of meer signalen (bereikt via de inverse van mda:analyzedBy) en produceert ofwel een metriek (mda:producesMetric) ofwel een verder afgeleid signaal (mda:producesSignal) dat een latere stap op zijn beurt kan verbruiken. Zelf geen mda:Component — het is de berekening die een functionele eenheid uitvoert, geen fysiek onderdeel."@nl .
+<https://w3id.org/mda/SignalAnalysis> <http://www.w3.org/2000/01/rdf-schema#comment> "One computation step of a functional unit: consumes one or more signals (reached via the inverse of mda:analyzedBy) and produces either a metric (mda:producesMetric) or a further, derived signal (mda:producesSignal) that a later step can itself consume. Not itself a mda:Component — it's the computation a functional unit performs, not a physical part."@en .
+<https://w3id.org/mda/SignalAnalysis> <http://www.w3.org/2000/01/rdf-schema#label> "Signaalanalyse"@nl .
+<https://w3id.org/mda/SignalAnalysis> <http://www.w3.org/2000/01/rdf-schema#label> "Signal analysis"@en .
 # 
-# https://w3id.org/mda/ontology/TherapeuticModality
-<https://w3id.org/mda/ontology/TherapeuticModality> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://w3id.org/mda/ontology/TherapeuticModality> <http://purl.org/dc/terms/identifier> "TherapeuticModality" .
-<https://w3id.org/mda/ontology/TherapeuticModality> <http://www.w3.org/2000/01/rdf-schema#comment> "A therapeutic intervention or treatment modality."@en .
-<https://w3id.org/mda/ontology/TherapeuticModality> <http://www.w3.org/2000/01/rdf-schema#comment> "Een therapeutische interventie of behandelingsmodaliteit."@nl .
-<https://w3id.org/mda/ontology/TherapeuticModality> <http://www.w3.org/2000/01/rdf-schema#label> "Therapeutic Modality"@en .
-<https://w3id.org/mda/ontology/TherapeuticModality> <http://www.w3.org/2000/01/rdf-schema#label> "Therapeutische Modaliteit"@nl .
+# https://w3id.org/mda/TherapeuticModality
+<https://w3id.org/mda/TherapeuticModality> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://w3id.org/mda/TherapeuticModality> <http://purl.org/dc/terms/identifier> "TherapeuticModality" .
+<https://w3id.org/mda/TherapeuticModality> <http://www.w3.org/2000/01/rdf-schema#comment> "A therapeutic intervention or treatment modality."@en .
+<https://w3id.org/mda/TherapeuticModality> <http://www.w3.org/2000/01/rdf-schema#comment> "Een therapeutische interventie of behandelingsmodaliteit."@nl .
+<https://w3id.org/mda/TherapeuticModality> <http://www.w3.org/2000/01/rdf-schema#label> "Therapeutic Modality"@en .
+<https://w3id.org/mda/TherapeuticModality> <http://www.w3.org/2000/01/rdf-schema#label> "Therapeutische Modaliteit"@nl .
 # 
 # 
 # 
@@ -810,17 +810,17 @@ _:genid16 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # #################################################################
 # 
 # 
-# https://w3id.org/mda/ontology/Individuated
-<https://w3id.org/mda/ontology/Individuated> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
-<https://w3id.org/mda/ontology/Individuated> <http://www.w3.org/2000/01/rdf-schema#label> "individuated"@en .
+# https://w3id.org/mda/Individuated
+<https://w3id.org/mda/Individuated> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/mda/Individuated> <http://www.w3.org/2000/01/rdf-schema#label> "individuated"@en .
 # 
-# https://w3id.org/mda/ontology/Referential
-<https://w3id.org/mda/ontology/Referential> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
-<https://w3id.org/mda/ontology/Referential> <http://www.w3.org/2000/01/rdf-schema#label> "referential"@en .
+# https://w3id.org/mda/Referential
+<https://w3id.org/mda/Referential> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/mda/Referential> <http://www.w3.org/2000/01/rdf-schema#label> "referential"@en .
 # 
-# https://w3id.org/mda/ontology/Stateful
-<https://w3id.org/mda/ontology/Stateful> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
-<https://w3id.org/mda/ontology/Stateful> <http://www.w3.org/2000/01/rdf-schema#label> "stateful"@en .
+# https://w3id.org/mda/Stateful
+<https://w3id.org/mda/Stateful> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<https://w3id.org/mda/Stateful> <http://www.w3.org/2000/01/rdf-schema#label> "stateful"@en .
 # 
 # 
 # 
@@ -831,32 +831,32 @@ _:genid16 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # #################################################################
 # 
 # 
-<https://w3id.org/mda/vocab/anatomical-position/Scheme> <https://w3id.org/mda/ontology/instantiatesClass> <https://w3id.org/mda/ontology/AnatomicalPosition> .
+<https://w3id.org/mda/vocab/anatomical-position/Scheme> <https://w3id.org/mda/instantiatesClass> <https://w3id.org/mda/AnatomicalPosition> .
 # 
-<https://w3id.org/mda/vocab/component/Scheme> <https://w3id.org/mda/ontology/instantiatesClass> <https://w3id.org/mda/ontology/Component> .
+<https://w3id.org/mda/vocab/component/Scheme> <https://w3id.org/mda/instantiatesClass> <https://w3id.org/mda/Component> .
 # 
-<https://w3id.org/mda/vocab/device/Scheme> <https://w3id.org/mda/ontology/instantiatesClass> <https://w3id.org/mda/ontology/Device> .
+<https://w3id.org/mda/vocab/device/Scheme> <https://w3id.org/mda/instantiatesClass> <https://w3id.org/mda/Device> .
 # 
-<https://w3id.org/mda/vocab/functional-unit/Scheme> <https://w3id.org/mda/ontology/instantiatesClass> <https://w3id.org/mda/ontology/FunctionalUnit> .
+<https://w3id.org/mda/vocab/functional-unit/Scheme> <https://w3id.org/mda/instantiatesClass> <https://w3id.org/mda/FunctionalUnit> .
 # 
-<https://w3id.org/mda/vocab/laterality/Scheme> <https://w3id.org/mda/ontology/instantiatesClass> <https://w3id.org/mda/ontology/Laterality> .
+<https://w3id.org/mda/vocab/laterality/Scheme> <https://w3id.org/mda/instantiatesClass> <https://w3id.org/mda/Laterality> .
 # 
-<https://w3id.org/mda/vocab/metric/Scheme> <https://w3id.org/mda/ontology/instantiatesClass> <https://w3id.org/mda/ontology/Metric> .
+<https://w3id.org/mda/vocab/metric/Scheme> <https://w3id.org/mda/instantiatesClass> <https://w3id.org/mda/Metric> .
 # 
-<https://w3id.org/mda/vocab/organ-system/Scheme> <https://w3id.org/mda/ontology/instantiatesClass> <https://w3id.org/mda/ontology/OrganSystem> .
+<https://w3id.org/mda/vocab/organ-system/Scheme> <https://w3id.org/mda/instantiatesClass> <https://w3id.org/mda/OrganSystem> .
 # 
-<https://w3id.org/mda/vocab/organ/Scheme> <https://w3id.org/mda/ontology/instantiatesClass> <https://w3id.org/mda/ontology/Organ> .
+<https://w3id.org/mda/vocab/organ/Scheme> <https://w3id.org/mda/instantiatesClass> <https://w3id.org/mda/Organ> .
 # 
-<https://w3id.org/mda/vocab/patient/Scheme> <https://w3id.org/mda/ontology/instantiatesClass> <https://w3id.org/mda/ontology/Patient> .
+<https://w3id.org/mda/vocab/patient/Scheme> <https://w3id.org/mda/instantiatesClass> <https://w3id.org/mda/Patient> .
 # 
-<https://w3id.org/mda/vocab/physiological-process/Scheme> <https://w3id.org/mda/ontology/instantiatesClass> <https://w3id.org/mda/ontology/PhysiologicalProcess> .
+<https://w3id.org/mda/vocab/physiological-process/Scheme> <https://w3id.org/mda/instantiatesClass> <https://w3id.org/mda/PhysiologicalProcess> .
 # 
-<https://w3id.org/mda/vocab/physiological-property/Scheme> <https://w3id.org/mda/ontology/instantiatesClass> <https://w3id.org/mda/ontology/PhysiologicalProperty> .
+<https://w3id.org/mda/vocab/physiological-property/Scheme> <https://w3id.org/mda/instantiatesClass> <https://w3id.org/mda/PhysiologicalProperty> .
 # 
-<https://w3id.org/mda/vocab/sensor/Scheme> <https://w3id.org/mda/ontology/instantiatesClass> <https://w3id.org/mda/ontology/Sensor> .
+<https://w3id.org/mda/vocab/sensor/Scheme> <https://w3id.org/mda/instantiatesClass> <https://w3id.org/mda/Sensor> .
 # 
-<https://w3id.org/mda/vocab/signal/Scheme> <https://w3id.org/mda/ontology/instantiatesClass> <https://w3id.org/mda/ontology/Signal> .
+<https://w3id.org/mda/vocab/signal/Scheme> <https://w3id.org/mda/instantiatesClass> <https://w3id.org/mda/Signal> .
 # 
-<https://w3id.org/mda/vocab/therapeutic-modality/Scheme> <https://w3id.org/mda/ontology/instantiatesClass> <https://w3id.org/mda/ontology/TherapeuticModality> .
+<https://w3id.org/mda/vocab/therapeutic-modality/Scheme> <https://w3id.org/mda/instantiatesClass> <https://w3id.org/mda/TherapeuticModality> .
 # 
 # Generated by the OWL API (version 5.1.18) https://github.com/owlcs/owlapi/

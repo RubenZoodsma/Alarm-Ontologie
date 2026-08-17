@@ -150,7 +150,7 @@
     "type" : "owl:Class"
   } ],
   "classAttribute" : [ {
-    "iri" : "https://w3id.org/mda/ontology/AlarmType",
+    "iri" : "https://w3id.org/mda/AlarmType",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -182,7 +182,7 @@
     "attributes" : [ "external" ],
     "id" : "2"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/Signal",
+    "iri" : "https://w3id.org/mda/Signal",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -195,7 +195,7 @@
       "nodeKind" : [ {
         "identifier" : "nodeKind",
         "language" : "undefined",
-        "value" : "https://w3id.org/mda/ontology/Individuated",
+        "value" : "https://w3id.org/mda/Individuated",
         "type" : "iri"
       } ]
     },
@@ -210,7 +210,7 @@
     },
     "id" : "8"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/PhysiologicalProcess",
+    "iri" : "https://w3id.org/mda/PhysiologicalProcess",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -232,7 +232,7 @@
     },
     "id" : "9"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/Component",
+    "iri" : "https://w3id.org/mda/Component",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -245,7 +245,7 @@
       "nodeKind" : [ {
         "identifier" : "nodeKind",
         "language" : "undefined",
-        "value" : "https://w3id.org/mda/ontology/Individuated",
+        "value" : "https://w3id.org/mda/Individuated",
         "type" : "iri"
       } ]
     },
@@ -271,7 +271,7 @@
     "attributes" : [ "external" ],
     "id" : "33"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/Organ",
+    "iri" : "https://w3id.org/mda/Organ",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -293,7 +293,7 @@
     },
     "id" : "16"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/Alarm",
+    "iri" : "https://w3id.org/mda/Alarm",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -316,7 +316,7 @@
     },
     "id" : "5"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/AlarmMessage",
+    "iri" : "https://w3id.org/mda/AlarmMessage",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -338,7 +338,7 @@
     },
     "id" : "28"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/Metric",
+    "iri" : "https://w3id.org/mda/Metric",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -351,7 +351,7 @@
       "nodeKind" : [ {
         "identifier" : "nodeKind",
         "language" : "undefined",
-        "value" : "https://w3id.org/mda/ontology/Stateful",
+        "value" : "https://w3id.org/mda/Stateful",
         "type" : "iri"
       } ]
     },
@@ -366,7 +366,7 @@
     },
     "id" : "37"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/Patient",
+    "iri" : "https://w3id.org/mda/Patient",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -379,7 +379,7 @@
       "nodeKind" : [ {
         "identifier" : "nodeKind",
         "language" : "undefined",
-        "value" : "https://w3id.org/mda/ontology/Individuated",
+        "value" : "https://w3id.org/mda/Individuated",
         "type" : "iri"
       } ]
     },
@@ -394,7 +394,7 @@
     },
     "id" : "40"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/CriticalComponent",
+    "iri" : "https://w3id.org/mda/CriticalComponent",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -422,7 +422,7 @@
     "attributes" : [ "anonymous", "union" ],
     "id" : "45"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/PhysiologicalProperty",
+    "iri" : "https://w3id.org/mda/PhysiologicalProperty",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -458,7 +458,7 @@
       "IRI-based" : "dateTime"
     }
   }, {
-    "iri" : "https://w3id.org/mda/ontology/Sensor",
+    "iri" : "https://w3id.org/mda/Sensor",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -471,7 +471,7 @@
       "nodeKind" : [ {
         "identifier" : "nodeKind",
         "language" : "undefined",
-        "value" : "https://w3id.org/mda/ontology/Individuated",
+        "value" : "https://w3id.org/mda/Individuated",
         "type" : "iri"
       } ]
     },
@@ -501,7 +501,7 @@
       "IRI-based" : "dateTime"
     }
   }, {
-    "iri" : "https://w3id.org/mda/ontology/Laterality",
+    "iri" : "https://w3id.org/mda/Laterality",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -523,7 +523,7 @@
     },
     "id" : "57"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/FunctionalUnit",
+    "iri" : "https://w3id.org/mda/FunctionalUnit",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -536,7 +536,7 @@
       "nodeKind" : [ {
         "identifier" : "nodeKind",
         "language" : "undefined",
-        "value" : "https://w3id.org/mda/ontology/Individuated",
+        "value" : "https://w3id.org/mda/Individuated",
         "type" : "iri"
       } ]
     },
@@ -557,7 +557,7 @@
     "attributes" : [ "anonymous", "union" ],
     "id" : "59"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/OrganSystem",
+    "iri" : "https://w3id.org/mda/OrganSystem",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -579,7 +579,7 @@
     },
     "id" : "36"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/TherapeuticModality",
+    "iri" : "https://w3id.org/mda/TherapeuticModality",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -601,7 +601,7 @@
     },
     "id" : "60"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/PostAlarmValidScheme",
+    "iri" : "https://w3id.org/mda/PostAlarmValidScheme",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -630,7 +630,7 @@
     "id" : "34",
     "superClasses" : [ "33" ]
   }, {
-    "iri" : "https://w3id.org/mda/ontology/SignalAnalysis",
+    "iri" : "https://w3id.org/mda/SignalAnalysis",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -652,7 +652,7 @@
     },
     "id" : "48"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/Device",
+    "iri" : "https://w3id.org/mda/Device",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -665,7 +665,7 @@
       "nodeKind" : [ {
         "identifier" : "nodeKind",
         "language" : "undefined",
-        "value" : "https://w3id.org/mda/ontology/Individuated",
+        "value" : "https://w3id.org/mda/Individuated",
         "type" : "iri"
       } ]
     },
@@ -680,7 +680,7 @@
     },
     "id" : "18"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/AnatomicalPosition",
+    "iri" : "https://w3id.org/mda/AnatomicalPosition",
     "baseIri" : "https://w3id.org/mda/ontology",
     "instances" : 0,
     "annotations" : {
@@ -833,7 +833,7 @@
     "type" : "owl:objectProperty"
   } ],
   "propertyAttribute" : [ {
-    "iri" : "https://w3id.org/mda/ontology/hasComponentOperationState",
+    "iri" : "https://w3id.org/mda/hasComponentOperationState",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
@@ -864,7 +864,7 @@
     "attributes" : [ "object" ],
     "id" : "0"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasDuration",
+    "iri" : "https://w3id.org/mda/hasDuration",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "7",
     "annotations" : {
@@ -888,7 +888,7 @@
     "attributes" : [ "datatype" ],
     "id" : "6"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasAnatomicalPosition",
+    "iri" : "https://w3id.org/mda/hasAnatomicalPosition",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "12",
     "annotations" : {
@@ -918,7 +918,7 @@
     "attributes" : [ "functional", "object" ],
     "id" : "10"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasLabel",
+    "iri" : "https://w3id.org/mda/hasLabel",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "14",
     "annotations" : {
@@ -942,7 +942,7 @@
     "attributes" : [ "datatype" ],
     "id" : "13"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/presentIn",
+    "iri" : "https://w3id.org/mda/presentIn",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "16",
     "annotations" : {
@@ -972,7 +972,7 @@
     "attributes" : [ "object" ],
     "id" : "15"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasFunctionalUnit",
+    "iri" : "https://w3id.org/mda/hasFunctionalUnit",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "19",
     "annotations" : {
@@ -997,7 +997,7 @@
     "attributes" : [ "object", "inverse functional" ],
     "id" : "17"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasComponent",
+    "iri" : "https://w3id.org/mda/hasComponent",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "1",
     "annotations" : {
@@ -1022,7 +1022,7 @@
     "attributes" : [ "object", "inverse functional" ],
     "id" : "20"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasDeviceType",
+    "iri" : "https://w3id.org/mda/hasDeviceType",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
@@ -1058,7 +1058,7 @@
     "attributes" : [ "object" ],
     "id" : "21"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasEnd",
+    "iri" : "https://w3id.org/mda/hasEnd",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "24",
     "annotations" : {
@@ -1082,7 +1082,7 @@
     "attributes" : [ "datatype" ],
     "id" : "23"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasSensorOperationState",
+    "iri" : "https://w3id.org/mda/hasSensorOperationState",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
@@ -1113,7 +1113,7 @@
     "attributes" : [ "object" ],
     "id" : "25"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/isOfType",
+    "iri" : "https://w3id.org/mda/isOfType",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "4",
     "annotations" : {
@@ -1137,7 +1137,7 @@
     "attributes" : [ "functional", "object" ],
     "id" : "26"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/triggeredBy",
+    "iri" : "https://w3id.org/mda/triggeredBy",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "18",
     "annotations" : {
@@ -1161,7 +1161,7 @@
     "attributes" : [ "functional", "object" ],
     "id" : "27"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasLabelConcept",
+    "iri" : "https://w3id.org/mda/hasLabelConcept",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
@@ -1191,7 +1191,7 @@
     "attributes" : [ "object" ],
     "id" : "29"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/isPropertyOf",
+    "iri" : "https://w3id.org/mda/isPropertyOf",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "9",
     "annotations" : {
@@ -1221,7 +1221,7 @@
     "attributes" : [ "object" ],
     "id" : "30"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasManufacturer",
+    "iri" : "https://w3id.org/mda/hasManufacturer",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
@@ -1257,7 +1257,7 @@
     "attributes" : [ "object" ],
     "id" : "32"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/organPartOfSystem",
+    "iri" : "https://w3id.org/mda/organPartOfSystem",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "36",
     "annotations" : {
@@ -1287,7 +1287,7 @@
     "attributes" : [ "object" ],
     "id" : "35"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasDeviceOperationState",
+    "iri" : "https://w3id.org/mda/hasDeviceOperationState",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
@@ -1323,7 +1323,7 @@
     "attributes" : [ "anonymous", "object" ],
     "id" : "39"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasQualityState",
+    "iri" : "https://w3id.org/mda/hasQualityState",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
@@ -1364,7 +1364,7 @@
     "attributes" : [ "anonymous", "object" ],
     "id" : "42"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/approximates",
+    "iri" : "https://w3id.org/mda/approximates",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "31",
     "annotations" : {
@@ -1394,7 +1394,7 @@
     "attributes" : [ "object" ],
     "id" : "43"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/producesSignal",
+    "iri" : "https://w3id.org/mda/producesSignal",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "8",
     "annotations" : {
@@ -1419,7 +1419,7 @@
     "attributes" : [ "object", "inverse functional" ],
     "id" : "44"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/analyzedBy",
+    "iri" : "https://w3id.org/mda/analyzedBy",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "48",
     "annotations" : {
@@ -1443,7 +1443,7 @@
     "attributes" : [ "object" ],
     "id" : "47"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasMessage",
+    "iri" : "https://w3id.org/mda/hasMessage",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "28",
     "annotations" : {
@@ -1467,7 +1467,7 @@
     "attributes" : [ "functional", "object", "inverse functional" ],
     "id" : "49"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasPriority",
+    "iri" : "https://w3id.org/mda/hasPriority",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
@@ -1497,7 +1497,7 @@
     "attributes" : [ "object" ],
     "id" : "50"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/isMonitoredBy",
+    "iri" : "https://w3id.org/mda/isMonitoredBy",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "18",
     "annotations" : {
@@ -1521,7 +1521,7 @@
     "attributes" : [ "object", "inverse functional" ],
     "id" : "51"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasSensor",
+    "iri" : "https://w3id.org/mda/hasSensor",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "11",
     "annotations" : {
@@ -1565,7 +1565,7 @@
     "attributes" : [ "anonymous", "object" ],
     "id" : "58"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasPhase",
+    "iri" : "https://w3id.org/mda/hasPhase",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
@@ -1601,7 +1601,7 @@
     "attributes" : [ "object" ],
     "id" : "61"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasCategory",
+    "iri" : "https://w3id.org/mda/hasCategory",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
@@ -1631,7 +1631,7 @@
     "attributes" : [ "object" ],
     "id" : "62"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/producesMetric",
+    "iri" : "https://w3id.org/mda/producesMetric",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "37",
     "annotations" : {
@@ -1655,7 +1655,7 @@
     "attributes" : [ "object" ],
     "id" : "63"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/targetsProcess",
+    "iri" : "https://w3id.org/mda/targetsProcess",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "9",
     "annotations" : {
@@ -1685,7 +1685,7 @@
     "attributes" : [ "object" ],
     "id" : "64"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/concernsPatient",
+    "iri" : "https://w3id.org/mda/concernsPatient",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "40",
     "annotations" : {
@@ -1709,7 +1709,7 @@
     "attributes" : [ "functional", "object" ],
     "id" : "65"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasLaterality",
+    "iri" : "https://w3id.org/mda/hasLaterality",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "57",
     "annotations" : {
@@ -1739,7 +1739,7 @@
     "attributes" : [ "functional", "object" ],
     "id" : "66"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasRate",
+    "iri" : "https://w3id.org/mda/hasRate",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
@@ -1769,7 +1769,7 @@
     "attributes" : [ "object" ],
     "id" : "67"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasStart",
+    "iri" : "https://w3id.org/mda/hasStart",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "53",
     "annotations" : {
@@ -1793,7 +1793,7 @@
     "attributes" : [ "datatype" ],
     "id" : "68"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/sensorProducesSignal",
+    "iri" : "https://w3id.org/mda/sensorProducesSignal",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "8",
     "annotations" : {
@@ -1818,7 +1818,7 @@
     "attributes" : [ "object" ],
     "id" : "46"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/administers",
+    "iri" : "https://w3id.org/mda/administers",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "60",
     "annotations" : {
@@ -1848,7 +1848,7 @@
     "attributes" : [ "object" ],
     "id" : "69"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasRhythm",
+    "iri" : "https://w3id.org/mda/hasRhythm",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
@@ -1878,7 +1878,7 @@
     "attributes" : [ "object" ],
     "id" : "70"
   }, {
-    "iri" : "https://w3id.org/mda/ontology/hasOperationState",
+    "iri" : "https://w3id.org/mda/hasOperationState",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
     "annotations" : {
