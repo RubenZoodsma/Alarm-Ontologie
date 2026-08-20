@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<rdf:RDF xmlns="https://w3id.org/mda/ontology/"
-     xml:base="https://w3id.org/mda/ontology/"
+<rdf:RDF xmlns="https://w3id.org/mda/ontology#"
+     xml:base="https://w3id.org/mda/ontology#"
      xmlns:dc="http://purl.org/dc/elements/1.1/"
      xmlns:owl="http://www.w3.org/2002/07/owl#"
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -9,8 +9,8 @@
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:vann="http://purl.org/vocab/vann/"
      xmlns:terms="http://purl.org/dc/terms/"
-     xmlns:ontology="https://w3id.org/mda/ontology/">
-    <owl:Ontology rdf:about="https://w3id.org/mda/ontology/">
+     xmlns:ontology="https://w3id.org/mda/ontology#">
+    <owl:Ontology rdf:about="https://w3id.org/mda/ontology#">
         <dc:license rdf:resource="https://creativecommons.org/licenses/by/4.0/"/>
         <dc:title xml:lang="en">MEdical Device Alarm Ontology</dc:title>
         <terms:abstract xml:lang="en">

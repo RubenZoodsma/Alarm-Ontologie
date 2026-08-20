@@ -1,4 +1,4 @@
-@prefix mda:        <https://w3id.org/mda/ontology/> .
+@prefix mda:        <https://w3id.org/mda/ontology#> .
 
 @prefix dc:         <http://purl.org/dc/elements/1.1/> .
 @prefix owl:        <http://www.w3.org/2002/07/owl#> .
@@ -37,14 +37,14 @@
 # Ontology for the medical device alarm knowledge
 ##################################################################
 
-<https://w3id.org/mda/ontology/>  a owl:Ontology ;
+<https://w3id.org/mda/ontology#>  a owl:Ontology ;
     dc:title                        "Medical Device Alarm Ontology"@en ;
     dcterms:creator                 "Ruben Zoodsma" ;
     dcterms:created                 "2026-07-08"^^xsd:date ;
     owl:versionInfo                 "1.0.0" ;
     dc:license                      <https://creativecommons.org/licenses/by/4.0/> ;
     vann:preferredNamespacePrefix   "mda";
-    vann:preferredNamespaceUri      "https://w3id.org/mda/ontology/" ;
+    vann:preferredNamespaceUri      "https://w3id.org/mda/ontology#" ;
     dcterms:abstract """The Medical Device Alarm (MDA) Ontology provides a formal representation of the technical and clinical knowledge conveyed by medical device alarms. It models alarms in relation to measurements, devices, sensors, physiological variables, interpretations, and associated clinical or technical concerns, enabling alarm information to be represented in a machine-interpretable form."""@en ;
     dcterms:description """The MDA Ontology formally represents the concepts and relationships involved in medical device alarm generation and interpretation, making the implicit technical and clinical knowledge conveyed by alarms explicit and machine-interpretable."""@en .
 

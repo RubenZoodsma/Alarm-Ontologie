@@ -6,7 +6,7 @@
     "title" : {
       "en" : "MEdical Device Alarm Ontology"
     },
-    "iri" : "https://w3id.org/mda/ontology/",
+    "iri" : "https://w3id.org/mda/ontology#",
     "version" : "1.0.0",
     "author" : [ "Ruben Zoodsma" ],
     "description" : {
@@ -40,7 +40,7 @@
       "preferredNamespaceUri" : [ {
         "identifier" : "preferredNamespaceUri",
         "language" : "undefined",
-        "value" : "https://w3id.org/mda/ontology/",
+        "value" : "https://w3id.org/mda/ontology#",
         "type" : "label"
       } ],
       "abstract" : [ {

@@ -1,4 +1,4 @@
-@prefix mda:        <https://w3id.org/mda/ontology/> .
+@prefix mda:        <https://w3id.org/mda/ontology#> .
 
 @prefix dc:         <http://purl.org/dc/elements/1.1/> .
 @prefix owl:        <http://www.w3.org/2002/07/owl#> .
@@ -36,7 +36,7 @@
 # Ontology for the medical device alarm knowledge
 ##################################################################
 
-<https://w3id.org/mda/ontology/>  a owl:Ontology ;
+<https://w3id.org/mda/ontology#>  a owl:Ontology ;
     dc:title                        "The ontology for the medical device alarm knowledge."@en ;
     dc:description                  "Conceptual model for the medical device alarm knowledge."@en ;
     dcterms:creator                 "Ruben Zoodsma" ;
@@ -44,7 +44,7 @@
     owl:versionInfo                 "1.0.0" ;
     dc:license                      <https://creativecommons.org/licenses/by/4.0/> ;
     vann:preferredNamespacePrefix   "mda";
-    vann:preferredNamespaceUri      "https://w3id.org/mda/ontology/" .
+    vann:preferredNamespaceUri      "https://w3id.org/mda/ontology#" .
 
 
 #################################################################

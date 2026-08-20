@@ -34,7 +34,7 @@
 # any alarm archetype carrying a copy of it.
 ####################################################################
 
-@prefix mda:        <https://w3id.org/mda/ontology/> .
+@prefix mda:        <https://w3id.org/mda/ontology#> .
 @prefix owl:        <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
 

@@ -1,12 +1,12 @@
-@prefix : <https://w3id.org/mda/ontology/> .
+@prefix : <https://w3id.org/mda/ontology#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@base <https://w3id.org/mda/ontology/> .
+@base <https://w3id.org/mda/ontology#> .
 
-<https://w3id.org/mda/ontology/> rdf:type owl:Ontology ;
+<https://w3id.org/mda/ontology#> rdf:type owl:Ontology ;
                                   <http://purl.org/dc/elements/1.1/license> <https://creativecommons.org/licenses/by/4.0/> ;
                                   <http://purl.org/dc/elements/1.1/title> "MEdical Device Alarm Ontology"@en ;
                                   <http://purl.org/dc/terms/abstract> """
@@ -26,7 +26,7 @@
         and machine-interpretable.
         """@en ;
                                   <http://purl.org/vocab/vann/preferredNamespacePrefix> "mda" ;
-                                  <http://purl.org/vocab/vann/preferredNamespaceUri> "https://w3id.org/mda/ontology/" ;
+                                  <http://purl.org/vocab/vann/preferredNamespaceUri> "https://w3id.org/mda/ontology#" ;
                                   owl:versionInfo "1.0.0" .
 
 #################################################################

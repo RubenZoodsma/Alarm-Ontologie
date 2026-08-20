@@ -21,7 +21,7 @@
 # alarms, through three distinct metric pathways (ABP/ABP_Mean -> ArterialPressure,
 # VenousPressure -> VenousPressure, PulseFlowIndex -> TissuePerfusion).
 
-PREFIX mda: <https://w3id.org/mda/ontology/>
+PREFIX mda: <https://w3id.org/mda/ontology#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX physiologicalProcess: <https://w3id.org/mda/vocab/physiological-process/>
 

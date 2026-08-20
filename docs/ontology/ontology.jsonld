@@ -69,7 +69,7 @@
   "@id" : "http://www.w3.org/2004/02/skos/core#ConceptScheme",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ]
 }, {
-  "@id" : "https://w3id.org/mda/ontology/",
+  "@id" : "https://w3id.org/mda/ontology#",
   "@type" : [ "http://www.w3.org/2002/07/owl#Ontology" ],
   "http://purl.org/dc/elements/1.1/license" : [ {
     "@id" : "https://creativecommons.org/licenses/by/4.0/"
@@ -97,7 +97,7 @@
     "@value" : "mda"
   } ],
   "http://purl.org/vocab/vann/preferredNamespaceUri" : [ {
-    "@value" : "https://w3id.org/mda/ontology/"
+    "@value" : "https://w3id.org/mda/ontology#"
   } ],
   "http://www.w3.org/2002/07/owl#versionInfo" : [ {
     "@value" : "1.0.0"
