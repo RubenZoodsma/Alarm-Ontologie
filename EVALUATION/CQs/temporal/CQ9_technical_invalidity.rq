@@ -1,0 +1,59 @@
+# question: Which clinical alarms coincide with a technical condition that reduces their validity?
+#
+# Distinct from CAT1's a/b rules (deferred -- those need temporal ordering
+# and asystole-specific reasoning, not yet built). This CQ only asks
+# whether the underlying REPRESENTATION can express "reduces validity" at
+# all -- answer: only as a structural proxy, not a real semantic. The
+# framework has no mda:invalidates (or similar) relation. What's detectable
+# is: a signal-quality fault (hasQualityState != Good) coinciding with a
+# metric reading on the SAME sensing pathway (same Signal particular that
+# the metric's SignalAnalysis is analyzedBy) -- treating that structural
+# co-location as standing in for "reduces validity", which is an inference
+# the query makes, not something the ontology asserts.
+#
+# reasoning: required (runs against kg_inference.trig-style snapshot output
+# from the operational layer -- CODE/evaluation_poc/op_knowledge.py -- which
+# already reasons per tick; this query performs no further OWL-RL itself)
+#
+# Graph-shape gotcha, worth documenting since it cost real debugging time:
+# a snapshot named graph's OWN metadata (snap:forPatient, snap:atTime,
+# rdf:type snap:Snapshot) is asserted via ds.add(...) into the DEFAULT
+# graph -- describing the named graph as a resource -- NOT via ng.add(...)
+# inside the named graph itself (see op_inference.py/build_trig scripts).
+# `?g snap:forPatient ?patient` must therefore sit OUTSIDE any `GRAPH ?g
+# {...}` block, or it silently never matches.
+#
+# Similarly, the technical chain up to and including SignalAnalysis
+# (hasFunctionalUnit/hasSensor/sensorProducesSignal/analyzedBy) lives in
+# the ACCUMULATED BACKGROUND (default graph) -- these nodes are
+# Individuated/structural, timeless composition of the device -- while
+# mda:Metric (Stateful) and its producesMetric link, plus every
+# leaf_properties value (hasRate, hasQualityState, hasSensorOperationState,
+# ...), are CONDITION, scoped to the specific tick's named graph. A query
+# spanning from Signal to Metric must therefore split the property path at
+# that boundary: the analyzedBy hop unscoped (default graph), the
+# producesMetric hop inside GRAPH ?g.
+#
+# Validated against a fabricated positive/negative pair (DATA/CQ_evaluation/
+# events_data.csv, patients cq9_pos/cq9_neg) before finalising: cq9_pos
+# (PHILIPSMONITOR - SpO2 laag + PHILIPSMONITOR - Storing in SpO2, same
+# device, same PulseOximeter pathway) fires; cq9_neg (the same SpO2 alarm
+# coinciding with an unrelated CARDIOHELP connection-loss alarm on a
+# different device/pathway) correctly does not.
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+PREFIX snap: <https://w3id.org/mda/snapshot/>
+PREFIX qualitystate: <https://w3id.org/mda/vocab/quality-state/>
+
+SELECT ?patient ?g (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms) WHERE {
+  ?g snap:forPatient ?patient .
+  GRAPH ?g {
+    ?alarm mda:hasLabel ?label .
+    ?analysis mda:producesMetric/mda:hasRate ?rate .
+    ?signal mda:hasQualityState ?quality .
+    FILTER(?quality != qualitystate:Good)
+  }
+  ?signal mda:analyzedBy ?analysis .
+}
+GROUP BY ?patient ?g
+ORDER BY ?patient

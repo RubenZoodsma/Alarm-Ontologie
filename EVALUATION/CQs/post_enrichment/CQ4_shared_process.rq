@@ -1,0 +1,59 @@
+# question: If a clinician encounters a clinical alarm, which other alarms provide information about the same underlying process?
+#
+# CORRECTED after a self-audit (see cq_discoveries.md's "audit correction"
+# entry) -- the first version only reached PhysiologicalProcess via the
+# DIAGNOSTIC chain (Metric -approximates-> Property -isPropertyOf->
+# Process). It missed the independent THERAPEUTIC chain inference.ttl also
+# declares as a class-level bridge: Device -administers-> TherapeuticModality
+# -targetsProcess-> Process, which fires from the device's TYPE alone --
+# no Metric required. A bare technical fault on a MechanicalVentilator
+# (e.g. "SERVOU - Volume uit blokkade", no Metric at all) still entails
+# "this device treats PulmonaryVentilation" purely from its device class.
+# Excluding that path undercounted every process a device-administered
+# therapy targets: PulmonaryVentilation was reported as 13 alarms, corrected
+# to 24; ThermoRegulation 2 -> 9; PulmonaryOxygenation 4 -> 6.
+# VascularCompliance (5) and CardiacContraction (3) are genuinely unaffected
+# -- no administers-bridged device targets either process, so nothing
+# therapeutic reaches them.
+#
+# One alarm can legitimately land in two different process groups via the
+# two different chains at once: "CARDIOHELP - pVen onder waarschuwingsgrens"
+# reaches VascularCompliance diagnostically (its VenousPressure metric) AND
+# PulmonaryOxygenation therapeutically (the ECMO device it's on administers
+# membrane oxygenation) -- both true, not a duplicate/bug.
+#
+# "Clinical alarm" is still defined functionally, not via mda:hasCategory
+# (see the original reasoning below, unchanged by this correction): does
+# it resolve to *some* process by *either* chain, not what the annotator
+# happened to label it.
+#
+# reasoning: required
+#
+# ORIGINAL functional-vs-category reasoning (still holds): checked whether
+# alarmcat:Physiological/Technical predicts process-reachability -- no --
+# 3 alarmcat:Technical alarms reach a process anyway (MEDIBUS - Air
+# temperature high/low -> ThermoRegulation; PHILIPSMONITOR - SpO2 lage PFI
+# -> VascularCompliance via TissuePerfusion), while every alarmcat:
+# Physiological alarm reaches one. Filtering on hasCategory would wrongly
+# exclude those 3 from being valid "clinical alarm" triggers.
+#
+# Same known-incomplete diagnostic chain as CQ3 (see cq_discoveries.md):
+# metric:Pulse never reaches a process via the diagnostic route (no
+# approximates bridge at all) and metric:Humidity dead-ends at
+# PhysiologicalProperty -- neither is on an administers-bridged device
+# either, so both remain silently absent below.
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+
+SELECT ?process (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
+       (COUNT(DISTINCT ?a) AS ?matchCount) WHERE {
+  ?a a mda:AlarmType ; mda:hasLabel ?label ; mda:hasMessage/mda:triggeredBy ?dev .
+  {
+    ?a mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit/mda:hasSensor/mda:sensorProducesSignal/(mda:analyzedBy/mda:producesSignal)*/mda:analyzedBy/mda:producesMetric/mda:approximates/mda:isPropertyOf ?process .
+  } UNION {
+    ?dev mda:administers/mda:targetsProcess ?process .
+  }
+}
+GROUP BY ?process
+HAVING (COUNT(DISTINCT ?a) > 1)
+ORDER BY DESC(?matchCount)

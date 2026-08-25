@@ -1,0 +1,50 @@
+# question: Can coinciding alarms be identified whom together form a different clinical meaning than their independent meaning, and for which no individual alarm exists?
+#
+# NOT an answer to CQ11 -- see ../cq_discoveries.md's CQ11 entry: the
+# framework has no vocabulary or inference mechanism for an emergent,
+# combined-alarm concept, so no query can actually answer this CQ. This is
+# a DIAGNOSTIC query instead, illustrating the gap the same way the
+# manuscript's Box 3 does: for any snapshot where more than one distinct
+# PhysiologicalProcess is reachable from the alarms active at that instant,
+# report both the alarms and the processes. The absence of a third,
+# combined concept in the result IS the finding -- there is nothing here
+# to derive one from, structurally, regardless of what pattern the query
+# looks for.
+#
+# Deliberately does NOT try to attribute a specific alarm instance to a
+# specific process via a direct property path (e.g. alarm ->
+# hasMessage/triggeredBy/...) -- that edge is a STATIC archetype-blueprint
+# relation (kg_generated.ttl) and is never asserted on a grounded alarm
+# instance in the operational/temporal layer (confirmed empirically: zero
+# mda:triggeredBy triples exist on any alarm instance in this graph). An
+# alarm instance and the metric/process facts revealed alongside it are
+# only ever co-present in the same snapshot, never linked by a direct RDF
+# path -- the same constraint CQ9/CQ10 were built around from the start.
+#
+# reasoning: required (same graph-shape notes as CQ9/CQ10: snap:forPatient
+# outside GRAPH ?g; the diagnostic chain's final two hops -- approximates,
+# isPropertyOf -- only resolve inside the tick's named graph, since Metric
+# is Stateful/condition-scoped)
+#
+# Validated against the fabricated dataset (DATA/CQ_evaluation/
+# events_data.csv): fires on cq11_pos (PHILIPSMONITOR - Lage hartfreq. +
+# SERVOU - Ademfrequentie laag -> CardiacContraction, PulmonaryVentilation,
+# no third concept) as intended. Also correctly fires on cq10_neg (SpO2 laag
+# + HF hoog -> PulmonaryOxygenation, CardiacContraction) -- not cherry-picked
+# to only match the one illustrative case; any patient with two coinciding,
+# genuinely unrelated processes matches the same way.
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+PREFIX snap: <https://w3id.org/mda/snapshot/>
+
+SELECT ?patient (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
+       (GROUP_CONCAT(DISTINCT ?process; separator=" | ") AS ?processes) WHERE {
+  ?g snap:forPatient ?patient .
+  GRAPH ?g {
+    ?alarm mda:hasLabel ?label .
+    ?analysis mda:producesMetric/mda:approximates/mda:isPropertyOf ?process .
+  }
+}
+GROUP BY ?patient
+HAVING (COUNT(DISTINCT ?process) > 1)
+ORDER BY ?patient

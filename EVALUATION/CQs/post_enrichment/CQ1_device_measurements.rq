@@ -1,0 +1,36 @@
+# question: What is the distinct set of measurements a device can produce?
+#
+# Purely technical: walks the device's measurement pathway as annotated in
+# kg_generated.ttl (Device -> FunctionalUnit -> Sensor -> Signal ->
+# SignalAnalysis -> Metric), grouped by the device's generic class
+# (e.g. device:MechanicalVentilator), not by manufacturer/model -- that
+# finer distinction is CQ7's question, not this one.
+#
+# The (analyzedBy/producesSignal)* hop covers derived/intermediate signals
+# (e.g. a computed lead feeding a further analysis step) before the
+# terminal analyzedBy/producesMetric hop; on the current p50-derived
+# kg_generated.ttl every metric is one hop off a sensor's raw signal, so
+# this generality is currently unused but kept for correctness against the
+# ontology's actual signal-analysis model.
+#
+# Asserted only -- no inference.ttl predicate is involved, so this does not
+# require the OWL-RL closure. Three of the seven device classes present in
+# kg_generated.ttl (CardiacMonitor, Dialysator, Thermoregulator) are absent
+# from the results below: their only archetypes in this corpus are
+# connection/system-fault alarms with no measurement pathway at all
+# (e.g. "EDWARDS - Verbinding verbroken") -- correctly excluded, not a
+# query defect.
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?deviceClass (GROUP_CONCAT(DISTINCT ?metricNotation; separator=" | ") AS ?measurements)
+       (COUNT(DISTINCT ?metricConcept) AS ?distinctCount) WHERE {
+  ?a a mda:AlarmType ;
+     mda:hasMessage/mda:triggeredBy ?deviceNode .
+  ?deviceNode a ?deviceClass .
+  ?deviceNode mda:hasFunctionalUnit/mda:hasSensor/mda:sensorProducesSignal/(mda:analyzedBy/mda:producesSignal)*/mda:analyzedBy/mda:producesMetric/a ?metricConcept .
+  ?metricConcept skos:notation ?metricNotation .
+}
+GROUP BY ?deviceClass
+ORDER BY ?deviceClass

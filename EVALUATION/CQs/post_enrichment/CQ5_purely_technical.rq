@@ -1,0 +1,49 @@
+# question: Are there alarms containing just technical information, without encoded clinical implications?
+#
+# CORRECTED after a self-audit (see cq_discoveries.md's "audit correction"
+# entry) -- the first version of this query only checked whether an alarm's
+# Metric crosses mda:approximates (the DIAGNOSTIC bridge). It missed the
+# SECOND, independent class-level bridge inference.ttl declares: Device
+# -administers-> TherapeuticModality, restricted onto five device classes
+# (Dialysator, ExtracorporealMembraneOxygenator, Incubator, Thermoregulator,
+# MechanicalVentilator -- see inference.ttl's Technical axioms section).
+# That bridge fires from the device's TYPE alone, with no Metric required --
+# a bare "SERVOU - Volume uit blokkade" (no Metric at all) still entails
+# administers/VentilationTherapy purely because it's a MechanicalVentilator
+# archetype. An alarm therefore only has ZERO encoded clinical implication
+# if it crosses NEITHER bridge.
+#
+# This roughly TRIPLED the size of the "has clinical implications" set
+# versus the uncorrected version (24/55 purely-technical dropped to 7/55).
+# The corrected 7 are exactly the alarms on device:PhysiologicalMonitor or
+# device:CardiacMonitor -- the two device classes with no administers
+# bridge at all, which makes clinical sense: a monitor observes, it doesn't
+# administer therapy, so its technical faults really do carry nothing
+# clinical either way.
+#
+# Two situations reported:
+#   - "no measurement, no therapeutic implication": the technical chain
+#     never reaches a Metric, AND the device has no administers bridge.
+#   - "measurement without clinical bridge": a Metric exists but has no
+#     approximates axiom at all -- currently only metric:Pulse (see
+#     cq_discoveries.md).
+#
+# reasoning: required (the administers bridge, like approximates, only
+# fires under the OWL-RL closure -- cls-hv1)
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+
+SELECT ?situation (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
+       (COUNT(DISTINCT ?a) AS ?matchCount) WHERE {
+  ?a a mda:AlarmType ; mda:hasLabel ?label ; mda:hasMessage/mda:triggeredBy ?dev .
+  OPTIONAL {
+    ?a mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit/mda:hasSensor/mda:sensorProducesSignal/(mda:analyzedBy/mda:producesSignal)*/mda:analyzedBy/mda:producesMetric ?metricNode .
+    OPTIONAL { ?metricNode mda:approximates ?property . }
+  }
+  OPTIONAL { ?dev mda:administers ?modality . }
+  FILTER(!BOUND(?property))
+  FILTER(!BOUND(?modality))
+  BIND(IF(BOUND(?metricNode), "measurement without clinical bridge", "no measurement, no therapeutic implication") AS ?situation)
+}
+GROUP BY ?situation
+ORDER BY ?situation

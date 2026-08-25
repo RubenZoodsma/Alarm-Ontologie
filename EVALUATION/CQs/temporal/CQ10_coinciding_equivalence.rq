@@ -1,0 +1,70 @@
+# question: Which alarms coincide with other alarms that already convey equivalent clinical or technical information?
+#
+# CORRECTED after a self-audit (see ../cq_discoveries.md's "Audit
+# correction" entry, and the CQ3/CQ4/CQ5 corrections it triggered) -- the
+# first version of this query only tested the "clinical" half of its own
+# wording (two coinciding alarms reaching the same PhysiologicalProperty).
+# It never tested "technical" equivalence at all. Added as a second UNION
+# branch, reusing CQ2's own trace definition (same FunctionalUnit, Sensor,
+# and Signal TYPE, via two independent SignalAnalysis chains) rather than
+# inventing a separate notion of "technical equivalence" -- coinciding
+# alarms sharing an identical sensing pathway, produced by two distinct
+# sensors, are technically equivalent in exactly CQ2's sense, just tested
+# pairwise here instead of grouped.
+#
+# The two branches are not always disjoint: two independently-sourced
+# alarms sharing the same Metric TYPE are necessarily also clinically
+# equivalent whenever that metric has an approximates bridge (the bridge
+# is asserted per TYPE, not per instance) -- confirmed on the validated
+# positive case below, which fires on both branches simultaneously. The
+# technical branch only adds genuinely NEW coverage for a metric with no
+# approximates bridge at all (currently only metric:Pulse -- see
+# ../cq_discoveries.md) -- not currently exercised by any two-device case
+# in this corpus, but the branch is structurally necessary regardless of
+# whether today's corpus happens to trigger it standalone.
+#
+# reasoning: required (same graph-shape notes as CQ9: snap:forPatient sits
+# outside GRAPH ?g; the FunctionalUnit/Sensor/Signal structural chain is
+# accumulated BACKGROUND, matched unscoped; Metric identity is per-tick
+# CONDITION, matched inside GRAPH ?g -- see CQ9's header for why).
+#
+# Validated against the fabricated positive/negative pair (DATA/
+# CQ_evaluation/events_data.csv, patients cq10_pos/cq10_neg) and re-checked
+# for regressions across all six fabricated patients: only cq10_pos
+# matches (on both branches at once, as expected -- SpO2 laag/Lage SpO2
+# share both the same property AND the same full sensing pathway); no
+# other patient spuriously matches under the added branch.
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+PREFIX snap: <https://w3id.org/mda/snapshot/>
+
+SELECT ?patient ?kind ?matchValue (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms) WHERE {
+  ?g snap:forPatient ?patient .
+  GRAPH ?g { ?alarm mda:hasLabel ?label . }
+  {
+    GRAPH ?g {
+      ?analysis1 mda:producesMetric/mda:approximates ?matchValue .
+      ?analysis2 mda:producesMetric/mda:approximates ?matchValue .
+      FILTER(?analysis1 != ?analysis2)
+    }
+    BIND("clinical" AS ?kind)
+  } UNION {
+    ?sensor1 mda:sensorProducesSignal ?signal1 ; a ?sensorType .
+    ?fu1 mda:hasSensor ?sensor1 ; a ?fuType .
+    ?signal1 mda:analyzedBy ?analysis1 ; a ?signalType .
+
+    ?sensor2 mda:sensorProducesSignal ?signal2 ; a ?sensorType .
+    ?fu2 mda:hasSensor ?sensor2 ; a ?fuType .
+    ?signal2 mda:analyzedBy ?analysis2 ; a ?signalType .
+
+    FILTER(?sensor1 != ?sensor2)
+
+    GRAPH ?g {
+      ?analysis1 mda:producesMetric/a ?matchValue .
+      ?analysis2 mda:producesMetric/a ?matchValue .
+    }
+    BIND("technical" AS ?kind)
+  }
+}
+GROUP BY ?patient ?kind ?matchValue
+ORDER BY ?patient ?kind

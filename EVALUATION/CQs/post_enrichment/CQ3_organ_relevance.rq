@@ -1,0 +1,47 @@
+# question: If a clinician is concerned about a patient's organ, which alarms would be relevant?
+#
+# CORRECTED after a self-audit (see cq_discoveries.md's "audit correction"
+# entry) -- the first version only reached Organ via the DIAGNOSTIC chain
+# (Metric -approximates-> Property -isPropertyOf-> Process -presentIn->
+# Organ). It missed the independent THERAPEUTIC chain inference.ttl also
+# declares as a class-level bridge (Device -administers-> TherapeuticModality
+# -targetsProcess-> Process -presentIn-> Organ, fired from the device's
+# TYPE alone, no Metric needed) -- and, on the strength of that omission,
+# I originally told you organ:Kidneys was "empirically dead in this corpus"
+# because mda:administers is never ASSERTED in kg_generated.ttl. That was
+# wrong: it's ENTAILED, for every archetype on one of five device classes
+# (Dialysator, ExtracorporealMembraneOxygenator, Incubator, Thermoregulator,
+# MechanicalVentilator -- see inference.ttl's Technical axioms section),
+# with or without a Metric.
+#
+# Corrected result: organ:Kidneys now appears (1 alarm -- "PRISMAFLEX -
+# Algemene systeemfout", a Dialysator archetype with no Metric at all,
+# reached purely via administers/RenalReplacementTherapy/RenalFiltration/
+# presentIn), and organ:Lungs grows from 20 to 31 alarms -- every ventilator
+# connectivity/technical fault (e.g. "SERVOU - Volume uit blokkade",
+# "TRILOGY - 0x79") is organ-relevant via device capability even with zero
+# measurement content. organ:BloodVessels (5) and organ:Heart (3) are
+# genuinely unaffected -- no administers-bridged device targets either.
+#
+# reasoning: required
+#
+# Known incomplete, still: of the 15 distinct metrics, 3 don't reach an
+# organ via the diagnostic chain -- metric:Pulse (no approximates bridge
+# at all), metric:Humidity and metric:AirTemperature (dead-end one and two
+# hops short of an organ respectively) -- see cq_discoveries.md. None of
+# their devices (PhysiologicalMonitor) carry an administers bridge either,
+# so this correction does not rescue them.
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+
+SELECT ?organ (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
+       (COUNT(DISTINCT ?a) AS ?matchCount) WHERE {
+  ?a a mda:AlarmType ; mda:hasLabel ?label ; mda:hasMessage/mda:triggeredBy ?dev .
+  {
+    ?a mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit/mda:hasSensor/mda:sensorProducesSignal/(mda:analyzedBy/mda:producesSignal)*/mda:analyzedBy/mda:producesMetric/mda:approximates/mda:isPropertyOf/mda:presentIn ?organ .
+  } UNION {
+    ?dev mda:administers/mda:targetsProcess/mda:presentIn ?organ .
+  }
+}
+GROUP BY ?organ
+ORDER BY ?organ

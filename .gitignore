@@ -1,11 +1,11 @@
 /.DS_Store
 *.csv
 *.xlsx
-**/Methodology/*
-**/analysis/*
 *.png
 **/documentation/*
 *.md
-*.py
 __pycache__/
 .vscode/
+**.docx**
+/CODE**
+/PREVIOUS_STALE**

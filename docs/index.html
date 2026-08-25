@@ -1,54 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Device Alarm</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medical Device Alarm</title>
+<style>
+  :root{--ground:#f4f7f7;--surface:#fff;--ink:#16231f;--muted:#61726d;--faint:#89a09a;
+        --line:#e2ebe8;--accent:#0c7d76;--accent-soft:#e4f2f0;--shadow:0 1px 2px rgba(0,0,0,.05)}
+  @media (prefers-color-scheme:dark){:root{--ground:#0d1412;--surface:#15201d;--ink:#e9f1ee;
+        --muted:#93a8a2;--faint:#6b807a;--line:#23322e;--accent:#37b9ae;--accent-soft:#143430;--shadow:none}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);line-height:1.55;
+       font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:900px;margin:0 auto;padding:clamp(1.6rem,4vw,3rem) clamp(1.2rem,4vw,2rem) 3rem}
+  .eyebrow{font-family:ui-monospace,Menlo,monospace;font-size:.7rem;letter-spacing:.16em;
+           text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{margin:.35rem 0 .8rem;font-size:clamp(1.8rem,4vw,2.5rem);line-height:1.1;
+     letter-spacing:-.02em;font-weight:680}
+  .lede{margin:0 0 2rem;color:var(--muted);max-width:64ch;font-size:1rem}
+  h2{font-size:.72rem;text-transform:uppercase;letter-spacing:.11em;color:var(--faint);
+     font-weight:600;margin:0 0 .8rem}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem}
+  a.card{display:block;background:var(--surface);border:1px solid var(--line);border-radius:14px;
+         padding:1.1rem 1.2rem;box-shadow:var(--shadow);text-decoration:none;color:inherit;
+         transition:border-color .15s,transform .15s}
+  a.card:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .card-title{display:flex;align-items:center;gap:.5rem;font-size:1.05rem;font-weight:650;
+              letter-spacing:-.01em}
+  .card-title .arrow{margin-left:auto;color:var(--faint);font-size:1rem}
+  a.card:hover .arrow{color:var(--accent)}
+  .card p{margin:.45rem 0 0;font-size:.87rem;color:var(--muted)}
+  .pill{display:inline-block;font-size:.62rem;text-transform:uppercase;letter-spacing:.05em;
+        padding:.1rem .5rem;border-radius:99px;background:var(--accent-soft);color:var(--accent);
+        font-weight:700;margin-left:.5rem}
+  .pill.muted{background:var(--line);color:var(--faint)}
+  section{margin-top:2.2rem}
+  footer{margin-top:2.6rem;padding-top:1.2rem;border-top:1px solid var(--line);
+         font-size:.82rem;color:var(--faint)}
+  footer p{margin:.35rem 0}
+  footer code{font-family:ui-monospace,Menlo,monospace;background:rgba(120,120,120,.14);
+              padding:.05rem .3rem;border-radius:4px;font-size:.85em}
+  footer a{color:var(--muted)}
+</style>
 </head>
+<body><div class="wrap">
 
-<body>
+  <span class="eyebrow">MDA · ontology project</span>
+  <h1>Medical Device Alarm</h1>
+  <p class="lede">
+    An ontology, a controlled vocabulary and a set of example knowledge graphs for representing
+    medical device alarms — the technical chain that produces an alarm (device, sensor, signal,
+    metric) and the clinical and therapeutic meaning it implies.
+  </p>
 
-    <h1>Medical Device Alarm (MDA)</h1>
-
-    <p>
-        The Medical Device Alarm project provides semantic resources
-        for representing and interpreting medical device alarms.
-    </p>
-
+  <section>
     <h2>Resources</h2>
+    <div class="cards">
 
-    <ul>
-        <li>
-            <a href="ontology/index.html">
-                Medical Device Alarm Ontology
-            </a>
-        </li>
+      <a class="card" href="ontology/index.html">
+        <div class="card-title">Ontology <span class="arrow">→</span></div>
+        <p>The formal model — classes and properties, with definitions, axioms and a class
+           hierarchy. Generated reference documentation.</p>
+      </a>
 
-        <li>
-            <a href="vocab/index.html">
-                Medical Device Alarm Vocabulary
-            </a>
-        </li>
+      <a class="card" href="vocab/index.html">
+        <div class="card-title">Vocabulary <span class="arrow">→</span></div>
+        <p>The controlled terms that fill the model in — manufacturers, device types,
+           physiological properties, organs — browsable and searchable, in English and Dutch.</p>
+      </a>
 
-        <li>
-            <a href="data/">
-                Instance Data
-            </a>
-        </li>
+      <a class="card" href="graph/">
+        <div class="card-title">Knowledge Graphs <span class="arrow">→</span></div>
+        <p>One alarm type at a time: every fact a reasoner derives from it, as a diagram and a
+           fact table, with a searchable ontology glossary alongside it.</p>
+      </a>
 
-        <li>
-            <a href="graph/">
-                Knowledge Graphs
-            </a>
-        </li>
-    </ul>
+      <a class="card" href="data/">
+        <div class="card-title">Data <span class="arrow">→</span><span class="pill muted">In progress</span></div>
+        <p>Raw exportable files for the vocabulary and example knowledge graphs. Not published
+           yet.</p>
+      </a>
 
-    <h2>Persistent identifiers</h2>
+    </div>
+  </section>
 
-    <p>
-        Persistent identifiers for these resources are provided through
-        <a href="https://w3id.org/mda/ontology#">https://w3id.org/mda/</a>.
-    </p>
+  <footer>
+    <p>Persistent identifiers for these resources resolve through <code>w3id.org/mda/</code> —
+       e.g. <a href="https://w3id.org/mda/ontology#">w3id.org/mda/ontology#</a> for the ontology
+       itself.</p>
+    <p><a href="https://github.com/RubenZoodsma/Alarm-Ontologie">Source on GitHub</a></p>
+  </footer>
 
-</body>
+</div></body>
 </html>
