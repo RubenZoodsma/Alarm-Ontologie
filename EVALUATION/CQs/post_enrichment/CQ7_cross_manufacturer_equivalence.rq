@@ -1,4 +1,7 @@
 # question: Can alarms from different manufacturers using different labels be recognized as conveying the same meaning?
+# rationale: Matches alarms on their entire asserted technical and clinical
+#   signature (excluding priority) to test whether differently labelled
+#   alarms from different manufacturers convey identical meaning.
 #
 # Strictest of the seven: two alarms "convey the same meaning" here only if
 # their ENTIRE asserted content matches -- category, and every node's

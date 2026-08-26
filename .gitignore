@@ -6,6 +6,5 @@
 *.md
 __pycache__/
 .vscode/
-**.docx**
 /CODE**
 /PREVIOUS_STALE**

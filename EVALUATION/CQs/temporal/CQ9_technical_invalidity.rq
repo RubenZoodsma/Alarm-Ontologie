@@ -1,4 +1,8 @@
 # question: Which clinical alarms coincide with a technical condition that reduces their validity?
+# rationale: Tests, using a structural proxy (a signal-quality fault
+#   co-located with a metric from the same signal), whether a coinciding
+#   technical condition can be recognised as reducing a clinical alarm's
+#   validity.
 #
 # Distinct from CAT1's a/b rules (deferred -- those need temporal ordering
 # and asystole-specific reasoning, not yet built). This CQ only asks

@@ -1,4 +1,7 @@
 # question: Which alarms coincide with other alarms that already convey equivalent clinical or technical information?
+# rationale: Tests two independent notions of equivalence between coinciding
+#   alarms: a shared diagnostic property, or a shared technical pathway
+#   produced by distinct sensors.
 #
 # CORRECTED after a self-audit (see ../cq_discoveries.md's "Audit
 # correction" entry, and the CQ3/CQ4/CQ5 corrections it triggered) -- the

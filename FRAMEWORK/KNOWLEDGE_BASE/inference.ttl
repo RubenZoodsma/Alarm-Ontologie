@@ -57,41 +57,46 @@
 
 ####################################################################
 # Technical axioms
-#################################################################### 
+####################################################################
 
-# administers is a categorical fact of the device TYPE, not the manufacturer
-# variant, so it belongs on the broad class where the taxonomy already
-# supports it (vocab.ttl: every manufacturer leaf is rdfs:subClassOf its
-# broad class, which is itself rdfs:subClassOf mda:Device). One restriction
-# here covers every current leaf via subClassOf transitivity + cls-hv1, and
-# any future leaf added under the same broad class in vocab.ttl inherits it
-# for free — no edit needed here.
+# Device-category -> modality mapping. PLAIN REFERENCE TRIPLES, NOT
+# RESTRICTIONS — deliberately, same reasoning and same shape as the
+# FunctionalUnit recipes below (see that section's header): a plain triple
+# on a punned concept (device:X used here as an individual) does not
+# propagate to any per-alarm instance under OWL-RL, so this sits inertly as
+# pure lookup data. build_framework.py's build_administers_map() reads it
+# directly (mda:administers as subject_objects, no reasoning) and its
+# consumer, recipe_override(), mints every alarm on one of these device
+# categories its own individuated TherapeuticModality blank node and a real
+# per-row mda:administers edge — using the CSV's own TherapeuticModality
+# value when given, this mapping otherwise.
 #
-# Policy: every device broad class attaches administers to itself, even
-# with a single manufacturer leaf today (e.g. Dialysator/Dialysator_PrismaFlex
-# below) — the mapping is a fact about the device category, not evidence that
-# needs multiple manufacturers to confirm. A single leaf still benefits: any
-# second manufacturer added later under the same broad class in vocab.ttl
-# inherits the axiom for free instead of needing its own copy here.
-device:Dialysator rdfs:subClassOf
-    [ a owl:Restriction ; owl:onProperty mda:administers ;
-      owl:hasValue therapeuticModality:RenalReplacementTherapy ] .
-
-device:ExtracorporealMembraneOxygenator rdfs:subClassOf
-    [ a owl:Restriction ; owl:onProperty mda:administers ;
-      owl:hasValue therapeuticModality:ExtraCorporeal_Membran_Oxygenation ] .
-
-device:Incubator rdfs:subClassOf
-    [ a owl:Restriction ; owl:onProperty mda:administers ;
-      owl:hasValue therapeuticModality:ThermoRegulationTherapy ] .
-
-device:Thermoregulator rdfs:subClassOf
-    [ a owl:Restriction ; owl:onProperty mda:administers ;
-      owl:hasValue therapeuticModality:ThermoRegulationTherapy ] .
-
-device:MechanicalVentilator rdfs:subClassOf
-    [ a owl:Restriction ; owl:onProperty mda:administers ;
-      owl:hasValue therapeuticModality:VentilationTherapy ] .
+# This used to be five class-level owl:Restriction axioms instead (device:X
+# rdfs:subClassOf [administers hasValue Y]) — changed to plain triples for
+# the same reason the FunctionalUnit recipes are plain triples and not
+# restrictions, but with a sharper consequence here: mda:TherapeuticModality
+# switched from Referential to Individuated (see its nodeKind comment in
+# ontology.ttl) specifically so mda:hasTherapyDeliveryQuality (Therapy
+# delivery quality axioms, below) could be derived per-alarm. With the
+# class-level restriction still in place, a device would end up
+# administering BOTH the shared concept (via cls-hv1 on its type) AND its
+# own per-alarm modality node (via the per-row edge) at the same time — and
+# hasOperationState/hasTherapyDeliveryQuality's owl:propertyChainAxiom
+# (ontology.ttl) propagates through EVERY administers edge it finds,
+# without discriminating, contaminating the shared concept with per-alarm
+# state that isn't true for every other alarm referencing it. Confirmed:
+# hasOperationState had this exact leak silently, from before this file's
+# TherapeuticModality individuation work — device:MechanicalVentilator-typed
+# alarms with Malfunction/Disconnected states were entailing that value onto
+# the shared therapeuticModality:VentilationTherapy concept globally. Plain
+# triples read only by build_framework.py, never loaded into a reasoner's
+# entailment path the restriction shape was, remove that second target
+# entirely — nothing is left to leak through, for either property.
+device:Dialysator                       mda:administers therapeuticModality:RenalReplacementTherapy .
+device:ExtracorporealMembraneOxygenator mda:administers therapeuticModality:ExtraCorporeal_Membran_Oxygenation .
+device:Incubator                        mda:administers therapeuticModality:ThermoRegulationTherapy .
+device:Thermoregulator                  mda:administers therapeuticModality:ThermoRegulationTherapy .
+device:MechanicalVentilator             mda:administers therapeuticModality:VentilationTherapy .
 
 
 # The broad device categories are mutually exclusive — a device miscategorised
@@ -99,9 +104,8 @@ device:MechanicalVentilator rdfs:subClassOf
 # not a legitimate multiple-inheritance case, so a reasoner should be able to
 # catch it as an inconsistency. Hand-authored here, not in ontology.ttl,
 # because these are vocabulary-level concepts (2_READOUT-generated, punned as
-# classes via rdfs:subClassOf mda:Device), the same reason the administers
-# restrictions above live here rather than in the TBox. Deliberately only the
-# BROAD categories, not the auto-generated manufacturer-precoordinated leaves
+# classes via rdfs:subClassOf mda:Device). Deliberately only the BROAD
+# categories, not the auto-generated manufacturer-precoordinated leaves
 # under them (e.g. device:PhysiologicalMonitor_Philips) — those are generated
 # per (broad class, manufacturer) pair by build_framework.py's precoordinate(),
 # so disjointness among sibling leaves would need to come from the generator
@@ -172,10 +176,9 @@ device:MechanicalVentilator rdfs:subClassOf
 # see mda:Sensor's own comment), so nothing here is blocking on it.
 ####################################################################
 
+## Trace: Pulse oximetry sensing pathway
 functionalUnit:FU_PulseOximetry mda:hasSensor sensor:PulseOximeter .
-
 sensor:PulseOximeter mda:sensorProducesSignal signal:PPG_waveform .
-
 signal:PPG_waveform mda:analyzedBy signalAnalysis:SpO2Analysis, signalAnalysis:PulseAnalysis,
                                     signalAnalysis:PulseFlowIndexAnalysis .
 
@@ -183,9 +186,8 @@ signalAnalysis:SpO2Analysis           mda:producesMetric metric:SpO2 .
 signalAnalysis:PulseAnalysis          mda:producesMetric metric:Pulse .
 signalAnalysis:PulseFlowIndexAnalysis mda:producesMetric metric:PulseFlowIndex .
 
-
+## Trace: Invasive blood pressure sensing pathway
 functionalUnit:FU_InvasiveBloodPressure mda:hasSensor sensor:ABP_transducer, sensor:VenousPressureTransducer .
-
 sensor:ABP_transducer mda:sensorProducesSignal signal:ABP_waveform .
 signal:ABP_waveform    mda:analyzedBy signalAnalysis:ArterialPressureAnalysis .
 signalAnalysis:ArterialPressureAnalysis mda:producesMetric metric:ABP .
@@ -194,14 +196,14 @@ sensor:VenousPressureTransducer mda:sensorProducesSignal signal:Pressure_wavefor
 signal:Pressure_waveform         mda:analyzedBy signalAnalysis:VenousPressureAnalysis .
 signalAnalysis:VenousPressureAnalysis mda:producesMetric metric:VenousPressure .
 
-
+## Trace: Airway pressure sensing pathway
 functionalUnit:FU_AirwayPressure mda:hasSensor sensor:AW_transducer .
 
 sensor:AW_transducer mda:sensorProducesSignal signal:AirwayPressure_waveform .
 signal:AirwayPressure_waveform mda:analyzedBy signalAnalysis:AirwayPressureAnalysis .
 signalAnalysis:AirwayPressureAnalysis mda:producesMetric metric:AirwayPressure .
 
-
+## Trace: Ventilation volume sensing pathway
 functionalUnit:FU_PneumoTachograph mda:hasSensor sensor:PneumoTachograph .
 
 sensor:PneumoTachograph mda:sensorProducesSignal signal:AirwayFlow_waveform .
@@ -211,21 +213,21 @@ signal:AirwayFlow_waveform mda:analyzedBy signalAnalysis:VolumeAnalysis, signalA
 signalAnalysis:VolumeAnalysis          mda:producesMetric metric:Volume .
 signalAnalysis:RespiratoryRateAnalysis mda:producesMetric metric:RespiratoryRate .
 
-
-functionalUnit:FU_Capnography mda:hasSensor sensor:Capnometer .
+## Trace : Capnography sensing pathway
+functionalUnit:FU_Capnograph mda:hasSensor sensor:Capnometer .
 
 sensor:Capnometer mda:sensorProducesSignal signal:Capnogram_waveform .
 signal:Capnogram_waveform mda:analyzedBy signalAnalysis:CO2Analysis .
 signalAnalysis:CO2Analysis mda:producesMetric metric:CO2 .
 
-
+## Trace: Humidity sensing pathway
 functionalUnit:FU_Humidity mda:hasSensor sensor:Humidity_sensor .
 
 sensor:Humidity_sensor mda:sensorProducesSignal signal:Humidity_signal .
 signal:Humidity_signal mda:analyzedBy signalAnalysis:HumidityAnalysis .
 signalAnalysis:HumidityAnalysis mda:producesMetric metric:Humidity .
 
-
+## Trace: Temperature sensing pathway
 functionalUnit:FU_Temperature mda:hasSensor sensor:Temperature_sensor .
 
 sensor:Temperature_sensor mda:sensorProducesSignal signal:Temp_signal .
@@ -329,6 +331,60 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
 
 
 ####################################################################
+# Therapy delivery quality axioms
+#
+# mda:hasTherapyDeliveryQuality is distinct from the Signal quality axioms
+# above (measurement reliability) and from hasOperationState (device
+# connectivity/functioning): it is about whether the THERAPY itself is being
+# delivered without compromise. Device can be fully connected and working
+# while what it delivers to the patient is nonetheless impaired — a
+# ventilator circuit leak is exactly this: the device isn't malfunctioning,
+# but the ventilation it delivers is compromised.
+#
+# Same walk-forward-from-the-individuated-node shape as the Signal quality
+# axioms, just rooted one class higher: Device -hasFunctionalUnit->
+# FunctionalUnit -hasSensor-> Sensor -sensorProducesSignal-> Signal
+# -analyzedBy-> SignalAnalysis -producesMetric-> Metric, one nested
+# owl:someValuesFrom per hop. Fires only on THIS alarm's own per-alarm blank
+# nodes (Device/FunctionalUnit/Sensor/Signal/SignalAnalysis are all
+# Individuated/structural — see ontology.ttl's nodeKind comments), same
+# scoping guarantee as above.
+#
+# The device-level conclusion here is then carried on to whichever
+# TherapeuticModality this same device administers, declaratively, via
+# hasTherapyDeliveryQuality's own owl:propertyChainAxiom in ontology.ttl
+# ([inverseOf administers] . hasTherapyDeliveryQuality) — that chain needs a
+# real per-alarm mda:administers edge to exist to fire across, which is
+# exactly why mda:TherapeuticModality was switched from Referential to
+# Individuated (see its nodeKind comment) and why build_framework.py no
+# longer suppresses that edge. No procedural per-metric special case needed
+# in build_framework.py at all: this is fully reasoner-derived, the same way
+# every other clinical/technical axiom in this file is.
+####################################################################
+
+[ a owl:Class ; owl:intersectionOf ( mda:Device
+    [ a owl:Restriction ; owl:onProperty mda:hasFunctionalUnit ;
+      owl:someValuesFrom
+        [ a owl:Class ; owl:intersectionOf ( mda:FunctionalUnit
+            [ a owl:Restriction ; owl:onProperty mda:hasSensor ;
+              owl:someValuesFrom
+                [ a owl:Class ; owl:intersectionOf ( mda:Sensor
+                    [ a owl:Restriction ; owl:onProperty mda:sensorProducesSignal ;
+                      owl:someValuesFrom
+                        [ a owl:Class ; owl:intersectionOf ( mda:Signal
+                            [ a owl:Restriction ; owl:onProperty mda:analyzedBy ;
+                              owl:someValuesFrom
+                                [ a owl:Class ; owl:intersectionOf ( mda:SignalAnalysis
+                                    [ a owl:Restriction ; owl:onProperty mda:producesMetric ;
+                                      owl:someValuesFrom
+                                        [ a owl:Class ; owl:intersectionOf ( metric:VentilationCircuitLeak
+                                            [ a owl:Restriction ; owl:onProperty mda:hasRate ;
+                                              owl:hasValue metricRate:Increased ] ) ] ] ) ] ] ) ] ] ) ] ] ) ] ] )
+] rdfs:subClassOf
+  [ a owl:Restriction ; owl:onProperty mda:hasTherapyDeliveryQuality ; owl:hasValue qualitystate:Impaired ] .
+
+
+####################################################################
 # Clinical axioms
 ####################################################################
 
@@ -337,15 +393,17 @@ metric:SpO2 rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:SaO2 ] .
 
-metric:ABP rdfs:subClassOf
+# ABP and the literal-named "ArterialPressure" metric were two CSV names for
+# the same reading — unified in p75_annotated.csv into ArterialBloodPressure,
+# so the separate ABP/ArterialPressure bridges (and the ABP_Mean comment
+# explaining its inherited-not-duplicated bridge) are retired with them;
+# ArterialBloodPressure_Mean inherits from the base below the same way.
+metric:ArterialBloodPressure rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:ArterialPressure ] .
 
-metric:ABP_Mean rdfs:subClassOf
-    [ a owl:Restriction ; owl:onProperty mda:approximates ;
-      owl:hasValue physiologicalProperty:ArterialPressure ] .
-
-metric:VenousPressure rdfs:subClassOf
+# Renamed from VenousPressure in the same unification pass.
+metric:VenousBloodPressure rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:VenousPressure ] .
 
@@ -357,31 +415,69 @@ metric:HeartRate rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:ElectricalHeartRate ] .
 
-metric:CO2_EndTidal rdfs:subClassOf
+# Renamed from Pulse in p75_annotated.csv's unification pass — the metric
+# now shares its local name with physiologicalProperty:PulseRate (distinct
+# namespace, same pattern already used by Temperature/Humidity/
+# RespirationVolume below). Still the mechanically-sensed (PPG) beat rate,
+# distinct from HeartRate's electrical (ECG) origin — approximates its own
+# PulseRate property rather than reusing ElectricalHeartRate, even though
+# both trace back to the same cardiac contraction.
+metric:PulseRate rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:PulseRate ] .
+
+# CO2Analysis (FunctionalUnit recipes above) produces plain metric:CO2, not
+# a phase-refined concept — bridge the base, not a hand-typed "CO2_EndTidal"
+# that nothing in the pipeline actually instantiates (its suffix doesn't
+# even match a real metricPhase: notation — only EndExpiratory/Mean/Minute/
+# Tidal exist). Found while auditing this file: the previous axiom bridged
+# a concept the KG generator can never produce, so a CO2 alarm would have
+# dead-ended with no approximates link at all.
+metric:CO2 rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:PaCO2 ] .
 
-metric:RespiratoryRate rdfs:subClassOf
+# Renamed from RespiratoryRate — p75_annotated.csv had briefly carried both
+# spellings (a genuine typo on one Datex-Ohmeda row, not a distinct
+# concept); fixed at the source, so only this one name remains.
+metric:RespirationRate rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:RespirationRate ] .
 
-metric:Volume_Minute rdfs:subClassOf
+# Renamed from Volume — now shares its local name with
+# physiologicalProperty:RespirationVolume (see PulseRate's comment above for
+# the pattern). Unphased RespirationVolume bridges here;
+# RespirationVolume_Minute/_Tidal need no bridge of their own — same
+# reasoning as ABP_Mean had, they inherit this via generated
+# rdfs:subClassOf metric:RespirationVolume.
+metric:RespirationVolume rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:RespirationVolume ] .
 
-metric:Volume_Tidal rdfs:subClassOf
-    [ a owl:Restriction ; owl:onProperty mda:approximates ;
-      owl:hasValue physiologicalProperty:RespirationVolume ] .
+# VentilationCircuitLeak (unified from the former separate Leak/
+# VentilationLeak names) is deliberately left unbridged, same as before the
+# rename: a circuit/mask-integrity fact, not a patient physiological
+# measurement.
 
+# AirwayPressure_EndExpiratory needs no bridge of its own for the same
+# reason — inherits this via generated rdfs:subClassOf metric:AirwayPressure.
 metric:AirwayPressure rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:RespirationPressure ] .
 
-metric:AirwayPressure_EndExpiratory rdfs:subClassOf
+# CPAP is a delivered airway pressure, same property as AirwayPressure.
+metric:CPAP rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:RespirationPressure ] .
 
 metric:AirTemperature rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:Temperature ] .
+
+# Patient body temperature (PhysiologicalMonitor), as opposed to
+# AirTemperature's ambient/incubator reading — both approximate the same
+# Temperature property today; a future model may want to split them.
+metric:Temperature rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:Temperature ] .
 
@@ -414,9 +510,32 @@ physiologicalProperty:RespirationRate    mda:isPropertyOf physiologicalProcess:P
 physiologicalProperty:RespirationVolume  mda:isPropertyOf physiologicalProcess:PulmonaryVentilation .
 physiologicalProperty:RespirationPressure mda:isPropertyOf physiologicalProcess:PulmonaryVentilation .
 physiologicalProperty:ElectricalHeartRate mda:isPropertyOf physiologicalProcess:CardiacContraction .
-physiologicalProperty:ArterialPressure   mda:isPropertyOf physiologicalProcess:VascularCompliance .
-physiologicalProperty:VenousPressure     mda:isPropertyOf physiologicalProcess:VascularCompliance .
-physiologicalProperty:TissuePerfusion    mda:isPropertyOf physiologicalProcess:VascularCompliance .
+physiologicalProperty:PulseRate          mda:isPropertyOf physiologicalProcess:CardiacContraction .
+
+# SystemicCirculation split into its arterial and venous sides — distinct
+# processes with distinct drivers (arteriolar tone/resistance downstream of
+# cardiac ejection, vs. venous tone/capacitance and circulating volume
+# upstream of cardiac filling), so properties route to whichever side
+# actually produces them rather than a single undifferentiated bucket.
+#
+# ArterialPressure: jointly produced by the heart's pumping action AND
+# arterial resistance/tone (MAP ≈ cardiac output × systemic vascular
+# resistance) — isPropertyOf is not functional, so both genuinely apply.
+physiologicalProperty:ArterialPressure   mda:isPropertyOf physiologicalProcess:CardiacContraction,
+                                                           physiologicalProcess:ArterialCirculation .
+
+# VenousPressure: deliberately NOT tied to CardiacContraction — it's
+# governed by venous tone/capacitance and circulating volume, not the
+# contraction event itself. That coupling is real but far looser than the
+# arterial side's, so asserting it here would overclaim.
+physiologicalProperty:VenousPressure     mda:isPropertyOf physiologicalProcess:VenousCirculation .
+
+# TissuePerfusion: its only approximating metric (PulseFlowIndex) is
+# derived from PPG pulsatility — an arterial-side phenomenon — not the
+# textbook arterial-minus-venous perfusion-pressure definition, so it
+# routes to ArterialCirculation only, not VenousCirculation too.
+physiologicalProperty:TissuePerfusion    mda:isPropertyOf physiologicalProcess:CardiacContraction,
+                                                           physiologicalProcess:ArterialCirculation .
 physiologicalProperty:Temperature        mda:isPropertyOf physiologicalProcess:ThermoRegulation .
 
 # ── process → organ ──────────────────────────────────────────────
@@ -424,7 +543,15 @@ physiologicalProcess:PulmonaryVentilation  mda:presentIn organ:Lungs .
 physiologicalProcess:PulmonaryOxygenation  mda:presentIn organ:Lungs .
 physiologicalProcess:PulmonaryDiffusion    mda:presentIn organ:Lungs .
 physiologicalProcess:CardiacContraction    mda:presentIn organ:Heart .
-physiologicalProcess:VascularCompliance    mda:presentIn organ:BloodVessels .
+# ArterialCirculation/VenousCirculation replace the former single
+# SystemicCirculation bucket (itself a replacement for VascularCompliance —
+# a category error, compliance is a vessel-wall parameter/property, not a
+# process). No existing organ concept distinguishes arteries from veins, so
+# both sides still presentIn the same organ:BloodVessels — only the process
+# split, not the organ granularity; introducing separate Artery/Vein organs
+# wasn't asked for and nothing here needs that resolution yet.
+physiologicalProcess:ArterialCirculation   mda:presentIn organ:BloodVessels .
+physiologicalProcess:VenousCirculation     mda:presentIn organ:BloodVessels .
 # RenalFiltration/Kidneys/Renal are newly introduced here, for the
 # RenalReplacementTherapy tail above — no prior concept in this vocabulary
 # covered renal physiology at all. Worth a domain-expert check on naming.

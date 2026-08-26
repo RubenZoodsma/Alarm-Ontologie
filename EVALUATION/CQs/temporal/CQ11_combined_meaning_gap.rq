@@ -1,4 +1,8 @@
 # question: Can coinciding alarms be identified whom together form a different clinical meaning than their independent meaning, and for which no individual alarm exists?
+# rationale: Diagnostic query, not a confirmatory answer -- the ontology has
+#   no mechanism for deriving a combined clinical meaning from coinciding
+#   alarms, so this reports every case where alarms resolving to more than
+#   one process coincide, without deriving a third concept.
 #
 # NOT an answer to CQ11 -- see ../cq_discoveries.md's CQ11 entry: the
 # framework has no vocabulary or inference mechanism for an emergent,

@@ -1,4 +1,7 @@
 # question: Can alarms with different technical pathways provide information about the same clinical pathway?
+# rationale: Filters CQ4's shared-process groups to those reached via more
+#   than one distinct technical pathway, identifying genuine multi-modal
+#   convergence rather than repeated measurements along a single pathway.
 #
 # Scope note (added after a self-audit corrected CQ4's numbers, see
 # ../cq_discoveries.md's "Audit correction" entry): this query is
@@ -57,26 +60,46 @@
 # metric:Pulse and metric:Humidity never reach a process and are silently
 # absent below.
 #
-# Performance note: this query joins three separately concept-typed nodes
-# over the full OWL-RL closure and is measurably heavier than the other
-# CQs under a naive (non-indexed) SPARQL engine -- correct, but slow to
-# evaluate with rdflib+owlrl specifically. A real triplestore, or the
-# two-stage execution strategy used to verify this query, should not have
-# this problem.
+# Performance note (fixed): the original form joined three separately
+# concept-typed nodes via `?class a skos:Concept` -- a graph join, not a
+# value check. Under the OWL-RL closure, `?node a ?class` with ?class
+# unbound returns every entailed superclass of that node (all the way to
+# owl:Thing), so each of the three `a ?class . ?class a skos:Concept` pairs
+# forces rdflib's non-reordering nested-loop join to materialise and filter
+# a much larger candidate set than the one real vocabulary type per node --
+# chained three times plus the Kleene-star hop in between, this measured
+# 30+ minutes with rdflib+owlrl on this corpus, against ~5s for the OWL-RL
+# closure itself and <0.1s for every other CQ.
+#
+# Fixed by two semantics-preserving changes:
+#   1. `?class a skos:Concept` (a graph join) replaced with
+#      `FILTER(STRSTARTS(STR(?class), "https://w3id.org/mda/vocab/"))` (a
+#      value check on the already-bound IRI, no further graph lookup).
+#      Every skos:Concept in this framework lives under the vocab:
+#      namespace and nothing else does (checked against
+#      vocab_generated.ttl), so this is equivalent to the original guard.
+#   2. The `approximates/isPropertyOf` hop -- the one genuinely entailment-
+#      dependent step, and the only one that can fail (metric:Pulse has no
+#      bridge at all, see ../cq_discoveries.md) -- moved immediately after
+#      ?metricNode is bound, before the three type filters, so alarms that
+#      can never reach a ?process are dropped before any class-typing work
+#      runs on them.
+# Re-verified after the fix against the same two independent cross-checks
+# already documented above: identical row/pathway counts, now well under a
+# second.
 
 PREFIX mda: <https://w3id.org/mda/ontology#>
-PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
 SELECT ?process (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
        (COUNT(DISTINCT ?a) AS ?matchCount) (COUNT(DISTINCT ?pathway) AS ?distinctPathways) WHERE {
   ?a a mda:AlarmType ; mda:hasLabel ?label ;
      mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit ?fuNode .
-  ?fuNode a ?fuClass . ?fuClass a skos:Concept .
   ?fuNode mda:hasSensor ?sensorNode .
-  ?sensorNode a ?sensorClass . ?sensorClass a skos:Concept .
   ?sensorNode mda:sensorProducesSignal/(mda:analyzedBy/mda:producesSignal)*/mda:analyzedBy/mda:producesMetric ?metricNode .
-  ?metricNode a ?metricClass . ?metricClass a skos:Concept .
   ?metricNode mda:approximates/mda:isPropertyOf ?process .
+  ?fuNode a ?fuClass . FILTER(STRSTARTS(STR(?fuClass), "https://w3id.org/mda/vocab/"))
+  ?sensorNode a ?sensorClass . FILTER(STRSTARTS(STR(?sensorClass), "https://w3id.org/mda/vocab/"))
+  ?metricNode a ?metricClass . FILTER(STRSTARTS(STR(?metricClass), "https://w3id.org/mda/vocab/"))
   BIND(CONCAT(STR(?fuClass),"|",STR(?sensorClass),"|",STR(?metricClass)) AS ?pathway)
 }
 GROUP BY ?process

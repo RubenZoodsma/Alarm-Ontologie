@@ -1,4 +1,7 @@
 # question: Are there alarms containing just technical information, without encoded clinical implications?
+# rationale: Tests whether an alarm crosses neither the diagnostic nor the
+#   therapeutic route (see CQ3/CQ4), i.e. conveys no clinical implication
+#   whatsoever.
 #
 # CORRECTED after a self-audit (see cq_discoveries.md's "audit correction"
 # entry) -- the first version of this query only checked whether an alarm's
@@ -28,8 +31,10 @@
 #     approximates axiom at all -- currently only metric:Pulse (see
 #     cq_discoveries.md).
 #
-# reasoning: required (the administers bridge, like approximates, only
-# fires under the OWL-RL closure -- cls-hv1)
+# The administers bridge, like approximates, only fires under the OWL-RL
+# closure (cls-hv1).
+#
+# reasoning: required
 
 PREFIX mda: <https://w3id.org/mda/ontology#>
 

@@ -1,4 +1,8 @@
 # question: If a clinician is concerned about a patient's organ, which alarms would be relevant?
+# rationale: Combines a diagnostic route (metric -> physiological property ->
+#   process -> organ) and a therapeutic route (administered therapy ->
+#   targeted process -> organ) to find every organ an alarm is relevant to,
+#   including alarms with no measurement at all.
 #
 # CORRECTED after a self-audit (see cq_discoveries.md's "audit correction"
 # entry) -- the first version only reached Organ via the DIAGNOSTIC chain

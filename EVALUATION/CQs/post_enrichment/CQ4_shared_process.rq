@@ -1,4 +1,7 @@
 # question: If a clinician encounters a clinical alarm, which other alarms provide information about the same underlying process?
+# rationale: Combines the same two routes as CQ3 to group alarms by the
+#   physiological process they relate to, whether diagnostically (via a
+#   measurement) or therapeutically (via the device's function).
 #
 # CORRECTED after a self-audit (see cq_discoveries.md's "audit correction"
 # entry) -- the first version only reached PhysiologicalProcess via the

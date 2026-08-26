@@ -1,4 +1,7 @@
 # question: Which alarms provide information from a same sensing pathway?
+# rationale: Groups alarms that terminate at the same technical pathway
+#   (functional unit, sensor, signal and metric type), identifying alarms
+#   that originate from an identical sensing pathway.
 #
 # A "sensing pathway" is the actual TRACE an alarm's technical chain follows,
 # from FunctionalUnit (the top-level sensing concept) down to wherever it

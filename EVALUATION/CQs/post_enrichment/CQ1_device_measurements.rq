@@ -1,4 +1,7 @@
 # question: What is the distinct set of measurements a device can produce?
+# rationale: Walks each device's technical pathway (device -> functional unit
+#   -> sensor -> signal -> metric) to list the distinct measurements it can
+#   produce, grouped by device class.
 #
 # Purely technical: walks the device's measurement pathway as annotated in
 # kg_generated.ttl (Device -> FunctionalUnit -> Sensor -> Signal ->

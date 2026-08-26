@@ -20,6 +20,9 @@
 @prefix sensor: <https://w3id.org/mda/vocab/sensor/> .
 @prefix signal: <https://w3id.org/mda/vocab/signal/> .
 
+scaffold:Component_AirwayCircuit a component:AirwayCircuit ;
+    rdfs:label "Airway Circuit (type catalogue entry)"@en .
+
 scaffold:Component_ConnectionUnit a component:ConnectionUnit ;
     rdfs:label "Connection Unit (type catalogue entry)"@en .
 
@@ -29,23 +32,17 @@ scaffold:Component_MattrasHeater a component:MattrasHeater ;
 scaffold:Component_PowerUnit a component:PowerUnit ;
     rdfs:label "Power Unit (type catalogue entry)"@en .
 
+scaffold:Component_PressureReleaseValve a component:PressureReleaseValve ;
+    rdfs:label "Pressure Release Valve (type catalogue entry)"@en .
+
 scaffold:Component_RadiantHeater a component:RadiantHeater ;
     rdfs:label "Radiant Heater (type catalogue entry)"@en .
-
-scaffold:Component_System a component:System ;
-    rdfs:label "System (type catalogue entry)"@en .
 
 scaffold:Device_CardiacMonitor a device:CardiacMonitor ;
     rdfs:label "Cardiac Monitor (type catalogue entry)"@en .
 
 scaffold:Device_CardiacMonitor_Hemosphere_Edwards a device:CardiacMonitor_Hemosphere_Edwards ;
     rdfs:label "Cardiac Monitor_Hemosphere_Edwards (type catalogue entry)"@en .
-
-scaffold:Device_Dialysator a device:Dialysator ;
-    rdfs:label "Dialysator (type catalogue entry)"@en .
-
-scaffold:Device_Dialysator_PrismaFlex_Baxter a device:Dialysator_PrismaFlex_Baxter ;
-    rdfs:label "Dialysator_Prisma Flex_Baxter (type catalogue entry)"@en .
 
 scaffold:Device_ExtracorporealMembraneOxygenator a device:ExtracorporealMembraneOxygenator ;
     rdfs:label "Extracorporeal Membrane Oxygenator (type catalogue entry)"@en .
@@ -98,9 +95,6 @@ scaffold:Device_Thermoregulator_Criticool_BelmontMedicalTechnologies a device:Th
 scaffold:FunctionalUnit_FU_AirwayPressure a functional-unit:FU_AirwayPressure ;
     rdfs:label "FU_Airway Pressure (type catalogue entry)"@en .
 
-scaffold:FunctionalUnit_FU_Capnography a functional-unit:FU_Capnography ;
-    rdfs:label "FU_Capnography (type catalogue entry)"@en .
-
 scaffold:FunctionalUnit_FU_ElectroCardiography a functional-unit:FU_ElectroCardiography ;
     rdfs:label "FU_Electro Cardiography (type catalogue entry)"@en .
 
@@ -124,9 +118,6 @@ scaffold:Sensor_ABP_transducer a sensor:ABP_transducer ;
 
 scaffold:Sensor_AW_transducer a sensor:AW_transducer ;
     rdfs:label "AW_transducer (type catalogue entry)"@en .
-
-scaffold:Sensor_Capnometer a sensor:Capnometer ;
-    rdfs:label "Capnometer (type catalogue entry)"@en .
 
 scaffold:Sensor_ECG_lead_Resp a sensor:ECG_lead_Resp ;
     rdfs:label "ECG_lead_Resp (type catalogue entry)"@en .
@@ -157,9 +148,6 @@ scaffold:Signal_AirwayFlow_waveform a signal:AirwayFlow_waveform ;
 
 scaffold:Signal_AirwayPressure_waveform a signal:AirwayPressure_waveform ;
     rdfs:label "Airway Pressure_waveform (type catalogue entry)"@en .
-
-scaffold:Signal_Capnogram_waveform a signal:Capnogram_waveform ;
-    rdfs:label "Capnogram_waveform (type catalogue entry)"@en .
 
 scaffold:Signal_ECG_signal a signal:ECG_signal ;
     rdfs:label "ECG_signal (type catalogue entry)"@en .

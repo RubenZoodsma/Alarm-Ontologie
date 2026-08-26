@@ -703,6 +703,33 @@ mda:administers a owl:ObjectProperty ;
     rdfs:domain         mda:Device ;
     rdfs:range          mda:TherapeuticModality .
 
+# Distinct from mda:hasQualityState (Signal-scoped: measurement reliability)
+# and mda:hasOperationState (device connectivity/functioning): this is about
+# whether the THERAPY being delivered to the patient is compromised, which is
+# a claim neither of those makes. A device can be fully connected and
+# functioning (hasOperationState fine) while what it delivers is nonetheless
+# impaired (e.g. a ventilator circuit leak reducing effective delivered
+# volume) — conflating that into hasOperationState would be wrong (see
+# inference.ttl's Therapy delivery quality axioms).
+#
+# Domain is a flat union of Device and TherapeuticModality, deliberately not
+# a narrower "TherapeuticDevice" marker class — mirrors hasOperationState's
+# own domain union above. Scoping to devices that actually administer
+# something is already enforced by the propertyChainAxiom's antecedent (only
+# fires where mda:administers actually holds) and by the class-restriction
+# axiom's own structural condition, not by a type-level gate; a
+# PhysiologicalMonitor never satisfies either and so never gets a value,
+# without needing to be excluded from the domain declaration.
+mda:hasTherapyDeliveryQuality a owl:ObjectProperty ;
+    dcterms:identifier  "hasTherapyDeliveryQuality" ;
+    rdfs:label          "has therapy delivery quality"@en,
+                        "heeft therapietoedieningskwaliteit"@nl ;
+    rdfs:comment        "Whether the therapeutic intervention itself is being delivered without compromise, as distinct from the device's own connectivity/functioning (hasOperationState) or a signal's measurement reliability (hasQualityState)."@en,
+                        "Of de therapeutische interventie zelf zonder compromis wordt toegediend, als onderscheiden van de eigen connectiviteit/werking van het apparaat (hasOperationState) of de meetbetrouwbaarheid van een signaal (hasQualityState)."@nl ;
+    rdfs:domain         [ owl:unionOf ( mda:Device mda:TherapeuticModality ) ] ;
+    rdfs:range          skos:Concept ;
+    owl:propertyChainAxiom  ( [ owl:inverseOf mda:administers ] mda:hasTherapyDeliveryQuality ) .
+
 
 #################################################################
 # Vocabulary scheme bindings
@@ -809,6 +836,15 @@ mda:Component     mda:nodeKind  mda:Individuated .
 mda:FunctionalUnit mda:nodeKind mda:Individuated .
 mda:Patient       mda:nodeKind  mda:Individuated .
 mda:Metric        mda:nodeKind  mda:Stateful .
+
+# Individuated, not the Referential default: a therapeutic modality is a
+# concrete treatment episode particular to the alarm's own device, not a
+# universal shared across every alarm that happens to name the same modality
+# concept (e.g. VentilationTherapy) — needed so mda:hasTherapyDeliveryQuality
+# can be derived per-alarm via the propertyChainAxiom below, rather than
+# landing on one globally-shared concept for every alarm that ever
+# administers it.
+mda:TherapeuticModality mda:nodeKind mda:Individuated .
 
 # mda:SignalAnalysis deliberately has NO nodeKind entry, so it falls through
 # to "structural" the same way mda:AlarmMessage does (a per-alarm blank node
