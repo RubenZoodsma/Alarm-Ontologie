@@ -1,20 +1,19 @@
-name: Rebuild published docs (graph + ontology)
+name: Rebuild published docs (graph + ontology + vocab)
 
-# Regenerates the two docs/ pages that DO have a known, reproducible build
-# process — docs/graph/ (CODE/evaluation_qa/archetype_report.py) and
-# docs/ontology/ (WIDOCO). docs/vocab/ deliberately is NOT touched here: it
-# has no discoverable generator anywhere in this repo, so there is nothing
-# for this workflow to re-run for it (see the "Publishing docs" note in
-# CODE/evaluation_qa/archetype_report.py's own docstring for how docs/graph/
-# is meant to be regenerated).
+# Regenerates the three docs/ pages that have a known, reproducible build
+# process — docs/graph/ (CODE/evaluation_qa/archetype_report.py),
+# docs/ontology/ (WIDOCO), and docs/vocab/ (CODE/evaluation_qa/
+# vocab_browser.py, which only replaces that page's embedded data blob and
+# leaves its hand-built HTML/CSS/JS shell untouched). docs/data/ is not
+# covered — it has never had any content or generator.
 #
 # Opens a PR instead of pushing straight to main, deliberately: WIDOCO's
 # exact flags here are a best-effort match to the site's existing structure,
 # not a recovered original config (none was ever committed), so its output
 # should be spot-checked once before it goes live rather than trusted blind.
-# archetype_report.py's output is fully deterministic and low-risk by
-# comparison, but both are routed through the same review step for
-# simplicity and consistency.
+# archetype_report.py's and vocab_browser.py's output is fully deterministic
+# and low-risk by comparison, but all three are routed through the same
+# review step for simplicity and consistency.
 
 on:
   push:
@@ -22,6 +21,7 @@ on:
     paths:
       - 'FRAMEWORK/**/*.ttl'
       - 'CODE/evaluation_qa/archetype_report.py'
+      - 'CODE/evaluation_qa/vocab_browser.py'
       - 'CODE/shared/graph_view.py'
       - 'CODE/shared/ontology_tree.py'
   workflow_dispatch: {}
@@ -45,6 +45,9 @@ jobs:
       - name: Regenerate docs/graph (Knowledge Graphs page)
         run: python3 CODE/evaluation_qa/archetype_report.py --no-open
 
+      - name: Regenerate docs/vocab (Vocabulary Browser data)
+        run: python3 CODE/evaluation_qa/vocab_browser.py
+
       - name: Regenerate docs/ontology (WIDOCO)
         run: |
           mkdir -p docs/ontology
@@ -60,12 +63,14 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           commit-message: "docs: regenerate published site from current ontology"
-          title: "Auto: regenerate docs/graph and docs/ontology"
+          title: "Auto: regenerate docs/graph, docs/vocab, and docs/ontology"
           body: |
             Automated regeneration triggered by a change under `FRAMEWORK/**/*.ttl`
-            (or the report script itself).
+            (or one of the report scripts themselves).
 
             - `docs/graph/` rebuilt via `CODE/evaluation_qa/archetype_report.py`
+            - `docs/vocab/` data blob refreshed via `CODE/evaluation_qa/vocab_browser.py`
+              (its HTML/CSS/JS shell is untouched — only the embedded dataset changes)
             - `docs/ontology/` rebuilt via WIDOCO
 
             Please review the diff before merging — WIDOCO's flags here are a
@@ -73,8 +78,5 @@ jobs:
             original config, so its output is worth spot-checking rather than
             trusting blind. No pull request is opened if regeneration produced
             no changes.
-
-            `docs/vocab/` is intentionally untouched by this workflow — it has
-            no known generator to re-run.
           branch: auto/regenerate-docs
           delete-branch: true
