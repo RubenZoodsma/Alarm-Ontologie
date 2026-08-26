@@ -184,6 +184,14 @@ mda:triggeredBy a owl:ObjectProperty, owl:FunctionalProperty ;
     rdfs:domain         mda:AlarmMessage ;
     rdfs:range          mda:Device .
 
+mda:triggeredByStructure a owl:ObjectProperty ;
+    dcterms:identifier  "triggeredByStructure" ;
+    rdfs:label          "triggered by structure"@en,
+                        "veroorzaakt door structuur"@nl ;
+    rdfs:comment        "Relates an alarm message to the specific technical particular (Sensor/Signal/SignalAnalysis/Metric — whichever this alarm's own archetype terminates at) its own reading concerns. Deliberately unranged: Component-family and Signal-family classes below Device are structurally disjoint in this ontology (see mda:SignalAnalysis's own comment), so no single rdfs:range is correct for every alarm's terminus, and nothing downstream needs range-based type inference here — consumers walk further via already-typed properties (hasSensor, analyzedBy, producesMetric, ...). NOT owl:FunctionalProperty: a small number of archetypes populate more than one parallel branch (e.g. FU_InvasiveBloodPressure's two sensors), so a message may legitimately anchor to more than one terminus. NOT owl:InverseFunctionalProperty: two different alarms on the same pathway (e.g. a measurement and a coinciding signal-quality fault) must be able to anchor to the SAME particular without being entailed owl:sameAs — this is exactly the coincidence CQ9/CQ10 test for."@en,
+                        "Koppelt een alarmbericht aan het specifieke technische deeltje (Sensor/Signaal/Signaalanalyse/Metriek — wat dit alarm zelf als eindpunt heeft) waarop de eigen meting betrekking heeft. Doelbewust zonder bereik: de Component-familie en de Signaal-familie zijn in deze ontologie structureel gescheiden, dus geen enkel rdfs:range dekt elk mogelijk eindpunt. Niet owl:FunctionalProperty: sommige archetypes bevolken meer dan één parallelle tak. Niet owl:InverseFunctionalProperty: twee verschillende alarmen op hetzelfde pad moeten naar hetzelfde deeltje kunnen verwijzen zonder als owl:sameAs te worden afgeleid."@nl ;
+    rdfs:domain         mda:AlarmMessage .
+
 mda:hasCategory a owl:ObjectProperty ;
     dcterms:identifier  "hasCategory" ;
     rdfs:label          "has category"@en,

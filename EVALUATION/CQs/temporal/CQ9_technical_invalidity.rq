@@ -15,9 +15,59 @@
 # co-location as standing in for "reduces validity", which is an inference
 # the query makes, not something the ontology asserts.
 #
+# "Clinical alarm" operationalised precisely, not read off the question's
+# natural-language wording: an alarm with mda:hasCategory
+# alarmcat:Physiological (see ontology.ttl's hasCategory declaration,
+# range skos:Concept over alarmcat:Scheme).
+#
+# CORRECTED after a false-positive was found and reproduced (a synthetic
+# 3-alarm case: PHILIPSMONITOR - SpO2 laag + PHILIPSMONITOR - HF hoog +
+# PHILIPSMONITOR - Storing in SpO2, same device) -- an earlier version of
+# this query only checked (a) SOME alarmcat:Physiological alarm is present
+# in the tick, and (b) SOMEWHERE in the tick, a rate-bearing metric's
+# analysis sits behind a non-Good-quality signal. These were two
+# independent existence checks with no join between them, so ANY
+# physiological alarm present got credited with ANY quality fault present
+# in the same tick, regardless of pathway -- "HF hoog" (ECG pathway) was
+# wrongly flagged as invalidated by a fault on the unrelated SpO2 pathway.
+# Not caught by the fabricated cq9_pos/cq9_neg pair, which only ever has
+# exactly one physiological + one technical alarm per patient.
+#
+# Fixed by joining through mda:triggeredByStructure (ontology.ttl,
+# op_knowledge.py's alarm_message()/ground_chain()): every alarm message
+# now carries an edge to the specific technical particular (Sensor/Signal/
+# SignalAnalysis/Metric) that alarm's OWN archetype terminates at --
+# ground_chain's "leaves" (see its own docstring). ?clinicalAlarm's own
+# message's anchor is bound as ?myMetric, and ?analysis/?signal are derived
+# FROM it (mda:producesMetric's inverse, then mda:analyzedBy's inverse),
+# not independently matched elsewhere in the tick. This structurally rules
+# out crediting one alarm's pathway with another, unrelated alarm's fault --
+# on any device, not just the same-device case the false positive was found
+# on. Deliberately requires ?clinicalAlarm's own anchor to BE a Metric
+# (?myMetric mda:hasRate ?rate): a physiological alarm whose own archetype
+# never resolves to a measurement has no validity to reduce in the first
+# place, so excluding it here is the correct scope, not a gap.
+#
+# Deferred, not added here: mda:hasTherapyDeliveryQuality (added to
+# ontology.ttl/inference.ttl in a separate ontology update) is a second,
+# REAL (non-proxy) technical-invalidity mechanism: a device-wide "what's
+# being delivered is compromised" fact, entailed via a propertyChainAxiom
+# from a metric:VentilationCircuitLeak reading, not merely a structural
+# co-location proxy the way hasQualityState is used above. It is not yet
+# tagged mda:situational true in ontology.ttl, though, so its entailments
+# never reach this snapshot export -- confirmed empirically: fires
+# correctly in the full OWL-RL closure (owlrl.DeductiveClosure), absent
+# from clinical_context()'s output (0 triples vs. 1 in the untagged
+# _extract_all view, tested against a synthetic ABox). Adding a UNION
+# branch for it now would validate against an empty result for the wrong
+# reason -- an ontology-level tagging fix, plus a new fabricated
+# positive/negative pair, needed first. Blocked on that decision, not on
+# this query.
+#
 # reasoning: required (runs against kg_inference.trig-style snapshot output
-# from the operational layer -- CODE/evaluation_poc/op_knowledge.py -- which
-# already reasons per tick; this query performs no further OWL-RL itself)
+# from the operational layer -- CODE/evaluation_poc/core/op_knowledge.py --
+# which already reasons per tick; this query performs no further OWL-RL
+# itself)
 #
 # Graph-shape gotcha, worth documenting since it cost real debugging time:
 # a snapshot named graph's OWN metadata (snap:forPatient, snap:atTime,
@@ -36,28 +86,42 @@
 # ...), are CONDITION, scoped to the specific tick's named graph. A query
 # spanning from Signal to Metric must therefore split the property path at
 # that boundary: the analyzedBy hop unscoped (default graph), the
-# producesMetric hop inside GRAPH ?g.
+# producesMetric hop inside GRAPH ?g. mda:triggeredByStructure itself is
+# CONDITION-scoped too (asserted as part of the alarm message, which is
+# only present in the tick's named graph while that alarm is active), so it
+# stays inside GRAPH ?g alongside producesMetric.
 #
 # Validated against a fabricated positive/negative pair (DATA/CQ_evaluation/
 # events_data.csv, patients cq9_pos/cq9_neg) before finalising: cq9_pos
 # (PHILIPSMONITOR - SpO2 laag + PHILIPSMONITOR - Storing in SpO2, same
-# device, same PulseOximeter pathway) fires; cq9_neg (the same SpO2 alarm
-# coinciding with an unrelated CARDIOHELP connection-loss alarm on a
-# different device/pathway) correctly does not.
+# device, same PulseOximeter pathway) fires, with ?clinicalLabel correctly
+# resolving to "PHILIPSMONITOR - SpO2 laag" only; cq9_neg (the same SpO2
+# alarm coinciding with an unrelated CARDIOHELP connection-loss alarm on a
+# different device/pathway) correctly still does not fire. Re-validated
+# against the synthetic 3-alarm counter-example that exposed the original
+# bug: "HF hoog" no longer appears as ?clinicalLabel, only "SpO2 laag"
+# does.
 
 PREFIX mda: <https://w3id.org/mda/ontology#>
 PREFIX snap: <https://w3id.org/mda/snapshot/>
 PREFIX qualitystate: <https://w3id.org/mda/vocab/quality-state/>
+PREFIX alarmcat: <https://w3id.org/mda/vocab/alarm-category/>
 
-SELECT ?patient ?g (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms) WHERE {
+SELECT ?patient ?g ?clinicalLabel
+       (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms) WHERE {
   ?g snap:forPatient ?patient .
   GRAPH ?g {
+    ?clinicalAlarm mda:hasLabel ?clinicalLabel ;
+                    mda:hasCategory alarmcat:Physiological ;
+                    mda:hasMessage ?clinicalMsg .
+    ?clinicalMsg mda:triggeredByStructure ?myMetric .
+    ?myMetric mda:hasRate ?rate .
     ?alarm mda:hasLabel ?label .
-    ?analysis mda:producesMetric/mda:hasRate ?rate .
     ?signal mda:hasQualityState ?quality .
     FILTER(?quality != qualitystate:Good)
+    ?analysis mda:producesMetric ?myMetric .
   }
   ?signal mda:analyzedBy ?analysis .
 }
-GROUP BY ?patient ?g
+GROUP BY ?patient ?g ?clinicalLabel
 ORDER BY ?patient

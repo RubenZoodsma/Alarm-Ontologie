@@ -21,10 +21,31 @@
 # is asserted per TYPE, not per instance) -- confirmed on the validated
 # positive case below, which fires on both branches simultaneously. The
 # technical branch only adds genuinely NEW coverage for a metric with no
-# approximates bridge at all (currently only metric:Pulse -- see
-# ../cq_discoveries.md) -- not currently exercised by any two-device case
-# in this corpus, but the branch is structurally necessary regardless of
-# whether today's corpus happens to trigger it standalone.
+# approximates bridge at all -- currently metric:VentilationCircuitLeak
+# (deliberately left unbridged in inference.ttl: "a circuit/mask-integrity
+# fact, not a patient physiological measurement"). Two ventilator leak
+# archetypes on different manufacturers/sensors -- "HULBUS - Leak too
+# high" and "SERVOU - Te veel lekkage" -- would exercise this branch
+# standalone (already confirmed as a cross-manufacturer match by CQ7's
+# asserted-signature check); not yet added as a fabricated temporal pair
+# here, so still not currently exercised by any two-device case run
+# through this query, but the branch remains structurally necessary
+# regardless of whether today's fabricated corpus happens to trigger it.
+#
+# metric:Pulse -- the prior example of an unbridged metric, when this
+# query was first written -- no longer qualifies: it was renamed to
+# metric:PulseRate and given a real approximates bridge to
+# physiologicalProperty:PulseRate (-> isPropertyOf
+# physiologicalProcess:CardiacContraction) in the same ontology update
+# that introduced VentilationCircuitLeak. That and the other metric
+# renames from the same update (metric:ABP -> ArterialBloodPressure,
+# metric:VenousPressure -> VenousBloodPressure, metric:RespiratoryRate ->
+# RespirationRate, metric:Volume_Minute/metric:Volume_Tidal ->
+# RespirationVolume, metric:CO2_EndTidal -> CO2) require no change to this
+# query: both UNION branches bind ?matchValue/?fuType/?sensorType/
+# ?signalType/?metricConcept generically off whatever concept is actually
+# asserted or entailed, never a hardcoded metric IRI, so a renamed concept
+# is picked up automatically.
 #
 # reasoning: required (same graph-shape notes as CQ9: snap:forPatient sits
 # outside GRAPH ?g; the FunctionalUnit/Sensor/Signal structural chain is
