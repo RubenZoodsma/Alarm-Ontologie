@@ -1,0 +1,80 @@
+name: Rebuild published docs (graph + ontology)
+
+# Regenerates the two docs/ pages that DO have a known, reproducible build
+# process — docs/graph/ (CODE/evaluation_qa/archetype_report.py) and
+# docs/ontology/ (WIDOCO). docs/vocab/ deliberately is NOT touched here: it
+# has no discoverable generator anywhere in this repo, so there is nothing
+# for this workflow to re-run for it (see the "Publishing docs" note in
+# CODE/evaluation_qa/archetype_report.py's own docstring for how docs/graph/
+# is meant to be regenerated).
+#
+# Opens a PR instead of pushing straight to main, deliberately: WIDOCO's
+# exact flags here are a best-effort match to the site's existing structure,
+# not a recovered original config (none was ever committed), so its output
+# should be spot-checked once before it goes live rather than trusted blind.
+# archetype_report.py's output is fully deterministic and low-risk by
+# comparison, but both are routed through the same review step for
+# simplicity and consistency.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'FRAMEWORK/**/*.ttl'
+      - 'CODE/evaluation_qa/archetype_report.py'
+      - 'CODE/shared/graph_view.py'
+      - 'CODE/shared/ontology_tree.py'
+  workflow_dispatch: {}
+
+jobs:
+  rebuild-docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install rdflib owlrl
+
+      - name: Regenerate docs/graph (Knowledge Graphs page)
+        run: python3 CODE/evaluation_qa/archetype_report.py --no-open
+
+      - name: Regenerate docs/ontology (WIDOCO)
+        run: |
+          mkdir -p docs/ontology
+          docker run --rm \
+            -v "${{ github.workspace }}:/usr/local/widoco/in" \
+            -v "${{ github.workspace }}/docs:/usr/local/widoco/out" \
+            dgarijo/widoco \
+            -ontFile /usr/local/widoco/in/FRAMEWORK/ONTOLOGY/ontology.ttl \
+            -outFolder /usr/local/widoco/out/ontology \
+            -rewriteAll -webVowl -getOntologyMetadata -lang en
+
+      - name: Open PR with regenerated docs
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "docs: regenerate published site from current ontology"
+          title: "Auto: regenerate docs/graph and docs/ontology"
+          body: |
+            Automated regeneration triggered by a change under `FRAMEWORK/**/*.ttl`
+            (or the report script itself).
+
+            - `docs/graph/` rebuilt via `CODE/evaluation_qa/archetype_report.py`
+            - `docs/ontology/` rebuilt via WIDOCO
+
+            Please review the diff before merging — WIDOCO's flags here are a
+            best-effort match to the existing site structure, not a recovered
+            original config, so its output is worth spot-checking rather than
+            trusting blind. No pull request is opened if regeneration produced
+            no changes.
+
+            `docs/vocab/` is intentionally untouched by this workflow — it has
+            no known generator to re-run.
+          branch: auto/regenerate-docs
+          delete-branch: true
