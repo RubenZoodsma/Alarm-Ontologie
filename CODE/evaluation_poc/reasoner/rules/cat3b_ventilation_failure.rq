@@ -1,0 +1,86 @@
+# CAT3b: If a mechanical ventilator is currently reporting anything other
+# than its normal operating state, and the patient's pulmonary ventilation
+# is currently reduced, they collectively convey a ventilation failure.
+#
+# Two conditions of genuinely different KINDS, not just two different
+# individuals (contrast cat3a_cardiorespiratory_arrest.rq, where both sides
+# are Process-anchored impliesClinicalEvent tags). The device side is a raw
+# technical fact — matched directly, the same way cat1a/cat2a match
+# hasQualityState/hasCategory without a clinical-event detour: there is no
+# physiological state to interpret on a device fault, so impliesClinicalEvent
+# (domain mda:PhysiologicalProcess) does not apply to it. The physiological
+# side reuses the ReducedPulmonaryFunction tag already entailed by
+# clinicalEvents.ttl's ReducedPulmonaryFunctionCondition — see that file's
+# header for why the two sides cannot be folded into one declarative axiom
+# (would require an unverified instance-level administers/targetsProcess
+# propagation from Device through to Process).
+#
+# mda:hasOperationState, NOT mda:hasDeviceOperationState, deliberately, even
+# though the archetype only ever asserts the latter directly. Confirmed by
+# direct trace (op_knowledge.py's Timeline), not assumed: while an alarm is
+# ACTIVE, both the raw hasDeviceOperationState triple AND its RDFS/OWL-RL-
+# promoted mda:hasOperationState superproperty triple are present in the
+# query graph (entailed_situation's own reasoning pass produces the
+# promotion). But mda:persistsPostAlarm is tagged on mda:hasOperationState
+# ONLY (ontology.ttl's "Post-alarm persistence classification" section) —
+# op_knowledge.py's persisting_predicates()/_extract_states() literally
+# iterate that exact predicate, nothing else — so once the fault alarm
+# itself ends, ONLY the promoted mda:hasOperationState survives into the
+# post-alarm window (Timeline.situation_at's persistence loop merges in
+# _persisted_for's output, which is hasOperationState-only by construction);
+# the specific mda:hasDeviceOperationState triple is gone the instant the
+# alarm itself ends, the same way mda:impliesClinicalEvent is gone the instant
+# ITS alarm ends, just for a different reason (situational tagging there,
+# vs. simply never being in persisting_predicates here). A rule matching
+# hasDeviceOperationState specifically would therefore only ever catch the
+# device fault while its OWN alarm is still active — silently unable to
+# exercise the 15-minute persistence window mda:hasOperationState is
+# specifically tagged persistsPostAlarm to provide, exactly the gap this
+# rule needs (the ventilator fault and the reduced-pulmonary-function alarm
+# are two independent alarms, not simultaneous by construction). Confirmed
+# empirically: cat3e below (fault ends, second alarm arrives 10 minutes
+# later, still within the 15-min window) did not fire until this was fixed.
+#
+# opstate != Enabled, not a specific fault value list (Disconnected,
+# Malfunction, ...): deliberately broad — "anything wrong with the
+# ventilator" per the concept's own definition, not a fixed enumeration
+# that would need updating every time a new fault archetype surfaces.
+# Enabled is the sole baseline "working normally" value (see inference.ttl's
+# Sensor baseline operational-state axiom for the same baseline-value
+# convention applied to hasSensorOperationState); everything else —
+# Disconnected, Malfunction, Warning, Disabled — is a deviation from it.
+#
+# No ?alarm anchor, same reasoning as cat3a: this checks the merged graph —
+# background + situational + whatever the arriving alarm just contributed —
+# for genuine temporal overlap of both conditions right now, not proximity.
+# Fires on every arrival for as long as both hold; mda_poc_assessment.py's
+# minting step (mint_ventilation_failure) collapses repeat firings into one
+# ClinicalEvent per genuine episode, deduplicated on the same
+# (deviceNode, processNode) pair, the same rising-edge shape as cat3a's own
+# open_pairs tracking.
+#
+# Real corpus archetypes (see DATA/ANNOTATION/consensus/p75_annotated.csv):
+# "DATEXOHMEDACOMVENTILATOR - Patient Disconnected" (Device.OperationalState
+# Disconnected) for the device side, "MEDIBUS - MV ondergrens"
+# (RespirationVolume, Minute, Decreased) for the physiological side.
+#
+# Validated against DATA/CAT_evaluation: cat3b_pos (overlapping alarms,
+# fires), cat3b_neg (fault ends, second alarm arrives 20 minutes later —
+# past the 15-min window — does not fire), cat3d (same as cat3b_pos,
+# arrival order swapped, confirms order does not matter), cat3e (fault
+# ends, second alarm arrives 10 minutes later — inside the 15-min window —
+# fires, exercising persistence specifically, unlike cat3b_pos's direct
+# overlap) — see cat_rules_report.md.
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+PREFIX device: <https://w3id.org/mda/vocab/device/>
+PREFIX opstate: <https://w3id.org/mda/vocab/operation-state/>
+PREFIX clinicalEvent: <https://w3id.org/mda/vocab/clinical-event/>
+
+SELECT ?deviceNode ?processNode WHERE {
+  ?deviceNode a device:MechanicalVentilator ;
+              mda:hasOperationState ?state .
+  FILTER(?state != opstate:Enabled)
+
+  ?processNode mda:impliesClinicalEvent clinicalEvent:ReducedPulmonaryFunction .
+}

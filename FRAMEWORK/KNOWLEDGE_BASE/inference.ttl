@@ -37,6 +37,7 @@
 @prefix mda:        <https://w3id.org/mda/ontology#> .
 @prefix owl:        <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:       <http://www.w3.org/2004/02/skos/core#> .
 
 @prefix device:      <https://w3id.org/mda/vocab/device/> .
 @prefix component:   <https://w3id.org/mda/vocab/component/> .
@@ -403,6 +404,58 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
           owl:someValuesFrom mda:Metric ] ]
 ] rdfs:subClassOf
   [ a owl:Restriction ; owl:onProperty mda:hasSensorOperationState ; owl:hasValue opstate:Enabled ] .
+
+
+####################################################################
+# Metric monitoring axiom
+#
+# Complementary to the Sensor baseline axiom directly above, not a
+# duplicate of it: that one concludes something about the SENSOR ("this
+# pathway was functioning enough to produce a reading"); this one
+# concludes something about the METRIC itself ("this specific measurement
+# type is what was being read"). The Sensor-level fact alone cannot
+# express that distinction for a Sensor/FunctionalUnit shared by more than
+# one metric type (e.g. one ECG-derived FunctionalUnit producing both
+# HeartRate and RespirationRate) — knowing the shared pathway is Enabled
+# says nothing about which metric it was actively producing at a given
+# moment.
+#
+# Deliberately conditioned on the metric carrying an actual interpretation
+# (hasRate, hasPhase, or hasRhythm — whichever the metric's own kind uses),
+# not on mere mda:Metric typing: a bare, uninterpreted Metric node (typed
+# but reporting nothing) should not be called "Monitored". Confirmed with
+# an isolated reasoner test before writing this (a Metric with hasRate
+# entails Monitored; the same Metric typed but with no hasRate/hasPhase/
+# hasRhythm at all does not).
+#
+# opstate:Monitored is declared here, not in FRAMEWORK/VOCABULARY/seed/
+# vocab_base.ttl — deliberately. Every other opstate:* value is either a
+# CSV-driven generated stub or (for the handful seeded directly) a term
+# that exists independently of any one axiom. Monitored is neither: no CSV
+# column will ever name it, and it has no meaning apart from this axiom's
+# own conclusion. Minimal declaration only (type + scheme membership, no
+# hand-authored skos:prefLabel/definition/notation) — this is the axiom's
+# by-product, not a curated vocabulary entry.
+#
+# hasMetricOperationState needs no mda:persistsPostAlarm tag of its own —
+# see ontology.ttl's declaration comment: it is rdfs:subPropertyOf
+# mda:hasOperationState, which already carries the tag, and
+# 4_OPERATIONAL/op_knowledge.py's persisting-state extraction reads the
+# entailed general property, the same mechanism the other three
+# hasOperationState sub-properties already rely on.
+####################################################################
+
+opstate:Monitored a skos:Concept ;
+    skos:inScheme opstate:Scheme .
+
+[ a owl:Class ; owl:intersectionOf ( mda:Metric
+    [ a owl:Class ; owl:unionOf (
+        [ a owl:Restriction ; owl:onProperty mda:hasRate   ; owl:someValuesFrom owl:Thing ]
+        [ a owl:Restriction ; owl:onProperty mda:hasPhase  ; owl:someValuesFrom owl:Thing ]
+        [ a owl:Restriction ; owl:onProperty mda:hasRhythm ; owl:someValuesFrom owl:Thing ]
+      ) ] )
+] rdfs:subClassOf
+  [ a owl:Restriction ; owl:onProperty mda:hasMetricOperationState ; owl:hasValue opstate:Monitored ] .
 
 
 ####################################################################

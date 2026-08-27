@@ -1,64 +1,85 @@
-# question: Can alarms with different technical pathways provide information about the same clinical pathway?
-# rationale: Filters CQ4's shared-process groups to those reached via more
-#   than one distinct technical pathway, identifying genuine multi-modal
-#   convergence rather than repeated measurements along a single pathway.
+# question: Can alarms with different technical pathways provide information about the same clinical concept?
+# rationale: Groups alarms by ORGAN rather than physiological process --
+#   the coarser clinical concept reached via .../isPropertyOf/presentIn --
+#   then filters to organs reached via more than one distinct technical
+#   pathway, identifying genuine multi-modal convergence rather than
+#   repeated measurements along a single pathway.
 #
-# Scope note (added after a self-audit corrected CQ4's numbers, see
-# ../cq_discoveries.md's "Audit correction" entry): this query is
-# deliberately narrower than CQ4's now-broader "shares a process by either
-# the diagnostic OR the therapeutic chain" definition. CQ6 asks about
-# MEASUREMENT convergence specifically -- different technical pathways
-# independently arriving at the same clinical target -- so it only ever
-# counts alarms with an actual FunctionalUnit/Sensor/Metric signature.
-# Alarms that reach a process purely via the therapeutic bridge (device
-# TYPE administers a modality, no Metric at all) have no technical pathway
-# to compare in the first place and are correctly out of scope here, not
-# an oversight carried over from before CQ4 was corrected. This is why
-# CQ6's own numbers below don't match CQ4's corrected, larger group sizes
-# -- the two queries are answering different questions.
+# Rescoped from process-level to organ-level (see git history for the
+# process-level version and its now-superseded VascularCompliance/
+# PulmonaryVentilation numbers, which do not carry over: organ pools
+# alarms across every process presentIn it, so its group sizes and
+# pathway counts are not comparable to the process-level query's).
 #
-# Filters CQ4's shared-process groups down to genuine multi-modal
-# convergence: a process only qualifies here if the alarms reaching it do
-# so through at least two DISTINCT technical pathways (the (FunctionalUnit,
-# Sensor, Metric) signature established in CQ2), not merely because the
-# same measurement recurs across several alarms at different priorities.
-# Two of CQ4's five shared-process groups pass this stricter bar:
-#   - physiologicalProcess:VascularCompliance -- 4 distinct pathways
-#     (ABP/ABP_Mean via ABP_transducer, VenousPressure via a separate
-#     transducer, PulseFlowIndex via the pulse oximeter entirely) across
-#     5 alarms.
-#   - physiologicalProcess:PulmonaryVentilation -- 5 distinct pathways
-#     (RespiratoryRate/Volume_Minute/Volume_Tidal all via the
-#     PneumoTachograph sensor, AirwayPressure via a separate transducer)
-#     across 15 alarms.
-# The other three CQ4 groups (CardiacContraction, PulmonaryOxygenation,
-# ThermoRegulation) are excluded here: each resolves through exactly ONE
-# technical pathway, just repeated across several alarms at different
-# priorities/thresholds -- real co-occurrence, but not cross-pathway
-# convergence, which is what this question specifically asks.
+# Scope note (carried over from the process-level version, still applies
+# after a self-audit corrected CQ4's numbers, see ../cq_discoveries.md's
+# "Audit correction" entry): this query is deliberately narrower than
+# CQ4's now-broader "shares a process by either the diagnostic OR the
+# therapeutic chain" definition. CQ6 asks about MEASUREMENT convergence
+# specifically -- different technical pathways independently arriving at
+# the same clinical target -- so it only ever counts alarms with an
+# actual FunctionalUnit/Sensor/Metric signature. Alarms that reach an
+# organ purely via the therapeutic bridge (device TYPE administers a
+# modality, no Metric at all) have no technical pathway to compare in
+# the first place and are correctly out of scope here.
+#
+# An organ only qualifies here if the alarms reaching it do so through at
+# least two DISTINCT technical pathways (the (FunctionalUnit, Sensor,
+# Metric) signature established in CQ2), not merely because the same
+# measurement recurs across several alarms at different priorities, and
+# not merely because two different processes under the same organ each
+# resolve through their own single pathway.
+#
+# One organ passes this bar in the current corpus: organ:Lungs, via 3
+# distinct pathways across 10 alarms --
+#   - FU_AirwayPressure/AW_transducer/AirwayPressure (5 alarms: peak
+#     airway pressure, from GE Healthcare's Datex-Ohmeda, Getinge's
+#     Servo-U, and Loewenstein Medical's Hulbus ventilators)
+#   - FU_AirwayPressure/AW_transducer/AirwayPressure_EndExpiratory
+#     (1 alarm, Getinge's "SERVOU - PEEP laag" -- also counted in the
+#     pathway above, its blueprint carries both metric nodes)
+#   - FU_PulseOximetry/PulseOximeter/SpO2 (4 alarms, from Philips and
+#     Draeger physiological monitors)
+# This is the organ-level analogue of the process-level query's former
+# PulmonaryVentilation result, now genuinely multi-modal: it combines a
+# ventilator-side pressure pathway with an independent pulse-oximetry
+# pathway on the same organ, rather than two metric variants of one
+# sensor. No other organ reaches this bar in the current corpus: Heart
+# and BloodVessels each resolve through exactly 1 technical pathway (1
+# matching alarm apiece), and Kidneys does not appear in this query's
+# diagnostic-chain pattern at all -- per CQ3, it is reached only via the
+# therapeutic bridge (device administers a modality, no Metric), which
+# has no technical pathway to compare in the first place.
 #
 # ?fuClass/?sensorClass/?metricClass are each guarded with "a skos:Concept"
 # -- required correctness, not stylistic: without it, `?node a ?class`
 # against the OWL-RL closure returns every entailed superclass/anonymous
 # restriction-class membership for that node (all the way to owl:Thing),
 # not just its one real vocabulary type, which silently explodes
-# ?distinctPathways into nonsense. Verified against two independent
-# implementations before finalising this single-query form: a two-stage
-# version (process-resolution and pathway-signature computed as separate
-# queries, joined in Python) and a hand-derived cross-check from CQ1/CQ2/
-# CQ4's already-established per-metric technical associations. Both agree
-# exactly with the numbers above. A namespace-prefix filter was tried as a
-# faster alternative to the skos:Concept join and rejected: it let entailed
-# BROADER metric types through alongside the correct asserted one (e.g. a
-# CO2_EndTidal instance is also entailed into the generic metric:CO2 used
-# elsewhere in inference.ttl's technical axioms), silently double-counting
-# a single alarm as having two pathways.
+# ?distinctPathways into nonsense. The two-stage cross-check and
+# hand-derived verification described below were run against the
+# process-level version of this query, before the organ rescope above;
+# they have not yet been independently re-run against the current
+# organ-level numbers, though the guard logic itself is unchanged. A
+# namespace-prefix filter was tried as a faster alternative to the
+# skos:Concept join and rejected: it let entailed BROADER metric types
+# through alongside the correct asserted one (e.g. a CO2_EndTidal
+# instance is also entailed into the generic metric:CO2 used elsewhere
+# in inference.ttl's technical axioms), silently double-counting a
+# single alarm as having two pathways. Verified (at the process level)
+# against two independent implementations before finalising this
+# single-query form: a two-stage version (process-resolution and
+# pathway-signature computed as separate queries, joined in Python) and
+# a hand-derived cross-check from CQ1/CQ2/CQ4's already-established
+# per-metric technical associations. Both agreed exactly with the
+# process-level numbers this query produced before the organ rescope.
 #
 # reasoning: required
 #
 # Same known-incomplete chain as CQ3/CQ4 (see ../cq_discoveries.md):
-# metric:Pulse and metric:Humidity never reach a process and are silently
-# absent below.
+# metric:Pulse and metric:Humidity never reach a physiological property
+# with an isPropertyOf bridge, so they never reach an organ either, and
+# are silently absent below.
 #
 # Performance note (fixed): the original form joined three separately
 # concept-typed nodes via `?class a skos:Concept` -- a graph join, not a
@@ -90,18 +111,18 @@
 
 PREFIX mda: <https://w3id.org/mda/ontology#>
 
-SELECT ?process (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
+SELECT ?organ (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
        (COUNT(DISTINCT ?a) AS ?matchCount) (COUNT(DISTINCT ?pathway) AS ?distinctPathways) WHERE {
   ?a a mda:AlarmType ; mda:hasLabel ?label ;
      mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit ?fuNode .
   ?fuNode mda:hasSensor ?sensorNode .
   ?sensorNode mda:sensorProducesSignal/(mda:analyzedBy/mda:producesSignal)*/mda:analyzedBy/mda:producesMetric ?metricNode .
-  ?metricNode mda:approximates/mda:isPropertyOf ?process .
+  ?metricNode mda:approximates/mda:isPropertyOf/mda:presentIn ?organ .
   ?fuNode a ?fuClass . FILTER(STRSTARTS(STR(?fuClass), "https://w3id.org/mda/vocab/"))
   ?sensorNode a ?sensorClass . FILTER(STRSTARTS(STR(?sensorClass), "https://w3id.org/mda/vocab/"))
   ?metricNode a ?metricClass . FILTER(STRSTARTS(STR(?metricClass), "https://w3id.org/mda/vocab/"))
   BIND(CONCAT(STR(?fuClass),"|",STR(?sensorClass),"|",STR(?metricClass)) AS ?pathway)
 }
-GROUP BY ?process
+GROUP BY ?organ
 HAVING (COUNT(DISTINCT ?pathway) > 1)
 ORDER BY DESC(?distinctPathways)

@@ -1559,3 +1559,29 @@ alarmtype:TrilogyNetspanningAfwezig_Medium a mda:AlarmType ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
+metric:AirwayPressure_EndExpiratory mda:approximates physiologicalProperty:RespirationPressure .
+
+metric:Humidity mda:approximates physiologicalProperty:Humidity .
+
+metric:PulseFlowIndex mda:approximates physiologicalProperty:TissuePerfusion .
+
+metric:AirTemperature mda:approximates physiologicalProperty:Temperature .
+
+metric:ArterialBloodPressure mda:approximates physiologicalProperty:ArterialPressure .
+
+metric:VenousBloodPressure mda:approximates physiologicalProperty:VenousPressure .
+
+metric:ArterialBloodPressure_Mean mda:approximates physiologicalProperty:ArterialPressure .
+
+metric:RespirationVolume_Tidal mda:approximates physiologicalProperty:RespirationVolume .
+
+metric:SpO2 mda:approximates physiologicalProperty:SaO2 .
+
+metric:AirwayPressure mda:approximates physiologicalProperty:RespirationPressure .
+
+metric:HeartRate mda:approximates physiologicalProperty:ElectricalHeartRate .
+
+metric:RespirationVolume_Minute mda:approximates physiologicalProperty:RespirationVolume .
+
+metric:RespirationRate mda:approximates physiologicalProperty:RespirationRate .
+

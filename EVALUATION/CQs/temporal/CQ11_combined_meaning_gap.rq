@@ -1,54 +1,112 @@
 # question: Can coinciding alarms be identified whom together form a different clinical meaning than their independent meaning, and for which no individual alarm exists?
-# rationale: Diagnostic query, not a confirmatory answer -- the ontology has
-#   no mechanism for deriving a combined clinical meaning from coinciding
-#   alarms, so this reports every case where alarms resolving to more than
-#   one process coincide, without deriving a third concept.
+# rationale: Two independently-derived mda:ClinicalEvent tags (one per
+#   PhysiologicalProcess, entailed by clinicalEvents.ttl's single-alarm
+#   axioms) coincide in the same tick's situational graph, and their
+#   SPECIFIC combination is looked up against a fixed table of recognised
+#   syndromes. The table entry supplies the emergent concept
+#   (clinicalEvent:CardioRespiratoryArrest) -- it is the query that asserts
+#   the combination means something, not the reasoner: OWL-RL cannot
+#   conditionally mint a new value from two otherwise-unconnected
+#   individuals (see clinicalEvents.ttl's header for why), so this is
+#   exactly as far as a declarative axiom can go, and a procedural SPARQL
+#   SELECT is required for the rest -- the same division of labour CAT3a's
+#   own rule (CODE/evaluation_poc/reasoner/rules/
+#   cat3a_cardiorespiratory_arrest.rq) already uses for the operational
+#   engine. This query is the tick-snapshot-style answer to the same
+#   question CAT3a answers arrival-ordered.
 #
-# NOT an answer to CQ11 -- see ../cq_discoveries.md's CQ11 entry: the
-# framework has no vocabulary or inference mechanism for an emergent,
-# combined-alarm concept, so no query can actually answer this CQ. This is
-# a DIAGNOSTIC query instead, illustrating the gap the same way the
-# manuscript's Box 3 does: for any snapshot where more than one distinct
-# PhysiologicalProcess is reachable from the alarms active at that instant,
-# report both the alarms and the processes. The absence of a third,
-# combined concept in the result IS the finding -- there is nothing here
-# to derive one from, structurally, regardless of what pattern the query
-# looks for.
+# SUPERSEDES the diagnostic version of this query (see ../cq_discoveries.md's
+# CQ11 entry for the original finding: "the framework has no vocabulary or
+# inference mechanism for an emergent, combined-alarm concept, so no query
+# can actually answer this CQ"). That gap is closed: FRAMEWORK/KNOWLEDGE_BASE/
+# clinicalEvents.ttl now provides mda:impliesClinicalEvent (PhysiologicalProcess-
+# scoped -- see that file's "RECONSIDERED AGAIN" note on why it moved off
+# Metric -- mda:situational-tagged, so it reaches this snapshot the same way
+# hasRate/hasQualityState already did) plus the two single-alarm axioms
+# (CardiacArrestCondition, RespiratoryArrestCondition) that put a
+# clinicalEvent: tag on the Process reached from a Metric whose own hasRate
+# is Absent. This query is the true answer: it reports every patient/tick
+# where two DISTINCT Process individuals each carry a recognised half of a
+# known combination, naming the combined meaning -- not just flagging that
+# unrelated processes coincide, the way the diagnostic version did.
 #
-# Deliberately does NOT try to attribute a specific alarm instance to a
-# specific process via a direct property path (e.g. alarm ->
-# hasMessage/triggeredBy/...) -- that edge is a STATIC archetype-blueprint
-# relation (kg_generated.ttl) and is never asserted on a grounded alarm
-# instance in the operational/temporal layer (confirmed empirically: zero
-# mda:triggeredBy triples exist on any alarm instance in this graph). An
-# alarm instance and the metric/process facts revealed alongside it are
-# only ever co-present in the same snapshot, never linked by a direct RDF
-# path -- the same constraint CQ9/CQ10 were built around from the start.
+# Deliberately ONE direction, not symmetric like cat3a_cardiorespiratory_
+# arrest.rq's FILTER: that rule's symmetry exists because it is evaluated
+# PER ARRIVING ALARM, and either half may be the one arriving second. This
+# query has no "arriving" alarm at all -- it inspects an already-complete
+# tick snapshot -- so binding ?cardiacProcess/?respiratoryProcess to fixed,
+# distinct roles finds every genuine coincidence exactly once, with no
+# mirror-image duplicate row to filter back out.
+#
+# Extending to a second combination (e.g. a future VentilationFailure
+# axiom pairing a therapeutic-modality fact with a pulmonary-function
+# Metric) means adding a second WHERE block/BIND pair here, not rewriting
+# this one -- the shape is a lookup, not a general-purpose N-way combiner,
+# because clinicalEvents.ttl only ever defines syndromes pairwise and by
+# name; a generic "any two distinct impliesClinicalEvent values coincide"
+# version would over-report (every combination would look equally
+# meaningful, when only specific pairs actually are).
 #
 # reasoning: required (same graph-shape notes as CQ9/CQ10: snap:forPatient
-# outside GRAPH ?g; the diagnostic chain's final two hops -- approximates,
-# isPropertyOf -- only resolve inside the tick's named graph, since Metric
-# is Stateful/condition-scoped)
+#   sits outside GRAPH ?g; mda:impliesClinicalEvent is CONDITION -- entailed
+#   per-tick onto a Stateful Process, exactly like hasRate/hasQualityState --
+#   so it is matched inside GRAPH ?g, never in the accumulated background).
+#   mda:triggeredByStructure (also CONDITION-scoped) is used only to fetch a
+#   readable alarm label for each process, not to establish the finding
+#   itself -- the core match is directly on impliesClinicalEvent, so the
+#   generic-shared-Sensor/Signal collision CAT2a's own header documents
+#   (walking alarm -> sensor -> signal -> metric across a device shared by
+#   two archetypes) does not apply here: this query never walks that path.
 #
-# Validated against the fabricated dataset (DATA/CQ_evaluation/
-# events_data.csv): fires on cq11_pos (PHILIPSMONITOR - Lage hartfreq. +
-# SERVOU - Ademfrequentie laag -> CardiacContraction, PulmonaryVentilation,
-# no third concept) as intended. Also correctly fires on cq10_neg (SpO2 laag
-# + HF hoog -> PulmonaryOxygenation, CardiacContraction) -- not cherry-picked
-# to only match the one illustrative case; any patient with two coinciding,
-# genuinely unrelated processes matches the same way.
+# BUG FOUND AND FIXED (run against DATA/CQ_evaluation/events_data.csv via
+# cq_temporal_QA.py, the same official pipeline CQ9/CQ10 use): the label
+# OPTIONALs originally joined mda:triggeredByStructure directly onto
+# ?cardiacProcess/?respiratoryProcess as if that property's target were the
+# Metric. It isn't -- impliesClinicalEvent anchors on PhysiologicalProcess (see
+# clinicalEvents.ttl's "RECONSIDERED AGAIN" note), two hops further out than
+# where triggeredByStructure lands. Every label OPTIONAL therefore silently
+# failed to bind on real, correct matches, and rdflib's GROUP_CONCAT(DISTINCT
+# ...) raises NotBoundError rather than emitting an empty string when a whole
+# group's aggregated variable is unbound -- so the query didn't just under-
+# report, it crashed the run outright once cq11_pos (see below) supplied a
+# genuine match. Fixed by extending the join one Metric->approximates->
+# isPropertyOf hop further, onto the same Process the outer pattern already
+# bound: `?cardiacAlarm mda:hasMessage/mda:triggeredByStructure/
+# mda:approximates/mda:isPropertyOf ?cardiacProcess`.
+#
+# Validated end-to-end after the fix, via cq_temporal_QA.py against
+# DATA/CQ_evaluation/events_data.csv's own cq11_pos/cq11_neg pair -- the same
+# official pipeline and fixture CQ9/CQ10 are validated from, no longer via
+# the DATA/CAT_evaluation workaround this note previously relied on:
+# cq11_pos (PHILIPSMONITOR - Asystolie + PHILIPSMONITOR - Apneu, overlapping)
+# fires exactly one row, correctly naming both alarms and
+# clinicalEvent:CardioRespiratoryArrest; cq11_neg (SERVOU - Volume uit
+# blokkade + PHILIPSMONITOR - Niet te leren ECG -- neither an Absent-rate
+# HeartRate/RespirationRate archetype) and every other patient in the
+# fixture (cq9_pos/neg, cq10_pos/neg) correctly produce zero rows.
 
 PREFIX mda: <https://w3id.org/mda/ontology#>
 PREFIX snap: <https://w3id.org/mda/snapshot/>
+PREFIX clinicalEvent: <https://w3id.org/mda/vocab/clinical-event/>
 
-SELECT ?patient (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
-       (GROUP_CONCAT(DISTINCT ?process; separator=" | ") AS ?processes) WHERE {
+SELECT ?patient ?combinedEvent
+       (GROUP_CONCAT(DISTINCT ?cardiacLabel; separator=" | ") AS ?cardiacAlarms)
+       (GROUP_CONCAT(DISTINCT ?respiratoryLabel; separator=" | ") AS ?respiratoryAlarms) WHERE {
   ?g snap:forPatient ?patient .
   GRAPH ?g {
-    ?alarm mda:hasLabel ?label .
-    ?analysis mda:producesMetric/mda:approximates/mda:isPropertyOf ?process .
+    ?cardiacProcess mda:impliesClinicalEvent clinicalEvent:CardiacArrest .
+    ?respiratoryProcess mda:impliesClinicalEvent clinicalEvent:RespiratoryArrest .
+    FILTER(?cardiacProcess != ?respiratoryProcess)
+    OPTIONAL {
+      ?cardiacAlarm mda:hasMessage/mda:triggeredByStructure/mda:approximates/mda:isPropertyOf ?cardiacProcess ;
+                     mda:hasLabel ?cardiacLabel .
+    }
+    OPTIONAL {
+      ?respiratoryAlarm mda:hasMessage/mda:triggeredByStructure/mda:approximates/mda:isPropertyOf ?respiratoryProcess ;
+                         mda:hasLabel ?respiratoryLabel .
+    }
   }
+  BIND(clinicalEvent:CardioRespiratoryArrest AS ?combinedEvent)
 }
-GROUP BY ?patient
-HAVING (COUNT(DISTINCT ?process) > 1)
+GROUP BY ?patient ?combinedEvent
 ORDER BY ?patient

@@ -1,13 +1,13 @@
 """
 vocab_browser.py — regenerates the data behind the site's published
 Vocabulary Browser page (docs/vocab/index.html) from the live
-vocab_base.ttl + vocab_generated.ttl.
+vocab_base.ttl + clinicalEvent_vocab.ttl + vocab_generated.ttl.
 
 That page is a single self-contained HTML file (same no-server pattern as
 archetype_report.py's docs/graph/ and op_visual.py) whose entire dataset is
 one JS constant, `const VOCAB = {...};`, embedded in a <script> tag. This
 script does NOT touch the page's HTML/CSS/JS shell at all — it parses the
-current vocab_base.ttl + vocab_generated.ttl into that exact JSON shape and
+current vocab_base.ttl + clinicalEvent_vocab.ttl + vocab_generated.ttl into that exact JSON shape and
 replaces only that one line, byte-for-byte identical everywhere else. There
 was no discoverable generator for this page anywhere in the repo (unlike
 docs/graph/, no script produced it before); its schema was reverse-engineered
@@ -42,6 +42,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 ROOT = SCRIPT_DIR.parent.parent   # CODE/evaluation_qa -> CODE -> repo root
 FRAMEWORK_DIR = ROOT / "FRAMEWORK"
 VOCAB_BASE = FRAMEWORK_DIR / "VOCABULARY" / "seed" / "vocab_base.ttl"
+CLINICAL_EVENT_VOCAB = FRAMEWORK_DIR / "VOCABULARY" / "seed" / "clinicalEvent_vocab.ttl"
 VOCAB      = FRAMEWORK_DIR / "VOCABULARY" / "vocab_generated.ttl"
 OUT        = ROOT / "docs" / "vocab" / "index.html"
 
@@ -91,6 +92,7 @@ def build_vocab_data(g: Graph) -> dict:
 def main() -> None:
     g = Graph()
     g.parse(VOCAB_BASE, format="turtle")
+    g.parse(CLINICAL_EVENT_VOCAB, format="turtle")
     g.parse(VOCAB, format="turtle")
 
     data = build_vocab_data(g)

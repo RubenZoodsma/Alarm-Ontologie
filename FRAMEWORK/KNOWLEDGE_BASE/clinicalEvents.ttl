@@ -1,0 +1,207 @@
+####################################################################
+# clinicalEvents.ttl — HAND-AUTHORED. NOT GENERATED.
+#
+# Curated axioms deriving mda:ClinicalEvent knowledge (see ontology.ttl's
+# "Clinical Event" section) — kept in its own file, separate from
+# inference.ttl, because it is a genuinely different kind of clinical
+# knowledge: inference.ttl's axioms establish an alarm's OWN technical/
+# clinical interpretation (metric -> property -> process -> organ); this
+# file's axioms interpret that already-derived state further, into a
+# discrete acute event (e.g. an absent cardiac contraction rate -> cardiac
+# arrest). Loaded everywhere inference.ttl is (see each consumer's own
+# INFERENCE_PATH/CLINICAL_EVENTS_PATH pairing) so it participates in the
+# same reasoning pass, not a parallel one.
+#
+# WHAT WORKS DECLARATIVELY HERE, AND WHY — READ BEFORE ADDING A RULE
+# --------------------------------------------------------------------
+# The single-alarm axioms below (Cardiac arrest, Respiratory arrest, Reduced
+# pulmonary function) are anchored on mda:PhysiologicalProcess (impliesClinicalEvent's domain), reached
+# by walking BACKWARD through the already-existing Metric->approximates->
+# Property->isPropertyOf->Process chain via inverse-property restrictions.
+# mda:PhysiologicalProcess is Referential — one shared IRI per concept
+# (e.g. physiologicalProcess:CardiacContraction), reused by every alarm,
+# device, and patient that ever approximates it — which would be a real
+# problem for a STATIC assertion reasoned once over a shared, accumulating
+# graph (see that class's own section above). It is NOT a problem here,
+# because 4_OPERATIONAL/op_knowledge.py's Timeline.situation_at/
+# background_at reason over a FRESH graph per (patient, instant),
+# containing only that patient's currently-relevant facts, then discard
+# it — there is no shared, accumulating graph for a tag to leak across.
+# See ontology.ttl's "RECONSIDERED AGAIN" note on mda:impliesClinicalEvent for
+# the full reasoning (this property's domain used to be mda:Metric,
+# specifically to avoid this generalisation, before that operational
+# scoping argument was worked through).
+#
+# The concluding step still cannot mint a new, separately-identified
+# individual — that limitation is about what OWL-RL can conditionally
+# construct (rdf:type membership, or property edges composed from already-
+# asserted links via propertyChainAxiom; never a conditional edge to a
+# fixed, named individual), and is unaffected by which node impliesClinicalEvent
+# lives on. It concludes a property VALUE (mda:impliesClinicalEvent) on the
+# same Process individual the restriction is written over.
+#
+# mda:impliesClinicalEvent is tagged mda:situational in ontology.ttl, the same
+# interpretive, alarm-duration-ONLY category mda:approximates/
+# mda:isPropertyOf already use (and which already reaches Process in the
+# existing extraction walk, so this rides along for free) — deliberately
+# NOT mda:persistsPostAlarm, which is for facts with a physical reason to
+# outlive their alarm (device connectivity, signal quality). A clinical
+# event has no such reason: it is only true while the condition that
+# asserted it (hasRate Absent) is still being reported. Verified directly:
+# the entailed impliesClinicalEvent triple is present in Timeline.situation_at()
+# while its triggering alarm is active, and gone within 1 second of that
+# alarm ending — no grace period, confirmed empirically before trusting
+# this, both under the original Metric anchoring and re-confirmed after
+# the move to Process.
+#
+# A genuinely cross-alarm condition (cardiorespiratory arrest: Cardiac
+# arrest and Respiratory arrest tagged on two DIFFERENT Process concepts)
+# still does not fit the single-node pattern above — OWL-RL cannot combine
+# facts from two otherwise-unconnected individuals, nor conditionally mint
+# a third, and moving to Process-anchoring does not change that: the two
+# tags sit on two different, unconnected Process concepts regardless. That
+# coincidence is detected procedurally, by a plain SPARQL SELECT under
+# CODE/evaluation_poc/reasoner/rules/ (cat3a_cardiorespiratory_arrest.rq)
+# — no per-alarm anchor, just "are both tags present in the merged graph
+# right now" — and mda_poc_assessment.py mints the actual mda:ClinicalEvent
+# individual on a genuinely new coincidence (deduplicated so a coincidence
+# that stays true across several alarm arrivals mints exactly one node,
+# not one per check).
+#
+# Ventilation failure (clinicalEvent:VentilationFailure) is cross-alarm for
+# a DIFFERENT reason: its two conditions are not just on different
+# individuals, they are on different KINDS of node entirely. Reduced
+# pulmonary function is a Process-anchored tag, exactly like Cardiac/
+# Respiratory arrest above. The other half — "a mechanical ventilation
+# alarm" — is a raw Device-level operation-state fact (mda:
+# hasDeviceOperationState != opstate:Enabled on a device:MechanicalVentilator
+# individual), not a clinical interpretation at all: it is deliberately NOT
+# given its own impliesClinicalEvent-producing condition class here, the same
+# way CAT1a/CAT2a match hasQualityState/hasCategory directly rather than
+# routing a raw technical fact through this vocabulary — impliesClinicalEvent's
+# domain is mda:PhysiologicalProcess specifically because a clinical event is
+# an interpretation OF a physiological process's state, and a device fault
+# has no such state to interpret. cat3b_ventilation_failure.rq therefore
+# matches the device fault as a plain triple pattern and the physiological
+# side via the ReducedPulmonaryFunction tag in the same SELECT, with minting
+# handled the same way as cat3a's (mda_poc_assessment.py's
+# mint_ventilation_failure(), same rising-edge dedup shape).
+#
+# NAMING DEVIATION FROM inference.ttl
+# --------------------------------------------------------------------
+# inference.ttl keeps every restriction class anonymous (blank nodes) —
+# deliberately here, the two condition classes below are NAMED
+# (mda:CardiacArrestCondition/mda:RespiratoryArrestCondition) purely for
+# traceability: this file's own axioms are few enough, and specific enough
+# to one clinical concept each, that a name pays for itself in
+# debuggability (a reasoner trace or a query plan reads "..a
+# mda:CardiacArrestCondition.." instead of an anonymous node id) without
+# the collision/reuse risk a shared, general-purpose restriction class
+# would carry across inference.ttl's much larger axiom set. The concluded
+# VALUE (clinicalEvent:CardiacArrest, a skos:Concept) is unchanged — only
+# the triggering condition class gained a name.
+####################################################################
+
+@prefix mda:          <https://w3id.org/mda/ontology#> .
+@prefix owl:          <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:         <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix metric:       <https://w3id.org/mda/vocab/metric/> .
+@prefix metricRate:   <https://w3id.org/mda/vocab/metric-rate/> .
+@prefix clinicalEvent: <https://w3id.org/mda/vocab/clinical-event/> .
+
+
+####################################################################
+# Cardiac arrest
+#
+# Anchored on mda:PhysiologicalProcess (impliesClinicalEvent's domain — see
+# ontology.ttl's "RECONSIDERED AGAIN" note for why this is safe despite
+# PhysiologicalProcess being Referential), reached by walking BACKWARD
+# through the already-existing chain via inverse-property restrictions:
+# any process that is isPropertyOf-reached from a property that is
+# approximates-reached from a Metric which is BOTH metric:HeartRate AND
+# currently reports hasRate metricRate:Absent gets tagged impliesClinicalEvent
+# CardiacArrest. Verified with an isolated reasoner test before writing
+# this (positive: HeartRate+Absent -> tagged; negative: HeartRate+Normal
+# -> untagged) — the inverse-restriction construct is heavier than
+# anything else in this file (everything else here and in inference.ttl
+# walks forward along asserted properties only), so it earned its own
+# check rather than trusting the syntax to behave as expected.
+#
+# Scoping: this fires per PROCESS, not per metric or per alarm — deliberate
+# now, not a residual risk. mda:PhysiologicalProcess is Referential (one
+# shared IRI per concept, e.g. physiologicalProcess:CardiacContraction),
+# so this reads as "this patient's current cardiac-contraction state
+# includes an absent rate," regardless of which device or sensing pathway
+# produced it — see ontology.ttl's note on why that generalisation is safe
+# here specifically (per-tick, per-patient operational reasoning, never a
+# static shared graph).
+####################################################################
+
+mda:CardiacArrestCondition a owl:Class ;
+    owl:intersectionOf ( mda:PhysiologicalProcess
+        [ a owl:Restriction ; owl:onProperty [ owl:inverseOf mda:isPropertyOf ] ;
+          owl:someValuesFrom
+            [ a owl:Restriction ; owl:onProperty [ owl:inverseOf mda:approximates ] ;
+              owl:someValuesFrom
+                [ a owl:Class ; owl:intersectionOf ( metric:HeartRate
+                    [ a owl:Restriction ; owl:onProperty mda:hasRate ; owl:hasValue metricRate:Absent ] ) ] ] ] ) ;
+    rdfs:subClassOf
+      [ a owl:Restriction ; owl:onProperty mda:impliesClinicalEvent ; owl:hasValue clinicalEvent:CardiacArrest ] .
+
+
+####################################################################
+# Respiratory arrest
+#
+# Same shape as Cardiac arrest above, substituting the respiratory
+# pathway. Real corpus archetype: "PHILIPSMONITOR - Apneu" (see DATA/
+# ANNOTATION/consensus/p75_annotated.csv) — RespirationRate, Absent.
+####################################################################
+
+mda:RespiratoryArrestCondition a owl:Class ;
+    owl:intersectionOf ( mda:PhysiologicalProcess
+        [ a owl:Restriction ; owl:onProperty [ owl:inverseOf mda:isPropertyOf ] ;
+          owl:someValuesFrom
+            [ a owl:Restriction ; owl:onProperty [ owl:inverseOf mda:approximates ] ;
+              owl:someValuesFrom
+                [ a owl:Class ; owl:intersectionOf ( metric:RespirationRate
+                    [ a owl:Restriction ; owl:onProperty mda:hasRate ; owl:hasValue metricRate:Absent ] ) ] ] ] ) ;
+    rdfs:subClassOf
+      [ a owl:Restriction ; owl:onProperty mda:impliesClinicalEvent ; owl:hasValue clinicalEvent:RespiratoryArrest ] .
+
+
+####################################################################
+# Reduced pulmonary function
+#
+# Same shape again, substituting a DECREASED reading for an ABSENT one, and
+# metric:RespirationVolume_Minute (minute ventilation) for metric:
+# RespirationRate — deliberately the phase-specific subclass, not the
+# broader metric:RespirationVolume, which would also catch metric:
+# RespirationVolume_Tidal + Decreased ("DATEXOHMEDACOMVENTILATOR - VTexp
+# Low"). A low tidal volume alone can be rate-compensated and does not by
+# itself carry the same clinical weight; minute ventilation — rate x tidal
+# volume — is the textbook marker of inadequate ventilation, and is what
+# the real archetype below actually reports. Same precedent CAT1b's own
+# report already established for narrowing metric-match scope to the exact
+# archetype signature rather than the broader process-level match (see
+# cat1b_asystole_ibp.rq's header — that narrowing closed a real over-match,
+# not a cosmetic one).
+#
+# This is a building-block condition, not raised as a standalone finding —
+# see clinicalEvent:ReducedPulmonaryFunction's own definition — feeding
+# clinicalEvent:VentilationFailure the same way Cardiac/Respiratory arrest
+# feed CardioRespiratoryArrest.
+#
+# Real corpus archetype: "MEDIBUS - MV ondergrens" (see DATA/ANNOTATION/
+# consensus/p75_annotated.csv) — RespirationVolume, Minute, Decreased.
+####################################################################
+
+mda:ReducedPulmonaryFunctionCondition a owl:Class ;
+    owl:intersectionOf ( mda:PhysiologicalProcess
+        [ a owl:Restriction ; owl:onProperty [ owl:inverseOf mda:isPropertyOf ] ;
+          owl:someValuesFrom
+            [ a owl:Restriction ; owl:onProperty [ owl:inverseOf mda:approximates ] ;
+              owl:someValuesFrom
+                [ a owl:Class ; owl:intersectionOf ( metric:RespirationVolume_Minute
+                    [ a owl:Restriction ; owl:onProperty mda:hasRate ; owl:hasValue metricRate:Decreased ] ) ] ] ] ) ;
+    rdfs:subClassOf
+      [ a owl:Restriction ; owl:onProperty mda:impliesClinicalEvent ; owl:hasValue clinicalEvent:ReducedPulmonaryFunction ] .

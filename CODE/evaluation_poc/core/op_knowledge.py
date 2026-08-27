@@ -38,7 +38,13 @@ from ontology_tree import derive_class_tree, properties_below, walk_instances
 # for the operational inputs: FRAMEWORK/ONTOLOGY/ontology.ttl holds the TBox;
 # FRAMEWORK/VOCABULARY/vocab_generated.ttl is the SKOS vocabulary,
 # mechanically regenerated from FRAMEWORK/VOCABULARY/seed/vocab_base.ttl
-# + the annotated CSV on every build_framework.py run;
+# + the annotated CSV on every build_framework.py run — EXCEPT the Clinical
+# Event scheme, which is not CSV-derived at all and so never appears there;
+# it lives in its own hand-authored file, FRAMEWORK/VOCABULARY/seed/
+# clinicalEvent_vocab.ttl (CLINICAL_EVENT_VOCAB below), parsed directly —
+# load_kb() never parses vocab_base.ttl itself, so this is the only route
+# by which clinicalEvent:CardiacArrest/RespiratoryArrest/... reach the
+# runtime reasoning graph at all;
 # FRAMEWORK/KNOWLEDGE_BASE/inference.ttl is the hand-authored bridge axioms
 # (class-level owl:hasValue restrictions) that let an alarm's metric reach
 # its physiology, and a device reach its therapeutic modality, by
@@ -53,7 +59,9 @@ FRAMEWORK_DIR = ROOT / "FRAMEWORK"
 DATA_DIR      = ROOT / "DATA" / "POC_EVENTS"
 ONTOLOGY  = FRAMEWORK_DIR / "ONTOLOGY" / "ontology.ttl"
 VOCAB     = FRAMEWORK_DIR / "VOCABULARY" / "vocab_generated.ttl"
+CLINICAL_EVENT_VOCAB = FRAMEWORK_DIR / "VOCABULARY" / "seed" / "clinicalEvent_vocab.ttl"
 INFERENCE = FRAMEWORK_DIR / "KNOWLEDGE_BASE" / "inference.ttl"
+CLINICAL_EVENTS = FRAMEWORK_DIR / "KNOWLEDGE_BASE" / "clinicalEvents.ttl"
 CATALOGUE = FRAMEWORK_DIR / "KNOWLEDGE_BASE" / "kg_generated.ttl"
 ENTITIES  = DATA_DIR / "entities.ttl"
 EVENTS    = DATA_DIR / "events_data.csv"
@@ -191,7 +199,7 @@ def nodes_of_class(kb: KB, g: Graph, cls: URIRef) -> set:
 
 def load_kb() -> KB:
     static = Graph()
-    for f in (ONTOLOGY, VOCAB, INFERENCE, ENTITIES):
+    for f in (ONTOLOGY, VOCAB, CLINICAL_EVENT_VOCAB, INFERENCE, CLINICAL_EVENTS, ENTITIES):
         static.parse(f, format="turtle")
 
     onto = Graph()

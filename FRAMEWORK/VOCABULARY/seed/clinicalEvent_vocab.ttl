@@ -1,0 +1,99 @@
+@prefix skos:         <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:         <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mda:          <https://w3id.org/mda/ontology#> .
+@prefix clinicalEvent: <https://w3id.org/mda/vocab/clinical-event/> .
+
+############################################################
+# Clinical Event scheme — SPLIT OUT of vocab_base.ttl, own file
+#
+# Every other scheme lives in vocab_base.ttl because build_framework.py
+# treats that file as a single hand-authored INPUT: it reads it once (to
+# check which notations already exist before stubbing new ones into
+# vocab_generated.ttl) and never writes to it — see that script's own
+# docstring ("Both outputs are pure functions of (ontology.ttl,
+# vocab_base.ttl, vocab_data.csv): they are rewritten from scratch on every
+# run, never appended to"). So vocab_base.ttl was never at risk of being
+# overwritten either way.
+#
+# This scheme is split out anyway, for the same reason clinicalEvents.ttl
+# was kept separate from inference.ttl (see that file's own header): it is
+# a genuinely different kind of vocabulary, not a CSV-annotation scheme
+# curated centrally alongside the others — no CSV column names a clinical
+# event directly (see ontology.ttl's mda:ClinicalEvent comment), so every
+# concept below, not just the scheme's own top concept, is hand-seeded.
+#
+# Loaded directly by CODE/evaluation_poc/core/op_knowledge.py's load_kb()
+# (own CLINICAL_EVENT_VOCAB constant, parsed alongside ontology.ttl/
+# vocab_generated.ttl/inference.ttl/clinicalEvents.ttl) — NOT via
+# vocab_generated.ttl, which never carries this scheme's concepts (nothing
+# here is CSV-derived, so build_framework.py's stub machinery never has a
+# reason to emit them there). Before this file existed, this scheme lived
+# in vocab_base.ttl, which op_knowledge.py's load_kb() never parses at all
+# — it only reads vocab_generated.ttl for SKOS content — so these concepts
+# were invisible to the runtime reasoning graph entirely, never mattering
+# in practice only because CAT3a's minting types its new mda:ClinicalEvent
+# individuals directly in Python (mda_poc_assessment.py), never relying on
+# OWL-RL to derive ClinicalEvent membership from these concepts' own
+# rdfs:subClassOf declarations. Also parsed by build_framework.py (the
+# notation-duplicate check — inert here, no CSV column ever contests these
+# notations, but kept complete for anyone reading `base` as "everything
+# hand-authored"), vocab_browser.py, and archetype_report.py, so the
+# published vocabulary browser and archetype sign-off report still surface
+# these concepts.
+############################################################
+
+clinicalEvent:Scheme        a skos:ConceptScheme ;
+    skos:prefLabel          "Clinical Event"@en, "Klinische Gebeurtenis"@nl .
+
+clinicalEvent:ClinicalEvent a skos:Concept ;
+    skos:inScheme           clinicalEvent:Scheme ;
+    skos:topConceptOf       clinicalEvent:Scheme ;
+    skos:prefLabel          "Clinical Event"@en, "Klinische Gebeurtenis"@nl ;
+    skos:definition         "A discrete, acute clinical interpretation derived from the current state of one or more physiological processes."@en,
+                            "Een discrete, acute klinische interpretatie afgeleid van de huidige toestand van een of meer fysiologische processen."@nl ;
+    skos:notation           "ClinicalEvent" .
+
+clinicalEvent:CardiacArrest a skos:Concept ;
+    skos:inScheme           clinicalEvent:Scheme ;
+    skos:broader            clinicalEvent:ClinicalEvent ;
+    rdfs:subClassOf         mda:ClinicalEvent ;
+    skos:prefLabel          "Cardiac Arrest"@en, "Hartstilstand"@nl ;
+    skos:definition         "Cessation of effective cardiac contraction, evidenced by an absent cardiac contraction rate."@en,
+                            "Het stoppen van effectieve hartcontractie, onderbouwd door een afwezig hartcontractieritme."@nl ;
+    skos:notation           "CardiacArrest" .
+
+clinicalEvent:RespiratoryArrest a skos:Concept ;
+    skos:inScheme           clinicalEvent:Scheme ;
+    skos:broader            clinicalEvent:ClinicalEvent ;
+    rdfs:subClassOf         mda:ClinicalEvent ;
+    skos:prefLabel          "Respiratory Arrest"@en, "Ademstilstand"@nl ;
+    skos:definition         "Cessation of effective breathing, evidenced by an absent respiratory rate."@en,
+                            "Het stoppen van effectieve ademhaling, onderbouwd door een afwezige ademhalingsfrequentie."@nl ;
+    skos:notation           "RespiratoryArrest" .
+
+clinicalEvent:CardioRespiratoryArrest a skos:Concept ;
+    skos:inScheme           clinicalEvent:Scheme ;
+    skos:broader            clinicalEvent:ClinicalEvent ;
+    rdfs:subClassOf         mda:ClinicalEvent ;
+    skos:prefLabel          "Cardiorespiratory Arrest"@en, "Cardiorespiratoire Arrest"@nl ;
+    skos:definition         "Combined cessation of effective cardiac contraction and breathing, evidenced by the coincidence of a cardiac arrest and a respiratory arrest within the same patient's post-alarm validity window."@en,
+                            "Gecombineerd stoppen van effectieve hartcontractie en ademhaling, onderbouwd door het samenvallen van een hartstilstand en een ademstilstand binnen hetzelfde post-alarm geldigheidsvenster van de patiënt."@nl ;
+    skos:notation           "CardioRespiratoryArrest" .
+
+clinicalEvent:ReducedPulmonaryFunction a skos:Concept ;
+    skos:inScheme           clinicalEvent:Scheme ;
+    skos:broader            clinicalEvent:ClinicalEvent ;
+    rdfs:subClassOf         mda:ClinicalEvent ;
+    skos:prefLabel          "Reduced Pulmonary Function"@en, "Verminderde Longfunctie"@nl ;
+    skos:definition         "Inadequate gas exchange due to insufficient ventilation, evidenced by a decreased minute ventilation volume — a building-block condition for clinicalEvent:VentilationFailure, not raised as a standalone finding."@en,
+                            "Onvoldoende gasuitwisseling door ontoereikende ventilatie, onderbouwd door een verlaagd ademminuutvolume — een bouwsteenconditie voor clinicalEvent:VentilationFailure, niet als zelfstandige bevinding gerapporteerd."@nl ;
+    skos:notation           "ReducedPulmonaryFunction" .
+
+clinicalEvent:VentilationFailure a skos:Concept ;
+    skos:inScheme           clinicalEvent:Scheme ;
+    skos:broader            clinicalEvent:ClinicalEvent ;
+    rdfs:subClassOf         mda:ClinicalEvent ;
+    skos:prefLabel          "Ventilation Failure"@en, "Beademingsfalen"@nl ;
+    skos:definition         "Failure of mechanical ventilation with critical clinical consequences, evidenced by the coincidence of a mechanical ventilation alarm and reduced pulmonary function."@en,
+                            "Falen van mechanische beademing met kritieke klinische gevolgen, onderbouwd door het samenvallen van een mechanische-beademingsalarm en verminderde longfunctie."@nl ;
+    skos:notation           "VentilationFailure" .

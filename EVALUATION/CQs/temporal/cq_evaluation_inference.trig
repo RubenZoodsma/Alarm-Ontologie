@@ -7,119 +7,59 @@
 @prefix snapshot: <https://w3id.org/mda/snapshot/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-snapshot:cq10_neg_20260101T080200 {
-    entity:SignalAnalysis_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
-
-    inst:Alarm_cq10neg_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
-        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
-        mda:hasLabel "PHILIPSMONITOR - SpO2 laag"@en ;
-        mda:hasMessage inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080000 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
-        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
-
-    entity:Patient_cq10_neg mda:isMonitoredBy entity:Device_cq10neg_PhilipsMonitor_00 .
-
-    inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq10_neg ;
-        mda:triggeredByStructure entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
-
-    <https://w3id.org/mda/vocab/metric/SpO2> mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> .
-
-    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
-
-    <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
-
-    entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
-        mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
-        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
-
-    <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
-}
-
-snapshot:cq9_neg_20260101T080200 {
+snapshot:cq9_neg_20260101T080900 {
     entity:Component_cq9neg_CardioHelp_00_ConnectionUnit mda:hasOperationState opstate:Disconnected .
 
-    entity:SignalAnalysis_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+    entity:FunctionalUnit_cq9neg_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
 
-    inst:Alarm_cq9neg_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
-        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
-        mda:hasLabel "PHILIPSMONITOR - SpO2 laag"@en ;
-        mda:hasMessage inst:Msg_cq9neg_PhilipsMonitor_00_20260101T080000 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
-        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
-
-    entity:Device_cq9neg_CardioHelp_00 mda:hasOperationState opstate:Disconnected .
+    entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 mda:hasOperationState opstate:Monitored .
 
     entity:Patient_cq9_neg mda:isMonitoredBy entity:Device_cq9neg_CardioHelp_00,
             entity:Device_cq9neg_PhilipsMonitor_00 .
 
-    inst:Msg_cq9neg_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq9_neg ;
-        mda:triggeredByStructure entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+    entity:Sensor_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
 
-    entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
-        mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
-        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
+    entity:Device_cq9neg_CardioHelp_00 mda:hasOperationState opstate:Disconnected .
 
-    <https://w3id.org/mda/vocab/metric/SpO2> mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> .
-
-    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
-
-    <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
-
-    <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+    entity:Device_cq9neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
 }
 
-snapshot:cq11_neg_20260101T080030 {
-    entity:FunctionalUnit_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
+snapshot:cq9_neg_20260101T080930 {
+    entity:Component_cq9neg_CardioHelp_00_ConnectionUnit mda:hasOperationState opstate:Disconnected .
 
-    entity:Sensor_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic mda:hasOperationState opstate:Enabled ;
-        mda:hasSensorOperationState opstate:Enabled .
+    entity:FunctionalUnit_cq9neg_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
 
-    inst:Alarm_cq11neg_PhilipsMonitor_00_20260101T080030 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
-        mda:hasEnd "2026-01-01T08:01:30"^^xsd:dateTime ;
-        mda:hasLabel "PHILIPSMONITOR - Niet te leren ECG"@en ;
-        mda:hasMessage inst:Msg_cq11neg_PhilipsMonitor_00_20260101T080030 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
-        mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorNietTeLerenEcg_Medium> .
+    entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 mda:hasOperationState opstate:Monitored .
 
-    inst:Alarm_cq11neg_ServoU_00_20260101T080000 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
-        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
-        mda:hasLabel "SERVOU - Volume uit blokkade"@en ;
-        mda:hasMessage inst:Msg_cq11neg_ServoU_00_20260101T080000 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Laag> ;
-        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/ServouVolumeUitBlokkade_Laag> .
+    entity:Patient_cq9_neg mda:isMonitoredBy entity:Device_cq9neg_CardioHelp_00,
+            entity:Device_cq9neg_PhilipsMonitor_00 .
 
-    <https://w3id.org/mda/vocab/device/MechanicalVentilator> mda:administers <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> .
+    entity:Sensor_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
 
-    entity:Device_cq11neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+    entity:Device_cq9neg_CardioHelp_00 mda:hasOperationState opstate:Disconnected .
 
-    entity:Signal_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic_ECG_signal mda:hasQualityState <https://w3id.org/mda/vocab/quality-state/Impaired> .
+    entity:Device_cq9neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+}
 
-    inst:Msg_cq11neg_PhilipsMonitor_00_20260101T080030 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq11_neg ;
-        mda:triggeredByStructure entity:AnatomicalPosition_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic_AnatomicalPosition,
-            entity:Signal_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic_ECG_signal .
+snapshot:cq10_pos_20260101T080930 {
+    entity:FunctionalUnit_cq10pos_DraegerMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
 
-    inst:Msg_cq11neg_ServoU_00_20260101T080000 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq11_neg .
+    entity:FunctionalUnit_cq10pos_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
 
-    <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
+    entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 mda:hasOperationState opstate:Monitored .
 
-    <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> mda:targetsProcess <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
+    entity:Metric_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 mda:hasOperationState opstate:Monitored .
 
-    entity:Patient_cq11_neg mda:isMonitoredBy entity:Device_cq11neg_PhilipsMonitor_00,
-            entity:Device_cq11neg_ServoU_00 .
+    entity:Patient_cq10_pos mda:isMonitoredBy entity:Device_cq10pos_DraegerMonitor_00,
+            entity:Device_cq10pos_PhilipsMonitor_00 .
 
-    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
+    entity:Sensor_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
+    entity:Device_cq10pos_DraegerMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Device_cq10pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
 }
 
 snapshot:cq10_pos_20260101T080130 {
@@ -145,6 +85,14 @@ snapshot:cq10_pos_20260101T080130 {
         mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
         mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
 
+    entity:FunctionalUnit_cq10pos_DraegerMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:FunctionalUnit_cq10pos_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
     inst:Msg_cq10pos_DraegerMonitor_00_20260101T080000 a mda:AlarmMessage ;
         mda:concernsPatient entity:Patient_cq10_pos ;
         mda:triggeredByStructure entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
@@ -153,144 +101,141 @@ snapshot:cq10_pos_20260101T080130 {
         mda:concernsPatient entity:Patient_cq10_pos ;
         mda:triggeredByStructure entity:Metric_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
 
+    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
+
+    <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
+
+    <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+
+    entity:Device_cq10pos_DraegerMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Device_cq10pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
     entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
         mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
 
     entity:Metric_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
         mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
 
     entity:Patient_cq10_pos mda:isMonitoredBy entity:Device_cq10pos_DraegerMonitor_00,
             entity:Device_cq10pos_PhilipsMonitor_00 .
-
-    <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
-
-    <https://w3id.org/mda/vocab/metric/SpO2> mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> .
-
-    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
-
-    <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
 }
 
-snapshot:cq9_neg_20260101T080030 {
-    inst:Alarm_cq9neg_CardioHelp_00_20260101T080030 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
-        mda:hasEnd "2026-01-01T08:01:30"^^xsd:dateTime ;
-        mda:hasLabel "CARDIOHELP - Verbinding verbroken"@en ;
-        mda:hasMessage inst:Msg_cq9neg_CardioHelp_00_20260101T080030 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Unknown> ;
-        mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/CardiohelpVerbindingVerbroken_Unknown> .
+snapshot:cq10_neg_20260101T081630 {
+    entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
 
-    <https://w3id.org/mda/vocab/device/ExtracorporealMembraneOxygenator> mda:administers <https://w3id.org/mda/vocab/therapeutic-modality/ExtraCorporeal_Membran_Oxygenation> .
+    entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 mda:hasOperationState opstate:Monitored .
 
-    entity:SignalAnalysis_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+    entity:Patient_cq10_neg mda:isMonitoredBy entity:Device_cq10neg_PhilipsMonitor_00 .
 
-    inst:Alarm_cq9neg_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
-        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
-        mda:hasLabel "PHILIPSMONITOR - SpO2 laag"@en ;
-        mda:hasMessage inst:Msg_cq9neg_PhilipsMonitor_00_20260101T080000 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
-        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
+    entity:Sensor_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
 
-    inst:Msg_cq9neg_CardioHelp_00_20260101T080030 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq9_neg ;
-        mda:triggeredByStructure entity:Component_cq9neg_CardioHelp_00_ConnectionUnit .
-
-    <https://w3id.org/mda/vocab/therapeutic-modality/ExtraCorporeal_Membran_Oxygenation> mda:targetsProcess <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
-
-    entity:Component_cq9neg_CardioHelp_00_ConnectionUnit mda:hasComponentOperationState opstate:Disconnected ;
-        mda:hasOperationState opstate:Disconnected .
-
-    entity:Device_cq9neg_CardioHelp_00 mda:hasOperationState opstate:Disconnected .
-
-    inst:Msg_cq9neg_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq9_neg ;
-        mda:triggeredByStructure entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
-
-    entity:Patient_cq9_neg mda:isMonitoredBy entity:Device_cq9neg_CardioHelp_00,
-            entity:Device_cq9neg_PhilipsMonitor_00 .
-
-    entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
-        mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
-        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
-
-    <https://w3id.org/mda/vocab/metric/SpO2> mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> .
-
-    <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
-
-    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
-
-    <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+    entity:Device_cq10neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
 }
 
-snapshot:cq9_neg_20260101T080000 {
-    entity:SignalAnalysis_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+snapshot:cq11_neg_20260101T080900 {
+    entity:FunctionalUnit_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
 
-    inst:Alarm_cq9neg_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
-        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
-        mda:hasLabel "PHILIPSMONITOR - SpO2 laag"@en ;
-        mda:hasMessage inst:Msg_cq9neg_PhilipsMonitor_00_20260101T080000 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
-        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
+    entity:Patient_cq11_neg mda:isMonitoredBy entity:Device_cq11neg_PhilipsMonitor_00 .
 
-    inst:Msg_cq9neg_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq9_neg ;
-        mda:triggeredByStructure entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+    entity:Sensor_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic mda:hasOperationState opstate:Enabled .
 
-    entity:Patient_cq9_neg mda:isMonitoredBy entity:Device_cq9neg_PhilipsMonitor_00 .
-
-    entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
-        mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
-        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
-
-    <https://w3id.org/mda/vocab/metric/SpO2> mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> .
-
-    <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
-
-    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
-
-    <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+    entity:Device_cq11neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
 }
 
-snapshot:cq11_pos_20260101T080200 {
-    entity:SignalAnalysis_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis mda:producesMetric entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
+snapshot:cq11_pos_20260101T080030 {
+    entity:FunctionalUnit_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor mda:hasOperationState opstate:Enabled .
+
+    entity:SignalAnalysis_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis mda:producesMetric entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate,
+            entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_RespirationRate .
 
     inst:Alarm_cq11pos_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
         mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
         mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
-        mda:hasLabel "PHILIPSMONITOR - Lage hartfreq."@en ;
+        mda:hasLabel "PHILIPSMONITOR - Asystolie"@en ;
         mda:hasMessage inst:Msg_cq11pos_PhilipsMonitor_00_20260101T080000 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Hoog> ;
         mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorLageHartfreq_Medium> .
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorAsystolie_Hoog> .
 
-    entity:Patient_cq11_pos mda:isMonitoredBy entity:Device_cq11pos_PhilipsMonitor_00 .
+    inst:Alarm_cq11pos_PhilipsMonitor_00_20260101T080030 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
+        mda:hasEnd "2026-01-01T08:01:30"^^xsd:dateTime ;
+        mda:hasLabel "PHILIPSMONITOR - Apneu"@en ;
+        mda:hasMessage inst:Msg_cq11pos_PhilipsMonitor_00_20260101T080030 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Hoog> ;
+        mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorApneu_Hoog> .
+
+    entity:Device_cq11pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
 
     inst:Msg_cq11pos_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
         mda:concernsPatient entity:Patient_cq11_pos ;
         mda:triggeredByStructure entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
 
-    <https://w3id.org/mda/vocab/metric/HeartRate> mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> .
+    inst:Msg_cq11pos_PhilipsMonitor_00_20260101T080030 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq11_pos ;
+        mda:triggeredByStructure entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_RespirationRate .
 
     <https://w3id.org/mda/vocab/organ/Heart> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/CardioVascular> .
 
-    <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> mda:presentIn <https://w3id.org/mda/vocab/organ/Heart> .
+    <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> mda:hasClinicalEvent <https://w3id.org/mda/vocab/clinical-event/CardiacArrest> ;
+        mda:presentIn <https://w3id.org/mda/vocab/organ/Heart> .
+
+    <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> mda:hasClinicalEvent <https://w3id.org/mda/vocab/clinical-event/RespiratoryArrest> ;
+        mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
+
+    <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> .
+
+    <https://w3id.org/mda/vocab/physiological-property/RespirationRate> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
 
     entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate a <https://w3id.org/mda/vocab/metric/HeartRate> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> ;
-        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
+        mda:hasOperationState opstate:Monitored ;
+        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Absent> .
 
-    <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> .
+    entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_RespirationRate a <https://w3id.org/mda/vocab/metric/RespirationRate> ;
+        mda:approximates <https://w3id.org/mda/vocab/physiological-property/RespirationRate> ;
+        mda:hasOperationState opstate:Monitored ;
+        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Absent> .
+
+    entity:Patient_cq11_pos mda:isMonitoredBy entity:Device_cq11pos_PhilipsMonitor_00 .
+
+    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
 }
 
-snapshot:cq10_pos_20260101T080200 {
+snapshot:cq9_pos_20260101T080900 {
+    entity:FunctionalUnit_cq9pos_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 mda:hasOperationState opstate:Monitored .
+
+    entity:Patient_cq9_pos mda:isMonitoredBy entity:Device_cq9pos_PhilipsMonitor_00 .
+
+    entity:Sensor_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral mda:hasOperationState opstate:Enabled .
+
+    entity:Device_cq9pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+}
+
+snapshot:cq11_neg_20260101T080930 {
+    entity:FunctionalUnit_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
+
+    entity:Patient_cq11_neg mda:isMonitoredBy entity:Device_cq11neg_PhilipsMonitor_00 .
+
+    entity:Sensor_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic mda:hasOperationState opstate:Enabled .
+
+    entity:Device_cq11neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+}
+
+snapshot:cq10_pos_20260101T080030 {
     entity:SignalAnalysis_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+
+    entity:SignalAnalysis_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
 
     inst:Alarm_cq10pos_DraegerMonitor_00_20260101T080000 a mda:Alarm ;
         mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
@@ -301,17 +246,106 @@ snapshot:cq10_pos_20260101T080200 {
         mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
         mda:isOfType <https://w3id.org/mda/alarmtype/MonitorLageSpo2_Unknown> .
 
+    inst:Alarm_cq10pos_PhilipsMonitor_00_20260101T080030 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
+        mda:hasEnd "2026-01-01T08:01:30"^^xsd:dateTime ;
+        mda:hasLabel "PHILIPSMONITOR - SpO2 laag"@en ;
+        mda:hasMessage inst:Msg_cq10pos_PhilipsMonitor_00_20260101T080030 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
+        mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
+
+    entity:FunctionalUnit_cq10pos_DraegerMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:FunctionalUnit_cq10pos_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
     inst:Msg_cq10pos_DraegerMonitor_00_20260101T080000 a mda:AlarmMessage ;
         mda:concernsPatient entity:Patient_cq10_pos ;
         mda:triggeredByStructure entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
 
-    entity:Patient_cq10_pos mda:isMonitoredBy entity:Device_cq10pos_DraegerMonitor_00 .
+    inst:Msg_cq10pos_PhilipsMonitor_00_20260101T080030 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq10_pos ;
+        mda:triggeredByStructure entity:Metric_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+
+    <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
+
+    entity:Device_cq10pos_DraegerMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Device_cq10pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
+
+    <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
 
     entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
         mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
 
-    <https://w3id.org/mda/vocab/metric/SpO2> mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> .
+    entity:Metric_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
+        mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
+        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
+
+    entity:Patient_cq10_pos mda:isMonitoredBy entity:Device_cq10pos_DraegerMonitor_00,
+            entity:Device_cq10pos_PhilipsMonitor_00 .
+}
+
+snapshot:cq9_neg_20260101T080030 {
+    entity:SignalAnalysis_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+
+    inst:Alarm_cq9neg_CardioHelp_00_20260101T080030 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
+        mda:hasEnd "2026-01-01T08:01:30"^^xsd:dateTime ;
+        mda:hasLabel "CARDIOHELP - Verbinding verbroken"@en ;
+        mda:hasMessage inst:Msg_cq9neg_CardioHelp_00_20260101T080030 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Unknown> ;
+        mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/CardiohelpVerbindingVerbroken_Unknown> .
+
+    inst:Alarm_cq9neg_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
+        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
+        mda:hasLabel "PHILIPSMONITOR - SpO2 laag"@en ;
+        mda:hasMessage inst:Msg_cq9neg_PhilipsMonitor_00_20260101T080000 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
+        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
+
+    <https://w3id.org/mda/vocab/device/ExtracorporealMembraneOxygenator> mda:administers <https://w3id.org/mda/vocab/therapeutic-modality/ExtraCorporeal_Membran_Oxygenation> .
+
+    inst:Msg_cq9neg_CardioHelp_00_20260101T080030 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq9_neg ;
+        mda:triggeredByStructure entity:Component_cq9neg_CardioHelp_00_ConnectionUnit .
+
+    inst:Msg_cq9neg_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq9_neg ;
+        mda:triggeredByStructure entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+
+    <https://w3id.org/mda/vocab/therapeutic-modality/ExtraCorporeal_Membran_Oxygenation> mda:targetsProcess <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+
+    entity:FunctionalUnit_cq9neg_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
+    entity:Component_cq9neg_CardioHelp_00_ConnectionUnit mda:hasComponentOperationState opstate:Disconnected ;
+        mda:hasOperationState opstate:Disconnected .
+
+    entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
+        mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
+        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
+
+    entity:Patient_cq9_neg mda:isMonitoredBy entity:Device_cq9neg_CardioHelp_00,
+            entity:Device_cq9neg_PhilipsMonitor_00 .
+
+    entity:Device_cq9neg_CardioHelp_00 mda:hasOperationState opstate:Disconnected .
+
+    entity:Device_cq9neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
 
     <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
 
@@ -320,7 +354,120 @@ snapshot:cq10_pos_20260101T080200 {
     <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
 }
 
-snapshot:cq9_pos_20260101T080000 {
+snapshot:cq11_neg_20260101T080030 {
+    inst:Alarm_cq11neg_PhilipsMonitor_00_20260101T080030 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
+        mda:hasEnd "2026-01-01T08:01:30"^^xsd:dateTime ;
+        mda:hasLabel "PHILIPSMONITOR - Niet te leren ECG"@en ;
+        mda:hasMessage inst:Msg_cq11neg_PhilipsMonitor_00_20260101T080030 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
+        mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorNietTeLerenEcg_Medium> .
+
+    inst:Alarm_cq11neg_ServoU_00_20260101T080000 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
+        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
+        mda:hasLabel "SERVOU - Volume uit blokkade"@en ;
+        mda:hasMessage inst:Msg_cq11neg_ServoU_00_20260101T080000 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Laag> ;
+        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/ServouVolumeUitBlokkade_Laag> .
+
+    <https://w3id.org/mda/vocab/device/MechanicalVentilator> mda:administers <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> .
+
+    entity:Signal_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic_ECG_signal mda:hasQualityState <https://w3id.org/mda/vocab/quality-state/Impaired> .
+
+    inst:Msg_cq11neg_PhilipsMonitor_00_20260101T080030 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq11_neg ;
+        mda:triggeredByStructure entity:Signal_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic_ECG_signal .
+
+    inst:Msg_cq11neg_ServoU_00_20260101T080000 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq11_neg .
+
+    <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> mda:targetsProcess <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
+
+    entity:FunctionalUnit_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic mda:hasOperationState opstate:Enabled ;
+        mda:hasSensorOperationState opstate:Enabled .
+
+    <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
+
+    entity:Patient_cq11_neg mda:isMonitoredBy entity:Device_cq11neg_PhilipsMonitor_00,
+            entity:Device_cq11neg_ServoU_00 .
+
+    entity:Device_cq11neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
+}
+
+snapshot:cq10_neg_20260101T080130 {
+    entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor mda:hasOperationState opstate:Enabled .
+
+    entity:SignalAnalysis_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis mda:producesMetric entity:Metric_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
+
+    entity:SignalAnalysis_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+
+    inst:Alarm_cq10neg_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
+        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
+        mda:hasLabel "PHILIPSMONITOR - SpO2 laag"@en ;
+        mda:hasMessage inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080000 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
+        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
+
+    inst:Alarm_cq10neg_PhilipsMonitor_00_20260101T080030 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
+        mda:hasEnd "2026-01-01T08:01:30"^^xsd:dateTime ;
+        mda:hasLabel "PHILIPSMONITOR - HF hoog"@en ;
+        mda:hasMessage inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080030 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
+        mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorHfHoog_Medium> .
+
+    entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
+    inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq10_neg ;
+        mda:triggeredByStructure entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+
+    inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080030 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq10_neg ;
+        mda:triggeredByStructure entity:Metric_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
+
+    entity:Metric_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate a <https://w3id.org/mda/vocab/metric/HeartRate> ;
+        mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> ;
+        mda:hasOperationState opstate:Monitored ;
+        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Increased> .
+
+    entity:Device_cq10neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
+        mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
+        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
+
+    entity:Patient_cq10_neg mda:isMonitoredBy entity:Device_cq10neg_PhilipsMonitor_00 .
+
+    <https://w3id.org/mda/vocab/organ/Heart> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/CardioVascular> .
+
+    <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> mda:presentIn <https://w3id.org/mda/vocab/organ/Heart> .
+
+    <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> .
+
+    <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
+
+    <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+
+    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
+}
+
+snapshot:cq9_pos_20260101T080130 {
     entity:SignalAnalysis_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 .
 
     inst:Alarm_cq9pos_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
@@ -331,31 +478,6 @@ snapshot:cq9_pos_20260101T080000 {
         mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
         mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
         mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
-
-    entity:Patient_cq9_pos mda:isMonitoredBy entity:Device_cq9pos_PhilipsMonitor_00 .
-
-    inst:Msg_cq9pos_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq9_pos ;
-        mda:triggeredByStructure entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 .
-
-    entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
-        mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
-        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
-
-    <https://w3id.org/mda/vocab/metric/SpO2> mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> .
-
-    <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
-
-    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
-
-    <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
-}
-
-snapshot:cq9_pos_20260101T080130 {
-    entity:FunctionalUnit_cq9pos_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
-
-    entity:Sensor_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral mda:hasOperationState opstate:Enabled ;
-        mda:hasSensorOperationState opstate:Enabled .
 
     inst:Alarm_cq9pos_PhilipsMonitor_00_20260101T080030 a mda:Alarm ;
         mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
@@ -366,229 +488,241 @@ snapshot:cq9_pos_20260101T080130 {
         mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
         mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorStoringInSpo2_Medium> .
 
-    entity:SignalAnalysis_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 .
+    entity:FunctionalUnit_cq9pos_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral mda:hasOperationState opstate:Enabled ;
+        mda:hasSensorOperationState opstate:Enabled .
 
     entity:Signal_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform mda:hasQualityState <https://w3id.org/mda/vocab/quality-state/Impaired> .
-
-    inst:Alarm_cq9pos_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
-        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
-        mda:hasLabel "PHILIPSMONITOR - SpO2 laag"@en ;
-        mda:hasMessage inst:Msg_cq9pos_PhilipsMonitor_00_20260101T080000 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
-        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
-
-    inst:Msg_cq9pos_PhilipsMonitor_00_20260101T080030 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq9_pos ;
-        mda:triggeredByStructure entity:AnatomicalPosition_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_AnatomicalPosition,
-            entity:Signal_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform .
-
-    entity:Device_cq9pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
 
     inst:Msg_cq9pos_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
         mda:concernsPatient entity:Patient_cq9_pos ;
         mda:triggeredByStructure entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 .
 
-    entity:Patient_cq9_pos mda:isMonitoredBy entity:Device_cq9pos_PhilipsMonitor_00 .
+    inst:Msg_cq9pos_PhilipsMonitor_00_20260101T080030 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq9_pos ;
+        mda:triggeredByStructure entity:Signal_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform .
+
+    entity:Device_cq9pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
 
     entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
         mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
 
-    <https://w3id.org/mda/vocab/metric/SpO2> mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> .
+    entity:Patient_cq9_pos mda:isMonitoredBy entity:Device_cq9pos_PhilipsMonitor_00 .
 
     <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
 
-    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
-
     <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+
+    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
 }
 
-snapshot:cq10_neg_20260101T080030 {
-    entity:SignalAnalysis_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis mda:producesMetric entity:Metric_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
+snapshot:cq9_neg_20260101T081630 {
+    entity:FunctionalUnit_cq9neg_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
 
-    inst:Alarm_cq10neg_PhilipsMonitor_00_20260101T080030 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
-        mda:hasEnd "2026-01-01T08:01:30"^^xsd:dateTime ;
-        mda:hasLabel "PHILIPSMONITOR - HF hoog"@en ;
-        mda:hasMessage inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080030 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
-        mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorHfHoog_Medium> .
+    entity:Sensor_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
 
-    entity:SignalAnalysis_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+    entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 mda:hasOperationState opstate:Monitored .
 
-    inst:Alarm_cq10neg_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
-        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
-        mda:hasLabel "PHILIPSMONITOR - SpO2 laag"@en ;
-        mda:hasMessage inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080000 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
-        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
+    entity:Patient_cq9_neg mda:isMonitoredBy entity:Device_cq9neg_PhilipsMonitor_00 .
 
-    inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080030 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq10_neg ;
-        mda:triggeredByStructure entity:Metric_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
-
-    entity:Metric_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate a <https://w3id.org/mda/vocab/metric/HeartRate> ;
-        mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> ;
-        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Increased> .
-
-    inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq10_neg ;
-        mda:triggeredByStructure entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
-
-    <https://w3id.org/mda/vocab/metric/HeartRate> mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> .
-
-    <https://w3id.org/mda/vocab/organ/Heart> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/CardioVascular> .
-
-    <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> mda:presentIn <https://w3id.org/mda/vocab/organ/Heart> .
-
-    entity:Patient_cq10_neg mda:isMonitoredBy entity:Device_cq10neg_PhilipsMonitor_00 .
-
-    entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
-        mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
-        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
-
-    <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> .
-
-    <https://w3id.org/mda/vocab/metric/SpO2> mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> .
-
-    <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
-
-    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
-
-    <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+    entity:Device_cq9neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
 }
 
 snapshot:cq11_pos_20260101T080000 {
+    entity:FunctionalUnit_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor mda:hasOperationState opstate:Enabled .
+
     entity:SignalAnalysis_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis mda:producesMetric entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
 
     inst:Alarm_cq11pos_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
         mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
         mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
-        mda:hasLabel "PHILIPSMONITOR - Lage hartfreq."@en ;
+        mda:hasLabel "PHILIPSMONITOR - Asystolie"@en ;
         mda:hasMessage inst:Msg_cq11pos_PhilipsMonitor_00_20260101T080000 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Hoog> ;
         mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorLageHartfreq_Medium> .
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorAsystolie_Hoog> .
 
-    entity:Patient_cq11_pos mda:isMonitoredBy entity:Device_cq11pos_PhilipsMonitor_00 .
+    entity:Device_cq11pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
 
     inst:Msg_cq11pos_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
         mda:concernsPatient entity:Patient_cq11_pos ;
         mda:triggeredByStructure entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
 
+    entity:Patient_cq11_pos mda:isMonitoredBy entity:Device_cq11pos_PhilipsMonitor_00 .
+
     entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate a <https://w3id.org/mda/vocab/metric/HeartRate> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> ;
-        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
-
-    <https://w3id.org/mda/vocab/metric/HeartRate> mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> .
+        mda:hasOperationState opstate:Monitored ;
+        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Absent> .
 
     <https://w3id.org/mda/vocab/organ/Heart> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/CardioVascular> .
 
-    <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> mda:presentIn <https://w3id.org/mda/vocab/organ/Heart> .
+    <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> mda:hasClinicalEvent <https://w3id.org/mda/vocab/clinical-event/CardiacArrest> ;
+        mda:presentIn <https://w3id.org/mda/vocab/organ/Heart> .
 
     <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> .
 }
 
-snapshot:cq10_neg_20260101T080130 {
-    entity:SignalAnalysis_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis mda:producesMetric entity:Metric_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
+snapshot:cq9_neg_20260101T080130 {
+    entity:SignalAnalysis_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
 
-    inst:Alarm_cq10neg_PhilipsMonitor_00_20260101T080030 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
+    inst:Alarm_cq9neg_CardioHelp_00_20260101T080030 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
         mda:hasEnd "2026-01-01T08:01:30"^^xsd:dateTime ;
-        mda:hasLabel "PHILIPSMONITOR - HF hoog"@en ;
-        mda:hasMessage inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080030 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
+        mda:hasLabel "CARDIOHELP - Verbinding verbroken"@en ;
+        mda:hasMessage inst:Msg_cq9neg_CardioHelp_00_20260101T080030 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Unknown> ;
         mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorHfHoog_Medium> .
+        mda:isOfType <https://w3id.org/mda/alarmtype/CardiohelpVerbindingVerbroken_Unknown> .
 
-    entity:SignalAnalysis_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
-
-    inst:Alarm_cq10neg_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
+    inst:Alarm_cq9neg_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
         mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
         mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
         mda:hasLabel "PHILIPSMONITOR - SpO2 laag"@en ;
-        mda:hasMessage inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080000 ;
+        mda:hasMessage inst:Msg_cq9neg_PhilipsMonitor_00_20260101T080000 ;
         mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
         mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
         mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
 
-    inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080030 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq10_neg ;
-        mda:triggeredByStructure entity:Metric_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
+    <https://w3id.org/mda/vocab/device/ExtracorporealMembraneOxygenator> mda:administers <https://w3id.org/mda/vocab/therapeutic-modality/ExtraCorporeal_Membran_Oxygenation> .
 
-    entity:Metric_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate a <https://w3id.org/mda/vocab/metric/HeartRate> ;
-        mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> ;
-        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Increased> .
+    inst:Msg_cq9neg_CardioHelp_00_20260101T080030 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq9_neg ;
+        mda:triggeredByStructure entity:Component_cq9neg_CardioHelp_00_ConnectionUnit .
 
-    inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq10_neg ;
-        mda:triggeredByStructure entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+    inst:Msg_cq9neg_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq9_neg ;
+        mda:triggeredByStructure entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
 
-    entity:Patient_cq10_neg mda:isMonitoredBy entity:Device_cq10neg_PhilipsMonitor_00 .
+    <https://w3id.org/mda/vocab/therapeutic-modality/ExtraCorporeal_Membran_Oxygenation> mda:targetsProcess <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
 
-    <https://w3id.org/mda/vocab/metric/HeartRate> mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> .
+    entity:FunctionalUnit_cq9neg_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
 
-    <https://w3id.org/mda/vocab/organ/Heart> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/CardioVascular> .
+    entity:Sensor_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
 
-    <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> mda:presentIn <https://w3id.org/mda/vocab/organ/Heart> .
+    entity:Component_cq9neg_CardioHelp_00_ConnectionUnit mda:hasComponentOperationState opstate:Disconnected ;
+        mda:hasOperationState opstate:Disconnected .
 
-    entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
+    entity:Device_cq9neg_CardioHelp_00 mda:hasOperationState opstate:Disconnected .
+
+    entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
         mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
 
-    <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> .
+    entity:Patient_cq9_neg mda:isMonitoredBy entity:Device_cq9neg_CardioHelp_00,
+            entity:Device_cq9neg_PhilipsMonitor_00 .
 
-    <https://w3id.org/mda/vocab/metric/SpO2> mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> .
+    entity:Device_cq9neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
 
     <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
 
-    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
-
     <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+
+    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
 }
 
-snapshot:cq9_pos_20260101T080200 {
+snapshot:cq11_pos_20260101T080200 {
+    entity:FunctionalUnit_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor mda:hasOperationState opstate:Enabled .
+
+    entity:SignalAnalysis_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis mda:producesMetric entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
+
+    inst:Alarm_cq11pos_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
+        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
+        mda:hasLabel "PHILIPSMONITOR - Asystolie"@en ;
+        mda:hasMessage inst:Msg_cq11pos_PhilipsMonitor_00_20260101T080000 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Hoog> ;
+        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorAsystolie_Hoog> .
+
+    entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_RespirationRate mda:hasOperationState opstate:Monitored .
+
+    entity:Device_cq11pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    inst:Msg_cq11pos_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq11_pos ;
+        mda:triggeredByStructure entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
+
+    entity:Patient_cq11_pos mda:isMonitoredBy entity:Device_cq11pos_PhilipsMonitor_00 .
+
+    <https://w3id.org/mda/vocab/organ/Heart> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/CardioVascular> .
+
+    <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> mda:hasClinicalEvent <https://w3id.org/mda/vocab/clinical-event/CardiacArrest> ;
+        mda:presentIn <https://w3id.org/mda/vocab/organ/Heart> .
+
+    <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> .
+
+    entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate a <https://w3id.org/mda/vocab/metric/HeartRate> ;
+        mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> ;
+        mda:hasOperationState opstate:Monitored ;
+        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Absent> .
+}
+
+snapshot:cq11_neg_20260101T080130 {
+    inst:Alarm_cq11neg_PhilipsMonitor_00_20260101T080030 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
+        mda:hasEnd "2026-01-01T08:01:30"^^xsd:dateTime ;
+        mda:hasLabel "PHILIPSMONITOR - Niet te leren ECG"@en ;
+        mda:hasMessage inst:Msg_cq11neg_PhilipsMonitor_00_20260101T080030 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
+        mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorNietTeLerenEcg_Medium> .
+
+    inst:Alarm_cq11neg_ServoU_00_20260101T080000 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
+        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
+        mda:hasLabel "SERVOU - Volume uit blokkade"@en ;
+        mda:hasMessage inst:Msg_cq11neg_ServoU_00_20260101T080000 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Laag> ;
+        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/ServouVolumeUitBlokkade_Laag> .
+
+    <https://w3id.org/mda/vocab/device/MechanicalVentilator> mda:administers <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> .
+
+    entity:FunctionalUnit_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic mda:hasOperationState opstate:Enabled ;
+        mda:hasSensorOperationState opstate:Enabled .
+
+    entity:Signal_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic_ECG_signal mda:hasQualityState <https://w3id.org/mda/vocab/quality-state/Impaired> .
+
+    inst:Msg_cq11neg_PhilipsMonitor_00_20260101T080030 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq11_neg ;
+        mda:triggeredByStructure entity:Signal_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic_ECG_signal .
+
+    inst:Msg_cq11neg_ServoU_00_20260101T080000 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq11_neg .
+
+    <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> mda:targetsProcess <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
+
+    <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
+
+    entity:Device_cq11neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Patient_cq11_neg mda:isMonitoredBy entity:Device_cq11neg_PhilipsMonitor_00,
+            entity:Device_cq11neg_ServoU_00 .
+
+    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
+}
+
+snapshot:cq9_pos_20260101T081630 {
     entity:FunctionalUnit_cq9pos_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
 
     entity:Sensor_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral mda:hasOperationState opstate:Enabled .
 
-    entity:SignalAnalysis_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 .
-
-    entity:Signal_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform mda:hasQualityState <https://w3id.org/mda/vocab/quality-state/Impaired> .
-
-    inst:Alarm_cq9pos_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
-        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
-        mda:hasLabel "PHILIPSMONITOR - SpO2 laag"@en ;
-        mda:hasMessage inst:Msg_cq9pos_PhilipsMonitor_00_20260101T080000 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
-        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
-
-    entity:Device_cq9pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
-
-    inst:Msg_cq9pos_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq9_pos ;
-        mda:triggeredByStructure entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 .
+    entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 mda:hasOperationState opstate:Monitored .
 
     entity:Patient_cq9_pos mda:isMonitoredBy entity:Device_cq9pos_PhilipsMonitor_00 .
 
-    entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
-        mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
-        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
-
-    <https://w3id.org/mda/vocab/metric/SpO2> mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> .
-
-    <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
-
-    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
-
-    <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+    entity:Device_cq9pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
 }
 
 {
@@ -608,12 +742,20 @@ snapshot:cq9_pos_20260101T080200 {
         snapshot:atTime "2026-01-01T08:02:00"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq10_neg .
 
-    snapshot:cq10_neg_20260101T080230 a snapshot:Snapshot ;
-        snapshot:atTime "2026-01-01T08:02:30"^^xsd:dateTime ;
+    snapshot:cq10_neg_20260101T080900 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:09:00"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq10_neg .
 
-    snapshot:cq10_neg_20260101T080300 a snapshot:Snapshot ;
-        snapshot:atTime "2026-01-01T08:03:00"^^xsd:dateTime ;
+    snapshot:cq10_neg_20260101T080930 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:09:30"^^xsd:dateTime ;
+        snapshot:forPatient entity:Patient_cq10_neg .
+
+    snapshot:cq10_neg_20260101T081630 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:16:30"^^xsd:dateTime ;
+        snapshot:forPatient entity:Patient_cq10_neg .
+
+    snapshot:cq10_neg_20260101T081700 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:17:00"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq10_neg .
 
     snapshot:cq10_pos_20260101T080000 a snapshot:Snapshot ;
@@ -632,12 +774,20 @@ snapshot:cq9_pos_20260101T080200 {
         snapshot:atTime "2026-01-01T08:02:00"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq10_pos .
 
-    snapshot:cq10_pos_20260101T080230 a snapshot:Snapshot ;
-        snapshot:atTime "2026-01-01T08:02:30"^^xsd:dateTime ;
+    snapshot:cq10_pos_20260101T080900 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:09:00"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq10_pos .
 
-    snapshot:cq10_pos_20260101T080300 a snapshot:Snapshot ;
-        snapshot:atTime "2026-01-01T08:03:00"^^xsd:dateTime ;
+    snapshot:cq10_pos_20260101T080930 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:09:30"^^xsd:dateTime ;
+        snapshot:forPatient entity:Patient_cq10_pos .
+
+    snapshot:cq10_pos_20260101T081630 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:16:30"^^xsd:dateTime ;
+        snapshot:forPatient entity:Patient_cq10_pos .
+
+    snapshot:cq10_pos_20260101T081700 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:17:00"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq10_pos .
 
     snapshot:cq11_neg_20260101T080000 a snapshot:Snapshot ;
@@ -656,12 +806,20 @@ snapshot:cq9_pos_20260101T080200 {
         snapshot:atTime "2026-01-01T08:02:00"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq11_neg .
 
-    snapshot:cq11_neg_20260101T080230 a snapshot:Snapshot ;
-        snapshot:atTime "2026-01-01T08:02:30"^^xsd:dateTime ;
+    snapshot:cq11_neg_20260101T080900 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:09:00"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq11_neg .
 
-    snapshot:cq11_neg_20260101T080300 a snapshot:Snapshot ;
-        snapshot:atTime "2026-01-01T08:03:00"^^xsd:dateTime ;
+    snapshot:cq11_neg_20260101T080930 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:09:30"^^xsd:dateTime ;
+        snapshot:forPatient entity:Patient_cq11_neg .
+
+    snapshot:cq11_neg_20260101T081630 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:16:30"^^xsd:dateTime ;
+        snapshot:forPatient entity:Patient_cq11_neg .
+
+    snapshot:cq11_neg_20260101T081700 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:17:00"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq11_neg .
 
     snapshot:cq11_pos_20260101T080000 a snapshot:Snapshot ;
@@ -680,12 +838,20 @@ snapshot:cq9_pos_20260101T080200 {
         snapshot:atTime "2026-01-01T08:02:00"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq11_pos .
 
-    snapshot:cq11_pos_20260101T080230 a snapshot:Snapshot ;
-        snapshot:atTime "2026-01-01T08:02:30"^^xsd:dateTime ;
+    snapshot:cq11_pos_20260101T080900 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:09:00"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq11_pos .
 
-    snapshot:cq11_pos_20260101T080300 a snapshot:Snapshot ;
-        snapshot:atTime "2026-01-01T08:03:00"^^xsd:dateTime ;
+    snapshot:cq11_pos_20260101T080930 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:09:30"^^xsd:dateTime ;
+        snapshot:forPatient entity:Patient_cq11_pos .
+
+    snapshot:cq11_pos_20260101T081630 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:16:30"^^xsd:dateTime ;
+        snapshot:forPatient entity:Patient_cq11_pos .
+
+    snapshot:cq11_pos_20260101T081700 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:17:00"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq11_pos .
 
     snapshot:cq9_neg_20260101T080000 a snapshot:Snapshot ;
@@ -704,12 +870,20 @@ snapshot:cq9_pos_20260101T080200 {
         snapshot:atTime "2026-01-01T08:02:00"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq9_neg .
 
-    snapshot:cq9_neg_20260101T080230 a snapshot:Snapshot ;
-        snapshot:atTime "2026-01-01T08:02:30"^^xsd:dateTime ;
+    snapshot:cq9_neg_20260101T080900 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:09:00"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq9_neg .
 
-    snapshot:cq9_neg_20260101T080300 a snapshot:Snapshot ;
-        snapshot:atTime "2026-01-01T08:03:00"^^xsd:dateTime ;
+    snapshot:cq9_neg_20260101T080930 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:09:30"^^xsd:dateTime ;
+        snapshot:forPatient entity:Patient_cq9_neg .
+
+    snapshot:cq9_neg_20260101T081630 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:16:30"^^xsd:dateTime ;
+        snapshot:forPatient entity:Patient_cq9_neg .
+
+    snapshot:cq9_neg_20260101T081700 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:17:00"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq9_neg .
 
     snapshot:cq9_pos_20260101T080000 a snapshot:Snapshot ;
@@ -728,63 +902,21 @@ snapshot:cq9_pos_20260101T080200 {
         snapshot:atTime "2026-01-01T08:02:00"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq9_pos .
 
-    snapshot:cq9_pos_20260101T080230 a snapshot:Snapshot ;
-        snapshot:atTime "2026-01-01T08:02:30"^^xsd:dateTime ;
+    snapshot:cq9_pos_20260101T080900 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:09:00"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq9_pos .
 
-    snapshot:cq9_pos_20260101T080300 a snapshot:Snapshot ;
-        snapshot:atTime "2026-01-01T08:03:00"^^xsd:dateTime ;
+    snapshot:cq9_pos_20260101T080930 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:09:30"^^xsd:dateTime ;
         snapshot:forPatient entity:Patient_cq9_pos .
 
-    entity:Device_cq10pos_PhilipsMonitor_00 a <https://w3id.org/mda/vocab/device/PhysiologicalMonitor> ;
-        dcterms:identifier "cq10pos_PhilipsMonitor_00" ;
-        mda:hasFunctionalUnit entity:FunctionalUnit_cq10pos_PhilipsMonitor_00_FU_PulseOximetry .
+    snapshot:cq9_pos_20260101T081630 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:16:30"^^xsd:dateTime ;
+        snapshot:forPatient entity:Patient_cq9_pos .
 
-    entity:Device_cq11pos_ServoU_00 a <https://w3id.org/mda/vocab/device/MechanicalVentilator> ;
-        dcterms:identifier "cq11pos_ServoU_00" ;
-        mda:hasFunctionalUnit entity:FunctionalUnit_cq11pos_ServoU_00_FU_PneumoTachograph .
-
-    entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography a <https://w3id.org/mda/vocab/functional-unit/FU_ElectroCardiography> ;
-        mda:hasSensor entity:Sensor_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor .
-
-    entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_PulseOximetry a <https://w3id.org/mda/vocab/functional-unit/FU_PulseOximetry> ;
-        mda:hasSensor entity:Sensor_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter .
-
-    entity:FunctionalUnit_cq10pos_DraegerMonitor_00_FU_PulseOximetry a <https://w3id.org/mda/vocab/functional-unit/FU_PulseOximetry> ;
-        mda:hasSensor entity:Sensor_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter .
-
-    entity:FunctionalUnit_cq10pos_PhilipsMonitor_00_FU_PulseOximetry a <https://w3id.org/mda/vocab/functional-unit/FU_PulseOximetry> ;
-        mda:hasSensor entity:Sensor_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter .
-
-    entity:FunctionalUnit_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography a <https://w3id.org/mda/vocab/functional-unit/FU_ElectroCardiography> ;
-        mda:hasSensor entity:Sensor_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor .
-
-    entity:FunctionalUnit_cq11pos_ServoU_00_FU_PneumoTachograph a <https://w3id.org/mda/vocab/functional-unit/FU_PneumoTachograph> ;
-        mda:hasSensor entity:Sensor_cq11pos_ServoU_00_FU_PneumoTachograph_Sensor .
-
-    entity:FunctionalUnit_cq9neg_PhilipsMonitor_00_FU_PulseOximetry a <https://w3id.org/mda/vocab/functional-unit/FU_PulseOximetry> ;
-        mda:hasSensor entity:Sensor_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter .
-
-    entity:Sensor_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor a mda:Sensor ;
-        mda:sensorProducesSignal entity:Signal_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal .
-
-    entity:Sensor_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter a <https://w3id.org/mda/vocab/sensor/PulseOximeter> ;
-        mda:sensorProducesSignal entity:Signal_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform .
-
-    entity:Sensor_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter a <https://w3id.org/mda/vocab/sensor/PulseOximeter> ;
-        mda:sensorProducesSignal entity:Signal_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform .
-
-    entity:Sensor_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter a <https://w3id.org/mda/vocab/sensor/PulseOximeter> ;
-        mda:sensorProducesSignal entity:Signal_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform .
-
-    entity:Sensor_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor a mda:Sensor ;
-        mda:sensorProducesSignal entity:Signal_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal .
-
-    entity:Sensor_cq11pos_ServoU_00_FU_PneumoTachograph_Sensor a mda:Sensor ;
-        mda:sensorProducesSignal entity:Signal_cq11pos_ServoU_00_FU_PneumoTachograph_Sensor_Signal .
-
-    entity:Sensor_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter a <https://w3id.org/mda/vocab/sensor/PulseOximeter> ;
-        mda:sensorProducesSignal entity:Signal_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform .
+    snapshot:cq9_pos_20260101T081700 a snapshot:Snapshot ;
+        snapshot:atTime "2026-01-01T08:17:00"^^xsd:dateTime ;
+        snapshot:forPatient entity:Patient_cq9_pos .
 
     entity:Signal_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal a mda:Signal ;
         mda:analyzedBy entity:SignalAnalysis_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis .
@@ -801,65 +933,15 @@ snapshot:cq9_pos_20260101T080200 {
     entity:Signal_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal a mda:Signal ;
         mda:analyzedBy entity:SignalAnalysis_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis .
 
-    entity:Signal_cq11pos_ServoU_00_FU_PneumoTachograph_Sensor_Signal a mda:Signal ;
-        mda:analyzedBy entity:SignalAnalysis_cq11pos_ServoU_00_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis .
-
     entity:Signal_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform a <https://w3id.org/mda/vocab/signal/PPG_waveform> ;
         mda:analyzedBy entity:SignalAnalysis_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis .
-
-    entity:AnatomicalPosition_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic_AnatomicalPosition a mda:AnatomicalPosition .
-
-    entity:AnatomicalPosition_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_AnatomicalPosition a mda:AnatomicalPosition .
-
-    entity:Device_cq10neg_PhilipsMonitor_00 a <https://w3id.org/mda/vocab/device/PhysiologicalMonitor> ;
-        dcterms:identifier "cq10neg_PhilipsMonitor_00" ;
-        mda:hasFunctionalUnit entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography,
-            entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_PulseOximetry .
-
-    entity:Device_cq10pos_DraegerMonitor_00 a <https://w3id.org/mda/vocab/device/PhysiologicalMonitor> ;
-        dcterms:identifier "cq10pos_DraegerMonitor_00" ;
-        mda:hasFunctionalUnit entity:FunctionalUnit_cq10pos_DraegerMonitor_00_FU_PulseOximetry .
 
     entity:Device_cq11neg_ServoU_00 a <https://w3id.org/mda/vocab/device/MechanicalVentilator> ;
         dcterms:identifier "cq11neg_ServoU_00" .
 
-    entity:Device_cq11pos_PhilipsMonitor_00 a <https://w3id.org/mda/vocab/device/PhysiologicalMonitor> ;
-        dcterms:identifier "cq11pos_PhilipsMonitor_00" ;
-        mda:hasFunctionalUnit entity:FunctionalUnit_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography .
-
-    entity:Device_cq9neg_PhilipsMonitor_00 a <https://w3id.org/mda/vocab/device/PhysiologicalMonitor> ;
-        dcterms:identifier "cq9neg_PhilipsMonitor_00" ;
-        mda:hasFunctionalUnit entity:FunctionalUnit_cq9neg_PhilipsMonitor_00_FU_PulseOximetry .
-
     entity:SignalAnalysis_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis a mda:SignalAnalysis .
 
     entity:SignalAnalysis_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis a mda:SignalAnalysis .
-
-    entity:SignalAnalysis_cq11pos_ServoU_00_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis a mda:SignalAnalysis .
-
-    entity:FunctionalUnit_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography a <https://w3id.org/mda/vocab/functional-unit/FU_ElectroCardiography> ;
-        mda:hasSensor entity:Sensor_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic .
-
-    entity:FunctionalUnit_cq9pos_PhilipsMonitor_00_FU_PulseOximetry a <https://w3id.org/mda/vocab/functional-unit/FU_PulseOximetry> ;
-        mda:hasSensor entity:Sensor_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral .
-
-    entity:Sensor_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic a <https://w3id.org/mda/vocab/sensor/ElectroCardioGraphy_sensor> ;
-        mda:hasAnatomicalPosition entity:AnatomicalPosition_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic_AnatomicalPosition,
-            <https://w3id.org/mda/vocab/anatomical-position/Thoracic> ;
-        mda:sensorProducesSignal entity:Signal_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic_ECG_signal .
-
-    entity:Sensor_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral a <https://w3id.org/mda/vocab/sensor/PulseOximeter> ;
-        mda:hasAnatomicalPosition entity:AnatomicalPosition_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_AnatomicalPosition,
-            <https://w3id.org/mda/vocab/anatomical-position/Peripheral> ;
-        mda:sensorProducesSignal entity:Signal_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform .
-
-    entity:Device_cq11neg_PhilipsMonitor_00 a <https://w3id.org/mda/vocab/device/PhysiologicalMonitor> ;
-        dcterms:identifier "cq11neg_PhilipsMonitor_00" ;
-        mda:hasFunctionalUnit entity:FunctionalUnit_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography .
-
-    entity:Device_cq9neg_CardioHelp_00 a <https://w3id.org/mda/vocab/device/ExtracorporealMembraneOxygenator> ;
-        dcterms:identifier "cq9neg_CardioHelp_00" ;
-        mda:hasComponent entity:Component_cq9neg_CardioHelp_00_ConnectionUnit .
 
     entity:SignalAnalysis_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis a mda:SignalAnalysis .
 
@@ -871,16 +953,95 @@ snapshot:cq9_pos_20260101T080200 {
 
     entity:SignalAnalysis_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis a mda:SignalAnalysis .
 
-    entity:Component_cq9neg_CardioHelp_00_ConnectionUnit a <https://w3id.org/mda/vocab/component/ConnectionUnit> .
-
-    entity:Device_cq9pos_PhilipsMonitor_00 a <https://w3id.org/mda/vocab/device/PhysiologicalMonitor> ;
-        dcterms:identifier "cq9pos_PhilipsMonitor_00" ;
-        mda:hasFunctionalUnit entity:FunctionalUnit_cq9pos_PhilipsMonitor_00_FU_PulseOximetry .
-
     entity:Signal_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic_ECG_signal a <https://w3id.org/mda/vocab/signal/ECG_signal> .
 
     entity:Signal_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform a <https://w3id.org/mda/vocab/signal/PPG_waveform> ;
         mda:analyzedBy entity:SignalAnalysis_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis .
+
+    entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography a <https://w3id.org/mda/vocab/functional-unit/FU_ElectroCardiography> ;
+        mda:hasSensor entity:Sensor_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor .
+
+    entity:FunctionalUnit_cq10pos_PhilipsMonitor_00_FU_PulseOximetry a <https://w3id.org/mda/vocab/functional-unit/FU_PulseOximetry> ;
+        mda:hasSensor entity:Sensor_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter .
+
+    entity:FunctionalUnit_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography a <https://w3id.org/mda/vocab/functional-unit/FU_ElectroCardiography> ;
+        mda:hasSensor entity:Sensor_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic .
+
+    entity:Sensor_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor a mda:Sensor ;
+        mda:sensorProducesSignal entity:Signal_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal .
+
+    entity:Sensor_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter a <https://w3id.org/mda/vocab/sensor/PulseOximeter> ;
+        mda:sensorProducesSignal entity:Signal_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform .
+
+    entity:Sensor_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic a <https://w3id.org/mda/vocab/sensor/ElectroCardioGraphy_sensor> ;
+        mda:hasAnatomicalPosition <https://w3id.org/mda/vocab/anatomical-position/Thoracic> ;
+        mda:sensorProducesSignal entity:Signal_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic_ECG_signal .
+
+    entity:Component_cq9neg_CardioHelp_00_ConnectionUnit a <https://w3id.org/mda/vocab/component/ConnectionUnit> .
+
+    entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_PulseOximetry a <https://w3id.org/mda/vocab/functional-unit/FU_PulseOximetry> ;
+        mda:hasSensor entity:Sensor_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter .
+
+    entity:FunctionalUnit_cq10pos_DraegerMonitor_00_FU_PulseOximetry a <https://w3id.org/mda/vocab/functional-unit/FU_PulseOximetry> ;
+        mda:hasSensor entity:Sensor_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter .
+
+    entity:FunctionalUnit_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography a <https://w3id.org/mda/vocab/functional-unit/FU_ElectroCardiography> ;
+        mda:hasSensor entity:Sensor_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor .
+
+    entity:FunctionalUnit_cq9neg_PhilipsMonitor_00_FU_PulseOximetry a <https://w3id.org/mda/vocab/functional-unit/FU_PulseOximetry> ;
+        mda:hasSensor entity:Sensor_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter .
+
+    entity:FunctionalUnit_cq9pos_PhilipsMonitor_00_FU_PulseOximetry a <https://w3id.org/mda/vocab/functional-unit/FU_PulseOximetry> ;
+        mda:hasSensor entity:Sensor_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral .
+
+    entity:Sensor_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter a <https://w3id.org/mda/vocab/sensor/PulseOximeter> ;
+        mda:sensorProducesSignal entity:Signal_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform .
+
+    entity:Sensor_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter a <https://w3id.org/mda/vocab/sensor/PulseOximeter> ;
+        mda:sensorProducesSignal entity:Signal_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform .
+
+    entity:Sensor_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor a mda:Sensor ;
+        mda:sensorProducesSignal entity:Signal_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal .
+
+    entity:Sensor_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter a <https://w3id.org/mda/vocab/sensor/PulseOximeter> ;
+        mda:sensorProducesSignal entity:Signal_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform .
+
+    entity:Sensor_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral a <https://w3id.org/mda/vocab/sensor/PulseOximeter> ;
+        mda:hasAnatomicalPosition <https://w3id.org/mda/vocab/anatomical-position/Peripheral> ;
+        mda:sensorProducesSignal entity:Signal_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform .
+
+    entity:Device_cq10pos_PhilipsMonitor_00 a <https://w3id.org/mda/vocab/device/PhysiologicalMonitor> ;
+        dcterms:identifier "cq10pos_PhilipsMonitor_00" ;
+        mda:hasFunctionalUnit entity:FunctionalUnit_cq10pos_PhilipsMonitor_00_FU_PulseOximetry .
+
+    entity:Device_cq11neg_PhilipsMonitor_00 a <https://w3id.org/mda/vocab/device/PhysiologicalMonitor> ;
+        dcterms:identifier "cq11neg_PhilipsMonitor_00" ;
+        mda:hasFunctionalUnit entity:FunctionalUnit_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography .
+
+    entity:Device_cq9neg_CardioHelp_00 a <https://w3id.org/mda/vocab/device/ExtracorporealMembraneOxygenator> ;
+        dcterms:identifier "cq9neg_CardioHelp_00" ;
+        mda:hasComponent entity:Component_cq9neg_CardioHelp_00_ConnectionUnit .
+
+    entity:Device_cq10neg_PhilipsMonitor_00 a <https://w3id.org/mda/vocab/device/PhysiologicalMonitor> ;
+        dcterms:identifier "cq10neg_PhilipsMonitor_00" ;
+        mda:hasFunctionalUnit entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography,
+            entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_PulseOximetry .
+
+    entity:Device_cq10pos_DraegerMonitor_00 a <https://w3id.org/mda/vocab/device/PhysiologicalMonitor> ;
+        dcterms:identifier "cq10pos_DraegerMonitor_00" ;
+        mda:hasFunctionalUnit entity:FunctionalUnit_cq10pos_DraegerMonitor_00_FU_PulseOximetry .
+
+    entity:Device_cq11pos_PhilipsMonitor_00 a <https://w3id.org/mda/vocab/device/PhysiologicalMonitor> ;
+        dcterms:identifier "cq11pos_PhilipsMonitor_00" ;
+        mda:hasFunctionalUnit entity:FunctionalUnit_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography .
+
+    entity:Device_cq9neg_PhilipsMonitor_00 a <https://w3id.org/mda/vocab/device/PhysiologicalMonitor> ;
+        dcterms:identifier "cq9neg_PhilipsMonitor_00" ;
+        mda:hasFunctionalUnit entity:FunctionalUnit_cq9neg_PhilipsMonitor_00_FU_PulseOximetry .
+
+    entity:Device_cq9pos_PhilipsMonitor_00 a <https://w3id.org/mda/vocab/device/PhysiologicalMonitor> ;
+        dcterms:identifier "cq9pos_PhilipsMonitor_00" ;
+        mda:hasFunctionalUnit entity:FunctionalUnit_cq9pos_PhilipsMonitor_00_FU_PulseOximetry .
 
     entity:Patient_cq10_neg a mda:Patient ;
         dcterms:identifier "cq10_neg" ;
@@ -916,6 +1077,112 @@ snapshot:cq9_pos_20260101T080200 {
         dcterms:identifier "cq9_pos" .
 }
 
+snapshot:cq9_pos_20260101T080030 {
+    inst:Alarm_cq9pos_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
+        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
+        mda:hasLabel "PHILIPSMONITOR - SpO2 laag"@en ;
+        mda:hasMessage inst:Msg_cq9pos_PhilipsMonitor_00_20260101T080000 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
+        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
+
+    inst:Alarm_cq9pos_PhilipsMonitor_00_20260101T080030 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
+        mda:hasEnd "2026-01-01T08:01:30"^^xsd:dateTime ;
+        mda:hasLabel "PHILIPSMONITOR - Storing in SpO2"@en ;
+        mda:hasMessage inst:Msg_cq9pos_PhilipsMonitor_00_20260101T080030 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
+        mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorStoringInSpo2_Medium> .
+
+    entity:SignalAnalysis_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 .
+
+    inst:Msg_cq9pos_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq9_pos ;
+        mda:triggeredByStructure entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 .
+
+    inst:Msg_cq9pos_PhilipsMonitor_00_20260101T080030 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq9_pos ;
+        mda:triggeredByStructure entity:Signal_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform .
+
+    entity:FunctionalUnit_cq9pos_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral mda:hasOperationState opstate:Enabled ;
+        mda:hasSensorOperationState opstate:Enabled .
+
+    entity:Signal_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform mda:hasQualityState <https://w3id.org/mda/vocab/quality-state/Impaired> .
+
+    entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
+        mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
+        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
+
+    entity:Device_cq9pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
+
+    <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+
+    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
+
+    entity:Patient_cq9_pos mda:isMonitoredBy entity:Device_cq9pos_PhilipsMonitor_00 .
+}
+
+snapshot:cq10_pos_20260101T080000 {
+    inst:Alarm_cq10pos_DraegerMonitor_00_20260101T080000 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
+        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
+        mda:hasLabel "Monitor - Lage SpO2"@en ;
+        mda:hasMessage inst:Msg_cq10pos_DraegerMonitor_00_20260101T080000 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Unknown> ;
+        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/MonitorLageSpo2_Unknown> .
+
+    entity:SignalAnalysis_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+
+    entity:FunctionalUnit_cq10pos_DraegerMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
+    inst:Msg_cq10pos_DraegerMonitor_00_20260101T080000 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq10_pos ;
+        mda:triggeredByStructure entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+
+    entity:Device_cq10pos_DraegerMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
+        mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
+        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
+
+    <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
+
+    <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+
+    entity:Patient_cq10_pos mda:isMonitoredBy entity:Device_cq10pos_DraegerMonitor_00 .
+
+    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
+}
+
+snapshot:cq10_neg_20260101T080930 {
+    entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate mda:hasOperationState opstate:Monitored .
+
+    entity:Sensor_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor mda:hasOperationState opstate:Enabled .
+
+    entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 mda:hasOperationState opstate:Monitored .
+
+    entity:Sensor_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
+    entity:Device_cq10neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Patient_cq10_neg mda:isMonitoredBy entity:Device_cq10neg_PhilipsMonitor_00 .
+}
+
 snapshot:cq10_neg_20260101T080000 {
     inst:Alarm_cq10neg_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
         mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
@@ -932,120 +1199,27 @@ snapshot:cq10_neg_20260101T080000 {
         mda:concernsPatient entity:Patient_cq10_neg ;
         mda:triggeredByStructure entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
 
+    entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
     entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
         mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
+
+    entity:Device_cq10neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
 
     entity:Patient_cq10_neg mda:isMonitoredBy entity:Device_cq10neg_PhilipsMonitor_00 .
 
-    <https://w3id.org/mda/vocab/metric/SpO2> mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> .
-
     <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
 
-    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
-
     <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
-}
-
-snapshot:cq11_pos_20260101T080130 {
-    inst:Alarm_cq11pos_ServoU_00_20260101T080030 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
-        mda:hasEnd "2026-01-01T08:01:30"^^xsd:dateTime ;
-        mda:hasLabel "SERVOU - Ademfrequentie laag"@en ;
-        mda:hasMessage inst:Msg_cq11pos_ServoU_00_20260101T080030 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Unknown> ;
-        mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/ServouAdemfrequentieLaag_Unknown> .
-
-    inst:Msg_cq11pos_ServoU_00_20260101T080030 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq11_pos ;
-        mda:triggeredByStructure entity:Metric_cq11pos_ServoU_00_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis_RespirationRate .
-
-    <https://w3id.org/mda/vocab/metric/RespirationRate> mda:approximates <https://w3id.org/mda/vocab/physiological-property/RespirationRate> .
-
-    entity:Metric_cq11pos_ServoU_00_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis_RespirationRate a <https://w3id.org/mda/vocab/metric/RespirationRate> ;
-        mda:approximates <https://w3id.org/mda/vocab/physiological-property/RespirationRate> ;
-        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
-
-    entity:SignalAnalysis_cq11pos_ServoU_00_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis mda:producesMetric entity:Metric_cq11pos_ServoU_00_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis_RespirationRate .
-
-    inst:Alarm_cq11pos_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
-        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
-        mda:hasLabel "PHILIPSMONITOR - Lage hartfreq."@en ;
-        mda:hasMessage inst:Msg_cq11pos_PhilipsMonitor_00_20260101T080000 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
-        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorLageHartfreq_Medium> .
-
-    <https://w3id.org/mda/vocab/physiological-property/RespirationRate> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
-
-    <https://w3id.org/mda/vocab/device/MechanicalVentilator> mda:administers <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> .
-
-    <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> mda:targetsProcess <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
-
-    entity:SignalAnalysis_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis mda:producesMetric entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
-
-    <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
-
-    inst:Msg_cq11pos_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq11_pos ;
-        mda:triggeredByStructure entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
-
-    entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate a <https://w3id.org/mda/vocab/metric/HeartRate> ;
-        mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> ;
-        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
-
-    <https://w3id.org/mda/vocab/metric/HeartRate> mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> .
-
-    <https://w3id.org/mda/vocab/organ/Heart> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/CardioVascular> .
-
-    <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> mda:presentIn <https://w3id.org/mda/vocab/organ/Heart> .
-
-    <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> .
-
-    entity:Patient_cq11_pos mda:isMonitoredBy entity:Device_cq11pos_PhilipsMonitor_00,
-            entity:Device_cq11pos_ServoU_00 .
 
     <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
 }
 
-snapshot:cq11_neg_20260101T080000 {
-    inst:Alarm_cq11neg_ServoU_00_20260101T080000 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
-        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
-        mda:hasLabel "SERVOU - Volume uit blokkade"@en ;
-        mda:hasMessage inst:Msg_cq11neg_ServoU_00_20260101T080000 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Laag> ;
-        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/ServouVolumeUitBlokkade_Laag> .
-
-    inst:Msg_cq11neg_ServoU_00_20260101T080000 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq11_neg .
-
-    <https://w3id.org/mda/vocab/device/MechanicalVentilator> mda:administers <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> .
-
-    <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> mda:targetsProcess <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
-
-    <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
-
-    entity:Patient_cq11_neg mda:isMonitoredBy entity:Device_cq11neg_ServoU_00 .
-
-    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
-}
-
-snapshot:cq9_neg_20260101T080130 {
-    inst:Alarm_cq9neg_CardioHelp_00_20260101T080030 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
-        mda:hasEnd "2026-01-01T08:01:30"^^xsd:dateTime ;
-        mda:hasLabel "CARDIOHELP - Verbinding verbroken"@en ;
-        mda:hasMessage inst:Msg_cq9neg_CardioHelp_00_20260101T080030 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Unknown> ;
-        mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/CardiohelpVerbindingVerbroken_Unknown> .
-
-    <https://w3id.org/mda/vocab/device/ExtracorporealMembraneOxygenator> mda:administers <https://w3id.org/mda/vocab/therapeutic-modality/ExtraCorporeal_Membran_Oxygenation> .
-
+snapshot:cq9_neg_20260101T080000 {
     inst:Alarm_cq9neg_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
         mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
         mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
@@ -1055,88 +1229,33 @@ snapshot:cq9_neg_20260101T080130 {
         mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
         mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
 
-    inst:Msg_cq9neg_CardioHelp_00_20260101T080030 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq9_neg ;
-        mda:triggeredByStructure entity:Component_cq9neg_CardioHelp_00_ConnectionUnit .
-
-    <https://w3id.org/mda/vocab/therapeutic-modality/ExtraCorporeal_Membran_Oxygenation> mda:targetsProcess <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
-
     entity:SignalAnalysis_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
-
-    entity:Component_cq9neg_CardioHelp_00_ConnectionUnit mda:hasComponentOperationState opstate:Disconnected ;
-        mda:hasOperationState opstate:Disconnected .
-
-    entity:Device_cq9neg_CardioHelp_00 mda:hasOperationState opstate:Disconnected .
 
     inst:Msg_cq9neg_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
         mda:concernsPatient entity:Patient_cq9_neg ;
         mda:triggeredByStructure entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
 
+    entity:FunctionalUnit_cq9neg_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
     entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
         mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
 
-    entity:Patient_cq9_neg mda:isMonitoredBy entity:Device_cq9neg_CardioHelp_00,
-            entity:Device_cq9neg_PhilipsMonitor_00 .
-
-    <https://w3id.org/mda/vocab/metric/SpO2> mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> .
+    entity:Device_cq9neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
 
     <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
 
-    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
-
     <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
-}
 
-snapshot:cq11_neg_20260101T080130 {
-    inst:Alarm_cq11neg_PhilipsMonitor_00_20260101T080030 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
-        mda:hasEnd "2026-01-01T08:01:30"^^xsd:dateTime ;
-        mda:hasLabel "PHILIPSMONITOR - Niet te leren ECG"@en ;
-        mda:hasMessage inst:Msg_cq11neg_PhilipsMonitor_00_20260101T080030 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
-        mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorNietTeLerenEcg_Medium> .
-
-    inst:Alarm_cq11neg_ServoU_00_20260101T080000 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
-        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
-        mda:hasLabel "SERVOU - Volume uit blokkade"@en ;
-        mda:hasMessage inst:Msg_cq11neg_ServoU_00_20260101T080000 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Laag> ;
-        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/ServouVolumeUitBlokkade_Laag> .
-
-    entity:FunctionalUnit_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
-
-    entity:Sensor_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic mda:hasOperationState opstate:Enabled ;
-        mda:hasSensorOperationState opstate:Enabled .
-
-    inst:Msg_cq11neg_PhilipsMonitor_00_20260101T080030 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq11_neg ;
-        mda:triggeredByStructure entity:AnatomicalPosition_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic_AnatomicalPosition,
-            entity:Signal_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic_ECG_signal .
-
-    entity:Device_cq11neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
-
-    entity:Signal_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic_ECG_signal mda:hasQualityState <https://w3id.org/mda/vocab/quality-state/Impaired> .
-
-    inst:Msg_cq11neg_ServoU_00_20260101T080000 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq11_neg .
-
-    <https://w3id.org/mda/vocab/device/MechanicalVentilator> mda:administers <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> .
-
-    <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> mda:targetsProcess <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
-
-    <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
-
-    entity:Patient_cq11_neg mda:isMonitoredBy entity:Device_cq11neg_PhilipsMonitor_00,
-            entity:Device_cq11neg_ServoU_00 .
+    entity:Patient_cq9_neg mda:isMonitoredBy entity:Device_cq9neg_PhilipsMonitor_00 .
 
     <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
 }
 
-snapshot:cq10_pos_20260101T080000 {
+snapshot:cq10_pos_20260101T080200 {
     inst:Alarm_cq10pos_DraegerMonitor_00_20260101T080000 a mda:Alarm ;
         mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
         mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
@@ -1146,25 +1265,113 @@ snapshot:cq10_pos_20260101T080000 {
         mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
         mda:isOfType <https://w3id.org/mda/alarmtype/MonitorLageSpo2_Unknown> .
 
+    entity:FunctionalUnit_cq10pos_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
     entity:SignalAnalysis_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+
+    entity:FunctionalUnit_cq10pos_DraegerMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 mda:hasOperationState opstate:Monitored .
 
     inst:Msg_cq10pos_DraegerMonitor_00_20260101T080000 a mda:AlarmMessage ;
         mda:concernsPatient entity:Patient_cq10_pos ;
         mda:triggeredByStructure entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
 
+    entity:Device_cq10pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Device_cq10pos_DraegerMonitor_00 mda:hasOperationState opstate:Enabled .
+
     entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
         mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
 
-    entity:Patient_cq10_pos mda:isMonitoredBy entity:Device_cq10pos_DraegerMonitor_00 .
-
-    <https://w3id.org/mda/vocab/metric/SpO2> mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> .
+    entity:Patient_cq10_pos mda:isMonitoredBy entity:Device_cq10pos_DraegerMonitor_00,
+            entity:Device_cq10pos_PhilipsMonitor_00 .
 
     <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
 
+    <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+
     <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
+}
+
+snapshot:cq11_pos_20260101T081630 {
+    entity:FunctionalUnit_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor mda:hasOperationState opstate:Enabled .
+
+    entity:Device_cq11pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate mda:hasOperationState opstate:Monitored .
+
+    entity:Patient_cq11_pos mda:isMonitoredBy entity:Device_cq11pos_PhilipsMonitor_00 .
+}
+
+snapshot:cq9_pos_20260101T080200 {
+    inst:Alarm_cq9pos_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
+        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
+        mda:hasLabel "PHILIPSMONITOR - SpO2 laag"@en ;
+        mda:hasMessage inst:Msg_cq9pos_PhilipsMonitor_00_20260101T080000 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
+        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
+
+    entity:SignalAnalysis_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 .
+
+    inst:Msg_cq9pos_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq9_pos ;
+        mda:triggeredByStructure entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 .
+
+    entity:FunctionalUnit_cq9pos_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral mda:hasOperationState opstate:Enabled .
+
+    entity:Device_cq9pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
+        mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
+        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
+
+    entity:Patient_cq9_pos mda:isMonitoredBy entity:Device_cq9pos_PhilipsMonitor_00 .
+
+    <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
 
     <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+
+    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
+}
+
+snapshot:cq9_pos_20260101T080930 {
+    entity:FunctionalUnit_cq9pos_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 mda:hasOperationState opstate:Monitored .
+
+    entity:Device_cq9pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Patient_cq9_pos mda:isMonitoredBy entity:Device_cq9pos_PhilipsMonitor_00 .
+}
+
+snapshot:cq11_pos_20260101T080900 {
+    entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_RespirationRate mda:hasOperationState opstate:Monitored .
+
+    entity:FunctionalUnit_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor mda:hasOperationState opstate:Enabled .
+
+    entity:Device_cq11pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate mda:hasOperationState opstate:Monitored .
+
+    entity:Patient_cq11_pos mda:isMonitoredBy entity:Device_cq11pos_PhilipsMonitor_00 .
 }
 
 snapshot:cq11_neg_20260101T080200 {
@@ -1177,13 +1384,101 @@ snapshot:cq11_neg_20260101T080200 {
         mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
         mda:isOfType <https://w3id.org/mda/alarmtype/ServouVolumeUitBlokkade_Laag> .
 
+    <https://w3id.org/mda/vocab/device/MechanicalVentilator> mda:administers <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> .
+
+    inst:Msg_cq11neg_ServoU_00_20260101T080000 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq11_neg .
+
+    <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> mda:targetsProcess <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
+
     entity:FunctionalUnit_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
 
     entity:Sensor_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic mda:hasOperationState opstate:Enabled .
 
+    <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
+
     entity:Device_cq11neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
 
-    entity:Signal_cq11neg_PhilipsMonitor_00_FU_ElectroCardiography_ElectroCardioGraphy_sensor_Thoracic_ECG_signal mda:hasQualityState <https://w3id.org/mda/vocab/quality-state/Impaired> .
+    entity:Patient_cq11_neg mda:isMonitoredBy entity:Device_cq11neg_PhilipsMonitor_00,
+            entity:Device_cq11neg_ServoU_00 .
+
+    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
+}
+
+snapshot:cq10_pos_20260101T080900 {
+    entity:FunctionalUnit_cq10pos_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
+    entity:FunctionalUnit_cq10pos_DraegerMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 mda:hasOperationState opstate:Monitored .
+
+    entity:Device_cq10pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Device_cq10pos_DraegerMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 mda:hasOperationState opstate:Monitored .
+
+    entity:Patient_cq10_pos mda:isMonitoredBy entity:Device_cq10pos_DraegerMonitor_00,
+            entity:Device_cq10pos_PhilipsMonitor_00 .
+}
+
+snapshot:cq10_pos_20260101T081630 {
+    entity:FunctionalUnit_cq10pos_DraegerMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
+    entity:Device_cq10pos_DraegerMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 mda:hasOperationState opstate:Monitored .
+
+    entity:Patient_cq10_pos mda:isMonitoredBy entity:Device_cq10pos_DraegerMonitor_00 .
+}
+
+snapshot:cq11_pos_20260101T080930 {
+    entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_RespirationRate mda:hasOperationState opstate:Monitored .
+
+    entity:FunctionalUnit_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate mda:hasOperationState opstate:Monitored .
+
+    entity:Device_cq11pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Patient_cq11_pos mda:isMonitoredBy entity:Device_cq11pos_PhilipsMonitor_00 .
+}
+
+snapshot:cq10_neg_20260101T080900 {
+    entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate mda:hasOperationState opstate:Monitored .
+
+    entity:Sensor_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor mda:hasOperationState opstate:Enabled .
+
+    entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 mda:hasOperationState opstate:Monitored .
+
+    entity:Device_cq10neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Patient_cq10_neg mda:isMonitoredBy entity:Device_cq10neg_PhilipsMonitor_00 .
+}
+
+snapshot:cq11_neg_20260101T080000 {
+    inst:Alarm_cq11neg_ServoU_00_20260101T080000 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
+        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
+        mda:hasLabel "SERVOU - Volume uit blokkade"@en ;
+        mda:hasMessage inst:Msg_cq11neg_ServoU_00_20260101T080000 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Laag> ;
+        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/ServouVolumeUitBlokkade_Laag> .
 
     <https://w3id.org/mda/vocab/device/MechanicalVentilator> mda:administers <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> .
 
@@ -1194,73 +1489,161 @@ snapshot:cq11_neg_20260101T080200 {
 
     <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
 
-    entity:Patient_cq11_neg mda:isMonitoredBy entity:Device_cq11neg_PhilipsMonitor_00,
-            entity:Device_cq11neg_ServoU_00 .
+    entity:Patient_cq11_neg mda:isMonitoredBy entity:Device_cq11neg_ServoU_00 .
 
     <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
 }
 
-snapshot:cq10_pos_20260101T080030 {
-    inst:Alarm_cq10pos_PhilipsMonitor_00_20260101T080030 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
-        mda:hasEnd "2026-01-01T08:01:30"^^xsd:dateTime ;
-        mda:hasLabel "PHILIPSMONITOR - SpO2 laag"@en ;
-        mda:hasMessage inst:Msg_cq10pos_PhilipsMonitor_00_20260101T080030 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
-        mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
-
-    entity:SignalAnalysis_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
-
-    inst:Alarm_cq10pos_DraegerMonitor_00_20260101T080000 a mda:Alarm ;
+snapshot:cq10_neg_20260101T080200 {
+    inst:Alarm_cq10neg_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
         mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
         mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
-        mda:hasLabel "Monitor - Lage SpO2"@en ;
-        mda:hasMessage inst:Msg_cq10pos_DraegerMonitor_00_20260101T080000 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Unknown> ;
+        mda:hasLabel "PHILIPSMONITOR - SpO2 laag"@en ;
+        mda:hasMessage inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080000 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
         mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/MonitorLageSpo2_Unknown> .
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
 
-    inst:Msg_cq10pos_PhilipsMonitor_00_20260101T080030 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq10_pos ;
-        mda:triggeredByStructure entity:Metric_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+    entity:SignalAnalysis_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
 
-    entity:Metric_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
+    entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate mda:hasOperationState opstate:Monitored .
+
+    entity:Sensor_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor mda:hasOperationState opstate:Enabled .
+
+    inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq10_neg ;
+        mda:triggeredByStructure entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+
+    entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
         mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
 
-    entity:SignalAnalysis_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+    entity:Device_cq10neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
 
-    inst:Msg_cq10pos_DraegerMonitor_00_20260101T080000 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq10_pos ;
-        mda:triggeredByStructure entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
-
-    entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
-        mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
-        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
-
-    entity:Patient_cq10_pos mda:isMonitoredBy entity:Device_cq10pos_DraegerMonitor_00,
-            entity:Device_cq10pos_PhilipsMonitor_00 .
-
-    <https://w3id.org/mda/vocab/metric/SpO2> mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> .
+    entity:Patient_cq10_neg mda:isMonitoredBy entity:Device_cq10neg_PhilipsMonitor_00 .
 
     <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
 
-    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
-
     <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+
+    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
 }
 
-snapshot:cq9_pos_20260101T080030 {
-    inst:Alarm_cq9pos_PhilipsMonitor_00_20260101T080030 a mda:Alarm ;
-        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
+snapshot:cq9_neg_20260101T080200 {
+    inst:Alarm_cq9neg_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
+        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
+        mda:hasLabel "PHILIPSMONITOR - SpO2 laag"@en ;
+        mda:hasMessage inst:Msg_cq9neg_PhilipsMonitor_00_20260101T080000 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
+        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
+
+    entity:SignalAnalysis_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+
+    inst:Msg_cq9neg_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq9_neg ;
+        mda:triggeredByStructure entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+
+    entity:Component_cq9neg_CardioHelp_00_ConnectionUnit mda:hasOperationState opstate:Disconnected .
+
+    entity:FunctionalUnit_cq9neg_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
+    entity:Device_cq9neg_CardioHelp_00 mda:hasOperationState opstate:Disconnected .
+
+    entity:Device_cq9neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
+        mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
+        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
+
+    entity:Patient_cq9_neg mda:isMonitoredBy entity:Device_cq9neg_CardioHelp_00,
+            entity:Device_cq9neg_PhilipsMonitor_00 .
+
+    <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
+
+    <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+
+    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
+}
+
+snapshot:cq10_neg_20260101T080030 {
+    inst:Alarm_cq10neg_PhilipsMonitor_00_20260101T080030 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
         mda:hasEnd "2026-01-01T08:01:30"^^xsd:dateTime ;
-        mda:hasLabel "PHILIPSMONITOR - Storing in SpO2"@en ;
-        mda:hasMessage inst:Msg_cq9pos_PhilipsMonitor_00_20260101T080030 ;
+        mda:hasLabel "PHILIPSMONITOR - HF hoog"@en ;
+        mda:hasMessage inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080030 ;
         mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
         mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorStoringInSpo2_Medium> .
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorHfHoog_Medium> .
 
+    entity:SignalAnalysis_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis mda:producesMetric entity:Metric_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
+
+    inst:Alarm_cq10neg_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
+        mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
+        mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
+        mda:hasLabel "PHILIPSMONITOR - SpO2 laag"@en ;
+        mda:hasMessage inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080000 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
+        mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
+
+    inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080030 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq10_neg ;
+        mda:triggeredByStructure entity:Metric_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
+
+    entity:SignalAnalysis_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+
+    entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor mda:hasOperationState opstate:Enabled .
+
+    inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
+        mda:concernsPatient entity:Patient_cq10_neg ;
+        mda:triggeredByStructure entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 .
+
+    entity:FunctionalUnit_cq10neg_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate a <https://w3id.org/mda/vocab/metric/HeartRate> ;
+        mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> ;
+        mda:hasOperationState opstate:Monitored ;
+        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Increased> .
+
+    entity:Sensor_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
+
+    <https://w3id.org/mda/vocab/organ/Heart> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/CardioVascular> .
+
+    <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> mda:presentIn <https://w3id.org/mda/vocab/organ/Heart> .
+
+    <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> .
+
+    entity:Device_cq10neg_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
+        mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
+        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
+
+    entity:Patient_cq10_neg mda:isMonitoredBy entity:Device_cq10neg_PhilipsMonitor_00 .
+
+    <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
+
+    <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+
+    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
+}
+
+snapshot:cq9_pos_20260101T080000 {
     inst:Alarm_cq9pos_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
         mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
         mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
@@ -1270,100 +1653,91 @@ snapshot:cq9_pos_20260101T080030 {
         mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
         mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorSpo2Laag_Medium> .
 
-    inst:Msg_cq9pos_PhilipsMonitor_00_20260101T080030 a mda:AlarmMessage ;
-        mda:concernsPatient entity:Patient_cq9_pos ;
-        mda:triggeredByStructure entity:AnatomicalPosition_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_AnatomicalPosition,
-            entity:Signal_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform .
-
-    entity:FunctionalUnit_cq9pos_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
-
-    entity:Sensor_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral mda:hasOperationState opstate:Enabled ;
-        mda:hasSensorOperationState opstate:Enabled .
-
     entity:SignalAnalysis_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis mda:producesMetric entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 .
-
-    entity:Signal_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform mda:hasQualityState <https://w3id.org/mda/vocab/quality-state/Impaired> .
-
-    entity:Device_cq9pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
 
     inst:Msg_cq9pos_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
         mda:concernsPatient entity:Patient_cq9_pos ;
         mda:triggeredByStructure entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 .
 
+    entity:FunctionalUnit_cq9pos_PhilipsMonitor_00_FU_PulseOximetry mda:hasOperationState opstate:Enabled .
+
+    entity:Sensor_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral mda:hasOperationState opstate:Enabled .
+
+    entity:Device_cq9pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
     entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
+        mda:hasOperationState opstate:Monitored ;
         mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
 
     entity:Patient_cq9_pos mda:isMonitoredBy entity:Device_cq9pos_PhilipsMonitor_00 .
 
-    <https://w3id.org/mda/vocab/metric/SpO2> mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> .
-
     <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
 
-    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
-
     <https://w3id.org/mda/vocab/physiological-property/SaO2> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+
+    <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
 }
 
-snapshot:cq11_pos_20260101T080030 {
-    inst:Alarm_cq11pos_ServoU_00_20260101T080030 a mda:Alarm ;
+snapshot:cq11_pos_20260101T080130 {
+    inst:Alarm_cq11pos_PhilipsMonitor_00_20260101T080030 a mda:Alarm ;
         mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
         mda:hasEnd "2026-01-01T08:01:30"^^xsd:dateTime ;
-        mda:hasLabel "SERVOU - Ademfrequentie laag"@en ;
-        mda:hasMessage inst:Msg_cq11pos_ServoU_00_20260101T080030 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Unknown> ;
+        mda:hasLabel "PHILIPSMONITOR - Apneu"@en ;
+        mda:hasMessage inst:Msg_cq11pos_PhilipsMonitor_00_20260101T080030 ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Hoog> ;
         mda:hasStart "2026-01-01T08:00:30"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/ServouAdemfrequentieLaag_Unknown> .
-
-    entity:SignalAnalysis_cq11pos_ServoU_00_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis mda:producesMetric entity:Metric_cq11pos_ServoU_00_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis_RespirationRate .
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorApneu_Hoog> .
 
     inst:Alarm_cq11pos_PhilipsMonitor_00_20260101T080000 a mda:Alarm ;
         mda:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
         mda:hasEnd "2026-01-01T08:02:00"^^xsd:dateTime ;
-        mda:hasLabel "PHILIPSMONITOR - Lage hartfreq."@en ;
+        mda:hasLabel "PHILIPSMONITOR - Asystolie"@en ;
         mda:hasMessage inst:Msg_cq11pos_PhilipsMonitor_00_20260101T080000 ;
-        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Medium> ;
+        mda:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Hoog> ;
         mda:hasStart "2026-01-01T08:00:00"^^xsd:dateTime ;
-        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorLageHartfreq_Medium> .
+        mda:isOfType <https://w3id.org/mda/alarmtype/PhilipsmonitorAsystolie_Hoog> .
 
-    inst:Msg_cq11pos_ServoU_00_20260101T080030 a mda:AlarmMessage ;
+    inst:Msg_cq11pos_PhilipsMonitor_00_20260101T080030 a mda:AlarmMessage ;
         mda:concernsPatient entity:Patient_cq11_pos ;
-        mda:triggeredByStructure entity:Metric_cq11pos_ServoU_00_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis_RespirationRate .
-
-    <https://w3id.org/mda/vocab/metric/RespirationRate> mda:approximates <https://w3id.org/mda/vocab/physiological-property/RespirationRate> .
-
-    entity:Metric_cq11pos_ServoU_00_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis_RespirationRate a <https://w3id.org/mda/vocab/metric/RespirationRate> ;
-        mda:approximates <https://w3id.org/mda/vocab/physiological-property/RespirationRate> ;
-        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
-
-    entity:SignalAnalysis_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis mda:producesMetric entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
+        mda:triggeredByStructure entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_RespirationRate .
 
     <https://w3id.org/mda/vocab/physiological-property/RespirationRate> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
+
+    entity:SignalAnalysis_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis mda:producesMetric entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate,
+            entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_RespirationRate .
 
     inst:Msg_cq11pos_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
         mda:concernsPatient entity:Patient_cq11_pos ;
         mda:triggeredByStructure entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate .
 
-    <https://w3id.org/mda/vocab/device/MechanicalVentilator> mda:administers <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> .
+    entity:FunctionalUnit_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography mda:hasOperationState opstate:Enabled .
 
-    entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate a <https://w3id.org/mda/vocab/metric/HeartRate> ;
-        mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> ;
-        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
+    entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_RespirationRate a <https://w3id.org/mda/vocab/metric/RespirationRate> ;
+        mda:approximates <https://w3id.org/mda/vocab/physiological-property/RespirationRate> ;
+        mda:hasOperationState opstate:Monitored ;
+        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Absent> .
 
-    <https://w3id.org/mda/vocab/metric/HeartRate> mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> .
+    entity:Sensor_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor mda:hasOperationState opstate:Enabled .
 
     <https://w3id.org/mda/vocab/organ/Heart> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/CardioVascular> .
 
-    <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> mda:presentIn <https://w3id.org/mda/vocab/organ/Heart> .
+    <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> mda:hasClinicalEvent <https://w3id.org/mda/vocab/clinical-event/CardiacArrest> ;
+        mda:presentIn <https://w3id.org/mda/vocab/organ/Heart> .
 
-    <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> mda:targetsProcess <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
-
-    <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
+    <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> mda:hasClinicalEvent <https://w3id.org/mda/vocab/clinical-event/RespiratoryArrest> ;
+        mda:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
 
     <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> mda:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/CardiacContraction> .
 
-    entity:Patient_cq11_pos mda:isMonitoredBy entity:Device_cq11pos_PhilipsMonitor_00,
-            entity:Device_cq11pos_ServoU_00 .
+    entity:Device_cq11pos_PhilipsMonitor_00 mda:hasOperationState opstate:Enabled .
+
+    entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate a <https://w3id.org/mda/vocab/metric/HeartRate> ;
+        mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> ;
+        mda:hasOperationState opstate:Monitored ;
+        mda:hasRate <https://w3id.org/mda/vocab/metric-rate/Absent> .
+
+    entity:Patient_cq11_pos mda:isMonitoredBy entity:Device_cq11pos_PhilipsMonitor_00 .
 
     <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
 }

@@ -17,6 +17,7 @@
 @prefix organSystem: <https://w3id.org/mda/vocab/organ-system/> .
 @prefix patient:    <https://w3id.org/mda/vocab/patient/> .
 @prefix therapeuticModality: <https://w3id.org/mda/vocab/therapeutic-modality/> .
+@prefix clinicalEvent: <https://w3id.org/mda/vocab/clinical-event/> .
 @prefix metricPhase: <https://w3id.org/mda/vocab/metric-phase/> .
 @prefix metricRate: <https://w3id.org/mda/vocab/metric-rate/> .
 @prefix rhythm:     <https://w3id.org/mda/vocab/rhythm/> .
@@ -404,3 +405,13 @@ rhythm:Rhythm               a skos:Concept ;
                             "Het ritmepatroon van een metriek waarop een alarmconditie van toepassing is, zoals onregelmatig."@nl ;
     skos:notation           "Rhythm" .
 
+
+############################################################
+# Clinical Event scheme — MOVED to seed/clinicalEvent_vocab.ttl
+#
+# Not a CSV-annotation scheme like the ones above it (no CSV column names a
+# clinical event directly), and — unlike every other concept in this file —
+# it must be loaded directly by op_knowledge.py's load_kb(), which never
+# parses vocab_base.ttl at all. See clinicalEvent_vocab.ttl's own header
+# for the full reasoning.
+############################################################

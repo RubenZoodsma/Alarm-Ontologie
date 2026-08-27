@@ -1,0 +1,14 @@
+@prefix ns1: <https://w3id.org/mda/ontology#> .
+
+<https://w3id.org/mda/instance/ClinicalEvent_CardioRespiratoryArrest_cat3a_pos_20260101T080030> a ns1:ClinicalEvent,
+        <https://w3id.org/mda/vocab/clinical-event/CardioRespiratoryArrest> ;
+    ns1:concernsPatient <https://w3id.org/mda/entity/Patient_cat3a_pos> ;
+    ns1:evidencedBy <https://w3id.org/mda/vocab/physiological-process/CardiacContraction>,
+        <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
+
+<https://w3id.org/mda/instance/ClinicalEvent_CardioRespiratoryArrest_cat3c_20260101T080030> a ns1:ClinicalEvent,
+        <https://w3id.org/mda/vocab/clinical-event/CardioRespiratoryArrest> ;
+    ns1:concernsPatient <https://w3id.org/mda/entity/Patient_cat3c> ;
+    ns1:evidencedBy <https://w3id.org/mda/vocab/physiological-process/CardiacContraction>,
+        <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
+

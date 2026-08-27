@@ -19,7 +19,7 @@ cannot silently drop the other).
 
 Method
 ------
-Load ontology.ttl + vocab_base.ttl + vocab_generated.ttl + inference.ttl +
+Load ontology.ttl + vocab_base.ttl + clinicalEvent_vocab.ttl + vocab_generated.ttl + inference.ttl +
 kg_generated.ttl, materialise the OWL-RL closure once (real reasoner,
 owlrl), then for each mda:AlarmType walk every object-property edge
 reachable from its own IRI, with no pruning — same shape as
@@ -74,8 +74,10 @@ ROOT = SCRIPT_DIR.parent.parent   # CODE/evaluation_qa -> CODE -> repo root
 FRAMEWORK_DIR = ROOT / "FRAMEWORK"
 ONTOLOGY   = FRAMEWORK_DIR / "ONTOLOGY" / "ontology.ttl"
 VOCAB_BASE = FRAMEWORK_DIR / "VOCABULARY" / "seed" / "vocab_base.ttl"
+CLINICAL_EVENT_VOCAB = FRAMEWORK_DIR / "VOCABULARY" / "seed" / "clinicalEvent_vocab.ttl"
 VOCAB      = FRAMEWORK_DIR / "VOCABULARY" / "vocab_generated.ttl"
 INFERENCE  = FRAMEWORK_DIR / "KNOWLEDGE_BASE" / "inference.ttl"
+CLINICAL_EVENTS = FRAMEWORK_DIR / "KNOWLEDGE_BASE" / "clinicalEvents.ttl"
 CATALOGUE  = FRAMEWORK_DIR / "KNOWLEDGE_BASE" / "kg_generated.ttl"
 # Published straight to the site's own Knowledge Graphs page, not a separate
 # QA-only copy — this report IS that page now, not a staging draft of it.
@@ -160,7 +162,7 @@ def local(iri) -> str:
 
 def load_reasoned_graph() -> Graph:
     g = Graph()
-    for f in (ONTOLOGY, VOCAB_BASE, VOCAB, INFERENCE, CATALOGUE):
+    for f in (ONTOLOGY, VOCAB_BASE, CLINICAL_EVENT_VOCAB, VOCAB, INFERENCE, CLINICAL_EVENTS, CATALOGUE):
         g.parse(f, format="turtle")
     owlrl.DeductiveClosure(owlrl.OWLRL_Semantics).expand(g)
     return g

@@ -17,10 +17,17 @@ the clinical axioms, or the alarm catalogue.
 
 Usage
 -----
-  python3 op_visual.py             build, then open in the default browser
+  python3 op_visual.py             build the CAT1/CAT2/CAT3 ground-truth pairs (default dataset,
+                                    hardcoded below so the VS Code Run button needs no CLI args),
+                                    then open in the browser — 10 hand-fabricated pos/neg patients,
+                                    see DATA/CAT_evaluation/README.md. Output: op_visual_CAT_evaluation.html
   python3 op_visual.py --no-open   build only (for scripted runs)
+  python3 op_visual.py --dataset ../../../DATA/POC_EVENTS/events_data.csv
+                                    build the main corpus instead — output goes to op_visual.html,
+                                    never clobbering the CAT_evaluation page.
 """
 
+import argparse
 import json
 import sys
 import webbrowser
@@ -34,6 +41,13 @@ import op_knowledge as K
 from graph_view import to_mermaid, legend_html
 
 OUT = K.ROOT / "EVALUATION" / "MDA-POC" / "op_visual.html"
+
+# Hardcoded, not just an argparse default a shell caller could not see:
+# the VS Code Run button executes this file with no CLI args, so the
+# dataset actually opened by "just hit Run" lives here, not in a launch.json
+# argv the button doesn't pass. Swap this line to point Run at a different
+# dataset; --dataset still overrides it for one-off invocations.
+DEFAULT_DATASET = K.ROOT / "DATA" / "CAT_evaluation" / "events_data.csv"
 
 
 # ── Simulation → view model ───────────────────────────────────────────────────
@@ -384,8 +398,21 @@ buildPatients(); buildRibbon(); draw();
 
 
 def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--dataset", type=Path, default=DEFAULT_DATASET,
+                     help="Events CSV to visualize (default: DATA/CAT_evaluation/events_data.csv)")
+    ap.add_argument("--no-open", action="store_true", help="build only, do not launch a browser")
+    args = ap.parse_args()
+
+    # Output file name tracks dataset IDENTITY, not which one is the argparse
+    # default: only POC_EVENTS (K.EVENTS) keeps the plain op_visual.html name;
+    # every other dataset — including the CAT_evaluation ground-truth pairs
+    # this file now defaults to — gets its own op_visual_<folder>.html, so
+    # switching the default above never overwrites the other's page.
+    out = OUT if args.dataset == K.EVENTS else OUT.with_name(f"op_visual_{args.dataset.parent.name}.html")
+
     kb = K.load_kb()
-    events = K.load_events()
+    events = K.load_events(args.dataset)
     groups = K.group_by_patient(events)
 
     unknown = sorted({e.label for e in events if e.label not in kb.type_index})
@@ -433,17 +460,17 @@ def main() -> None:
             .replace("__LEGEND__", legend_html())
             .replace("__NPAT__", str(len(groups)))
             .replace("__NEV__", str(len(events))))
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(page, encoding="utf-8")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(page, encoding="utf-8")
 
     size_kb = len(page) // 1024
-    print(f"\n[output] {OUT.name}  ({size_kb} KB, self-contained)")
+    print(f"\n[output] {out.name}  ({size_kb} KB, self-contained)")
 
-    if "--no-open" in sys.argv:
-        print(f"[open]   {OUT}")
+    if args.no_open:
+        print(f"[open]   {out}")
     else:
-        webbrowser.open(OUT.as_uri())
-        print(f"[open]   launched in your browser — {OUT}")
+        webbrowser.open(out.as_uri())
+        print(f"[open]   launched in your browser — {out}")
 
 
 if __name__ == "__main__":

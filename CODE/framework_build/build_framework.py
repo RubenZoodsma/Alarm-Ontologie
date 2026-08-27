@@ -84,10 +84,12 @@ ROOT            = SCRIPT_DIR.parent.parent   # CODE/framework_build -> CODE -> R
 FRAMEWORK_DIR   = ROOT / "FRAMEWORK"
 ONTOLOGY_PATH   = FRAMEWORK_DIR / "ONTOLOGY" / "ontology.ttl"
 VOCAB_BASE_PATH = FRAMEWORK_DIR / "VOCABULARY" / "seed" / "vocab_base.ttl"
+CLINICAL_EVENT_VOCAB_PATH = FRAMEWORK_DIR / "VOCABULARY" / "seed" / "clinicalEvent_vocab.ttl"
 CSV_PATH        = ROOT / "DATA" / "ANNOTATION" / "consensus" / "p75_annotated.csv"
 VOCAB_OUT_PATH  = FRAMEWORK_DIR / "VOCABULARY" / "vocab_generated.ttl"
 KG_OUT_PATH     = FRAMEWORK_DIR / "KNOWLEDGE_BASE" / "kg_generated.ttl"
 INFERENCE_PATH  = FRAMEWORK_DIR / "KNOWLEDGE_BASE" / "inference.ttl"
+CLINICAL_EVENTS_PATH = FRAMEWORK_DIR / "KNOWLEDGE_BASE" / "clinicalEvents.ttl"
 
 # ── Namespaces ────────────────────────────────────────────────────────────────
 
@@ -837,7 +839,40 @@ def build_alarmtype_triples(row: pd.Series, kg: Graph, ref: Graph, index: dict,
         # remains the fallback for rows where the CSV names no modality at
         # all (this branch never reaches here in that case — see above).
         parent_out, child_in = out[parent_cls], nodes[cls]
-        target = ref if (_is_shared(parent_out) and _is_shared(child_in)) else kg
+
+        # A Stateful parent (mda:Metric) never gets an outgoing link written
+        # to `ref`, even when concept<->concept dedup would otherwise apply
+        # (a plain, unrefined metric like HeartRate has no identity leaves,
+        # so out[Metric] collapses to the bare concept IRI — see the
+        # "stateful" branch above — and PhysiologicalProperty is
+        # "referential" by this function's own default for an untagged
+        # class, so both sides register as _is_shared() and used to pass).
+        # Stateful is documented (ontology.ttl's node-kind section) as "a
+        # hinge: its identity is a pre-coordinated universal concept, but
+        # each alarm attaches its OWN state" — a per-row leaf like
+        # mda:approximates is exactly that per-alarm state, not a universal
+        # fact about the concept, and inference.ttl's own class-restriction
+        # axiom (metric:HeartRate rdfs:subClassOf [hasValue(approximates,
+        # ElectricalHeartRate)]) already derives it, per-instance, at
+        # reasoning time — writing it again here statically onto the bare
+        # concept is not just redundant (visibly duplicated in op_visual.py's
+        # diagrams: the per-alarm particular's own approximates edge AND a
+        # second one via rdf:type -> concept -> approximates -> same target)
+        # but actively wrong: it makes metric:HeartRate itself satisfy
+        # mda:approximates's rdfs:domain mda:Metric (prp-dom), so OWL-RL
+        # treats the SHARED CONCEPT as a Metric individual in its own right —
+        # confirmed to let CODE/evaluation_poc's CardiacArrestCondition/
+        # RespiratoryArrestCondition axioms (FRAMEWORK/KNOWLEDGE_BASE/
+        # clinicalEvents.ttl) misclassify physiologicalProcess:
+        # CardiacContraction/PulmonaryVentilation as carrying
+        # mda:impliesClinicalEvent, not just the triggering alarm's own Metric
+        # particular. Same failure mode build_administers_map()'s docstring
+        # above already documents and fixes for mda:administers/
+        # hasOperationState/hasTherapyDeliveryQuality — never generalised to
+        # mda:approximates/isPropertyOf until now.
+        parent_stateful = node_kind.get(parent_cls) == "stateful"
+        target = kg if parent_stateful else (
+            ref if (_is_shared(parent_out) and _is_shared(child_in)) else kg)
         target.add((parent_out, prop, child_in))
 
         # Marker co-types stamped by the connecting property (mda:targetType),
@@ -922,6 +957,11 @@ def main() -> None:
     onto.parse(ONTOLOGY_PATH, format="turtle")
     base = Graph()
     base.parse(VOCAB_BASE_PATH, format="turtle")
+    # Clinical Event scheme lives in its own hand-authored file (see that
+    # file's own header) — parsed into the SAME `base` graph so the
+    # notation-duplicate check below sees it as "already registered" too,
+    # even though no CSV column ever contests these notations in practice.
+    base.parse(CLINICAL_EVENT_VOCAB_PATH, format="turtle")
     inference = Graph()
     inference.parse(INFERENCE_PATH, format="turtle")
 

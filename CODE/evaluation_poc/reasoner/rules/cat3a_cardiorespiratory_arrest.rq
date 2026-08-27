@@ -1,0 +1,43 @@
+# CAT3a: If a cardiac arrest and a respiratory arrest are both currently
+# reported, they collectively convey a cardiorespiratory arrest.
+#
+# No ?alarm anchor, deliberately — this does not distinguish "the arriving
+# alarm" from "an already-active one" the way CAT1b/CAT2a/an earlier
+# version of this rule did. The two impliesClinicalEvent tags are independent
+# facts: wherever each one currently sits (mda:Metric today; see
+# ontology.ttl's "RECONSIDERED, REJECTED" note on why impliesClinicalEvent's
+# domain stays mda:Metric, not mda:PhysiologicalProcess), this rule only
+# asks whether the merged graph — background + situational + whatever the
+# arriving alarm just contributed, exactly what assess.py already builds
+# for every rule — currently contains both. No technical-pathway walk, no
+# device/pathway scoping: two alarms conveying these on completely
+# unrelated equipment still collectively convey a cardiorespiratory arrest.
+#
+# Because impliesClinicalEvent has zero persistence (situational-tagged, gone
+# the instant its own alarm ends — see clinicalEvents.ttl's header), a
+# match here means genuine temporal OVERLAP, not proximity: both
+# conditions are being actively reported at this exact instant.
+#
+# Fires on EVERY arrival for as long as both conditions remain true, not
+# just once at the moment they first coincide — assess.py has no per-rule
+# state to suppress a repeat match, and this rule has no arrival-order
+# anchor to make "first" a well-defined moment even if it tried. Collapsing
+# repeat firings into one CardioRespiratoryArrest node per genuine episode
+# is handled in mda_poc_assessment.py's minting step (deduplicated on the
+# same (cardiacNode, respiratoryNode) pair), not here — keeping this query
+# a pure, stateless "is it true right now" check.
+#
+# Validated against DATA/CAT_evaluation (cat3a_pos: Asystolie 08:00:00-
+# 08:01:00 and Apneu 08:00:30-08:01:30, a genuine 30s overlap; cat3a_neg:
+# Asystolie 08:00:00-08:00:20, Apneu arrives 08:00:40, no overlap; cat3c:
+# same overlap as cat3a_pos with the arrival order swapped, confirming
+# order genuinely does not matter now that there is no arrival anchor) —
+# see cat_rules_report.md.
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+PREFIX clinicalEvent: <https://w3id.org/mda/vocab/clinical-event/>
+
+SELECT ?cardiacNode ?respiratoryNode WHERE {
+  ?cardiacNode mda:impliesClinicalEvent clinicalEvent:CardiacArrest .
+  ?respiratoryNode mda:impliesClinicalEvent clinicalEvent:RespiratoryArrest .
+}

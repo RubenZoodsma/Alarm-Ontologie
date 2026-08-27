@@ -85,9 +85,10 @@ STAGE_ORDER = ["pre_enrichment", "post_enrichment", "temporal"]
 ONTOLOGY = FRAMEWORK_DIR / "ONTOLOGY" / "ontology.ttl"
 VOCAB = FRAMEWORK_DIR / "VOCABULARY" / "vocab_generated.ttl"
 INFERENCE = FRAMEWORK_DIR / "KNOWLEDGE_BASE" / "inference.ttl"
+CLINICAL_EVENTS = FRAMEWORK_DIR / "KNOWLEDGE_BASE" / "clinicalEvents.ttl"
 CATALOGUE = FRAMEWORK_DIR / "KNOWLEDGE_BASE" / "kg_generated.ttl"
 
-TBOX_FILES = [ONTOLOGY, VOCAB, INFERENCE]
+TBOX_FILES = [ONTOLOGY, VOCAB, INFERENCE, CLINICAL_EVENTS]
 BASE_FILES = TBOX_FILES + [CATALOGUE]
 
 # Rendered report tables are capped to keep the Markdown skimmable; the full

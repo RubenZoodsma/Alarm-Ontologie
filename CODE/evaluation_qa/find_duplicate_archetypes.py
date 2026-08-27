@@ -75,6 +75,7 @@ FRAMEWORK_DIR = ROOT / "FRAMEWORK"
 ONTOLOGY = FRAMEWORK_DIR / "ONTOLOGY" / "ontology.ttl"
 VOCAB = FRAMEWORK_DIR / "VOCABULARY" / "vocab_generated.ttl"
 INFERENCE = FRAMEWORK_DIR / "KNOWLEDGE_BASE" / "inference.ttl"
+CLINICAL_EVENTS = FRAMEWORK_DIR / "KNOWLEDGE_BASE" / "clinicalEvents.ttl"
 CATALOGUE = FRAMEWORK_DIR / "KNOWLEDGE_BASE" / "kg_generated.ttl"
 REPORT = ROOT / "EVALUATION" / "FRAMEWORK_QA" / "duplicate_archetypes_report.md"
 
@@ -131,7 +132,7 @@ ORDER BY ?label
 
 def load_reasoned_graph() -> Graph:
     g = Graph()
-    for f in (ONTOLOGY, VOCAB, INFERENCE, CATALOGUE):
+    for f in (ONTOLOGY, VOCAB, INFERENCE, CLINICAL_EVENTS, CATALOGUE):
         g.parse(f, format="turtle")
     owlrl.DeductiveClosure(owlrl.OWLRL_Semantics).expand(g)
     return g

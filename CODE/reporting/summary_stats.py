@@ -287,6 +287,7 @@ def alarm_representation_stats() -> dict:
     onto = Graph(); onto.parse(R.ONTOLOGY_PATH, format="turtle")
     base = Graph(); base.parse(R.VOCAB_BASE_PATH, format="turtle")
     inference = Graph(); inference.parse(R.INFERENCE_PATH, format="turtle")
+    inference.parse(R.CLINICAL_EVENTS_PATH, format="turtle")
 
     df_after = pd.read_csv(R.CSV_PATH, sep=";", dtype=str)
     df_after.columns = df_after.columns.str.strip()

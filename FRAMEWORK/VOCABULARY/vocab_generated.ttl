@@ -1038,8 +1038,7 @@ metric:AirTemperature a skos:Concept ;
     skos:inScheme metric:Scheme ;
     skos:notation "AirTemperature" ;
     skos:prefLabel "Air Temperature"@en,
-        "Air Temperature"@nl ;
-    mda:approximates physiologicalProperty:Temperature .
+        "Air Temperature"@nl .
 
 metric:AirwayPressure_EndExpiratory a skos:Concept ;
     rdfs:subClassOf metric:AirwayPressure ;
@@ -1051,7 +1050,6 @@ metric:AirwayPressure_EndExpiratory a skos:Concept ;
     skos:inScheme metric:Scheme ;
     skos:notation "AirwayPressure_EndExpiratory" ;
     skos:prefLabel "Airway Pressure_End Expiratory"@en ;
-    mda:approximates physiologicalProperty:RespirationPressure ;
     mda:hasPhase metricPhase:EndExpiratory .
 
 metric:ArterialBloodPressure_Mean a skos:Concept ;
@@ -1064,7 +1062,6 @@ metric:ArterialBloodPressure_Mean a skos:Concept ;
     skos:inScheme metric:Scheme ;
     skos:notation "ArterialBloodPressure_Mean" ;
     skos:prefLabel "Arterial Blood Pressure_Mean"@en ;
-    mda:approximates physiologicalProperty:ArterialPressure ;
     mda:hasPhase metricPhase:Mean .
 
 metric:CO2 a skos:Concept ;
@@ -1095,8 +1092,7 @@ metric:HeartRate a skos:Concept ;
     skos:inScheme metric:Scheme ;
     skos:notation "HeartRate" ;
     skos:prefLabel "Heart Rate"@en,
-        "Heart Rate"@nl ;
-    mda:approximates physiologicalProperty:ElectricalHeartRate .
+        "Heart Rate"@nl .
 
 metric:Humidity a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
@@ -1106,8 +1102,7 @@ metric:Humidity a skos:Concept ;
     skos:inScheme metric:Scheme ;
     skos:notation "Humidity" ;
     skos:prefLabel "Humidity"@en,
-        "Humidity"@nl ;
-    mda:approximates physiologicalProperty:Humidity .
+        "Humidity"@nl .
 
 metric:Pulse a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
@@ -1127,8 +1122,7 @@ metric:PulseFlowIndex a skos:Concept ;
     skos:inScheme metric:Scheme ;
     skos:notation "PulseFlowIndex" ;
     skos:prefLabel "Pulse Flow Index"@en,
-        "Pulse Flow Index"@nl ;
-    mda:approximates physiologicalProperty:TissuePerfusion .
+        "Pulse Flow Index"@nl .
 
 metric:PulseRate a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
@@ -1148,8 +1142,7 @@ metric:RespirationRate a skos:Concept ;
     skos:inScheme metric:Scheme ;
     skos:notation "RespirationRate" ;
     skos:prefLabel "Respiration Rate"@en,
-        "Respiration Rate"@nl ;
-    mda:approximates physiologicalProperty:RespirationRate .
+        "Respiration Rate"@nl .
 
 metric:RespirationVolume_Minute a skos:Concept ;
     rdfs:subClassOf metric:RespirationVolume ;
@@ -1161,7 +1154,6 @@ metric:RespirationVolume_Minute a skos:Concept ;
     skos:inScheme metric:Scheme ;
     skos:notation "RespirationVolume_Minute" ;
     skos:prefLabel "Respiration Volume_Minute"@en ;
-    mda:approximates physiologicalProperty:RespirationVolume ;
     mda:hasPhase metricPhase:Minute .
 
 metric:RespirationVolume_Tidal a skos:Concept ;
@@ -1174,7 +1166,6 @@ metric:RespirationVolume_Tidal a skos:Concept ;
     skos:inScheme metric:Scheme ;
     skos:notation "RespirationVolume_Tidal" ;
     skos:prefLabel "Respiration Volume_Tidal"@en ;
-    mda:approximates physiologicalProperty:RespirationVolume ;
     mda:hasPhase metricPhase:Tidal .
 
 metric:RespiratoryRate a skos:Concept ;
@@ -1195,8 +1186,7 @@ metric:SpO2 a skos:Concept ;
     skos:inScheme metric:Scheme ;
     skos:notation "SpO2" ;
     skos:prefLabel "Sp O2"@en,
-        "Sp O2"@nl ;
-    mda:approximates physiologicalProperty:SaO2 .
+        "Sp O2"@nl .
 
 metric:Temperature a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
@@ -1216,8 +1206,7 @@ metric:VenousBloodPressure a skos:Concept ;
     skos:inScheme metric:Scheme ;
     skos:notation "VenousBloodPressure" ;
     skos:prefLabel "Venous Blood Pressure"@en,
-        "Venous Blood Pressure"@nl ;
-    mda:approximates physiologicalProperty:VenousPressure .
+        "Venous Blood Pressure"@nl .
 
 metric:VenousPressure a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
@@ -1293,6 +1282,15 @@ opstate:Malfunction a skos:Concept ;
     skos:notation "Malfunction" ;
     skos:prefLabel "Malfunction"@en,
         "Malfunction"@nl .
+
+opstate:Monitored a skos:Concept ;
+    skos:broader opstate:OperationState ;
+    skos:definition "Monitored"@en,
+        "Monitored"@nl ;
+    skos:inScheme opstate:Scheme ;
+    skos:notation "Monitored" ;
+    skos:prefLabel "Monitored"@en,
+        "Monitored"@nl .
 
 opstate:Warning a skos:Concept ;
     skos:broader opstate:OperationState ;
@@ -1453,6 +1451,36 @@ physiologicalProcess:VenousCirculation a skos:Concept ;
     skos:prefLabel "Venous Circulation"@en,
         "Venous Circulation"@nl .
 
+physiologicalProperty:ArterialPressure a skos:Concept ;
+    rdfs:subClassOf mda:PhysiologicalProperty ;
+    skos:broader physiologicalProperty:PhysiologicalProperty ;
+    skos:definition "Arterial Pressure"@en,
+        "Arterial Pressure"@nl ;
+    skos:inScheme physiologicalProperty:Scheme ;
+    skos:notation "ArterialPressure" ;
+    skos:prefLabel "Arterial Pressure"@en,
+        "Arterial Pressure"@nl .
+
+physiologicalProperty:ElectricalHeartRate a skos:Concept ;
+    rdfs:subClassOf mda:PhysiologicalProperty ;
+    skos:broader physiologicalProperty:PhysiologicalProperty ;
+    skos:definition "Electrical Heart Rate"@en,
+        "Electrical Heart Rate"@nl ;
+    skos:inScheme physiologicalProperty:Scheme ;
+    skos:notation "ElectricalHeartRate" ;
+    skos:prefLabel "Electrical Heart Rate"@en,
+        "Electrical Heart Rate"@nl .
+
+physiologicalProperty:Humidity a skos:Concept ;
+    rdfs:subClassOf mda:PhysiologicalProperty ;
+    skos:broader physiologicalProperty:PhysiologicalProperty ;
+    skos:definition "Humidity"@en,
+        "Humidity"@nl ;
+    skos:inScheme physiologicalProperty:Scheme ;
+    skos:notation "Humidity" ;
+    skos:prefLabel "Humidity"@en,
+        "Humidity"@nl .
+
 physiologicalProperty:PaCO2 a skos:Concept ;
     rdfs:subClassOf mda:PhysiologicalProperty ;
     skos:broader physiologicalProperty:PhysiologicalProperty ;
@@ -1472,6 +1500,76 @@ physiologicalProperty:PulseRate a skos:Concept ;
     skos:notation "PulseRate" ;
     skos:prefLabel "Pulse Rate"@en,
         "Pulse Rate"@nl .
+
+physiologicalProperty:RespirationPressure a skos:Concept ;
+    rdfs:subClassOf mda:PhysiologicalProperty ;
+    skos:broader physiologicalProperty:PhysiologicalProperty ;
+    skos:definition "Respiration Pressure"@en,
+        "Respiration Pressure"@nl ;
+    skos:inScheme physiologicalProperty:Scheme ;
+    skos:notation "RespirationPressure" ;
+    skos:prefLabel "Respiration Pressure"@en,
+        "Respiration Pressure"@nl .
+
+physiologicalProperty:RespirationRate a skos:Concept ;
+    rdfs:subClassOf mda:PhysiologicalProperty ;
+    skos:broader physiologicalProperty:PhysiologicalProperty ;
+    skos:definition "Respiration Rate"@en,
+        "Respiration Rate"@nl ;
+    skos:inScheme physiologicalProperty:Scheme ;
+    skos:notation "RespirationRate" ;
+    skos:prefLabel "Respiration Rate"@en,
+        "Respiration Rate"@nl .
+
+physiologicalProperty:RespirationVolume a skos:Concept ;
+    rdfs:subClassOf mda:PhysiologicalProperty ;
+    skos:broader physiologicalProperty:PhysiologicalProperty ;
+    skos:definition "Respiration Volume"@en,
+        "Respiration Volume"@nl ;
+    skos:inScheme physiologicalProperty:Scheme ;
+    skos:notation "RespirationVolume" ;
+    skos:prefLabel "Respiration Volume"@en,
+        "Respiration Volume"@nl .
+
+physiologicalProperty:SaO2 a skos:Concept ;
+    rdfs:subClassOf mda:PhysiologicalProperty ;
+    skos:broader physiologicalProperty:PhysiologicalProperty ;
+    skos:definition "Sa O2"@en,
+        "Sa O2"@nl ;
+    skos:inScheme physiologicalProperty:Scheme ;
+    skos:notation "SaO2" ;
+    skos:prefLabel "Sa O2"@en,
+        "Sa O2"@nl .
+
+physiologicalProperty:Temperature a skos:Concept ;
+    rdfs:subClassOf mda:PhysiologicalProperty ;
+    skos:broader physiologicalProperty:PhysiologicalProperty ;
+    skos:definition "Temperature"@en,
+        "Temperature"@nl ;
+    skos:inScheme physiologicalProperty:Scheme ;
+    skos:notation "Temperature" ;
+    skos:prefLabel "Temperature"@en,
+        "Temperature"@nl .
+
+physiologicalProperty:TissuePerfusion a skos:Concept ;
+    rdfs:subClassOf mda:PhysiologicalProperty ;
+    skos:broader physiologicalProperty:PhysiologicalProperty ;
+    skos:definition "Tissue Perfusion"@en,
+        "Tissue Perfusion"@nl ;
+    skos:inScheme physiologicalProperty:Scheme ;
+    skos:notation "TissuePerfusion" ;
+    skos:prefLabel "Tissue Perfusion"@en,
+        "Tissue Perfusion"@nl .
+
+physiologicalProperty:VenousPressure a skos:Concept ;
+    rdfs:subClassOf mda:PhysiologicalProperty ;
+    skos:broader physiologicalProperty:PhysiologicalProperty ;
+    skos:definition "Venous Pressure"@en,
+        "Venous Pressure"@nl ;
+    skos:inScheme physiologicalProperty:Scheme ;
+    skos:notation "VenousPressure" ;
+    skos:prefLabel "Venous Pressure"@en,
+        "Venous Pressure"@nl .
 
 qualitystate:Impaired a skos:Concept ;
     skos:broader qualitystate:QualityState ;
@@ -1741,76 +1839,6 @@ therapeuticModality:VentilationTherapy a skos:Concept ;
     skos:prefLabel "Ventilation Therapy"@en,
         "Ventilation Therapy"@nl .
 
-physiologicalProperty:ElectricalHeartRate a skos:Concept ;
-    rdfs:subClassOf mda:PhysiologicalProperty ;
-    skos:broader physiologicalProperty:PhysiologicalProperty ;
-    skos:definition "Electrical Heart Rate"@en,
-        "Electrical Heart Rate"@nl ;
-    skos:inScheme physiologicalProperty:Scheme ;
-    skos:notation "ElectricalHeartRate" ;
-    skos:prefLabel "Electrical Heart Rate"@en,
-        "Electrical Heart Rate"@nl .
-
-physiologicalProperty:Humidity a skos:Concept ;
-    rdfs:subClassOf mda:PhysiologicalProperty ;
-    skos:broader physiologicalProperty:PhysiologicalProperty ;
-    skos:definition "Humidity"@en,
-        "Humidity"@nl ;
-    skos:inScheme physiologicalProperty:Scheme ;
-    skos:notation "Humidity" ;
-    skos:prefLabel "Humidity"@en,
-        "Humidity"@nl .
-
-physiologicalProperty:RespirationRate a skos:Concept ;
-    rdfs:subClassOf mda:PhysiologicalProperty ;
-    skos:broader physiologicalProperty:PhysiologicalProperty ;
-    skos:definition "Respiration Rate"@en,
-        "Respiration Rate"@nl ;
-    skos:inScheme physiologicalProperty:Scheme ;
-    skos:notation "RespirationRate" ;
-    skos:prefLabel "Respiration Rate"@en,
-        "Respiration Rate"@nl .
-
-physiologicalProperty:SaO2 a skos:Concept ;
-    rdfs:subClassOf mda:PhysiologicalProperty ;
-    skos:broader physiologicalProperty:PhysiologicalProperty ;
-    skos:definition "Sa O2"@en,
-        "Sa O2"@nl ;
-    skos:inScheme physiologicalProperty:Scheme ;
-    skos:notation "SaO2" ;
-    skos:prefLabel "Sa O2"@en,
-        "Sa O2"@nl .
-
-physiologicalProperty:Temperature a skos:Concept ;
-    rdfs:subClassOf mda:PhysiologicalProperty ;
-    skos:broader physiologicalProperty:PhysiologicalProperty ;
-    skos:definition "Temperature"@en,
-        "Temperature"@nl ;
-    skos:inScheme physiologicalProperty:Scheme ;
-    skos:notation "Temperature" ;
-    skos:prefLabel "Temperature"@en,
-        "Temperature"@nl .
-
-physiologicalProperty:TissuePerfusion a skos:Concept ;
-    rdfs:subClassOf mda:PhysiologicalProperty ;
-    skos:broader physiologicalProperty:PhysiologicalProperty ;
-    skos:definition "Tissue Perfusion"@en,
-        "Tissue Perfusion"@nl ;
-    skos:inScheme physiologicalProperty:Scheme ;
-    skos:notation "TissuePerfusion" ;
-    skos:prefLabel "Tissue Perfusion"@en,
-        "Tissue Perfusion"@nl .
-
-physiologicalProperty:VenousPressure a skos:Concept ;
-    rdfs:subClassOf mda:PhysiologicalProperty ;
-    skos:broader physiologicalProperty:PhysiologicalProperty ;
-    skos:definition "Venous Pressure"@en,
-        "Venous Pressure"@nl ;
-    skos:inScheme physiologicalProperty:Scheme ;
-    skos:notation "VenousPressure" ;
-    skos:prefLabel "Venous Pressure"@en,
-        "Venous Pressure"@nl .
-
 deviceType:CardioHelp a skos:Concept ;
     skos:broader deviceType:DeviceType ;
     skos:definition "Cardio Help"@en,
@@ -1973,36 +2001,6 @@ metricPhase:Tidal a skos:Concept ;
     skos:prefLabel "Tidal"@en,
         "Tidal"@nl .
 
-physiologicalProperty:ArterialPressure a skos:Concept ;
-    rdfs:subClassOf mda:PhysiologicalProperty ;
-    skos:broader physiologicalProperty:PhysiologicalProperty ;
-    skos:definition "Arterial Pressure"@en,
-        "Arterial Pressure"@nl ;
-    skos:inScheme physiologicalProperty:Scheme ;
-    skos:notation "ArterialPressure" ;
-    skos:prefLabel "Arterial Pressure"@en,
-        "Arterial Pressure"@nl .
-
-physiologicalProperty:RespirationPressure a skos:Concept ;
-    rdfs:subClassOf mda:PhysiologicalProperty ;
-    skos:broader physiologicalProperty:PhysiologicalProperty ;
-    skos:definition "Respiration Pressure"@en,
-        "Respiration Pressure"@nl ;
-    skos:inScheme physiologicalProperty:Scheme ;
-    skos:notation "RespirationPressure" ;
-    skos:prefLabel "Respiration Pressure"@en,
-        "Respiration Pressure"@nl .
-
-physiologicalProperty:RespirationVolume a skos:Concept ;
-    rdfs:subClassOf mda:PhysiologicalProperty ;
-    skos:broader physiologicalProperty:PhysiologicalProperty ;
-    skos:definition "Respiration Volume"@en,
-        "Respiration Volume"@nl ;
-    skos:inScheme physiologicalProperty:Scheme ;
-    skos:notation "RespirationVolume" ;
-    skos:prefLabel "Respiration Volume"@en,
-        "Respiration Volume"@nl .
-
 device:CardiacMonitor a skos:Concept ;
     rdfs:subClassOf mda:Device ;
     skos:broader device:Device ;
@@ -2061,8 +2059,7 @@ metric:AirwayPressure a skos:Concept ;
     skos:inScheme metric:Scheme ;
     skos:notation "AirwayPressure" ;
     skos:prefLabel "Airway Pressure"@en,
-        "Airway Pressure"@nl ;
-    mda:approximates physiologicalProperty:RespirationPressure .
+        "Airway Pressure"@nl .
 
 metric:ArterialBloodPressure a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
@@ -2072,8 +2069,7 @@ metric:ArterialBloodPressure a skos:Concept ;
     skos:inScheme metric:Scheme ;
     skos:notation "ArterialBloodPressure" ;
     skos:prefLabel "Arterial Blood Pressure"@en,
-        "Arterial Blood Pressure"@nl ;
-    mda:approximates physiologicalProperty:ArterialPressure .
+        "Arterial Blood Pressure"@nl .
 
 manufacturer:Philips a skos:Concept ;
     skos:broader manufacturer:Manufacturer ;

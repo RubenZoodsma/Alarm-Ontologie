@@ -331,6 +331,16 @@ mda:hasSensorOperationState a owl:ObjectProperty ;
     rdfs:domain         mda:Sensor ;
     rdfs:range          skos:Concept .
 
+mda:hasMetricOperationState a owl:ObjectProperty ;
+    dcterms:identifier  "hasMetricOperationState" ;
+    rdfs:subPropertyOf  mda:hasOperationState ;
+    rdfs:label          "has metric operation state"@en,
+                        "heeft metriekoperatiestatus"@nl ;
+    rdfs:comment        "Whether a metric is currently being monitored — unlike the other hasOperationState sub-properties, never CSV-driven (no CSV column names it); entailed by FRAMEWORK/KNOWLEDGE_BASE/inference.ttl's Metric monitoring axiom whenever the metric carries an actual interpretation (hasRate/hasPhase/hasRhythm), never asserted directly. A sub-property of hasOperationState with a single named domain for the same reason the CSV-driven ones have one: unambiguous attachment for any tooling that walks this property family, even though nothing here reads a CSV column."@en,
+                        "Of een metriek momenteel wordt gemonitord — anders dan de overige hasOperationState-subeigenschappen nooit CSV-gestuurd; afgeleid door de monitoringsaxioma van FRAMEWORK/KNOWLEDGE_BASE/inference.ttl zodra de metriek een daadwerkelijke interpretatie draagt (hasRate/hasPhase/hasRhythm), nooit rechtstreeks toegekend."@nl ;
+    rdfs:domain         mda:Metric ;
+    rdfs:range          skos:Concept .
+
 mda:hasComponentOperationState a owl:ObjectProperty ;
     dcterms:identifier  "hasComponentOperationState" ;
     rdfs:subPropertyOf  mda:hasOperationState ;
@@ -740,6 +750,87 @@ mda:hasTherapyDeliveryQuality a owl:ObjectProperty ;
 
 
 #################################################################
+# Clinical Event
+#
+# A distinct branch from mda:PhysiologicalProcess: a process is ongoing
+# biological activity (Referential — one shared IRI per concept, reused
+# across every alarm that ever approximates it, per that section's own
+# comment above); a mda:ClinicalEvent is a discrete, acute clinical
+# judgement ABOUT the current state of one or more such processes,
+# individuated per occurrence. Never realised by retyping the shared
+# process concept itself via a class-level restriction — that would wrongly
+# assert the judgement for every alarm system-wide that ever mentions that
+# process, not just the one whose condition actually holds. See
+# FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl's header for the full
+# reasoning, including why the axioms living there cannot by themselves
+# drive the operational PoC engine (4_OPERATIONAL/op_knowledge.py's
+# situational export never carries rdf:type facts, and OWL-RL has no
+# mechanism to conditionally assert a new property edge to a named
+# individual) — that requires a separate, procedural SPARQL rule, not a
+# declarative axiom.
+#################################################################
+
+mda:ClinicalEvent a owl:Class ;
+    dcterms:identifier  "ClinicalEvent" ;
+    rdfs:label          "Clinical Event"@en,
+                        "Klinische Gebeurtenis"@nl ;
+    rdfs:comment        "A discrete, acute clinical interpretation derived from the current state of one or more physiological processes — e.g. a cardiac arrest inferred from an absent cardiac contraction rate — distinct from the ongoing physiological process(es) it is evidenced by."@en,
+                        "Een discrete, acute klinische interpretatie afgeleid van de huidige toestand van een of meer fysiologische processen — bijvoorbeeld een hartstilstand afgeleid van een afwezig hartcontractieritme — te onderscheiden van het/de onderliggende fysiologische proces(sen) waarop zij is gebaseerd."@nl .
+
+mda:evidencedBy a owl:ObjectProperty ;
+    dcterms:identifier  "evidencedBy" ;
+    rdfs:label          "evidenced by"@en,
+                        "onderbouwd door"@nl ;
+    rdfs:comment        "Relates a clinical event to the node(s) whose state evidenced it — the audit trail for why the event was asserted, never omitted even when only one node is involved. Range is a union of mda:PhysiologicalProcess and mda:Device, not PhysiologicalProcess alone: widened for VentilationFailure (see clinicalEvents.ttl), whose evidence spans a physiological condition (reduced pulmonary function, a Process-anchored tag) AND a technical one (the ventilator's own fault operation state, a Device-level fact with no Process anchor of its own) — narrowing this to Process alone would force dropping the device from the audit trail, losing exactly the fact that makes it a ventilation failure rather than generic hypoventilation."@en,
+                        "Koppelt een klinische gebeurtenis aan het/de knooppunt(en) waarvan de toestand haar onderbouwde — het controlespoor voor waarom de gebeurtenis werd beweerd. Het bereik is een unie van mda:PhysiologicalProcess en mda:Device, niet alleen PhysiologicalProcess: verruimd voor VentilationFailure (zie clinicalEvents.ttl), waarvan het bewijs zowel een fysiologische conditie (verminderde longfunctie, een op Process gebaseerde markering) als een technische conditie (de foutstatus van de beademingsmachine zelf, een feit op Device-niveau zonder eigen Process-anker) omvat."@nl ;
+    rdfs:domain         mda:ClinicalEvent ;
+    rdfs:range          [ a owl:Class ; owl:unionOf ( mda:PhysiologicalProcess mda:Device ) ] .
+
+# A second, lighter-weight route to the same vocabulary, alongside
+# mda:evidencedBy: a direct value-tag on the CONDITION-bearing node itself
+# (e.g. mda:Metric), following the exact shape mda:hasQualityState already
+# uses for its own reasoner-entailed values (see inference.ttl's Signal
+# quality axioms and clinicalEvents.ttl's Cardiac arrest axiom) — this is
+# what makes a single-alarm clinical-event condition operationally visible
+# to 4_OPERATIONAL/op_knowledge.py without minting a separate mda:ClinicalEvent
+# individual at all. mda:evidencedBy remains the richer route for whenever a
+# real ClinicalEvent individual IS constructed (e.g. a future cross-alarm
+# rule needing its own audit trail across more than one contributing
+# process) — the two are complementary, not redundant.
+mda:impliesClinicalEvent a owl:ObjectProperty ;
+    dcterms:identifier  "impliesClinicalEvent" ;
+    rdfs:label          "implies clinical event"@en,
+                        "impliceert klinische gebeurtenis"@nl ;
+    rdfs:comment        "Names the clinical-event concept that a process's current condition implies — an inference, not a possession: the process does not 'have' the event (a patient does, see mda:evidencedBy/mda:concernsPatient on the minted mda:ClinicalEvent individual for that claim); this property only records that the process's state is evidence pointing to it. Requires no separately-minted mda:ClinicalEvent individual on its own."@en,
+                        "Noemt het klinische-gebeurtenisconcept dat de huidige toestand van een proces impliceert — een gevolgtrekking, geen bezit: het proces 'heeft' de gebeurtenis niet (dat geldt voor een patiënt, zie mda:evidencedBy/mda:concernsPatient op het aangemaakte mda:ClinicalEvent-individu voor die bewering); deze eigenschap legt alleen vast dat de toestand van het proces daarvoor bewijs vormt. Vereist op zichzelf geen apart aangemaakt mda:ClinicalEvent-individu."@nl ;
+    rdfs:domain         mda:PhysiologicalProcess ;
+    rdfs:range          skos:Concept .
+
+# RECONSIDERED AGAIN (during CardioRespiratoryArrest work): moved from
+# mda:Metric to mda:PhysiologicalProcess after all, reversing the rejection
+# note this section used to carry. That note's concern was real and stays
+# true in general (see mda:PhysiologicalProcess's own section above): a
+# STATIC, standing assertion on a Referential, shared-IRI concept would
+# leak across every alarm/device/patient that ever reaches it. What makes
+# this property specifically safe despite that is where it is actually
+# reasoned: 4_OPERATIONAL/op_knowledge.py's Timeline.situation_at/
+# background_at build a FRESH graph per (patient, instant), containing
+# only that patient's currently-relevant facts, reasoned once and
+# discarded — never a merged, accumulating graph a tag could persist in
+# across patients or across time. physiologicalProcess:CardiacContraction
+# being tagged in one patient's tick has no way to reach a different
+# patient's tick, or a later instant of the SAME patient's tick, because
+# each is a separate Graph object built from separate ABox input. The
+# over-generalisation risk is real for a STATIC file reasoned once as one
+# shared graph (kg_generated.ttl, the vocabulary/ontology TBox); it does
+# not apply to this per-tick, per-patient operational reasoning pattern.
+# Moving the domain here is what lets cat3a_cardiorespiratory_arrest.rq's
+# coincidence check be device/pathway-agnostic (mda:PhysiologicalProcess is
+# reached the same way regardless of which sensing pathway produced it) —
+# see that file's own header for the query this enables.
+
+
+#################################################################
 # Vocabulary scheme bindings
 #
 # These annotations make the CSV→KG transformation derivable from
@@ -845,6 +936,28 @@ mda:FunctionalUnit mda:nodeKind mda:Individuated .
 mda:Patient       mda:nodeKind  mda:Individuated .
 mda:Metric        mda:nodeKind  mda:Stateful .
 
+# Explicitly Referential, not left to the "no marker" default: unlike
+# mda:SignalAnalysis (no marker, falls through to "structural" — still
+# minted as a connective background node, see the comment below), these two
+# are reachable from mda:Sensor via a property (hasAnatomicalPosition/
+# hasLaterality) whose rdfs:range is the CLASS itself rather than
+# skos:Concept, so derive_class_tree (2_READOUT/shared/ontology_tree.py)
+# treats them as ordinary structural nesting edges and 4_OPERATIONAL/
+# op_knowledge.py's ground_chain walk would otherwise mint a SECOND,
+# spuriously-individuated particular for the concept the archetype already
+# asserts directly on the Sensor (refining_properties' own leaf-value loop
+# in ground_chain — unconditional, independent of nodeKind — already
+# asserts e.g. hasAnatomicalPosition anatomicalPosition:Peripheral once,
+# correctly). Without this tag, ground_chain's own "never descended into"
+# claim about these two classes (see its docstring) does not hold: "no
+# marker" and "referential" are NOT the same case to the walk (only an
+# explicit mda:Referential tag hits its `kind == "referential"` skip), so an
+# untagged concept-valued class is walked exactly like structural plumbing
+# instead of being skipped — confirmed the double-assertion this produces
+# against DATA/CAT_evaluation/cat1a_pos before adding this tag.
+mda:AnatomicalPosition mda:nodeKind mda:Referential .
+mda:Laterality         mda:nodeKind mda:Referential .
+
 # Individuated, not the Referential default: a therapeutic modality is a
 # concrete treatment episode particular to the alarm's own device, not a
 # universal shared across every alarm that happens to name the same modality
@@ -853,6 +966,15 @@ mda:Metric        mda:nodeKind  mda:Stateful .
 # landing on one globally-shared concept for every alarm that ever
 # administers it.
 mda:TherapeuticModality mda:nodeKind mda:Individuated .
+
+# Individuated, not Referential: each ClinicalEvent is a fresh,
+# per-occurrence node minted only when its triggering condition fires (see
+# clinicalEvents.ttl), never a shared concept reused across alarms the way
+# mda:PhysiologicalProcess itself is. This class is never walked by
+# build_framework.py's CSV-driven builder — no CSV column names a clinical
+# event directly — so this tag documents its intended runtime shape for
+# whatever DOES construct it, not a CSV binding.
+mda:ClinicalEvent mda:nodeKind mda:Individuated .
 
 # mda:SignalAnalysis deliberately has NO nodeKind entry, so it falls through
 # to "structural" the same way mda:AlarmMessage does (a per-alarm blank node
@@ -881,6 +1003,7 @@ mda:hasCategory         mda:valuesFromScheme    alarmcat:Scheme .
 mda:hasDeviceOperationState     mda:valuesFromScheme    opstate:Scheme .
 mda:hasSensorOperationState     mda:valuesFromScheme    opstate:Scheme .
 mda:hasComponentOperationState  mda:valuesFromScheme    opstate:Scheme .
+mda:hasMetricOperationState     mda:valuesFromScheme    opstate:Scheme .
 mda:hasQualityState     mda:valuesFromScheme    qualitystate:Scheme .
 mda:hasPhase            mda:valuesFromScheme    metricPhase:Scheme .
 mda:hasRate             mda:valuesFromScheme    metricRate:Scheme .
@@ -946,6 +1069,26 @@ mda:organPartOfSystem  mda:situational true .
 mda:administers        mda:situational true .
 mda:targetsProcess     mda:situational true .
 
+# mda:evidencedBy is asserted directly by whatever constructs a
+# mda:ClinicalEvent (never derived by the reasoner from other situational
+# facts — see clinicalEvents.ttl), so this tag does not yet feed any live
+# extraction path. Kept for forward consistency: if a future consumer walks
+# the situational export FROM an already-asserted ClinicalEvent node
+# outward, this ensures evidencedBy is included rather than silently
+# excluded.
+mda:evidencedBy        mda:situational true .
+
+# NOT mda:persistsPostAlarm: a clinical event has no validity beyond its
+# supporting alarm — unlike device/signal state, there is no physical
+# reason for "cardiac arrest" to still be true a moment after the
+# condition that asserted it (metric hasRate Absent) stops being reported.
+# Tagging it persistsPostAlarm would let a resolved, minutes-old event
+# quietly combine with an unrelated new one into a false coincidence (see
+# clinicalEvents.ttl's Cardiorespiratory arrest rule) — situational is the
+# same interpretive, alarm-duration-only category mda:approximates/
+# mda:isPropertyOf already use, and is the correct one here.
+mda:impliesClinicalEvent   mda:situational true .
+
 
 #################################################################
 # Post-alarm persistence classification
@@ -953,17 +1096,20 @@ mda:targetsProcess     mda:situational true .
 # A third axis, alongside node-kind and mda:situational: not "how is an
 # instance realised" or "does this belong in the situational export", but
 # "does this relation's entailed fact about a technical node outlive the
-# alarm that entailed it, for the PostAlarmValidScheme window". Both marked
-# properties describe a technical entity's CURRENT STATUS (which state it is
-# in / how reliable its reading is), not a one-off clinical implication —
-# that is what makes it sensible for either to still hold briefly after the
-# reporting alarm itself has ended, the same way a device left Disconnected
-# stays Disconnected for a few seconds after the alarm that said so clears.
+# alarm that entailed it, for the PostAlarmValidScheme window". The marked
+# property describes a technical entity's CURRENT STATUS (which state it is
+# in), not a one-off clinical implication — that is what makes it sensible
+# for it to still hold briefly after the reporting alarm itself has ended,
+# the same way a device left Disconnected stays Disconnected for a few
+# seconds after the alarm that said so clears: operation state is a
+# comparatively slow-changing, physically-grounded fact about the device/
+# sensor itself (see mda:hasQualityState's own comment below for why that
+# reasoning does NOT carry over to it).
 #
 # 4_OPERATIONAL/op_knowledge.py's inferred_states/_extract_states reads this
 # tag directly (persisting_predicates) instead of hardcoding mda:
-# hasOperationState, so mda:hasQualityState needed no code change to join it
-# — only this tag — and neither would a future property of the same kind.
+# hasOperationState, so a future property of the same kind needs no code
+# change here — only this tag.
 #################################################################
 
 mda:persistsPostAlarm a owl:AnnotationProperty ;
@@ -975,6 +1121,25 @@ mda:persistsPostAlarm a owl:AnnotationProperty ;
     rdfs:range          xsd:boolean .
 
 mda:hasOperationState  mda:persistsPostAlarm true .
-mda:hasQualityState    mda:persistsPostAlarm true .
+
+# mda:hasQualityState deliberately does NOT carry this tag (it did briefly,
+# removed after review): unlike operation state, a signal's quality
+# assessment is continuously re-evaluated by the device itself, with no
+# comparable physical inertia — once the alarm reporting e.g. Impaired
+# quality clears, the device's own assessment has already moved past it, so
+# asserting the same fault value for a further 15 minutes claims something
+# the alarm's own end already contradicts. It also had no "good" value to
+# fall back to: qualitystate: currently mints only fault concepts (Impaired,
+# ScalingError) — inference.ttl's Signal quality axioms only ever entail a
+# FAULT value (qualitystate:Impaired) via cls-hv1, never a positive one — so
+# tagging it persistsPostAlarm meant every persisted value was necessarily a
+# stale fault, never a benign "still fine" carry-over the way Enabled is for
+# operation state. Confirmed inert for CAT1a/CAT1b (DATA/CAT_evaluation):
+# CAT1a's positive/negative pairs both test genuinely CONCURRENT alarms, not
+# a persisted quality fault (cat1a_signal_quality.rq's own header already
+# notes this — "in practice ... this only fires from a DIFFERENT,
+# still-active ... alarm"), and CAT1b's post-alarm-window mechanism reads
+# mda:hasSensorOperationState (inference.ttl's Sensor baseline operational-
+# state axiom, Enabled), never mda:hasQualityState.
 
 

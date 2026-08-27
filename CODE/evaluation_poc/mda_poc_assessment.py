@@ -1,5 +1,5 @@
 """
-mda_poc_assessment.py — CAT1/CAT2 alarm management rule engine.
+mda_poc_assessment.py — CAT1/CAT2/CAT3 alarm management rule engine.
 
 The entry point for the MDA-POC results pipeline, kept directly under
 evaluation_poc/ rather than buried in a subfolder — this is the file you run.
@@ -31,7 +31,8 @@ concern left untouched by this file). For each arriving alarm:
      back into the knowledge graph — every alarm's knowledge merges into the
      patient's timeline exactly as it already did before this file existed;
      rule outcome is bookkeeping for the manuscript's performance count
-     (flagged-false-positive for CAT1, silenced for CAT2), not a KG mutation.
+     (flagged-false-positive for CAT1, silenced for CAT2, triggered
+     sequence for CAT3), not a KG mutation.
 
 Why re-resolve identity per alarm
 ----------------------------------
@@ -76,7 +77,8 @@ import csv
 import sys
 from pathlib import Path
 
-from rdflib import Graph
+from rdflib import Graph, Namespace
+from rdflib.namespace import RDF
 
 sys.path.append(str(Path(__file__).resolve().parent / "core"))
 sys.path.append(str(Path(__file__).resolve().parent / "reasoner"))
@@ -86,12 +88,67 @@ import assess as R
 
 DEFAULT_DATASET = K.ROOT / "DATA" / "POC_EVENTS" / "events_data.csv"
 OUT = K.ROOT / "EVALUATION" / "MDA-POC" / "cat_rules_outcomes.csv"
+EVENTS_OUT = K.ROOT / "EVALUATION" / "MDA-POC" / "clinical_events_detected.ttl"
+
+CLINICAL_EVENT = Namespace("https://w3id.org/mda/vocab/clinical-event/")
 
 CAT1_RULES = {"cat1a_signal_quality", "cat1b_asystole_ibp"}
 CAT2_RULES = {"cat2a_process_priority", "cat2b_metric_sensor"}
+CAT3_RULES = {"cat3a_cardiorespiratory_arrest", "cat3b_ventilation_failure"}
 
 
-def run(dataset: Path, n_patients: int = None) -> list:
+def mint_cardiorespiratory_arrest(patient: str, cardiac_node, respiratory_node, start, events_graph: Graph) -> None:
+    """
+    Construct a new, named mda:ClinicalEvent individual for one
+    cardiac/respiratory arrest coincidence — the one thing cat3a_
+    cardiorespiratory_arrest.rq's plain SELECT cannot do itself (OWL-RL,
+    and a stateless SELECT, can each tell you a coincidence holds, but
+    neither can conditionally mint a new individual). Written into a
+    SEPARATE side graph (events_graph), not merged into the live Timeline
+    — deliberately: this is a historical record of what was detected at
+    `start`, not a standing claim the Timeline's own temporal model should
+    reason about further, and merging into it would risk the carefully
+    validated background/condition/persistence machinery documented in
+    this module's own docstring.
+
+    Deduplication (one node per genuine episode, not one per firing) is
+    the CALLER's responsibility (see run()'s open_pairs rising-edge
+    tracking) — this function is called only on a FALSE->TRUE transition
+    for a given (cardiac_node, respiratory_node) pair, never on every
+    arrival where the rule still matches, since the rule fires on every
+    arrival for as long as the coincidence holds.
+    """
+    event = K.INST[f"ClinicalEvent_CardioRespiratoryArrest_{K._clean(patient)}_{start.strftime('%Y%m%dT%H%M%S')}"]
+    events_graph.add((event, RDF.type, K.MDA.ClinicalEvent))
+    events_graph.add((event, RDF.type, CLINICAL_EVENT.CardioRespiratoryArrest))
+    events_graph.add((event, K.MDA.evidencedBy, cardiac_node))
+    events_graph.add((event, K.MDA.evidencedBy, respiratory_node))
+    events_graph.add((event, K.MDA.concernsPatient, K.patient_iri(patient)))
+
+
+def mint_ventilation_failure(patient: str, device_node, process_node, start, events_graph: Graph) -> None:
+    """
+    Same shape as mint_cardiorespiratory_arrest, for cat3b_
+    ventilation_failure.rq's coincidence instead. evidencedBy's range was
+    widened to a union of mda:PhysiologicalProcess and mda:Device
+    specifically for this (see ontology.ttl's own comment on that property)
+    — device_node is a raw Device-level operation-state fact, not a
+    Process-anchored impliesClinicalEvent tag the way cardiac/respiratory arrest
+    are, so it would not fit the original PhysiologicalProcess-only range.
+
+    Deduplication is the CALLER's responsibility, same rising-edge shape as
+    cat3a's own open_pairs (see run()) — keyed on (device_node, process_node)
+    instead of (cardiac_node, respiratory_node).
+    """
+    event = K.INST[f"ClinicalEvent_VentilationFailure_{K._clean(patient)}_{start.strftime('%Y%m%dT%H%M%S')}"]
+    events_graph.add((event, RDF.type, K.MDA.ClinicalEvent))
+    events_graph.add((event, RDF.type, CLINICAL_EVENT.VentilationFailure))
+    events_graph.add((event, K.MDA.evidencedBy, device_node))
+    events_graph.add((event, K.MDA.evidencedBy, process_node))
+    events_graph.add((event, K.MDA.concernsPatient, K.patient_iri(patient)))
+
+
+def run(dataset: Path, n_patients: int = None) -> tuple:
     kb = K.load_kb()
     events = K.load_events(dataset)
 
@@ -138,6 +195,36 @@ def run(dataset: Path, n_patients: int = None) -> list:
     # references the same device_id, real whenever the device pool is
     # reused across patients over time (events_seed.py's own model).
     reasoning_cache = {}
+
+    # events_graph collects minted mda:ClinicalEvent individuals (currently
+    # cat3a_cardiorespiratory_arrest and cat3b_ventilation_failure).
+    #
+    # open_pairs[patient] tracks which (cardiacNode, respiratoryNode) pairs
+    # are CURRENTLY coinciding, as of the last arrival checked for that
+    # patient — not "ever seen this run". mda:impliesClinicalEvent is
+    # mda:situational (zero persistence, verified empirically — see
+    # clinicalEvents.ttl's header): it genuinely goes away the instant
+    # either alarm ends and genuinely comes back if the same pair of
+    # conditions later recoincides. Deduping on "ever seen" would
+    # incorrectly treat two separate, non-overlapping episodes of the same
+    # pair as one — clinically wrong (a patient who arrests, recovers, and
+    # arrests again hours later had TWO events, not one already recorded).
+    # So this is a rising-edge detector instead: at every arrival, compute
+    # which pairs are true RIGHT NOW; mint only for pairs that are newly
+    # true (not already open); pairs that drop out get removed from
+    # open_pairs, so a later recurrence of the same pair mints again.
+    #
+    # open_vent_pairs[patient] is the same rising-edge tracker for cat3b,
+    # keyed on (deviceNode, processNode) instead — the device fault side is
+    # NOT mda:situational the same way (mda:hasDeviceOperationState is
+    # mda:persistsPostAlarm, see ontology.ttl), but ReducedPulmonaryFunction
+    # (the process side) is, so the coincidence as a whole still only holds
+    # while both are true — a separate dict, not a shared one, since a
+    # (cardiacNode, respiratoryNode) pair and a (deviceNode, processNode)
+    # pair are never comparable keys.
+    events_graph = Graph()
+    open_pairs = {}
+    open_vent_pairs = {}
 
     # Ascending by event count, not insertion order: for a multi-patient
     # feasibility/timing run this reports the cheap patients first, so
@@ -203,12 +290,35 @@ def run(dataset: Path, n_patients: int = None) -> list:
                             "rule": rule_id,
                             **row,
                         })
+
+                # Rising-edge check, run every arrival regardless of whether
+                # cat3a_cardiorespiratory_arrest fired this time — a rule
+                # that DIDN'T fire still tells us something: the pair(s)
+                # previously open for this patient are no longer true, and
+                # should stop being tracked as open (see open_pairs' own
+                # comment above for why "ever seen" is the wrong dedup key).
+                currently_true = {(row["cardiacNode"], row["respiratoryNode"])
+                                   for row in fired.get("cat3a_cardiorespiratory_arrest", [])}
+                previously_open = open_pairs.get(patient, set())
+                for pair in currently_true - previously_open:
+                    mint_cardiorespiratory_arrest(patient, pair[0], pair[1], e.start, events_graph)
+                open_pairs[patient] = currently_true
+
+                # Same rising-edge check for cat3b_ventilation_failure, see
+                # open_vent_pairs' own comment above.
+                vent_currently_true = {(row["deviceNode"], row["processNode"])
+                                        for row in fired.get("cat3b_ventilation_failure", [])}
+                vent_previously_open = open_vent_pairs.get(patient, set())
+                for pair in vent_currently_true - vent_previously_open:
+                    mint_ventilation_failure(patient, pair[0], pair[1], e.start, events_graph)
+                open_vent_pairs[patient] = vent_currently_true
+
                 print(f"  {patient}  {e.start:%H:%M:%S}  {e.label:<45} "
                       f"{'-> ' + ', '.join(sorted(fired)) if fired else ''}")
         elapsed = time.perf_counter() - patient_start
         print(f"[patient done] {patient}  {len(ordered)} events  {elapsed:.1f}s  "
               f"({elapsed / len(ordered):.3f}s/event)")
-    return outcomes
+    return outcomes, events_graph
 
 
 def write_csv(outcomes: list, out: Path) -> None:
@@ -227,6 +337,10 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dataset", type=Path, default=DEFAULT_DATASET)
     ap.add_argument("--out", type=Path, default=OUT)
+    ap.add_argument("--events-out", type=Path, default=EVENTS_OUT,
+                     help="Where to write minted mda:ClinicalEvent individuals "
+                          "(cat3a_cardiorespiratory_arrest and "
+                          "cat3b_ventilation_failure produce these).")
     ap.add_argument("--patients", type=int, default=None,
                      help="Restrict to the first N patients (sorted patient id) "
                           "in the dataset — for feasibility/timing runs against "
@@ -234,15 +348,22 @@ def main() -> None:
     args = ap.parse_args()
 
     print(f"[dataset] {args.dataset}")
-    outcomes = run(args.dataset, n_patients=args.patients)
+    outcomes, events_graph = run(args.dataset, n_patients=args.patients)
     write_csv(outcomes, args.out)
+    if len(events_graph):
+        args.events_out.parent.mkdir(parents=True, exist_ok=True)
+        events_graph.serialize(destination=args.events_out, format="turtle")
+        n_events = len(set(events_graph.subjects()))
+        print(f"[output] {n_events} clinical event(s) -> {args.events_out.name}")
 
     cat1 = sum(1 for o in outcomes if o["rule"] in CAT1_RULES)
     cat2 = sum(1 for o in outcomes if o["rule"] in CAT2_RULES)
+    cat3 = sum(1 for o in outcomes if o["rule"] in CAT3_RULES)
     print(f"\n[output] {len(outcomes)} outcome(s) -> {args.out.name}")
     print(f"         CAT1 (flagged likely false positive): {cat1}")
     print(f"         CAT2 (silenced): {cat2}")
-    for rule_id in sorted(CAT1_RULES | CAT2_RULES):
+    print(f"         CAT3 (triggered sequence): {cat3}")
+    for rule_id in sorted(CAT1_RULES | CAT2_RULES | CAT3_RULES):
         n = sum(1 for o in outcomes if o["rule"] == rule_id)
         print(f"           {rule_id:<28} {n}")
 
