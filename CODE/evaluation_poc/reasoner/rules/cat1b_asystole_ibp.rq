@@ -1,0 +1,60 @@
+# CAT1b: If an asystole alarm occurs when an invasive blood pressure sensor
+# is present without alarms on that sensing pathway, it may be flagged as
+# likely false positive.
+#
+# Matches on the metric's own identity + rate (metric:HeartRate, hasRate
+# metricRate:Absent) rather than on physiologicalProcess:CardiacContraction —
+# tightened once a real "PHILIPSMONITOR - Asystolie" archetype became
+# available (p75 corpus tier; see EVALUATION/MDA-POC/cat_rules_report.md).
+# An earlier version matched on CardiacContraction alone, before that
+# archetype existed to match precisely against — which would ALSO have
+# fired for "PHILIPSMONITOR - HF hoog"/"Lage hartfreq." (any HeartRate-
+# derived alarm reaches the same process), a real over-match risk against
+# actual results, not just a cosmetic imprecision. metric:HeartRate +
+# hasRate Absent is exactly what "PHILIPSMONITOR - Asystolie" carries and
+# nothing else in the corpus currently does.
+#
+# "An IBP sensor is present" can only be detected through an alarm that has
+# itself revealed that pathway at some point in this patient's history — no
+# independent device inventory exists in this framework (see
+# mda_poc_assessment.py's background_graph(kb, past, identity) — the
+# patient's full structural history so far, not just what is currently
+# revealing, is exactly what makes this fire for a pathway that alarmed
+# once and then stopped, rather than never at all). Documented, not worked
+# around: an inventory concept independent of alarm history is CAT3-
+# adjacent scope, deliberately deferred.
+#
+# ?alarm is pre-bound by assess.py. mda:triggeredBy points directly at the
+# arriving alarm's own FunctionalUnit particular (assess.py's
+# add_triggered_by — no mda:hasFunctionalUnit hop needed from it), the same
+# fix cat2b_metric_sensor.rq's header explains in full. The
+# ?ibpDevice -> mda:hasFunctionalUnit -> ?ibpFunctionalUnit hop below is a
+# genuine device-level fan-out query ("does this device have an IBP FU at
+# all, ever"), not per-alarm, so it is unaffected and left as-is.
+#
+# Validated against DATA/CAT_evaluation/cat1b_pos (an IBP alarm ends long
+# before the asystole arrives — still structurally known, fires) and
+# cat1b_neg (the IBP alarm is still active when the asystole arrives —
+# correctly does not fire). See cat_rules_report.md for the full case.
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+PREFIX metric: <https://w3id.org/mda/vocab/metric/>
+PREFIX metricRate: <https://w3id.org/mda/vocab/metric-rate/>
+PREFIX functionalUnit: <https://w3id.org/mda/vocab/functional-unit/>
+
+SELECT ?ibpFunctionalUnit WHERE {
+  ?alarm mda:hasMessage ?msg .
+  ?msg mda:concernsPatient ?patient .
+  ?msg mda:triggeredBy/mda:hasSensor/mda:sensorProducesSignal/
+       mda:analyzedBy/mda:producesMetric ?metric .
+  ?metric a metric:HeartRate .
+  ?metric mda:hasRate metricRate:Absent .
+
+  ?patient mda:isMonitoredBy ?ibpDevice .
+  ?ibpDevice mda:hasFunctionalUnit ?ibpFunctionalUnit .
+  ?ibpFunctionalUnit a functionalUnit:FU_InvasiveBloodPressure .
+
+  FILTER NOT EXISTS {
+    ?otherAlarm mda:hasMessage/mda:triggeredBy ?ibpFunctionalUnit .
+  }
+}

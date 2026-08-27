@@ -1,0 +1,156 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ns1: <https://w3id.org/mda/ontology#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://w3id.org/mda/entity/Device_CardiacMonitor_01> a <https://w3id.org/mda/vocab/device/CardiacMonitor> ;
+    dcterms:identifier "CardiacMonitor_01" ;
+    ns1:hasComponent <https://w3id.org/mda/entity/Component_CardiacMonitor_01_ConnectionUnit> ;
+    ns1:hasOperationState <https://w3id.org/mda/vocab/operation-state/Disconnected> .
+
+<https://w3id.org/mda/entity/Device_ExtracorporealMembraneOxygenator_01> a <https://w3id.org/mda/vocab/device/ExtracorporealMembraneOxygenator> ;
+    dcterms:identifier "ExtracorporealMembraneOxygenator_01" ;
+    ns1:hasFunctionalUnit <https://w3id.org/mda/entity/FunctionalUnit_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure> .
+
+<https://w3id.org/mda/entity/Device_MechanicalVentilator_01> a <https://w3id.org/mda/vocab/device/MechanicalVentilator> ;
+    dcterms:identifier "MechanicalVentilator_01" ;
+    ns1:hasFunctionalUnit <https://w3id.org/mda/entity/FunctionalUnit_MechanicalVentilator_01_FU_PneumoTachograph> .
+
+<https://w3id.org/mda/entity/Device_PhysiologicalMonitor_01> a <https://w3id.org/mda/vocab/device/PhysiologicalMonitor> ;
+    dcterms:identifier "PhysiologicalMonitor_01" ;
+    ns1:hasFunctionalUnit <https://w3id.org/mda/entity/FunctionalUnit_PhysiologicalMonitor_01_FU_InvasiveBloodPressure> ;
+    ns1:hasOperationState <https://w3id.org/mda/vocab/operation-state/Enabled> .
+
+<https://w3id.org/mda/instance/Alarm_CardiacMonitor_01_20260717T080030> a ns1:Alarm ;
+    ns1:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
+    ns1:hasEnd "2026-07-17T08:20:00"^^xsd:dateTime ;
+    ns1:hasLabel "EDWARDS - Verbinding verbroken"@en ;
+    ns1:hasMessage <https://w3id.org/mda/instance/Msg_CardiacMonitor_01_20260717T080030> ;
+    ns1:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Unknown> ;
+    ns1:hasStart "2026-07-17T08:00:30"^^xsd:dateTime ;
+    ns1:isOfType <https://w3id.org/mda/alarmtype/EdwardsVerbindingVerbroken_Unknown> .
+
+<https://w3id.org/mda/instance/Alarm_ExtracorporealMembraneOxygenator_01_20260717T080100> a ns1:Alarm ;
+    ns1:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
+    ns1:hasEnd "2026-07-17T08:20:00"^^xsd:dateTime ;
+    ns1:hasLabel "CARDIOHELP - pVen onder waarschuwingsgrens"@en ;
+    ns1:hasMessage <https://w3id.org/mda/instance/Msg_ExtracorporealMembraneOxygenator_01_20260717T080100> ;
+    ns1:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Unknown> ;
+    ns1:hasStart "2026-07-17T08:01:00"^^xsd:dateTime ;
+    ns1:isOfType <https://w3id.org/mda/alarmtype/CardiohelpPvenOnderWaarschuwingsgrens_Unknown> .
+
+<https://w3id.org/mda/instance/Alarm_MechanicalVentilator_01_20260717T080000> a ns1:Alarm ;
+    ns1:hasCategory <https://w3id.org/mda/vocab/alarm-category/Physiological> ;
+    ns1:hasEnd "2026-07-17T08:20:00"^^xsd:dateTime ;
+    ns1:hasLabel "SERVOU - Exp. minuutvol. hoog"@en ;
+    ns1:hasMessage <https://w3id.org/mda/instance/Msg_MechanicalVentilator_01_20260717T080000> ;
+    ns1:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Unknown> ;
+    ns1:hasStart "2026-07-17T08:00:00"^^xsd:dateTime ;
+    ns1:isOfType <https://w3id.org/mda/alarmtype/ServouExpMinuutvolHoog_Unknown> .
+
+<https://w3id.org/mda/instance/Alarm_PhysiologicalMonitor_01_20260717T080130> a ns1:Alarm ;
+    ns1:hasCategory <https://w3id.org/mda/vocab/alarm-category/Technical> ;
+    ns1:hasEnd "2026-07-17T08:20:00"^^xsd:dateTime ;
+    ns1:hasLabel "Monitor - ART statische druk"@en ;
+    ns1:hasMessage <https://w3id.org/mda/instance/Msg_PhysiologicalMonitor_01_20260717T080130> ;
+    ns1:hasPriority <https://w3id.org/mda/vocab/alarm-priority/Unknown> ;
+    ns1:hasStart "2026-07-17T08:01:30"^^xsd:dateTime ;
+    ns1:isOfType <https://w3id.org/mda/alarmtype/MonitorArtStatischeDruk_Unknown> .
+
+<https://w3id.org/mda/entity/FunctionalUnit_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure> a <https://w3id.org/mda/vocab/functional-unit/FU_InvasiveBloodPressure> ;
+    ns1:hasSensor <https://w3id.org/mda/entity/Sensor_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure_Sensor> .
+
+<https://w3id.org/mda/entity/FunctionalUnit_MechanicalVentilator_01_FU_PneumoTachograph> a <https://w3id.org/mda/vocab/functional-unit/FU_PneumoTachograph> ;
+    ns1:hasSensor <https://w3id.org/mda/entity/Sensor_MechanicalVentilator_01_FU_PneumoTachograph_Sensor> .
+
+<https://w3id.org/mda/entity/FunctionalUnit_PhysiologicalMonitor_01_FU_InvasiveBloodPressure> a <https://w3id.org/mda/vocab/functional-unit/FU_InvasiveBloodPressure> ;
+    ns1:hasOperationState <https://w3id.org/mda/vocab/operation-state/Enabled> ;
+    ns1:hasSensor <https://w3id.org/mda/entity/Sensor_PhysiologicalMonitor_01_FU_InvasiveBloodPressure_ABP_transducer_Arterial> .
+
+<https://w3id.org/mda/entity/Sensor_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure_Sensor> a ns1:Sensor ;
+    ns1:sensorProducesSignal <https://w3id.org/mda/entity/Signal_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure_Sensor_Signal> .
+
+<https://w3id.org/mda/entity/Sensor_MechanicalVentilator_01_FU_PneumoTachograph_Sensor> a ns1:Sensor ;
+    ns1:sensorProducesSignal <https://w3id.org/mda/entity/Signal_MechanicalVentilator_01_FU_PneumoTachograph_Sensor_Signal> .
+
+<https://w3id.org/mda/entity/Sensor_PhysiologicalMonitor_01_FU_InvasiveBloodPressure_ABP_transducer_Arterial> a <https://w3id.org/mda/vocab/sensor/ABP_transducer> ;
+    ns1:hasAnatomicalPosition <https://w3id.org/mda/entity/AnatomicalPosition_PhysiologicalMonitor_01_FU_InvasiveBloodPressure_ABP_transducer_Arterial_AnatomicalPosition>,
+        <https://w3id.org/mda/vocab/anatomical-position/Arterial> ;
+    ns1:hasOperationState <https://w3id.org/mda/vocab/operation-state/Enabled> ;
+    ns1:hasSensorOperationState <https://w3id.org/mda/vocab/operation-state/Enabled> ;
+    ns1:sensorProducesSignal <https://w3id.org/mda/entity/Signal_PhysiologicalMonitor_01_FU_InvasiveBloodPressure_ABP_transducer_Arterial_ABP_waveform> .
+
+<https://w3id.org/mda/entity/SignalAnalysis_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure_Sensor_Signal_SignalAnalysis> a ns1:SignalAnalysis ;
+    ns1:producesMetric <https://w3id.org/mda/entity/Metric_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure_Sensor_Signal_SignalAnalysis_VenousBloodPressure> .
+
+<https://w3id.org/mda/entity/SignalAnalysis_MechanicalVentilator_01_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis> a ns1:SignalAnalysis ;
+    ns1:producesMetric <https://w3id.org/mda/entity/Metric_MechanicalVentilator_01_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis_RespirationVolume_Minute> .
+
+<https://w3id.org/mda/entity/Signal_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure_Sensor_Signal> a ns1:Signal ;
+    ns1:analyzedBy <https://w3id.org/mda/entity/SignalAnalysis_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure_Sensor_Signal_SignalAnalysis> .
+
+<https://w3id.org/mda/entity/Signal_MechanicalVentilator_01_FU_PneumoTachograph_Sensor_Signal> a ns1:Signal ;
+    ns1:analyzedBy <https://w3id.org/mda/entity/SignalAnalysis_MechanicalVentilator_01_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis> .
+
+<https://w3id.org/mda/instance/Msg_CardiacMonitor_01_20260717T080030> a ns1:AlarmMessage ;
+    ns1:concernsPatient <https://w3id.org/mda/entity/Patient_johnDoe_01> ;
+    ns1:triggeredByStructure <https://w3id.org/mda/entity/Component_CardiacMonitor_01_ConnectionUnit> .
+
+<https://w3id.org/mda/instance/Msg_ExtracorporealMembraneOxygenator_01_20260717T080100> a ns1:AlarmMessage ;
+    ns1:concernsPatient <https://w3id.org/mda/entity/Patient_johnDoe_01> ;
+    ns1:triggeredByStructure <https://w3id.org/mda/entity/Metric_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure_Sensor_Signal_SignalAnalysis_VenousBloodPressure> .
+
+<https://w3id.org/mda/instance/Msg_MechanicalVentilator_01_20260717T080000> a ns1:AlarmMessage ;
+    ns1:concernsPatient <https://w3id.org/mda/entity/Patient_johnDoe_01> ;
+    ns1:triggeredByStructure <https://w3id.org/mda/entity/Metric_MechanicalVentilator_01_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis_RespirationVolume_Minute> .
+
+<https://w3id.org/mda/instance/Msg_PhysiologicalMonitor_01_20260717T080130> a ns1:AlarmMessage ;
+    ns1:concernsPatient <https://w3id.org/mda/entity/Patient_johnDoe_01> ;
+    ns1:triggeredByStructure <https://w3id.org/mda/entity/AnatomicalPosition_PhysiologicalMonitor_01_FU_InvasiveBloodPressure_ABP_transducer_Arterial_AnatomicalPosition>,
+        <https://w3id.org/mda/entity/Signal_PhysiologicalMonitor_01_FU_InvasiveBloodPressure_ABP_transducer_Arterial_ABP_waveform> .
+
+<https://w3id.org/mda/vocab/device/ExtracorporealMembraneOxygenator> ns1:administers <https://w3id.org/mda/vocab/therapeutic-modality/ExtraCorporeal_Membran_Oxygenation> .
+
+<https://w3id.org/mda/vocab/device/MechanicalVentilator> ns1:administers <https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> .
+
+<https://w3id.org/mda/vocab/metric/RespirationVolume_Minute> ns1:approximates <https://w3id.org/mda/vocab/physiological-property/RespirationVolume> .
+
+<https://w3id.org/mda/vocab/metric/VenousBloodPressure> ns1:approximates <https://w3id.org/mda/vocab/physiological-property/VenousPressure> .
+
+<https://w3id.org/mda/vocab/organ/BloodVessels> ns1:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/CardioVascular> .
+
+<https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> ns1:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
+
+<https://w3id.org/mda/vocab/physiological-process/VenousCirculation> ns1:presentIn <https://w3id.org/mda/vocab/organ/BloodVessels> .
+
+<https://w3id.org/mda/vocab/therapeutic-modality/ExtraCorporeal_Membran_Oxygenation> ns1:targetsProcess <https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation> .
+
+<https://w3id.org/mda/vocab/therapeutic-modality/VentilationTherapy> ns1:targetsProcess <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
+
+<https://w3id.org/mda/entity/AnatomicalPosition_PhysiologicalMonitor_01_FU_InvasiveBloodPressure_ABP_transducer_Arterial_AnatomicalPosition> a ns1:AnatomicalPosition .
+
+<https://w3id.org/mda/entity/Component_CardiacMonitor_01_ConnectionUnit> a <https://w3id.org/mda/vocab/component/ConnectionUnit> ;
+    ns1:hasComponentOperationState <https://w3id.org/mda/vocab/operation-state/Disconnected> ;
+    ns1:hasOperationState <https://w3id.org/mda/vocab/operation-state/Disconnected> .
+
+<https://w3id.org/mda/entity/Metric_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure_Sensor_Signal_SignalAnalysis_VenousBloodPressure> a <https://w3id.org/mda/vocab/metric/VenousBloodPressure> ;
+    ns1:approximates <https://w3id.org/mda/vocab/physiological-property/VenousPressure> ;
+    ns1:hasRate <https://w3id.org/mda/vocab/metric-rate/Decreased> .
+
+<https://w3id.org/mda/entity/Metric_MechanicalVentilator_01_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis_RespirationVolume_Minute> a <https://w3id.org/mda/vocab/metric/RespirationVolume_Minute> ;
+    ns1:approximates <https://w3id.org/mda/vocab/physiological-property/RespirationVolume> ;
+    ns1:hasRate <https://w3id.org/mda/vocab/metric-rate/Increased> .
+
+<https://w3id.org/mda/entity/Signal_PhysiologicalMonitor_01_FU_InvasiveBloodPressure_ABP_transducer_Arterial_ABP_waveform> a <https://w3id.org/mda/vocab/signal/ABP_waveform> ;
+    ns1:hasQualityState <https://w3id.org/mda/vocab/quality-state/Impaired> .
+
+<https://w3id.org/mda/vocab/organ/Lungs> ns1:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
+
+<https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> ns1:presentIn <https://w3id.org/mda/vocab/organ/Lungs> .
+
+<https://w3id.org/mda/vocab/physiological-property/RespirationVolume> ns1:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
+
+<https://w3id.org/mda/vocab/physiological-property/VenousPressure> ns1:isPropertyOf <https://w3id.org/mda/vocab/physiological-process/VenousCirculation> .
+
+<https://w3id.org/mda/entity/Patient_johnDoe_01> a ns1:Patient ;
+    dcterms:identifier "johnDoe_01" .
+

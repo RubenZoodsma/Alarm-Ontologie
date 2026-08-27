@@ -1,0 +1,38 @@
+# CAT1a: If a signal supporting a physiological alarm is of insufficient
+# quality, the alarm is flagged as likely false positive.
+#
+# ?alarm is pre-bound by assess.py (the arriving alarm being evaluated).
+# Walks ?alarm's OWN technical pathway (device -> functional unit -> sensor
+# -> signal -> analysis -> metric, all BACKGROUND facts asserted by
+# ground_chain — see op_knowledge.py) and asks whether that exact Signal
+# particular currently carries a non-Good hasQualityState. That fact is
+# CONDITION, so it is present in the query graph only while the alarm that
+# reported it is active or (per mda:persistsPostAlarm) within its post-alarm
+# window — assess.py builds the query graph at ?alarm's own arrival instant,
+# so a fault reported by ?alarm itself would also match; in practice a
+# physiological archetype's own blueprint does not carry hasQualityState, so
+# this only fires from a DIFFERENT, still-active/persisting alarm on the
+# same pathway. See EVALUATION/CQs/temporal/CQ9_technical_invalidity.rq for
+# the coincidence-based precursor to this rule (same structural proxy, but
+# matched per-tick rather than per-arriving-alarm).
+#
+# Requires ?alarm's message -> functional-unit edge (mda:triggeredBy), which
+# op_knowledge.py's grounding never asserts on the operational graph
+# (confirmed: only the static blueprint catalogue, kg_generated.ttl, carries
+# it, and there via Device, not directly — see EVALUATION/CQs/
+# post_enrichment/CQ2_shared_sensing_pathway.rq's use of that longer path
+# against that file). assess.py's add_triggered_by adds the edge back in,
+# targeting the arriving alarm's OWN FunctionalUnit particular directly
+# (skipping the Device hop CQ2 needs) — see its docstring for why going
+# through Device instead is actively wrong operationally, not just longer.
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+PREFIX qualitystate: <https://w3id.org/mda/vocab/quality-state/>
+
+SELECT ?signal ?quality WHERE {
+  ?alarm mda:hasMessage/mda:triggeredBy/mda:hasSensor ?sensor .
+  ?sensor mda:sensorProducesSignal ?signal .
+  ?signal mda:analyzedBy/mda:producesMetric ?metric .
+  ?signal mda:hasQualityState ?quality .
+  FILTER(?quality != qualitystate:Good)
+}

@@ -331,6 +331,81 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
 
 
 ####################################################################
+# Sensor baseline operational-state axiom
+#
+# A Metric-bearing archetype (2_READOUT/p75_annotated.csv rows that name a
+# Metric but no Sensor/Component/Device operational state of their own — 62
+# of 101 archetypes, checked directly against the corpus before writing
+# this) currently asserts NOTHING for mda:hasOperationState's
+# persistsPostAlarm window to carry: the sensor pathway that produced the
+# reading has no operational-state fact at all, so once its alarm ends it
+# vanishes from background_at immediately, not after the post-alarm window
+# — see CODE/evaluation_poc/mda_poc_assessment.py's CAT1b comment for the
+# concrete consequence (an IBP sensor that just alarmed with a plain
+# measurement value could not stay structurally known even one tick past
+# its own alarm's end).
+#
+# The axiom: a Sensor whose signal is analyzed to produce ANY Metric is
+# thereby known to have been functioning enough to produce that reading —
+# not an overclaim about anything the alarm doesn't evidence (contrast the
+# FunctionalUnit recipes section's warning above, which blocks inferring
+# about a SIBLING metric/sensor the alarm says nothing about; this only
+# claims something about the exact pathway that fired). Same walk-forward
+# shape as the Signal quality axioms directly above, just landing on
+# mda:hasSensorOperationState instead of mda:hasQualityState, and with no
+# hasRate restriction on the Metric — firing for the metric's mere
+# existence, not a specific rate value.
+#
+# Deliberately ONE axiom, not one per node kind (Sensor/FunctionalUnit/
+# Device): mda:hasOperationState's own owl:propertyChainAxiom (ontology.ttl)
+# already propagates a sub-property state upward through hasSensor and
+# hasFunctionalUnit, so asserting Enabled on the Sensor alone entails the
+# generic mda:hasOperationState Enabled on its owning FunctionalUnit and
+# Device for free — confirmed with an isolated reasoner test before writing
+# this (a minimal Device->FunctionalUnit->Sensor->Signal->Analysis->Metric
+# ABox plus this axiom correctly derived hasOperationState Enabled on all
+# three levels, not just the Sensor). A second axiom targeting
+# hasDeviceOperationState directly would only duplicate what the existing
+# chain already does.
+#
+# Scope check performed before writing: no archetype in the current corpus
+# has BOTH a Metric AND an explicit Sensor/Component/Device operational
+# state of its own (the 62 Metric-bearing and 31 operational-state-bearing
+# archetypes are currently fully disjoint sets) — so this cannot currently
+# contradict a real annotated state. A future archetype that annotates both
+# would need re-checking against this axiom's interaction, since
+# mda:hasSensorOperationState is not declared functional here and a
+# conflict would surface as two asserted values rather than an error.
+#
+# No owl:intersectionOf at any hop, unlike the Signal quality axioms above —
+# deliberately, not an oversight. Every intermediate hop's type is ALREADY
+# guaranteed by rdfs:domain/rdfs:range (sensorProducesSignal is domain
+# Sensor/range Signal, analyzedBy is domain Signal/range SignalAnalysis,
+# producesMetric is domain SignalAnalysis/range Metric — see their own
+# declarations in ontology.ttl), so wrapping each someValuesFrom target in
+# an owl:intersectionOf with that same class was asking OWL-RL's cls-int1/
+# cls-int2 rules to re-derive class membership the domain/range rules
+# (prp-dom/prp-rng) had already established — confirmed identical
+# entailment with an isolated reasoner test both ways before adopting this
+# form (~20% faster per call; most of a single reason() call's cost is the
+# static graph's own fixed re-derivation, not this axiom specifically — see
+# reason()'s own docstring). The Signal quality axioms above intersect with
+# a SPECIFIC metric subtype (metric:Pulse, not the domain/range-implied
+# mda:Metric), which genuinely isn't implied by any property's range, so
+# their intersectionOf is not the same redundancy and is left as-is.
+####################################################################
+
+[ a owl:Restriction ; owl:onProperty mda:sensorProducesSignal ;
+  owl:someValuesFrom
+    [ a owl:Restriction ; owl:onProperty mda:analyzedBy ;
+      owl:someValuesFrom
+        [ a owl:Restriction ; owl:onProperty mda:producesMetric ;
+          owl:someValuesFrom mda:Metric ] ]
+] rdfs:subClassOf
+  [ a owl:Restriction ; owl:onProperty mda:hasSensorOperationState ; owl:hasValue opstate:Enabled ] .
+
+
+####################################################################
 # Therapy delivery quality axioms
 #
 # mda:hasTherapyDeliveryQuality is distinct from the Signal quality axioms

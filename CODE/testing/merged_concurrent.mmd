@@ -1,0 +1,219 @@
+graph LR
+    n0["Alarm_CardiacMonitor_01_20260717T080030"]
+    n1["EdwardsVerbindingVerbroken_Unknown"]
+    n2["Signal_MechanicalVentilator_01_FU_PneumoTachograph_Sensor_Signal"]
+    n3["SignalAnalysis_MechanicalVentilator_01_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis"]
+    n4["Sensor_PhysiologicalMonitor_01_FU_InvasiveBloodPressure_ABP_transducer_Arterial"]
+    n5["ABP_transducer"]
+    n6["Device_MechanicalVentilator_01"]
+    n7["FunctionalUnit_MechanicalVentilator_01_FU_PneumoTachograph"]
+    n8["FU_PneumoTachograph"]
+    n9["Msg_CardiacMonitor_01_20260717T080030"]
+    n10["Patient_johnDoe_01"]
+    n11["PulmonaryVentilation"]
+    n12["Lungs"]
+    n13["Metric_MechanicalVentilator_01_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis_RespirationVolume_Minute"]
+    n14["VentilationTherapy"]
+    n15["Enabled"]
+    n16["Alarm_MechanicalVentilator_01_20260717T080000"]
+    n17["Msg_MechanicalVentilator_01_20260717T080000"]
+    n18["ServouExpMinuutvolHoog_Unknown"]
+    n19["Unknown"]
+    n20["Device_CardiacMonitor_01"]
+    n21["CardiacMonitor"]
+    n22["VenousCirculation"]
+    n23["BloodVessels"]
+    n24["Metric_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure_Sensor_Signal_SignalAnalysis_VenousBloodPressure"]
+    n25["VenousBloodPressure"]
+    n26["RespirationVolume"]
+    n27["Msg_PhysiologicalMonitor_01_20260717T080130"]
+    n28["AnatomicalPosition_PhysiologicalMonitor_01_FU_InvasiveBloodPressure_ABP_transducer_Arterial_AnatomicalPosition"]
+    n29["Physiological"]
+    n30["Component_CardiacMonitor_01_ConnectionUnit"]
+    n31["Signal_PhysiologicalMonitor_01_FU_InvasiveBloodPressure_ABP_transducer_Arterial_ABP_waveform"]
+    n32["Impaired"]
+    n33["ExtraCorporeal_Membran_Oxygenation"]
+    n34["PulmonaryOxygenation"]
+    n35["Decreased"]
+    n36["FunctionalUnit_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure"]
+    n37["FU_InvasiveBloodPressure"]
+    n38["Msg_ExtracorporealMembraneOxygenator_01_20260717T080100"]
+    n39["Sensor_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure_Sensor"]
+    n40["VenousPressure"]
+    n41["Disconnected"]
+    n42["Signal_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure_Sensor_Signal"]
+    n43["SignalAnalysis_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure_Sensor_Signal_SignalAnalysis"]
+    n44["MechanicalVentilator"]
+    n45["FunctionalUnit_PhysiologicalMonitor_01_FU_InvasiveBloodPressure"]
+    n46["ConnectionUnit"]
+    n47["Device_PhysiologicalMonitor_01"]
+    n48["Increased"]
+    n49["Device_ExtracorporealMembraneOxygenator_01"]
+    n50["ABP_waveform"]
+    n51["Alarm_PhysiologicalMonitor_01_20260717T080130"]
+    n52["Alarm_ExtracorporealMembraneOxygenator_01_20260717T080100"]
+    n53["Technical"]
+    n54["Arterial"]
+    n55["PhysiologicalMonitor"]
+    n56["Sensor_MechanicalVentilator_01_FU_PneumoTachograph_Sensor"]
+    n57["CardioVascular"]
+    n58["MonitorArtStatischeDruk_Unknown"]
+    n59["ExtracorporealMembraneOxygenator"]
+    n60["CardiohelpPvenOnderWaarschuwingsgrens_Unknown"]
+    n61["RespirationVolume_Minute"]
+    n62["Pulmonary"]
+    n0 -->|isOfType| n1
+    n2 -->|analyzedBy| n3
+    n4 -->|type| n5
+    n6 -->|hasFunctionalUnit| n7
+    n7 -->|type| n8
+    n9 -->|concernsPatient| n10
+    n11 -->|presentIn| n12
+    n3 -->|producesMetric| n13
+    n14 -->|targetsProcess| n11
+    n4 -->|hasSensorOperationState| n15
+    n0 -->|hasMessage| n9
+    n16 -->|hasMessage| n17
+    n16 -->|isOfType| n18
+    n16 -->|hasPriority| n19
+    n20 -->|type| n21
+    n22 -->|presentIn| n23
+    n24 -->|type| n25
+    n26 -->|isPropertyOf| n11
+    n27 -->|triggeredByStructure| n28
+    n16 -->|hasCategory| n29
+    n20 -->|hasComponent| n30
+    n4 -->|hasAnatomicalPosition| n28
+    n31 -->|hasQualityState| n32
+    n33 -->|targetsProcess| n34
+    n24 -->|hasRate| n35
+    n36 -->|type| n37
+    n38 -->|concernsPatient| n10
+    n36 -->|hasSensor| n39
+    n17 -->|triggeredByStructure| n13
+    n25 -->|approximates| n40
+    n34 -->|presentIn| n12
+    n20 -->|hasOperationState| n41
+    n42 -->|analyzedBy| n43
+    n44 -->|administers| n14
+    n9 -->|triggeredByStructure| n30
+    n17 -->|concernsPatient| n10
+    n27 -->|triggeredByStructure| n31
+    n45 -->|hasOperationState| n15
+    n30 -->|type| n46
+    n47 -->|hasOperationState| n15
+    n45 -->|type| n37
+    n13 -->|hasRate| n48
+    n0 -->|hasPriority| n19
+    n30 -->|hasOperationState| n41
+    n49 -->|hasFunctionalUnit| n36
+    n4 -->|sensorProducesSignal| n31
+    n40 -->|isPropertyOf| n22
+    n31 -->|type| n50
+    n13 -->|approximates| n26
+    n51 -->|hasMessage| n27
+    n43 -->|producesMetric| n24
+    n30 -->|hasComponentOperationState| n41
+    n51 -->|hasPriority| n19
+    n52 -->|hasMessage| n38
+    n0 -->|hasCategory| n53
+    n27 -->|concernsPatient| n10
+    n4 -->|hasAnatomicalPosition| n54
+    n4 -->|hasOperationState| n15
+    n6 -->|type| n44
+    n47 -->|type| n55
+    n51 -->|hasCategory| n53
+    n47 -->|hasFunctionalUnit| n45
+    n45 -->|hasSensor| n4
+    n56 -->|sensorProducesSignal| n2
+    n23 -->|organPartOfSystem| n57
+    n52 -->|hasPriority| n19
+    n51 -->|isOfType| n58
+    n39 -->|sensorProducesSignal| n42
+    n24 -->|approximates| n40
+    n59 -->|administers| n33
+    n7 -->|hasSensor| n56
+    n52 -->|isOfType| n60
+    n49 -->|type| n59
+    n52 -->|hasCategory| n29
+    n38 -->|triggeredByStructure| n24
+    n61 -->|approximates| n26
+    n12 -->|organPartOfSystem| n62
+    n13 -->|type| n61
+    classDef alarm fill:#ffd6d6,stroke:#c0392b,color:#111;
+    classDef archetype fill:#ffeaea,stroke:#c0392b,stroke-dasharray:4 3,color:#111;
+    classDef message fill:#ffe8cc,stroke:#e67e22,color:#111;
+    classDef patient fill:#d5f5e3,stroke:#27ae60,color:#111;
+    classDef device fill:#d6eaff,stroke:#2980b9,color:#111;
+    classDef functionalunit fill:#cfe8d8,stroke:#1e8449,color:#111;
+    classDef sensor fill:#d1f2f2,stroke:#16a085,color:#111;
+    classDef signal fill:#e8fbfb,stroke:#16a085,color:#111;
+    classDef signalanalysis fill:#dff5f2,stroke:#0e6b62,color:#111;
+    classDef metric fill:#eaddf7,stroke:#8e44ad,color:#111;
+    classDef opstate fill:#fdf2b3,stroke:#b7950b,color:#111;
+    classDef concept fill:#ececec,stroke:#7f8c8d,color:#111;
+    classDef entity fill:#f2f2f2,stroke:#95a5a6,color:#111;
+    classDef other fill:#ffffff,stroke:#000000,color:#111;
+    class n0 alarm;
+    class n1 archetype;
+    class n2 signal;
+    class n3 signalanalysis;
+    class n4 sensor;
+    class n5 concept;
+    class n6 device;
+    class n7 functionalunit;
+    class n8 concept;
+    class n9 message;
+    class n10 patient;
+    class n11 concept;
+    class n12 concept;
+    class n13 metric;
+    class n14 concept;
+    class n15 opstate;
+    class n16 alarm;
+    class n17 message;
+    class n18 archetype;
+    class n19 concept;
+    class n20 device;
+    class n21 concept;
+    class n22 concept;
+    class n23 concept;
+    class n24 metric;
+    class n25 concept;
+    class n26 concept;
+    class n27 message;
+    class n28 entity;
+    class n29 concept;
+    class n30 entity;
+    class n31 signal;
+    class n32 concept;
+    class n33 concept;
+    class n34 concept;
+    class n35 concept;
+    class n36 functionalunit;
+    class n37 concept;
+    class n38 message;
+    class n39 sensor;
+    class n40 concept;
+    class n41 opstate;
+    class n42 signal;
+    class n43 signalanalysis;
+    class n44 concept;
+    class n45 functionalunit;
+    class n46 concept;
+    class n47 device;
+    class n48 concept;
+    class n49 device;
+    class n50 concept;
+    class n51 alarm;
+    class n52 alarm;
+    class n53 concept;
+    class n54 concept;
+    class n55 concept;
+    class n56 sensor;
+    class n57 concept;
+    class n58 archetype;
+    class n59 concept;
+    class n60 archetype;
+    class n61 concept;
+    class n62 concept;

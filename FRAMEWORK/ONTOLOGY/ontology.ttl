@@ -69,7 +69,7 @@ mda:PostAlarmValidScheme        a owl:Class ;
                                 "Post-alarm geldig schema"@nl ;
     rdfs:comment                "A SKOS concept scheme whose concepts remain valid for a fixed duration after an alarm ends."@en,
                                 "Een SKOS-conceptschema waarvan de concepten geldig blijven gedurende een vaste duur nadat een alarm is geëindigd."@nl ;
-    mda:postAlarmValidityDuration "PT60S"^^xsd:duration .
+    mda:postAlarmValidityDuration "PT15M"^^xsd:duration .
 
 
 #################################################################

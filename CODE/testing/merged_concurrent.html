@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Concurrent alarm merge — seed 42</title>
+<style>
+  :root{--ground:#f4f7f7;--surface:#fff;--ink:#16231f;--muted:#61726d;--faint:#89a09a;
+        --line:#e2ebe8;--accent:#0c7d76;--accent-soft:#e4f2f0;--plate:#fff;--plate-line:#dfe7e5}
+  @media (prefers-color-scheme:dark){:root{--ground:#0d1412;--surface:#15201d;--ink:#e9f1ee;
+        --muted:#93a8a2;--faint:#6b807a;--line:#23322e;--accent:#37b9ae;--accent-soft:#143430}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);line-height:1.55;
+       font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:1120px;margin:0 auto;padding:clamp(1.4rem,4vw,3rem) clamp(1rem,3vw,2rem) 4rem}
+  .eyebrow{font-family:ui-monospace,Menlo,monospace;font-size:.72rem;letter-spacing:.16em;
+           text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{margin:.4rem 0 .3rem;font-size:clamp(1.6rem,3.4vw,2.3rem);line-height:1.08;
+     letter-spacing:-.02em;font-weight:680;max-width:22ch;text-wrap:balance}
+  .lede{margin:0;color:var(--muted);max-width:64ch}
+  .lede b{color:var(--ink)}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;margin:1.7rem 0}
+  .tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;
+        padding:.9rem 1rem;display:flex;flex-direction:column;gap:.15rem}
+  .tile .n{font-size:1.9rem;font-weight:680;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
+  .tile .k{font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;color:var(--faint)}
+  .tile.hi{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));background:var(--accent-soft)}
+  .tile.hi .n{color:var(--accent)}
+  .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:1.3rem;align-items:start}
+  @media (max-width:720px){.grid2{grid-template-columns:1fr}}
+  h2{font-size:.76rem;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);font-weight:600;margin:0 0 .6rem}
+  .alarms{display:flex;flex-direction:column;gap:.5rem;margin:0;padding:0;list-style:none}
+  .alarm{display:flex;gap:.6rem;background:var(--surface);border:1px solid var(--line);
+         border-left:3px solid #c0392b;border-radius:8px;padding:.5rem .8rem;font-size:.9rem}
+  .alarm .dev{margin-left:auto;font-size:.72rem;color:var(--faint);white-space:nowrap}
+  .legend{display:flex;flex-wrap:wrap;gap:.4rem .9rem;margin:0;padding:0;list-style:none}
+  .legend li{display:flex;align-items:center;gap:.4rem;font-size:.8rem;color:var(--muted)}
+  .dot{width:11px;height:11px;border-radius:3px;border:1px solid rgba(0,0,0,.15);flex:none}
+  .figure{margin:1.5rem 0 .5rem;background:var(--plate);border:1px solid var(--plate-line);
+          border-radius:14px;padding:.6rem;overflow-x:auto}
+  .figure pre.mermaid{margin:0;min-width:900px;text-align:center;background:transparent}
+  figcaption{font-size:.8rem;color:var(--faint);margin:.5rem .2rem 0}
+  .note{margin-top:1.4rem;border:1px solid var(--line);border-radius:12px;background:var(--surface);
+        padding:1rem 1.15rem;font-size:.9rem;color:var(--muted)}
+  .note b{color:var(--ink)} .note code{font-family:ui-monospace,Menlo,monospace;font-size:.85em;
+        color:var(--accent);background:var(--accent-soft);padding:.05em .35em;border-radius:4px}
+  .foot{margin-top:2rem;font-size:.76rem;color:var(--faint);font-family:ui-monospace,Menlo,monospace}
+</style></head><body><div class="wrap">
+  <span class="eyebrow">Situational-awareness merge · test seed 42</span>
+  <h1>Concurrent alarms, one coherent patient graph</h1>
+  <p class="lede">Randomly drawn alarm types fire at once on patient <b>johnDoe_01</b>.
+     Each mints its own message, yet all merge onto the <b>shared</b> patient and device
+     entities — a single graph to reason over.</p>
+  <div class="stats"><div class="tile "><span class="n">4</span><span class="k">Concurrent alarms</span></div><div class="tile hi"><span class="n">1</span><span class="k">Patient (merged)</span></div><div class="tile hi"><span class="n">0</span><span class="k">Devices spanned</span></div><div class="tile hi"><span class="n">5</span><span class="k">Entities inferred Enabled</span></div><div class="tile "><span class="n">111</span><span class="k">Triples</span></div></div>
+  <div class="grid2">
+    <div><h2>The alarms</h2><ul class="alarms"><li class="alarm"><span>SERVOU - Exp. minuutvol. hoog</span><span class="dev">MechanicalVentilator_01</span></li><li class="alarm"><span>EDWARDS - Verbinding verbroken</span><span class="dev">CardiacMonitor_01</span></li><li class="alarm"><span>CARDIOHELP - pVen onder waarschuwingsgrens</span><span class="dev">ExtracorporealMembraneOxygenator_01</span></li><li class="alarm"><span>Monitor - ART statische druk</span><span class="dev">PhysiologicalMonitor_01</span></li></ul></div>
+    <div><h2>Legend</h2><ul class="legend">
+      <li><span class="dot" style="fill:#ffd6d6,border-color:#c0392b"></span>Alarm</li><li><span class="dot" style="fill:#ffeaea,border-color:#c0392b,stroke-dasharray:4 3"></span>Alarm type</li><li><span class="dot" style="fill:#ffe8cc,border-color:#e67e22"></span>Message</li><li><span class="dot" style="fill:#d5f5e3,border-color:#27ae60"></span>Patient</li><li><span class="dot" style="fill:#d6eaff,border-color:#2980b9"></span>Device</li><li><span class="dot" style="fill:#cfe8d8,border-color:#1e8449"></span>Functional unit</li><li><span class="dot" style="fill:#d1f2f2,border-color:#16a085"></span>Sensor</li><li><span class="dot" style="fill:#e8fbfb,border-color:#16a085"></span>Signal</li><li><span class="dot" style="fill:#dff5f2,border-color:#0e6b62"></span>Signal analysis</li><li><span class="dot" style="fill:#eaddf7,border-color:#8e44ad"></span>Metric condition</li><li><span class="dot" style="fill:#fdf2b3,border-color:#b7950b"></span>Operation state</li><li><span class="dot" style="fill:#ececec,border-color:#7f8c8d"></span>Vocabulary concept</li><li><span class="dot" style="fill:#f2f2f2,border-color:#95a5a6"></span>Other entity</li>
+    </ul></div>
+  </div>
+  <figure class="figure"><pre class="mermaid">
+graph LR
+    n0["Alarm_CardiacMonitor_01_20260717T080030"]
+    n1["EdwardsVerbindingVerbroken_Unknown"]
+    n2["Signal_MechanicalVentilator_01_FU_PneumoTachograph_Sensor_Signal"]
+    n3["SignalAnalysis_MechanicalVentilator_01_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis"]
+    n4["Sensor_PhysiologicalMonitor_01_FU_InvasiveBloodPressure_ABP_transducer_Arterial"]
+    n5["ABP_transducer"]
+    n6["Device_MechanicalVentilator_01"]
+    n7["FunctionalUnit_MechanicalVentilator_01_FU_PneumoTachograph"]
+    n8["FU_PneumoTachograph"]
+    n9["Msg_CardiacMonitor_01_20260717T080030"]
+    n10["Patient_johnDoe_01"]
+    n11["PulmonaryVentilation"]
+    n12["Lungs"]
+    n13["Metric_MechanicalVentilator_01_FU_PneumoTachograph_Sensor_Signal_SignalAnalysis_RespirationVolume_Minute"]
+    n14["VentilationTherapy"]
+    n15["Enabled"]
+    n16["Alarm_MechanicalVentilator_01_20260717T080000"]
+    n17["Msg_MechanicalVentilator_01_20260717T080000"]
+    n18["ServouExpMinuutvolHoog_Unknown"]
+    n19["Unknown"]
+    n20["Device_CardiacMonitor_01"]
+    n21["CardiacMonitor"]
+    n22["VenousCirculation"]
+    n23["BloodVessels"]
+    n24["Metric_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure_Sensor_Signal_SignalAnalysis_VenousBloodPressure"]
+    n25["VenousBloodPressure"]
+    n26["RespirationVolume"]
+    n27["Msg_PhysiologicalMonitor_01_20260717T080130"]
+    n28["AnatomicalPosition_PhysiologicalMonitor_01_FU_InvasiveBloodPressure_ABP_transducer_Arterial_AnatomicalPosition"]
+    n29["Physiological"]
+    n30["Component_CardiacMonitor_01_ConnectionUnit"]
+    n31["Signal_PhysiologicalMonitor_01_FU_InvasiveBloodPressure_ABP_transducer_Arterial_ABP_waveform"]
+    n32["Impaired"]
+    n33["ExtraCorporeal_Membran_Oxygenation"]
+    n34["PulmonaryOxygenation"]
+    n35["Decreased"]
+    n36["FunctionalUnit_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure"]
+    n37["FU_InvasiveBloodPressure"]
+    n38["Msg_ExtracorporealMembraneOxygenator_01_20260717T080100"]
+    n39["Sensor_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure_Sensor"]
+    n40["VenousPressure"]
+    n41["Disconnected"]
+    n42["Signal_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure_Sensor_Signal"]
+    n43["SignalAnalysis_ExtracorporealMembraneOxygenator_01_FU_InvasiveBloodPressure_Sensor_Signal_SignalAnalysis"]
+    n44["MechanicalVentilator"]
+    n45["FunctionalUnit_PhysiologicalMonitor_01_FU_InvasiveBloodPressure"]
+    n46["ConnectionUnit"]
+    n47["Device_PhysiologicalMonitor_01"]
+    n48["Increased"]
+    n49["Device_ExtracorporealMembraneOxygenator_01"]
+    n50["ABP_waveform"]
+    n51["Alarm_PhysiologicalMonitor_01_20260717T080130"]
+    n52["Alarm_ExtracorporealMembraneOxygenator_01_20260717T080100"]
+    n53["Technical"]
+    n54["Arterial"]
+    n55["PhysiologicalMonitor"]
+    n56["Sensor_MechanicalVentilator_01_FU_PneumoTachograph_Sensor"]
+    n57["CardioVascular"]
+    n58["MonitorArtStatischeDruk_Unknown"]
+    n59["ExtracorporealMembraneOxygenator"]
+    n60["CardiohelpPvenOnderWaarschuwingsgrens_Unknown"]
+    n61["RespirationVolume_Minute"]
+    n62["Pulmonary"]
+    n0 -->|isOfType| n1
+    n2 -->|analyzedBy| n3
+    n4 -->|type| n5
+    n6 -->|hasFunctionalUnit| n7
+    n7 -->|type| n8
+    n9 -->|concernsPatient| n10
+    n11 -->|presentIn| n12
+    n3 -->|producesMetric| n13
+    n14 -->|targetsProcess| n11
+    n4 -->|hasSensorOperationState| n15
+    n0 -->|hasMessage| n9
+    n16 -->|hasMessage| n17
+    n16 -->|isOfType| n18
+    n16 -->|hasPriority| n19
+    n20 -->|type| n21
+    n22 -->|presentIn| n23
+    n24 -->|type| n25
+    n26 -->|isPropertyOf| n11
+    n27 -->|triggeredByStructure| n28
+    n16 -->|hasCategory| n29
+    n20 -->|hasComponent| n30
+    n4 -->|hasAnatomicalPosition| n28
+    n31 -->|hasQualityState| n32
+    n33 -->|targetsProcess| n34
+    n24 -->|hasRate| n35
+    n36 -->|type| n37
+    n38 -->|concernsPatient| n10
+    n36 -->|hasSensor| n39
+    n17 -->|triggeredByStructure| n13
+    n25 -->|approximates| n40
+    n34 -->|presentIn| n12
+    n20 -->|hasOperationState| n41
+    n42 -->|analyzedBy| n43
+    n44 -->|administers| n14
+    n9 -->|triggeredByStructure| n30
+    n17 -->|concernsPatient| n10
+    n27 -->|triggeredByStructure| n31
+    n45 -->|hasOperationState| n15
+    n30 -->|type| n46
+    n47 -->|hasOperationState| n15
+    n45 -->|type| n37
+    n13 -->|hasRate| n48
+    n0 -->|hasPriority| n19
+    n30 -->|hasOperationState| n41
+    n49 -->|hasFunctionalUnit| n36
+    n4 -->|sensorProducesSignal| n31
+    n40 -->|isPropertyOf| n22
+    n31 -->|type| n50
+    n13 -->|approximates| n26
+    n51 -->|hasMessage| n27
+    n43 -->|producesMetric| n24
+    n30 -->|hasComponentOperationState| n41
+    n51 -->|hasPriority| n19
+    n52 -->|hasMessage| n38
+    n0 -->|hasCategory| n53
+    n27 -->|concernsPatient| n10
+    n4 -->|hasAnatomicalPosition| n54
+    n4 -->|hasOperationState| n15
+    n6 -->|type| n44
+    n47 -->|type| n55
+    n51 -->|hasCategory| n53
+    n47 -->|hasFunctionalUnit| n45
+    n45 -->|hasSensor| n4
+    n56 -->|sensorProducesSignal| n2
+    n23 -->|organPartOfSystem| n57
+    n52 -->|hasPriority| n19
+    n51 -->|isOfType| n58
+    n39 -->|sensorProducesSignal| n42
+    n24 -->|approximates| n40
+    n59 -->|administers| n33
+    n7 -->|hasSensor| n56
+    n52 -->|isOfType| n60
+    n49 -->|type| n59
+    n52 -->|hasCategory| n29
+    n38 -->|triggeredByStructure| n24
+    n61 -->|approximates| n26
+    n12 -->|organPartOfSystem| n62
+    n13 -->|type| n61
+    classDef alarm fill:#ffd6d6,stroke:#c0392b,color:#111;
+    classDef archetype fill:#ffeaea,stroke:#c0392b,stroke-dasharray:4 3,color:#111;
+    classDef message fill:#ffe8cc,stroke:#e67e22,color:#111;
+    classDef patient fill:#d5f5e3,stroke:#27ae60,color:#111;
+    classDef device fill:#d6eaff,stroke:#2980b9,color:#111;
+    classDef functionalunit fill:#cfe8d8,stroke:#1e8449,color:#111;
+    classDef sensor fill:#d1f2f2,stroke:#16a085,color:#111;
+    classDef signal fill:#e8fbfb,stroke:#16a085,color:#111;
+    classDef signalanalysis fill:#dff5f2,stroke:#0e6b62,color:#111;
+    classDef metric fill:#eaddf7,stroke:#8e44ad,color:#111;
+    classDef opstate fill:#fdf2b3,stroke:#b7950b,color:#111;
+    classDef concept fill:#ececec,stroke:#7f8c8d,color:#111;
+    classDef entity fill:#f2f2f2,stroke:#95a5a6,color:#111;
+    classDef other fill:#ffffff,stroke:#000000,color:#111;
+    class n0 alarm;
+    class n1 archetype;
+    class n2 signal;
+    class n3 signalanalysis;
+    class n4 sensor;
+    class n5 concept;
+    class n6 device;
+    class n7 functionalunit;
+    class n8 concept;
+    class n9 message;
+    class n10 patient;
+    class n11 concept;
+    class n12 concept;
+    class n13 metric;
+    class n14 concept;
+    class n15 opstate;
+    class n16 alarm;
+    class n17 message;
+    class n18 archetype;
+    class n19 concept;
+    class n20 device;
+    class n21 concept;
+    class n22 concept;
+    class n23 concept;
+    class n24 metric;
+    class n25 concept;
+    class n26 concept;
+    class n27 message;
+    class n28 entity;
+    class n29 concept;
+    class n30 entity;
+    class n31 signal;
+    class n32 concept;
+    class n33 concept;
+    class n34 concept;
+    class n35 concept;
+    class n36 functionalunit;
+    class n37 concept;
+    class n38 message;
+    class n39 sensor;
+    class n40 concept;
+    class n41 opstate;
+    class n42 signal;
+    class n43 signalanalysis;
+    class n44 concept;
+    class n45 functionalunit;
+    class n46 concept;
+    class n47 device;
+    class n48 concept;
+    class n49 device;
+    class n50 concept;
+    class n51 alarm;
+    class n52 alarm;
+    class n53 concept;
+    class n54 concept;
+    class n55 concept;
+    class n56 sensor;
+    class n57 concept;
+    class n58 archetype;
+    class n59 concept;
+    class n60 archetype;
+    class n61 concept;
+    class n62 concept;
+</pre><figcaption>Merged situational graph — all alarms active. Scroll horizontally to follow the structure.</figcaption></figure>
+  <div class="note"><p><b>How to read it.</b> Each alarm (red) links via <code>hasMessage</code> to its
+  own message (orange); every message <code>concernsPatient</code> the single shared patient (green) —
+  that convergence is the merge. From the patient, <code>isMonitoredBy</code> reaches the device(s)
+  (blue) and their sensors/signals (teal). Alarm conditions (purple) attach to the shared sensors;
+  where a signal is <code>Impaired</code>, the reasoner infers <code>Enabled</code> (yellow) and
+  propagates it signal → sensor → device.</p>
+  <p><b>The clinical chain (grey) is entailed, not carried.</b> No alarm states any physiology.
+  Each metric concept has one bridge axiom in <code>clinical_axioms.ttl</code>, and the reasoner
+  derives <code>approximates</code> → <code>isPropertyOf</code> → <code>presentIn</code> →
+  <code>organPartOfSystem</code> from there. Alarms that converge on the same organ are implicating
+  the same anatomy — that convergence is the point. A chain that stops early is a gap in the
+  clinical knowledge base, not a defect in the alarm.</p></div>
+  <p class="foot">test_concurrent_merge.py · seed 42 · regenerate and refresh this page for the latest run.</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:'neutral',securityLevel:'loose',flowchart:{useMaxWidth:false}});</script>
+</body></html>

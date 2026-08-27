@@ -1,0 +1,58 @@
+# CAT2a: If an active alarm of equal or higher priority represents the same
+# biological process of an incoming alarm, then the incoming alarm
+# concerning that process can be silenced.
+#
+# ?alarm is pre-bound by assess.py (the arriving alarm). Reuses
+# EVALUATION/CQs/temporal/CQ10_coinciding_equivalence.rq's "clinical" branch
+# (two alarms reaching the same PhysiologicalProcess via their independent
+# approximates/isPropertyOf chains — mda:situational-tagged, so already
+# present in the reasoned situational graph assess.py builds, no extra
+# reasoning pass needed here), restricted to an ALREADY-ACTIVE alarm (not
+# merely coinciding in one tick) and gated by mda:priorityRank — see
+# FRAMEWORK/VOCABULARY/priority_rank.ttl, unioned into the query graph by
+# assess.py, not part of op_knowledge.py's own reasoning_static.
+#
+# ?active being present in the query graph at all already means it is
+# active-or-persisting at ?alarm's arrival instant (assess.py builds the
+# graph from Timeline.situation_at/background_at at that exact timestamp);
+# this query does not re-derive that, only excludes ?alarm matching itself.
+#
+# BOTH ?alarm and ?active are required to be mda:hasCategory
+# alarmcat:Physiological — found necessary, not just tidy, while validating
+# against DATA/CAT_evaluation/cat1a_pos: a Technical-category alarm (e.g.
+# "PHILIPSMONITOR - Storing in SpO2", whose own archetype has NO Metric node
+# at all — see kg_generated.ttl) was matching as ?active anyway, because
+# Sensor/Signal particulars are minted per (device_id, concept) — correctly,
+# it IS the same physical sensor — so a COINCIDING alarm's own
+# Metric/approximates chain, hung off that same shared Signal node, is
+# reachable by walking from the Technical alarm's OWN triggeredBy path too.
+# The framework has no edge tying a Metric to the specific alarm that
+# reported it (Metric is Stateful/condition-scoped, but shared across every
+# alarm currently active on that pathway) — so without this guard the query
+# credits a technical fault with clinical content it never asserted, purely
+# because it happens to share a sensor with a physiological alarm. A
+# Technical alarm has no claim to "representing a biological process" in
+# the first place, so the guard is correct on its own terms, not only a
+# workaround.
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+PREFIX alarmcat: <https://w3id.org/mda/vocab/alarm-category/>
+
+SELECT ?active ?process WHERE {
+  ?alarm mda:hasCategory alarmcat:Physiological .
+  ?alarm mda:hasMessage/mda:triggeredBy/mda:hasSensor/
+         mda:sensorProducesSignal/mda:analyzedBy/mda:producesMetric/
+         mda:approximates/mda:isPropertyOf ?process .
+  ?alarm mda:hasPriority ?incomingPrio .
+  ?incomingPrio mda:priorityRank ?incomingRank .
+
+  ?active mda:hasCategory alarmcat:Physiological .
+  ?active mda:hasMessage/mda:triggeredBy/mda:hasSensor/
+          mda:sensorProducesSignal/mda:analyzedBy/mda:producesMetric/
+          mda:approximates/mda:isPropertyOf ?process .
+  ?active mda:hasPriority ?activePrio .
+  ?activePrio mda:priorityRank ?activeRank .
+
+  FILTER(?active != ?alarm)
+  FILTER(?activeRank >= ?incomingRank)
+}

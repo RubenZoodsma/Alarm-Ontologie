@@ -1,0 +1,46 @@
+# CAT2b: If an alarm conveys the same metric via a different sensor, an
+# incoming alarm conveying that metric from another sensor can be silenced.
+#
+# ?alarm is pre-bound by assess.py (the arriving alarm). Reuses
+# EVALUATION/CQs/temporal/CQ10_coinciding_equivalence.rq's "technical" branch
+# (two independent sensor->signal->analysis->metric traces sharing the same
+# Metric TYPE — asserted BACKGROUND/CONDITION facts, no reasoning needed),
+# restricted to an already-active prior alarm (see cat2a's header for why
+# that needs no extra check here) and — unlike CAT2a — no priority gate: the
+# manuscript's own wording for this rule names none.
+#
+# BOTH ?alarm and ?active required mda:hasCategory alarmcat:Physiological —
+# same shared-Signal-particular leak as cat2a_process_priority.rq (see its
+# header for the concrete case that surfaced it): a Technical alarm with no
+# Metric node of its own can otherwise appear to convey a metric it never
+# asserted, merely by sharing a sensor with a coincident physiological one.
+#
+# ?alarm/?active reach mda:hasSensor straight off mda:triggeredBy, no
+# mda:hasFunctionalUnit hop — found necessary here specifically, validating
+# against DATA/CAT_evaluation/cat2b_neg (an ECG alarm and an SpO2 alarm on
+# ONE PhysiologicalMonitor): assess.py's add_triggered_by targets the
+# arriving alarm's own FunctionalUnit particular directly. Going through
+# mda:hasFunctionalUnit from the shared device particular instead (an
+# earlier version of both this rule and add_triggered_by did) reaches EVERY
+# FunctionalUnit that device has ever revealed — for cat2b_neg specifically,
+# both the ECG and the SpO2 FU from a single mda:triggeredBy hop, wrongly
+# making the ECG alarm's OWN sensor path reachable via the SpO2 FU too, and
+# vice versa. See assess.py's add_triggered_by docstring for the full case.
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+PREFIX alarmcat: <https://w3id.org/mda/vocab/alarm-category/>
+
+SELECT ?active ?metricType WHERE {
+  ?alarm mda:hasCategory alarmcat:Physiological .
+  ?alarm mda:hasMessage/mda:triggeredBy/mda:hasSensor ?sensorIn .
+  ?sensorIn mda:sensorProducesSignal/mda:analyzedBy/mda:producesMetric ?metricIn .
+  ?metricIn a ?metricType .
+
+  ?active mda:hasCategory alarmcat:Physiological .
+  ?active mda:hasMessage/mda:triggeredBy/mda:hasSensor ?sensorActive .
+  ?sensorActive mda:sensorProducesSignal/mda:analyzedBy/mda:producesMetric ?metricActive .
+  ?metricActive a ?metricType .
+
+  FILTER(?active != ?alarm)
+  FILTER(?sensorActive != ?sensorIn)
+}
