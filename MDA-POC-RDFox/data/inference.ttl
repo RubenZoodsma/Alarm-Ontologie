@@ -48,7 +48,7 @@
 @prefix signal:      <https://w3id.org/mda/vocab/signal/> .
 @prefix signalAnalysis: <https://w3id.org/mda/vocab/signal-analysis/> .
 @prefix metric:      <https://w3id.org/mda/vocab/metric/> .
-@prefix valuestate:  <https://w3id.org/mda/vocab/value-state/> .
+@prefix metricRate:  <https://w3id.org/mda/vocab/metric-rate/> .
 @prefix qualitystate: <https://w3id.org/mda/vocab/quality-state/> .
 @prefix physiologicalProperty: <https://w3id.org/mda/vocab/physiological-property/> .
 @prefix physiologicalProcess:  <https://w3id.org/mda/vocab/physiological-process/> .
@@ -94,7 +94,7 @@
 # entailment path the restriction shape was, remove that second target
 # entirely — nothing is left to leak through, for either property.
 device:Dialysator                       mda:administers therapeuticModality:RenalReplacementTherapy .
-device:ExtracorporealMembraneOxygenator mda:administers therapeuticModality:ExtraCorporealMembraneOxygenation .
+device:ExtracorporealMembraneOxygenator mda:administers therapeuticModality:ExtraCorporeal_Membran_Oxygenation .
 device:Incubator                        mda:administers therapeuticModality:ThermoRegulationTherapy .
 device:Thermoregulator                  mda:administers therapeuticModality:ThermoRegulationTherapy .
 device:MechanicalVentilator             mda:administers therapeuticModality:VentilationTherapy .
@@ -125,7 +125,7 @@ device:MechanicalVentilator             mda:administers therapeuticModality:Vent
 # The internal technical wiring of a functional unit — which sensor(s) it
 # reads, which signal(s) those produce, which analysis step(s) consume
 # those signals, which metric(s) each step produces — is never CSV/kg
-# data (DATA/ANNOTATION/consensus/p75_annotated.csv only carries
+# data (2_READOUT/data/annotated/p50_annotated.csv only carries
 # FunctionalUnit + Metric; no Sensor/Signal for these). It is expert
 # knowledge, hand-authored here once per FunctionalUnit concept.
 #
@@ -141,18 +141,17 @@ device:MechanicalVentilator             mda:administers therapeuticModality:Vent
 # separately-pluggable lines (arterial, venous); an alarm about one of them
 # does not mean the other is connected. The same is true even where a
 # single sensor really does feed several simultaneous analyses
-# (FU_PulseOximetry's one PPG waveform -> SpO2 + PulseRate + PulseFlowIndex
-# all at once, physically) — an alarm naming only SpO2 tells us nothing about
-# whether PulseRate or PulseFlowIndex were normal, abnormal, or even being
+# (FU_PulseOximetry's one PPG waveform -> SpO2 + Pulse + PulseFlowIndex all
+# at once, physically) — an alarm naming only SpO2 tells us nothing about
+# whether Pulse or PulseFlowIndex were normal, abnormal, or even being
 # looked at for that event, so asserting them anyway overclaims exactly the
 # same way. So: no restriction fires this chain onto any per-alarm
-# instance at all now. This is purely a lookup table — CODE/framework_build/
-# build_framework.py's build_metric_recipe() reads it directly, walking
-# FunctionalUnit -hasSensor-> Sensor -sensorProducesSignal-> Signal
-# -analyzedBy-> SignalAnalysis -producesMetric-> Metric forward, and asserts,
-# per CSV row, only the single trace that row's own FunctionalUnit + Metric
-# columns actually name. See build_framework.py's module docstring /
-# recipe_override() for the generation side.
+# instance at all now. This is purely a lookup table — 2_READOUT/
+# build_framework.py's build_metric_recipe() reads it directly (Metric ->
+# SignalAnalysis -> Signal -> Sensor, walking producesMetric/analyzedBy/
+# sensorProducesSignal backward) and asserts, per CSV row, only the single
+# trace that row's own Metric column actually names. See build_framework.py's
+# module docstring / recipe_override() for the generation side.
 #
 # A functional unit that produces more than one metric (e.g. FU_PulseOximetry
 # -> SpO2, Pulse, PulseFlowIndex) fans out at the mda:analyzedBy hop: one
@@ -160,24 +159,9 @@ device:MechanicalVentilator             mda:administers therapeuticModality:Vent
 # mda:producesMetric. A functional unit with genuinely distinct sensors
 # (FU_InvasiveBloodPressure's arterial and venous lines) instead gets two
 # separate mda:hasSensor triples, each with its own downstream chain. Either
-# shape works the same way at grounding time: the lookup is keyed by
-# (FunctionalUnit, Metric), so it always resolves to exactly one Sensor/
-# Signal/SignalAnalysis regardless of how many siblings that trace has.
-#
-# KEYED ON THE PAIR, NOT ON METRIC ALONE — changed during the 2026-09
-# annotation curation round. A metric name is not unique across functional
-# units in the p75 corpus: metric:RespirationRate is produced both here
-# (FU_PneumoTachograph, flow-derived, 8 alarms) and by impedance
-# pneumography under FU_ElectroCardiography (3 alarms), and
-# metric:VentilationCircuitLeak appears under both FU_PneumoTachograph and
-# FU_AirwayPressure. Under the old metric-only key, build_metric_recipe()'s
-# dict comprehension silently kept whichever trace happened to parse last
-# and handed it to every alarm naming that metric, regardless of which
-# functional unit the alarm's own row names. The pair is a complete key:
-# all 17 (FunctionalUnit, Metric) combinations in the p75 corpus are
-# distinct. A row naming a Metric with no FunctionalUnit gets no recipe at
-# all now rather than a guessed one — deliberately visible as a generic
-# mda:Sensor/mda:Signal node rather than silently wrong.
+# shape works the same way at grounding time: the reverse lookup is keyed
+# by Metric, so it always resolves to exactly one Sensor/Signal/
+# SignalAnalysis regardless of how many siblings that trace has.
 #
 # mda:hasSensor's own owl:InverseFunctionalProperty characteristic was
 # removed earlier (see its comment in 1_BASE/ontology.ttl) — the collision
@@ -185,33 +169,12 @@ device:MechanicalVentilator             mda:administers therapeuticModality:Vent
 # FunctionalUnit types no longer applies, but sensor names still don't
 # repeat here, simply because each is a genuinely distinct physical part.
 #
-# FU_ElectroCardiography still has no recipe — the real 12-lead expert
-# recipe is pending. The "nothing is blocking on it" claim this comment
-# used to carry was true of the p50 corpus and is NOT true of p75: ten
-# metric-bearing alarms now name FU_ElectroCardiography (seven HeartRate,
-# including PHILIPSMONITOR - Asystolie, and three impedance-derived
-# RespirationRate, including PHILIPSMONITOR - Apneu), and every one of them
-# gets a generic mda:Sensor/mda:Signal/mda:SignalAnalysis node for want of
-# a recipe to fall back on. That — not the blank Sensor column — is the
-# actual root cause of the gap logged as "CQ2 — ECG sensor-level annotation
-# gap" in EVALUATION/CQs/cq_discoveries.md; filling blanks is precisely
-# what recipe_override() exists to do, and there is nothing here to fall
-# back on. Authoring it needs two traces, not one: sensor:
-# ElectroCardioGraphy_sensor -> signal:ECG_signal -> HeartRate, and sensor:
-# ECG_lead_Resp -> (an impedance-respiration signal concept that does not
-# exist yet) -> RespirationRate. PHILIPSMONITOR - Niet te leren ECG and
-# PHILIPSMONITOR - Resp elektr.los are unaffected either way: both are
-# Signal.QualityState/OperationalState rows that assert their sensor
-# directly per-alarm (see mda:Sensor's own comment).
-#
-# Three other traces are likewise missing against p75, each blocking real
-# alarms: (FU_AirwayPressure, CPAP) 2 alarms, (FU_Temperature, Temperature)
-# 2 alarms — distinct from the incubator AirTemperature trace below — and
-# (FU_*, VentilationCircuitLeak) 4 alarms, whose annotation is split across
-# FU_PneumoTachograph and FU_AirwayPressure and needs an annotator ruling
-# on whether that split is a real vendor difference before either trace is
-# written. Deferred to the per-archetype curation walk; see
-# FRAMEWORK/CURATION_LOG.md.
+# FU_ElectroCardiography is deliberately not given a recipe yet — the real
+# 12-lead expert recipe is still pending; PHILIPSMONITOR - Niet te leren ECG
+# and PHILIPSMONITOR - Resp elektr.los already assert sensor:
+# ElectroCardioGraphy_sensor / sensor:ECG_lead_Resp directly per-alarm
+# (both are Signal.QualityState/OperationalState rows, not Metric rows —
+# see mda:Sensor's own comment), so nothing here is blocking on it.
 ####################################################################
 
 ## Trace: Pulse oximetry sensing pathway
@@ -221,18 +184,18 @@ signal:PPG_waveform mda:analyzedBy signalAnalysis:SpO2Analysis, signalAnalysis:P
                                     signalAnalysis:PulseFlowIndexAnalysis .
 
 signalAnalysis:SpO2Analysis           mda:producesMetric metric:SpO2 .
-signalAnalysis:PulseAnalysis          mda:producesMetric metric:PulseRate .
+signalAnalysis:PulseAnalysis          mda:producesMetric metric:Pulse .
 signalAnalysis:PulseFlowIndexAnalysis mda:producesMetric metric:PulseFlowIndex .
 
 ## Trace: Invasive blood pressure sensing pathway
 functionalUnit:FU_InvasiveBloodPressure mda:hasSensor sensor:ABP_transducer, sensor:VenousPressureTransducer .
 sensor:ABP_transducer mda:sensorProducesSignal signal:ABP_waveform .
 signal:ABP_waveform    mda:analyzedBy signalAnalysis:ArterialPressureAnalysis .
-signalAnalysis:ArterialPressureAnalysis mda:producesMetric metric:ArterialBloodPressure .
+signalAnalysis:ArterialPressureAnalysis mda:producesMetric metric:ABP .
 
 sensor:VenousPressureTransducer mda:sensorProducesSignal signal:Pressure_waveform .
 signal:Pressure_waveform         mda:analyzedBy signalAnalysis:VenousPressureAnalysis .
-signalAnalysis:VenousPressureAnalysis mda:producesMetric metric:VenousBloodPressure .
+signalAnalysis:VenousPressureAnalysis mda:producesMetric metric:VenousPressure .
 
 ## Trace: Airway pressure sensing pathway
 functionalUnit:FU_AirwayPressure mda:hasSensor sensor:AW_transducer .
@@ -248,8 +211,8 @@ sensor:PneumoTachograph mda:sensorProducesSignal signal:AirwayFlow_waveform .
 
 signal:AirwayFlow_waveform mda:analyzedBy signalAnalysis:VolumeAnalysis, signalAnalysis:RespiratoryRateAnalysis .
 
-signalAnalysis:VolumeAnalysis          mda:producesMetric metric:RespirationVolume .
-signalAnalysis:RespiratoryRateAnalysis mda:producesMetric metric:RespirationRate .
+signalAnalysis:VolumeAnalysis          mda:producesMetric metric:Volume .
+signalAnalysis:RespiratoryRateAnalysis mda:producesMetric metric:RespiratoryRate .
 
 ## Trace : Capnography sensing pathway
 functionalUnit:FU_Capnograph mda:hasSensor sensor:Capnometer .
@@ -320,18 +283,6 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
 ####################################################################
 # Signal quality axioms
 #
-# The first axiom below was keyed on metric:Pulse until the 2026-09
-# annotation curation round, and had therefore never fired: no archetype
-# carries that concept. The alarm it was written for — PHILIPSMONITOR -
-# SpO2 geen pols — carries metric:PulseRate, the name the rest of the
-# framework adopted in the same update that renamed the recipes (see the
-# FunctionalUnit recipes header and EVALUATION/CQs/temporal/
-# CQ10_coinciding_equivalence.rq's own record of that rename). Its sibling
-# axiom below it, on metric:PulseFlowIndex, was unaffected and has been
-# firing all along, which is why CAT1a's validation pair never surfaced
-# this: that pair exercises an asserted Signal.QualityState row
-# (PHILIPSMONITOR - Storing in SpO2), not either entailed branch.
-#
 # hasQualityState's domain is mda:Signal, and Signal is never CSV-asserted
 # for a Metric-only row (see FunctionalUnit recipes above) — it only exists
 # per-alarm as the anonymous connective blank node 2_READOUT/build_framework.py
@@ -363,8 +314,8 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
         [ a owl:Class ; owl:intersectionOf ( mda:SignalAnalysis
             [ a owl:Restriction ; owl:onProperty mda:producesMetric ;
               owl:someValuesFrom
-                [ a owl:Class ; owl:intersectionOf ( metric:PulseRate
-                    [ a owl:Restriction ; owl:onProperty mda:hasValueState ; owl:hasValue valuestate:Absent ] ) ] ] ) ] ] )
+                [ a owl:Class ; owl:intersectionOf ( metric:Pulse
+                    [ a owl:Restriction ; owl:onProperty mda:hasRate ; owl:hasValue metricRate:Absent ] ) ] ] ) ] ] )
 ] rdfs:subClassOf
   [ a owl:Restriction ; owl:onProperty mda:hasQualityState ; owl:hasValue qualitystate:Impaired ] .
 
@@ -375,7 +326,7 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
             [ a owl:Restriction ; owl:onProperty mda:producesMetric ;
               owl:someValuesFrom
                 [ a owl:Class ; owl:intersectionOf ( metric:PulseFlowIndex
-                    [ a owl:Restriction ; owl:onProperty mda:hasValueState ; owl:hasValue valuestate:Decreased ] ) ] ] ) ] ] )
+                    [ a owl:Restriction ; owl:onProperty mda:hasRate ; owl:hasValue metricRate:Decreased ] ) ] ] ) ] ] )
 ] rdfs:subClassOf
   [ a owl:Restriction ; owl:onProperty mda:hasQualityState ; owl:hasValue qualitystate:Impaired ] .
 
@@ -403,7 +354,7 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
 # claims something about the exact pathway that fired). Same walk-forward
 # shape as the Signal quality axioms directly above, just landing on
 # mda:hasSensorOperationState instead of mda:hasQualityState, and with no
-# hasValueState restriction on the Metric — firing for the metric's mere
+# hasRate restriction on the Metric — firing for the metric's mere
 # existence, not a specific rate value.
 #
 # Deliberately ONE axiom, not one per node kind (Sensor/FunctionalUnit/
@@ -440,7 +391,7 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
 # form (~20% faster per call; most of a single reason() call's cost is the
 # static graph's own fixed re-derivation, not this axiom specifically — see
 # reason()'s own docstring). The Signal quality axioms above intersect with
-# a SPECIFIC metric subtype (metric:PulseRate, not the domain/range-implied
+# a SPECIFIC metric subtype (metric:Pulse, not the domain/range-implied
 # mda:Metric), which genuinely isn't implied by any property's range, so
 # their intersectionOf is not the same redundancy and is left as-is.
 ####################################################################
@@ -470,12 +421,11 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
 # moment.
 #
 # Deliberately conditioned on the metric carrying an actual interpretation
-# (hasValueState, hasPhase, hasAggregation, or hasRhythm — whichever the
-# metric's own kind uses),
+# (hasRate, hasPhase, or hasRhythm — whichever the metric's own kind uses),
 # not on mere mda:Metric typing: a bare, uninterpreted Metric node (typed
 # but reporting nothing) should not be called "Monitored". Confirmed with
-# an isolated reasoner test before writing this (a Metric with hasValueState
-# entails Monitored; the same Metric typed but with no hasValueState/hasPhase/hasAggregation/
+# an isolated reasoner test before writing this (a Metric with hasRate
+# entails Monitored; the same Metric typed but with no hasRate/hasPhase/
 # hasRhythm at all does not).
 #
 # opstate:Monitored is declared here, not in FRAMEWORK/VOCABULARY/seed/
@@ -500,10 +450,9 @@ opstate:Monitored a skos:Concept ;
 
 [ a owl:Class ; owl:intersectionOf ( mda:Metric
     [ a owl:Class ; owl:unionOf (
-        [ a owl:Restriction ; owl:onProperty mda:hasValueState  ; owl:someValuesFrom owl:Thing ]
-        [ a owl:Restriction ; owl:onProperty mda:hasPhase       ; owl:someValuesFrom owl:Thing ]
-        [ a owl:Restriction ; owl:onProperty mda:hasAggregation ; owl:someValuesFrom owl:Thing ]
-        [ a owl:Restriction ; owl:onProperty mda:hasRhythm      ; owl:someValuesFrom owl:Thing ]
+        [ a owl:Restriction ; owl:onProperty mda:hasRate   ; owl:someValuesFrom owl:Thing ]
+        [ a owl:Restriction ; owl:onProperty mda:hasPhase  ; owl:someValuesFrom owl:Thing ]
+        [ a owl:Restriction ; owl:onProperty mda:hasRhythm ; owl:someValuesFrom owl:Thing ]
       ) ] )
 ] rdfs:subClassOf
   [ a owl:Restriction ; owl:onProperty mda:hasMetricOperationState ; owl:hasValue opstate:Monitored ] .
@@ -557,8 +506,8 @@ opstate:Monitored a skos:Concept ;
                                     [ a owl:Restriction ; owl:onProperty mda:producesMetric ;
                                       owl:someValuesFrom
                                         [ a owl:Class ; owl:intersectionOf ( metric:VentilationCircuitLeak
-                                            [ a owl:Restriction ; owl:onProperty mda:hasValueState ;
-                                              owl:hasValue valuestate:Increased ] ) ] ] ) ] ] ) ] ] ) ] ] ) ] ] )
+                                            [ a owl:Restriction ; owl:onProperty mda:hasRate ;
+                                              owl:hasValue metricRate:Increased ] ) ] ] ) ] ] ) ] ] ) ] ] ) ] ] )
 ] rdfs:subClassOf
   [ a owl:Restriction ; owl:onProperty mda:hasTherapyDeliveryQuality ; owl:hasValue qualitystate:Impaired ] .
 
@@ -677,88 +626,10 @@ metric:Humidity rdfs:subClassOf
 # ever names RenalReplacementTherapy alongside a PhysiologicalProcess, so
 # the chain silently dead-ended for exactly that one modality). Audit found,
 # not previously deliberate.
-#
-# RESTRICTIONS, NOT PLAIN TRIPLES — changed in the 2026-09 curation round.
-# These were written as plain triples on a punned concept, and were
-# therefore INERT: a per-alarm mda:administers node is a blank node typed
-# `a therapeuticModality:X`, and OWL-RL has no rule carrying a property from
-# a class to its instances, so no alarm ever reached a process through
-# them. Confirmed by isolated reasoner test before and after: the shared
-# concept reached all three ECMO processes, a node typed with that concept
-# reached nothing.
-#
-# What made this invisible is that the CSV's own PhysiologicalProcess
-# column hand-asserts the same edge per row, so the link APPEARED on
-# whichever alarms an annotator happened to fill that column in for, and
-# was missing on the rest. That is exactly what Rianne asked about on
-# CARDIOHELP - pVen onder alarmgrens — "[ECMO]-targetsProcess-[pulmonary
-# oxygenation] ontbreekt, wel aanwezig bij pVen onder waarschuwingsgrens
-# ... Wat maakt dat -targets process- soms wel verschijnt en soms niet?"
-# Two of the four CARDIOHELP rows had the column filled; two did not. The
-# answer to her question is that it was never the axiom firing at all.
-#
-# The hasValue restriction form is the one §BRIDGE prescribes at the top of
-# this file and the one mda:approximates already uses throughout the
-# clinical tail above: cls-hv1 then gives every instance the edge, per
-# alarm, without the CSV needing to repeat it.
-#
-# This does NOT reintroduce the leak that removed the class-level
-# restrictions from the mda:administers section above. That leak was
-# specific to administers: a restriction there gave a device a SECOND
-# administers edge to the shared concept, and both owl:propertyChainAxioms
-# (mda:hasOperationState, mda:hasTherapyDeliveryQuality) traverse
-# administers, so per-alarm state propagated onto the shared modality
-# concept globally. Neither chain traverses mda:targetsProcess — verified
-# against ontology.ttl — and these restrictions point OUTWARD from the
-# per-alarm modality node to a Referential process concept, which is the
-# same shape mda:approximates has always had. Nothing propagates back.
-therapeuticModality:VentilationTherapy rdfs:subClassOf
-    [ a owl:Restriction ; owl:onProperty mda:targetsProcess ;
-      owl:hasValue physiologicalProcess:PulmonaryVentilation ] .
-
-therapeuticModality:ThermoRegulationTherapy rdfs:subClassOf
-    [ a owl:Restriction ; owl:onProperty mda:targetsProcess ;
-      owl:hasValue physiologicalProcess:ThermoRegulation ] .
-# ECMO targets THREE processes, not one (2026-09 curation round, from
-# Rianne's CARDIOHELP - Verbinding verbroken comments):
-#
-#   PulmonaryOxygenation  the original, unchanged — the membrane oxygenates.
-#   PulmonaryDiffusion    the membrane also clears CO2. Rianne suggested
-#                         physiologicalProcess:PulmonaryVentilation for this
-#                         ("ECMO doet oxygenatie en 'ventilatie' een
-#                         diffusie (uitwassen van CO2)"); deliberately NOT
-#                         used. Ventilation is bulk movement of gas in and
-#                         out of the lungs, which ECMO does not do at all —
-#                         what it does is gas exchange across a membrane,
-#                         which is diffusion. PulmonaryDiffusion is where
-#                         physiologicalProperty:PaCO2 already routes, so an
-#                         EtCO2 alarm and an ECMO alarm now converge on one
-#                         process, which is the reasoning Rianne was after
-#                         (she notes this is relevant to setting lower EtCO2
-#                         alarm limits on the ventilator).
-#   BloodCirculation      the circulatory support. SCOPE LIMITATION, stated
-#                         explicitly: this framework does not distinguish VV
-#                         from V(V)A ECMO, which Rianne asked about in the
-#                         same comment. VV supports gas exchange only;
-#                         V(V)A additionally supports circulation, so this
-#                         edge is true only of the latter. It is asserted
-#                         unconditionally because the corpus's own
-#                         CARDIOHELP - pArt alarms presuppose an arterial
-#                         return cannula, i.e. VA or VVA. Splitting the
-#                         modality concept in two is the correct fix and is
-#                         deferred: it needs a CSV column value per alarm
-#                         (the modality is annotator-supplied), not an
-#                         axiom here. See FRAMEWORK/CURATION_LOG.md.
-therapeuticModality:ExtraCorporealMembraneOxygenation rdfs:subClassOf
-    [ a owl:Restriction ; owl:onProperty mda:targetsProcess ;
-      owl:hasValue physiologicalProcess:PulmonaryOxygenation ] ,
-    [ a owl:Restriction ; owl:onProperty mda:targetsProcess ;
-      owl:hasValue physiologicalProcess:PulmonaryDiffusion ] ,
-    [ a owl:Restriction ; owl:onProperty mda:targetsProcess ;
-      owl:hasValue physiologicalProcess:BloodCirculation ] .
-therapeuticModality:RenalReplacementTherapy rdfs:subClassOf
-    [ a owl:Restriction ; owl:onProperty mda:targetsProcess ;
-      owl:hasValue physiologicalProcess:RenalFiltration ] .
+therapeuticModality:VentilationTherapy   mda:targetsProcess physiologicalProcess:PulmonaryVentilation .
+therapeuticModality:ThermoRegulationTherapy mda:targetsProcess physiologicalProcess:ThermoRegulation .
+therapeuticModality:ExtraCorporeal_Membran_Oxygenation mda:targetsProcess physiologicalProcess:PulmonaryOxygenation .
+therapeuticModality:RenalReplacementTherapy mda:targetsProcess physiologicalProcess:RenalFiltration .
 
 # ── property → process ───────────────────────────────────────────
 physiologicalProperty:SaO2               mda:isPropertyOf physiologicalProcess:PulmonaryOxygenation .
@@ -809,36 +680,6 @@ physiologicalProcess:CardiacContraction    mda:presentIn organ:Heart .
 # wasn't asked for and nothing here needs that resolution yet.
 physiologicalProcess:ArterialCirculation   mda:presentIn organ:BloodVessels .
 physiologicalProcess:VenousCirculation     mda:presentIn organ:BloodVessels .
-
-# BloodCirculation is the whole circulatory loop, of which the arterial and
-# venous sides above are the two constituent parts (2026-09 curation round).
-# Added because a therapy can act on the entire loop rather than on one leg
-# of it — ECMO's arterial return supports circulation as such, not
-# specifically the arterial or specifically the venous side — while metrics
-# stay routed to whichever side actually produces them (ArterialPressure and
-# TissuePerfusion to the arterial leg, VenousPressure to the venous one, all
-# unchanged above).
-#
-# mda:processPartOf, NOT skos:broader/rdfs:subClassOf: see that property's
-# own declaration in ontology.ttl for why this is a part-whole claim and not
-# a taxonomic one. The practical consequence is the direction of travel —
-# an ABP alarm reaches ArterialCirculation from its own metric and then
-# BloodCirculation through the part-whole edge, so it converges with an ECMO
-# alarm at the whole; an ECMO alarm does NOT thereby claim anything about
-# the arterial leg specifically, which is correct (it supports the loop, and
-# which leg its cannulae sit in is a VV/VA distinction this framework does
-# not yet carry — see the ECMO targetsProcess comment above).
-#
-# presentIn organ:BloodVessels, matching both its parts. Deliberately NOT
-# also organ:Heart, even though the heart drives circulation: CardiacContraction
-# already covers the heart's own contribution and is reached independently
-# from ElectricalHeartRate/PulseRate, so adding Heart here would merge the
-# pump and the plumbing into one undifferentiated node and make every
-# circulatory alarm look cardiac. Same "only the process split, not the
-# organ granularity" discipline as the comment above.
-physiologicalProcess:ArterialCirculation   mda:processPartOf physiologicalProcess:BloodCirculation .
-physiologicalProcess:VenousCirculation     mda:processPartOf physiologicalProcess:BloodCirculation .
-physiologicalProcess:BloodCirculation      mda:presentIn organ:BloodVessels, organ:Heart .
 # RenalFiltration/Kidneys/Renal are newly introduced here, for the
 # RenalReplacementTherapy tail above — no prior concept in this vocabulary
 # covered renal physiology at all. Worth a domain-expert check on naming.

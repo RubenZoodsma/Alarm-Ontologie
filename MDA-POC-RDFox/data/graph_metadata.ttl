@@ -1,0 +1,42 @@
+####################################################################
+# graph_metadata.ttl — HAND-AUTHORED. NOT GENERATED.
+#
+# Engine-level vocabulary (not domain knowledge — kept separate from
+# ontology.ttl per the migration plan's own "operational/engine vocabulary
+# is kept in its own module" principle), added for the reified-time
+# redesign (see /Users/rzoodsm2/.claude/plans/toasty-finding-mitten.md).
+#
+# mda:validFrom/mda:validUntil are asserted on a GRAPH IRI itself (the
+# transient/persistent graph an alarm's content lives in), not on any
+# domain individual — subject is an ordinary IRI used as a graph name,
+# never wrapped in a GRAPH{} block, so it survives that graph's own
+# physical content drop. Lets a query-time FILTER(?now <= ?until) decide
+# validity instead of relying on "still physically present" — see the
+# plan's §3 for the read-site changes this enables.
+#
+# Deliberately minimal: 2 new terms, no new class. mda:hasStart/hasEnd
+# (ontology.ttl) stay separate and unchanged — those are domain content on
+# an mda:Alarm individual, scoped to its own transient graph only; these
+# two are purely structural bookkeeping that must outlive it.
+####################################################################
+
+@prefix mda:  <https://w3id.org/mda/ontology#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+mda:validFrom a owl:DatatypeProperty ;
+    dcterms:identifier "validFrom" ;
+    rdfs:label          "valid from"@en,
+                        "geldig vanaf"@nl ;
+    rdfs:comment        "The instant from which the content of the named graph identified by the subject is valid."@en,
+                        "Het tijdstip vanaf wanneer de inhoud van de door het subject geïdentificeerde named graph geldig is."@nl ;
+    rdfs:range          xsd:dateTime .
+
+mda:validUntil a owl:DatatypeProperty ;
+    dcterms:identifier  "validUntil" ;
+    rdfs:label          "valid until"@en,
+                        "geldig tot"@nl ;
+    rdfs:comment        "The instant until which the content of the named graph identified by the subject is valid. The graph itself may still be physically present after this instant (eviction is batched, not immediate) — queries must check this value, not graph presence, to determine validity."@en,
+                        "Het tijdstip tot wanneer de inhoud van de door het subject geïdentificeerde named graph geldig is. De graph zelf kan na dit tijdstip nog fysiek aanwezig zijn (verwijdering gebeurt gebundeld, niet direct) — queries moeten deze waarde controleren, niet de aanwezigheid van de graph, om geldigheid te bepalen."@nl .

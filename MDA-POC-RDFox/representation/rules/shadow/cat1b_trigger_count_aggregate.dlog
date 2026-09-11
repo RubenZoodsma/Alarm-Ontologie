@@ -1,0 +1,46 @@
+####################################################################
+# cat1b_trigger_count_aggregate.dlog — SHADOW, EXPERIMENTAL. NOT WIRED
+# INTO THE PRODUCTION PATH. See cat2a_priority_aggregate.dlog's own header
+# for the general rationale (standing AGGREGATE instead of an open-world
+# existential search) — same idea, applied to cat1b_asystole_ibp.dlog's
+# `FILTER NOT EXISTS { ... }` block.
+#
+# GROUP KEY: ?ibpFunctionalUnit alone — NO composite (patient, ...) key
+# needed here, unlike cat2a/cat2b. Confirmed by tracing mint.py's identity
+# resolution: FunctionalUnit particulars are grounded per (patient_id,
+# device_id, concept) (the migration plan's Phase 2.5 Item 2 fix), so
+# ?ibpFunctionalUnit is already a per-patient-specific IRI, not a shared
+# concept-level node the way ?process/?metricType are — the cross-patient
+# leak risk that forced a composite key in cat2a/cat2b's shadow rules does
+# not apply here.
+#
+# NO ORDERING REQUIREMENT (unlike cat2a): the arriving alarm's OWN message
+# is essentially never triggered by the SAME ibpFunctionalUnit it's
+# checking against — it's reached via `?patient isMonitoredBy ?ibpDevice`
+# (the patient's separate IBP monitor), not via the arriving alarm's own
+# `triggeredBy` device chain. The original NOT-EXISTS query never bothered
+# excluding `?otherAlarm != ?alarm` either, for the same structural
+# reason. Safe to check AFTER a normal, single-phase insert.
+####################################################################
+
+@prefix mda: <https://w3id.org/mda/ontology#> .
+
+[?fu, mda:shadowTriggerCount, ?c] :-
+    AGGREGATE(
+        [?otherMsg, mda:triggeredBy, ?fu] ?g12,
+        [?otherAlarm, mda:hasMessage, ?otherMsg] ?g12
+        ON ?fu
+        BIND COUNT(?otherAlarm) AS ?c
+    ) .
+
+# Check shape (validation/shadow_cat1b_aggregate.py): resolve
+# ?ibpFunctionalUnit via a one-sided lookup of the arriving alarm's own
+# already-inserted data (patient -> isMonitoredBy -> ibpDevice ->
+# hasFunctionalUnit), then `FILTER NOT EXISTS { ?ibpFunctionalUnit
+# mda:shadowTriggerCount ?anyCount }` — NOT `FILTER(?c = 0)`: an
+# AGGREGATE rule only ever produces a fact for a group with at least one
+# member, so "no alarm currently triggers this FU" means the aggregate
+# fact is ABSENT, never present with value 0. Still a real win over the
+# original: the negation now targets a single indexed (subject,
+# predicate) lookup on a maintained fact, not a walk of some OTHER
+# alarm's own 2-atom chain.

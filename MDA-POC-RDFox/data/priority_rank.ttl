@@ -1,0 +1,28 @@
+####################################################################
+# priority_rank.ttl — HAND-AUTHORED. NOT GENERATED.
+#
+# Asserts mda:priorityRank (declared in FRAMEWORK/ONTOLOGY/ontology.ttl) on
+# each alarmprio:* concept. Kept out of vocab_generated.ttl deliberately:
+# that file is mechanically regenerated from vocab_base.ttl + the annotated
+# CSV on every build_framework.py run, and alarmprio:Hoog/Medium/Laag/Unknown
+# are minted there per distinct CSV value with no room for a hand-authored
+# extra fact to survive a rebuild. This file is a small, separate, stable
+# layer over those same (stable, closed) four IRIs.
+#
+# Not loaded by CODE/evaluation_poc/op_knowledge.py's K.load_kb() — that
+# pipeline is validated by CQ9-11 and the visualization and none of it needs
+# a priority ordering. Loaded only by CODE/evaluation_poc/reasoner/assess.py,
+# for CAT2a's "equal or higher priority" comparison.
+#
+# Ranking (higher = more urgent) is a domain-expert-settable default, not a
+# derived fact — change the literals below if clinical practice disagrees.
+####################################################################
+
+@prefix mda:       <https://w3id.org/mda/ontology#> .
+@prefix alarmprio:  <https://w3id.org/mda/vocab/alarm-priority/> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+
+alarmprio:Hoog     mda:priorityRank "3"^^xsd:integer .
+alarmprio:Medium   mda:priorityRank "2"^^xsd:integer .
+alarmprio:Laag     mda:priorityRank "1"^^xsd:integer .
+alarmprio:Unknown  mda:priorityRank "0"^^xsd:integer .

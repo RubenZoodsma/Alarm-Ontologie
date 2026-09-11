@@ -19,7 +19,8 @@
 @prefix therapeuticModality: <https://w3id.org/mda/vocab/therapeutic-modality/> .
 @prefix clinicalEvent: <https://w3id.org/mda/vocab/clinical-event/> .
 @prefix metricPhase: <https://w3id.org/mda/vocab/metric-phase/> .
-@prefix metricRate: <https://w3id.org/mda/vocab/metric-rate/> .
+@prefix aggregation: <https://w3id.org/mda/vocab/aggregation/> .
+@prefix valuestate: <https://w3id.org/mda/vocab/value-state/> .
 @prefix rhythm:     <https://w3id.org/mda/vocab/rhythm/> .
 @prefix deviceType: <https://w3id.org/mda/vocab/device-type/> .
 @prefix manufacturer: <https://w3id.org/mda/vocab/manufacturer/> .
@@ -369,25 +370,53 @@ metricPhase:MetricPhase     a skos:Concept ;
     skos:inScheme           metricPhase:Scheme ;
     skos:topConceptOf       metricPhase:Scheme ;
     skos:prefLabel          "Metric Phase"@en, "Metriekfase"@nl ;
-    skos:definition         "The phase of a metric to which an alarm condition applies, such as mean, systolic, diastolic, or end-expiratory."@en,
-                            "De fase van een metriek waarop een alarmconditie van toepassing is, zoals gemiddeld, systolisch, diastolisch of eind-expiratoir."@nl ;
+    skos:definition         "The point in a physiological cycle at which a metric's value is taken, such as systolic, diastolic, inspiratory, or end-expiratory."@en,
+                            "Het punt in een fysiologische cyclus waarop de waarde van een metriek wordt genomen, zoals systolisch, diastolisch, inspiratoir of eind-expiratoir."@nl ;
     skos:notation           "MetricPhase" .
 
 
 ############################################################
-# Metric Rate scheme
+# Aggregation scheme
+#
+# Characteristic (d) of a metric: how it is composed over time into one
+# reported figure. Split out of the former metricPhase: scheme, which was
+# carrying Mean/Minute/Tidal alongside the single genuine phase value —
+# see mda:hasAggregation's own comment in ontology.ttl.
 ############################################################
 
-metricRate:Scheme            a skos:ConceptScheme ;
-    skos:prefLabel          "Metric Rate"@en, "Metrieksnelheid"@nl .
+aggregation:Scheme          a skos:ConceptScheme ;
+    skos:prefLabel          "Aggregation"@en, "Aggregatie"@nl .
 
-metricRate:MetricRate       a skos:Concept ;
-    skos:inScheme           metricRate:Scheme ;
-    skos:topConceptOf       metricRate:Scheme ;
-    skos:prefLabel          "Metric Rate"@en, "Metrieksnelheid"@nl ;
-    skos:definition         "The rate of a metric that raises an alarm, such as increased, decreased, or critical decrease."@en,
-                            "De snelheid van een metriek die een alarm veroorzaakt, zoals verhoogd, verlaagd of kritieke daling."@nl ;
-    skos:notation           "MetricRate" .
+aggregation:Aggregation     a skos:Concept ;
+    skos:inScheme           aggregation:Scheme ;
+    skos:topConceptOf       aggregation:Scheme ;
+    skos:prefLabel          "Aggregation"@en, "Aggregatie"@nl ;
+    skos:definition         "How a metric is composed over time into a single reported figure, such as per minute, per breath, or averaged."@en,
+                            "Hoe een metriek over tijd wordt samengesteld tot één gerapporteerd getal, zoals per minuut, per ademteug of gemiddeld."@nl ;
+    skos:notation           "Aggregation" .
+
+
+############################################################
+# Value State scheme
+#
+# Characteristic (a) of a metric. Replaces the former metricRate: scheme,
+# which held no rates: its values are directions of a limit breach, which
+# is what its own definition already described. Sits alongside
+# qualitystate: (signal reliability) and opstate: (device functioning) as
+# the third "which state is this in" scheme — see mda:hasValueState in
+# ontology.ttl, including the note that the limit itself is not modelled.
+############################################################
+
+valuestate:Scheme           a skos:ConceptScheme ;
+    skos:prefLabel          "Value State"@en, "Waardestatus"@nl .
+
+valuestate:ValueState       a skos:Concept ;
+    skos:inScheme           valuestate:Scheme ;
+    skos:topConceptOf       valuestate:Scheme ;
+    skos:prefLabel          "Value State"@en, "Waardestatus"@nl ;
+    skos:definition         "Where a metric's value sits relative to the device's configured alarm limits, such as increased, decreased, severely decreased, or absent."@en,
+                            "Waar de waarde van een metriek zich bevindt ten opzichte van de ingestelde alarmgrenzen van het apparaat, zoals verhoogd, verlaagd, sterk verlaagd of afwezig."@nl ;
+    skos:notation           "ValueState" .
 
 
 ############################################################
@@ -401,8 +430,8 @@ rhythm:Rhythm               a skos:Concept ;
     skos:inScheme           rhythm:Scheme ;
     skos:topConceptOf       rhythm:Scheme ;
     skos:prefLabel          "Rhythm"@en, "Ritme"@nl ;
-    skos:definition         "The rhythm pattern of a metric to which an alarm condition applies, such as irregular."@en,
-                            "Het ritmepatroon van een metriek waarop een alarmconditie van toepassing is, zoals onregelmatig."@nl ;
+    skos:definition         "How a metric's value fluctuates across successive cycles over time, such as irregular or atrial fibrillation."@en,
+                            "Hoe de waarde van een metriek over opeenvolgende cycli in de tijd fluctueert, zoals onregelmatig of atriumfibrilleren."@nl ;
     skos:notation           "Rhythm" .
 
 

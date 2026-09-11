@@ -141,8 +141,14 @@ COLUMN_SCHEMES = {
     "Signal":                    ("signal",                VOCAB + "signal/"),
     "Signal.QualityState":       ("qualitystate",          VOCAB + "quality-state/"),
     "Metric":                    ("metric",                VOCAB + "metric/"),
+    # The four metric characteristics — see ontology.ttl's "FOUR
+    # CHARACTERISTICS OF A METRIC" comment for why they are four.
+    # Metric.Phase and Metric.Aggregation are both identity-refining
+    # (pre-coordinated into the metric concept); Metric.ValueState and
+    # Metric.Rhythm are per-alarm state.
     "Metric.Phase":              ("metricPhase",           VOCAB + "metric-phase/"),
-    "Metric.Rate":               ("metricRate",            VOCAB + "metric-rate/"),
+    "Metric.Aggregation":        ("aggregation",           VOCAB + "aggregation/"),
+    "Metric.ValueState":         ("valuestate",            VOCAB + "value-state/"),
     "Metric.Rhythm":             ("rhythm",                VOCAB + "rhythm/"),
     "PhysiologicalProperty":     ("physiologicalProperty", VOCAB + "physiological-property/"),
     "PhysiologicalProcess":      ("physiologicalProcess",  VOCAB + "physiological-process/"),
@@ -397,29 +403,45 @@ def collect_inference_concepts(inference: Graph, base: Graph, onto: Graph,
 
 def build_metric_recipe(inference: Graph) -> dict:
     """
-    {metric_concept: (sensor_concept, signal_concept, analysis_concept)},
+    {(functional_unit_concept, metric_concept):
+        (sensor_concept, signal_concept, analysis_concept)},
     derived by walking inference.ttl's FunctionalUnit-recipe reference
-    triples backward: Metric <-producesMetric- SignalAnalysis
-    <-analyzedBy- Signal <-sensorProducesSignal- Sensor.
+    triples forward: FunctionalUnit -hasSensor-> Sensor
+    -sensorProducesSignal-> Signal -analyzedBy-> SignalAnalysis
+    -producesMetric-> Metric.
 
-    These triples are deliberately plain data now, not OWL restrictions
-    (see inference.ttl's "FunctionalUnit recipes" header) — a functional
-    unit's full technical menu (which sensors it COULD have) is not the
-    same claim as which single trace a given alarm actually evidences.
+    KEYED ON THE PAIR, NOT ON METRIC ALONE. A metric name is not unique
+    across functional units: metric:RespirationRate is produced both by
+    FU_PneumoTachograph (flow-derived) and by impedance pneumography under
+    FU_ElectroCardiography, and metric:VentilationCircuitLeak is annotated
+    under both FU_PneumoTachograph and FU_AirwayPressure. The previous
+    metric-only key was a dict comprehension over producesMetric, so a
+    metric with two traces silently kept whichever parsed last and handed
+    it to every alarm naming that metric regardless of the functional unit
+    the alarm's own row names. The pair is a complete key: all 17
+    (FunctionalUnit, Metric) combinations in the p75 corpus are distinct.
+
+    These triples are deliberately plain data, not OWL restrictions (see
+    inference.ttl's "FunctionalUnit recipes" header) — a functional unit's
+    full technical menu (which sensors it COULD have) is not the same claim
+    as which single trace a given alarm actually evidences.
     build_alarmtype_triples()'s recipe_override() is the consumer: for a
-    row naming a Metric with no Sensor/Signal of its own, it looks up the
-    one trace that specific Metric came from and asserts only that —
-    never the functional unit's other, unevidenced sensor(s)/metric(s).
+    row naming a FunctionalUnit and a Metric with no Sensor/Signal of its
+    own, it looks up the one trace that pair identifies and asserts only
+    that — never the functional unit's other, unevidenced sensor(s)/
+    metric(s).
+
+    A row naming a Metric with no FunctionalUnit gets no recipe rather than
+    a guessed one, and keeps its generic mda:Sensor/mda:Signal nodes: a
+    visible gap is preferable to a trace picked by a metric name that two
+    different pathways both use.
     """
-    analysis_of_metric = {m: a for a, m in inference.subject_objects(MDA.producesMetric)}
-    signal_of_analysis = {a: s for s, a in inference.subject_objects(MDA.analyzedBy)}
-    sensor_of_signal   = {s: sn for sn, s in inference.subject_objects(MDA.sensorProducesSignal)}
     recipe = {}
-    for metric, analysis in analysis_of_metric.items():
-        signal = signal_of_analysis.get(analysis)
-        sensor = sensor_of_signal.get(signal) if signal is not None else None
-        if signal is not None and sensor is not None:
-            recipe[metric] = (sensor, signal, analysis)
+    for fu, sensor in inference.subject_objects(MDA.hasSensor):
+        for signal in inference.objects(sensor, MDA.sensorProducesSignal):
+            for analysis in inference.objects(signal, MDA.analyzedBy):
+                for metric in inference.objects(analysis, MDA.producesMetric):
+                    recipe[(fu, metric)] = (sensor, signal, analysis)
     return recipe
 
 
@@ -561,7 +583,8 @@ def _scheme_of(concept: URIRef) -> URIRef:
 def _specialised_iri(base: URIRef, refinements: list) -> URIRef:
     """
     Pre-coordinate a base concept with its identity refinements into a
-    single stable IRI:  metric:ABP + phase Mean → metric:ABP_Mean.
+    single stable IRI:  metric:ArterialBloodPressure + phase Mean →
+    metric:ArterialBloodPressure_Mean.
     The phase lives in a triple, not only in the name.
     """
     ns, local = str(base).rsplit("/", 1)
@@ -583,9 +606,10 @@ def _restriction(ref: Graph, prop: URIRef, value: URIRef) -> BNode:
 def precoordinate(ref: Graph, concept: URIRef, refs: list) -> URIRef:
     """
     Pre-coordinate `concept` with its identity refinements (mda:refinesUniversal
-    Identity leaves, e.g. Metric.hasPhase or Device.hasManufacturer) into one
+    Identity leaves, e.g. Metric.hasPhase/hasAggregation or Device.hasManufacturer) into one
     shared, deduplicated universal concept — the mechanism behind e.g.
-    metric:ABP + phase Mean → metric:ABP_Mean, generalised to any node-column
+    metric:ArterialBloodPressure + phase Mean →
+    metric:ArterialBloodPressure_Mean, generalised to any node-column
     class, not only Stateful ones.
 
     Gives the pre-coordinated concept a full OWL definition rather than a bare
@@ -687,10 +711,16 @@ def build_alarmtype_triples(row: pd.Series, kg: Graph, ref: Graph, index: dict,
     def recipe_override(cls):
         """For mda:Sensor/mda:Signal/mda:SignalAnalysis with no CSV value of
         their own: the single Sensor->Signal->SignalAnalysis trace
-        inference.ttl's recipe says actually produces this row's Metric —
-        never a FunctionalUnit's full menu of possible sensors/metrics, only
-        the one this alarm evidences (see inference.ttl's "FunctionalUnit
-        recipes" header and build_metric_recipe()).
+        inference.ttl's recipe says actually produces this row's Metric on
+        this row's FunctionalUnit — never a FunctionalUnit's full menu of
+        possible sensors/metrics, only the one this alarm evidences (see
+        inference.ttl's "FunctionalUnit recipes" header and
+        build_metric_recipe()).
+
+        Both columns are required. A row naming a Metric with no
+        FunctionalUnit is not resolvable — a metric name alone does not
+        identify a pathway (RespirationRate is produced by two of them) —
+        so it keeps its generic nodes rather than being handed a guess.
 
         For mda:TherapeuticModality with no CSV value of its own: the
         modality build_administers_map()'s device-category mapping says this
@@ -709,7 +739,10 @@ def build_alarmtype_triples(row: pd.Series, kg: Graph, ref: Graph, index: dict,
         metric_concept = column_concept(MDA.Metric)
         if metric_concept is None:
             return None
-        chain = metric_recipe.get(metric_concept)
+        fu_concept = column_concept(MDA.FunctionalUnit)
+        if fu_concept is None:
+            return None
+        chain = metric_recipe.get((fu_concept, metric_concept))
         if chain is None:
             return None
         sensor_c, signal_c, analysis_c = chain

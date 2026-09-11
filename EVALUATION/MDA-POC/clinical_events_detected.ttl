@@ -12,3 +12,21 @@
     ns1:evidencedBy <https://w3id.org/mda/vocab/physiological-process/CardiacContraction>,
         <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
 
+<https://w3id.org/mda/instance/ClinicalEvent_VentilationFailure_cat3b_pos_20260101T080030> a ns1:ClinicalEvent,
+        <https://w3id.org/mda/vocab/clinical-event/VentilationFailure> ;
+    ns1:concernsPatient <https://w3id.org/mda/entity/Patient_cat3b_pos> ;
+    ns1:evidencedBy <https://w3id.org/mda/entity/Device_cat3bpos_Medibus_00>,
+        <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
+
+<https://w3id.org/mda/instance/ClinicalEvent_VentilationFailure_cat3d_20260101T080030> a ns1:ClinicalEvent,
+        <https://w3id.org/mda/vocab/clinical-event/VentilationFailure> ;
+    ns1:concernsPatient <https://w3id.org/mda/entity/Patient_cat3d> ;
+    ns1:evidencedBy <https://w3id.org/mda/entity/Device_cat3d_Medibus_00>,
+        <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
+
+<https://w3id.org/mda/instance/ClinicalEvent_VentilationFailure_cat3e_20260101T081000> a ns1:ClinicalEvent,
+        <https://w3id.org/mda/vocab/clinical-event/VentilationFailure> ;
+    ns1:concernsPatient <https://w3id.org/mda/entity/Patient_cat3e> ;
+    ns1:evidencedBy <https://w3id.org/mda/entity/Device_cat3e_Medibus_00>,
+        <https://w3id.org/mda/vocab/physiological-process/PulmonaryVentilation> .
+

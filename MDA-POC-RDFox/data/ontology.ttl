@@ -27,8 +27,7 @@
 @prefix patient:    <https://w3id.org/mda/vocab/patient/> .
 @prefix therapeuticModality: <https://w3id.org/mda/vocab/therapeutic-modality/> .
 @prefix metricPhase: <https://w3id.org/mda/vocab/metric-phase/> .
-@prefix aggregation: <https://w3id.org/mda/vocab/aggregation/> .
-@prefix valuestate:  <https://w3id.org/mda/vocab/value-state/> .
+@prefix metricRate: <https://w3id.org/mda/vocab/metric-rate/> .
 @prefix rhythm:     <https://w3id.org/mda/vocab/rhythm/> .
 @prefix deviceType: <https://w3id.org/mda/vocab/device-type/> .
 @prefix manufacturer: <https://w3id.org/mda/vocab/manufacturer/> .
@@ -337,8 +336,8 @@ mda:hasMetricOperationState a owl:ObjectProperty ;
     rdfs:subPropertyOf  mda:hasOperationState ;
     rdfs:label          "has metric operation state"@en,
                         "heeft metriekoperatiestatus"@nl ;
-    rdfs:comment        "Whether a metric is currently being monitored — unlike the other hasOperationState sub-properties, never CSV-driven (no CSV column names it); entailed by FRAMEWORK/KNOWLEDGE_BASE/inference.ttl's Metric monitoring axiom whenever the metric carries an actual interpretation (hasValueState/hasPhase/hasAggregation/hasRhythm), never asserted directly. A sub-property of hasOperationState with a single named domain for the same reason the CSV-driven ones have one: unambiguous attachment for any tooling that walks this property family, even though nothing here reads a CSV column."@en,
-                        "Of een metriek momenteel wordt gemonitord — anders dan de overige hasOperationState-subeigenschappen nooit CSV-gestuurd; afgeleid door de monitoringsaxioma van FRAMEWORK/KNOWLEDGE_BASE/inference.ttl zodra de metriek een daadwerkelijke interpretatie draagt (hasValueState/hasPhase/hasAggregation/hasRhythm), nooit rechtstreeks toegekend."@nl ;
+    rdfs:comment        "Whether a metric is currently being monitored — unlike the other hasOperationState sub-properties, never CSV-driven (no CSV column names it); entailed by FRAMEWORK/KNOWLEDGE_BASE/inference.ttl's Metric monitoring axiom whenever the metric carries an actual interpretation (hasRate/hasPhase/hasRhythm), never asserted directly. A sub-property of hasOperationState with a single named domain for the same reason the CSV-driven ones have one: unambiguous attachment for any tooling that walks this property family, even though nothing here reads a CSV column."@en,
+                        "Of een metriek momenteel wordt gemonitord — anders dan de overige hasOperationState-subeigenschappen nooit CSV-gestuurd; afgeleid door de monitoringsaxioma van FRAMEWORK/KNOWLEDGE_BASE/inference.ttl zodra de metriek een daadwerkelijke interpretatie draagt (hasRate/hasPhase/hasRhythm), nooit rechtstreeks toegekend."@nl ;
     rdfs:domain         mda:Metric ;
     rdfs:range          skos:Concept .
 
@@ -508,86 +507,21 @@ mda:approximates a owl:ObjectProperty ;
     rdfs:domain         mda:Metric ;
     rdfs:range          mda:PhysiologicalProperty .
 
-# FOUR CHARACTERISTICS OF A METRIC, AND WHY THEY ARE FOUR AND NOT THREE
-#
-# Reworked in the 2026-09 curation round, from Rianne's
-# DATEXOHMEDACOMVENTILATOR - MVexp High comments. She asked two things that
-# turned out to be the same underlying error: whether mda:hasPhase was
-# covering both a phase (systolic/diastolic) and a composition ("voor mijn
-# gevoel is phase van ventilatie meer in en expiratie ... minuutventilatie
-# is een samenstelling van frequentie en teugvolume over een periode, heeft
-# dit een fase?"), and what mda:hasRate could mean for a quantity that
-# already carries a time component in its own definition ("minuut volume
-# heeft een tijdscomponent in het concept, daarmee geen rate? ... bedoel je
-# dat we de waarde (value) interpreteren als te hoog?").
-#
-# Both were right, and both were wider than the alarm she was reading. The
-# old metricPhase: scheme held 15 compositions (Mean, Minute, Tidal) against
-# exactly 1 real phase (EndExpiratory) — so mean arterial pressure carried
-# the identical defect to minute volume. And the old metricRate: scheme held
-# no rates at all: its five values (Absent/Increased/Decreased and the two
-# severe variants) are directions of a limit breach, which is what its own
-# skos:definition already said.
-#
-# The four characteristics, each its own property and scheme:
-#
-#   (a) mda:hasValueState   an instantaneous interpretation of the value —
-#       where it sits relative to the device's configured limits. Was
-#       mda:hasRate. Per-alarm STATE: the same metric is Increased in one
-#       alarm and Decreased in another, so it never folds into identity.
-#
-#   (b) mda:hasPhase        the point in a cycle the value is taken at
-#       (end-expiratory, and systolic/diastolic/inspiratory when a corpus
-#       needs them). Kept, but now genuinely only this.
-#
-#   (c) mda:hasRhythm       how the value fluctuates across cycles over time
-#       (irregular, atrial fibrillation). Currently unpopulated — no corpus
-#       row annotates it yet; expected to be filled by the ECG archetypes.
-#       Deliberately NOT retired despite being empty: it is a distinct one
-#       of the four characteristics, not an unused duplicate of another.
-#
-#   (d) mda:hasAggregation  the composition of the metric over time into a
-#       single figure (minute, tidal, mean). New.
-#
-# (b) and (d) are both mda:refinesUniversalIdentity, (a) and (c) are not,
-# and that split is the substantive claim here. Minute volume and tidal
-# volume are DIFFERENT MEASURED QUANTITIES, not two states of one quantity —
-# a ventilator reports both as separate numbers — so each pre-coordinates
-# into its own shared concept (metric:RespirationVolume_Minute, itself a
-# subclass of metric:RespirationVolume, so the broader quantity stays
-# reachable). The same is true of a phase: mean and diastolic pressure are
-# two numbers, not two states of one. A value state or a rhythm, by
-# contrast, is what this particular alarm is reporting about that quantity
-# right now.
-#
-# Naming note: "aggregation", not "composition" — mda:processPartOf already
-# uses composition in its mereological sense in this ontology, and reusing
-# the word for a temporal statistic would collide.
-
 mda:hasPhase a owl:ObjectProperty ;
     dcterms:identifier  "hasPhase" ;
     rdfs:label          "has phase"@en,
                         "heeft fase"@nl ;
-    rdfs:comment        "The point in a physiological cycle at which the metric's value is taken (e.g. systolic, diastolic, inspiratory, end-expiratory). Not how the value is composed over time — see mda:hasAggregation."@en,
-                        "Het punt in een fysiologische cyclus waarop de waarde van de metriek wordt genomen (bijv. systolisch, diastolisch, inspiratoir, eind-expiratoir). Niet hoe de waarde over tijd is samengesteld — zie mda:hasAggregation."@nl ;
+    rdfs:comment        "The phase of the metric to which the alarm condition applies (e.g. mean, systolic, diastolic, end-expiratory)."@en,
+                        "De fase van de metriek waarop de alarmconditie van toepassing is (bijv. gemiddeld, systolisch, diastolisch, eind-expiratoir)."@nl ;
     rdfs:domain         mda:Metric ;
     rdfs:range          skos:Concept .
 
-mda:hasAggregation a owl:ObjectProperty ;
-    dcterms:identifier  "hasAggregation" ;
-    rdfs:label          "has aggregation"@en,
-                        "heeft aggregatie"@nl ;
-    rdfs:comment        "How the metric is composed over time into a single reported figure (e.g. minute, tidal, mean). Distinct from mda:hasPhase, which names a point in a cycle rather than a composition across one."@en,
-                        "Hoe de metriek over tijd wordt samengesteld tot één gerapporteerd getal (bijv. minuut, teug, gemiddeld). Onderscheiden van mda:hasPhase, dat een punt in een cyclus aanduidt in plaats van een samenstelling daarover."@nl ;
-    rdfs:domain         mda:Metric ;
-    rdfs:range          skos:Concept .
-
-mda:hasValueState a owl:ObjectProperty ;
-    dcterms:identifier  "hasValueState" ;
-    rdfs:label          "has value state"@en,
-                        "heeft waardestatus"@nl ;
-    rdfs:comment        "Where the metric's value sits relative to the device's configured alarm limits, as the device itself reports it (e.g. increased, decreased, severely decreased, absent). The threshold compared against is not represented in this framework — only the outcome of the comparison."@en,
-                        "Waar de waarde van de metriek zich bevindt ten opzichte van de ingestelde alarmgrenzen van het apparaat, zoals het apparaat dit zelf rapporteert (bijv. verhoogd, verlaagd, sterk verlaagd, afwezig). De drempelwaarde waartegen wordt vergeleken is niet gerepresenteerd in dit raamwerk — alleen de uitkomst van de vergelijking."@nl ;
+mda:hasRate a owl:ObjectProperty ;
+    dcterms:identifier  "hasRate" ;
+    rdfs:label          "has rate"@en,
+                        "heeft snelheid"@nl ;
+    rdfs:comment        "The rate deviation of the metric that raises the alarm (e.g. increased, decreased, critical decrease)."@en,
+                        "De snelheidsafwijking van de metriek die het alarm veroorzaakt (bijv. verhoogd, verlaagd, kritieke daling)."@nl ;
     rdfs:domain         mda:Metric ;
     rdfs:range          skos:Concept .
 
@@ -595,8 +529,8 @@ mda:hasRhythm a owl:ObjectProperty ;
     dcterms:identifier  "hasRhythm" ;
     rdfs:label          "has rhythm"@en,
                         "heeft ritme"@nl ;
-    rdfs:comment        "How the metric's value fluctuates across successive cycles over time (e.g. irregular, atrial fibrillation). Distinct from mda:hasValueState, which is a single instantaneous reading against a limit."@en,
-                        "Hoe de waarde van de metriek over opeenvolgende cycli in de tijd fluctueert (bijv. onregelmatig, atriumfibrilleren). Onderscheiden van mda:hasValueState, dat één momentane meting tegen een grenswaarde betreft."@nl ;
+    rdfs:comment        "The rhythm pattern of the metric to which the alarm condition applies (e.g. irregular)."@en,
+                        "Het ritmepatroon van de metriek waarop de alarmconditie van toepassing is (bijv. onregelmatig)."@nl ;
     rdfs:domain         mda:Metric ;
     rdfs:range          skos:Concept .
 
@@ -660,37 +594,6 @@ mda:presentIn a owl:ObjectProperty ;
                         "Koppelt een fysiologisch proces aan het orgaan waarin het plaatsvindt."@nl ;
     rdfs:domain         mda:PhysiologicalProcess ;
     rdfs:range          mda:Organ .
-
-
-# MEREOLOGICAL, NOT TAXONOMIC — the distinction matters and is deliberate.
-# mda:PhysiologicalProcess's own concepts already nest taxonomically through
-# skos:broader (every generated stub gets skos:broader to its scheme's top
-# concept). This property says something different: that one process is a
-# constituent PART of a larger one, the same part-whole claim
-# mda:organPartOfSystem makes for organs, and in the same direction
-# (part -> whole). ArterialCirculation is not a KIND of BloodCirculation —
-# it is one leg of the same circulatory loop, exactly as organ:Heart is a
-# part of organSystem:CardioVascular rather than a kind of it. Introduced
-# for physiologicalProcess:BloodCirculation, whose two parts
-# (Arterial/VenousCirculation) are each already reached independently by a
-# property bridge (ArterialPressure/TissuePerfusion, VenousPressure), so
-# the whole is what a therapy acting on the entire loop targets while the
-# parts stay individually reachable from their own metrics. See
-# inference.ttl's Therapeutic tail axioms.
-#
-# Domain and range are both mda:PhysiologicalProcess, i.e. a self-edge in
-# the ontology's property graph. Safe for ontology_tree.derive_class_tree:
-# a class already in `parent` when its own edges are expanded is skipped
-# (the inverse/cycle prune), so PhysiologicalProcess is never re-registered
-# as its own child and no ambiguity is raised. Verified against a rebuild.
-mda:processPartOf a owl:ObjectProperty ;
-    dcterms:identifier  "processPartOf" ;
-    rdfs:label          "process part of"@en,
-                        "proces deel van"@nl ;
-    rdfs:comment        "Relates a physiological process to the larger physiological process it is a constituent part of."@en,
-                        "Koppelt een fysiologisch proces aan het grotere fysiologische proces waarvan het een samenstellend deel is."@nl ;
-    rdfs:domain         mda:PhysiologicalProcess ;
-    rdfs:range          mda:PhysiologicalProcess .
 
 
 #################################################################
@@ -986,9 +889,8 @@ mda:instantiatesClass a owl:AnnotationProperty ;
 #   refinesUniversalIdentity   the value names a KIND, reusable across many
 #     owners — pre-coordinated into a shared universal concept at the
 #     vocabulary layer (2_READOUT), the same way every other universal
-#     deduplicates by IRI. mda:hasPhase (Metric: ArterialBloodPressure +
-#     Diastolic → metric:ArterialBloodPressure_Diastolic);
-#     mda:hasManufacturer, mda:hasDeviceType (Device:
+#     deduplicates by IRI. mda:hasPhase (Metric: ABP + Diastolic →
+#     metric:ABP_Diastolic); mda:hasManufacturer, mda:hasDeviceType (Device:
 #     PhysiologicalMonitor + Philips → one shared "PhilipsMonitor"-style
 #     concept). Applies regardless of nodeKind — Metric is Stateful, Device
 #     is Individuated; both pre-coordinate their type.
@@ -1081,7 +983,6 @@ mda:ClinicalEvent mda:nodeKind mda:Individuated .
 # consumes) and producesMetric/producesSignal (what it produces).
 
 mda:hasPhase              mda:refinesUniversalIdentity   true .
-mda:hasAggregation        mda:refinesUniversalIdentity   true .
 mda:hasManufacturer       mda:refinesUniversalIdentity   true .
 mda:hasDeviceType         mda:refinesUniversalIdentity   true .
 mda:hasAnatomicalPosition mda:refinesParticularIdentity  true .
@@ -1105,8 +1006,7 @@ mda:hasComponentOperationState  mda:valuesFromScheme    opstate:Scheme .
 mda:hasMetricOperationState     mda:valuesFromScheme    opstate:Scheme .
 mda:hasQualityState     mda:valuesFromScheme    qualitystate:Scheme .
 mda:hasPhase            mda:valuesFromScheme    metricPhase:Scheme .
-mda:hasAggregation      mda:valuesFromScheme    aggregation:Scheme .
-mda:hasValueState       mda:valuesFromScheme    valuestate:Scheme .
+mda:hasRate             mda:valuesFromScheme    metricRate:Scheme .
 mda:hasRhythm           mda:valuesFromScheme    rhythm:Scheme .
 mda:hasDeviceType       mda:valuesFromScheme    deviceType:Scheme .
 mda:hasManufacturer     mda:valuesFromScheme    manufacturer:Scheme .
@@ -1165,7 +1065,6 @@ mda:situational a owl:AnnotationProperty ;
 mda:approximates       mda:situational true .
 mda:isPropertyOf       mda:situational true .
 mda:presentIn          mda:situational true .
-mda:processPartOf      mda:situational true .
 mda:organPartOfSystem  mda:situational true .
 mda:administers        mda:situational true .
 mda:targetsProcess     mda:situational true .
@@ -1182,7 +1081,7 @@ mda:evidencedBy        mda:situational true .
 # NOT mda:persistsPostAlarm: a clinical event has no validity beyond its
 # supporting alarm — unlike device/signal state, there is no physical
 # reason for "cardiac arrest" to still be true a moment after the
-# condition that asserted it (metric hasValueState Absent) stops being reported.
+# condition that asserted it (metric hasRate Absent) stops being reported.
 # Tagging it persistsPostAlarm would let a resolved, minutes-old event
 # quietly combine with an unrelated new one into a false coincidence (see
 # clinicalEvents.ttl's Cardiorespiratory arrest rule) — situational is the

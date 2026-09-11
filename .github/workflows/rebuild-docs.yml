@@ -1,19 +1,22 @@
-name: Rebuild published docs (graph + ontology + vocab)
+name: Rebuild published docs (graph + ontology + vocab + cq)
 
-# Regenerates the three docs/ pages that have a known, reproducible build
+# Regenerates the four docs/ pages that have a known, reproducible build
 # process — docs/graph/ (CODE/evaluation_qa/archetype_report.py),
-# docs/ontology/ (WIDOCO), and docs/vocab/ (CODE/evaluation_qa/
+# docs/ontology/ (WIDOCO), docs/vocab/ (CODE/evaluation_qa/
 # vocab_browser.py, which only replaces that page's embedded data blob and
-# leaves its hand-built HTML/CSS/JS shell untouched). docs/data/ is not
-# covered — it has never had any content or generator.
+# leaves its hand-built HTML/CSS/JS shell untouched), and docs/cq/
+# (CODE/evaluation_cq/cq_report_html.py, which reuses cq_QA.py and
+# cq_temporal_QA.py to re-run every competency question and embed the
+# results). docs/data/ is not covered — it has never had any content or
+# generator.
 #
 # Opens a PR instead of pushing straight to main, deliberately: WIDOCO's
 # exact flags here are a best-effort match to the site's existing structure,
 # not a recovered original config (none was ever committed), so its output
 # should be spot-checked once before it goes live rather than trusted blind.
-# archetype_report.py's and vocab_browser.py's output is fully deterministic
-# and low-risk by comparison, but all three are routed through the same
-# review step for simplicity and consistency.
+# The other three scripts' output is fully deterministic and low-risk by
+# comparison, but all four are routed through the same review step for
+# simplicity and consistency.
 
 on:
   push:
@@ -24,6 +27,12 @@ on:
       - 'CODE/evaluation_qa/vocab_browser.py'
       - 'CODE/shared/graph_view.py'
       - 'CODE/shared/ontology_tree.py'
+      - 'EVALUATION/CQs/**/*.rq'
+      - 'CODE/evaluation_cq/cq_QA.py'
+      - 'CODE/evaluation_cq/cq_temporal_QA.py'
+      - 'CODE/evaluation_cq/cq_report_html.py'
+      - 'CODE/evaluation_poc/core/op_knowledge.py'
+      - 'DATA/CQ_evaluation/events_data.csv'
   workflow_dispatch: {}
 
 jobs:
@@ -40,13 +49,16 @@ jobs:
           python-version: '3.11'
 
       - name: Install Python dependencies
-        run: pip install rdflib owlrl
+        run: pip install rdflib owlrl pandas
 
       - name: Regenerate docs/graph (Knowledge Graphs page)
         run: python3 CODE/evaluation_qa/archetype_report.py --no-open
 
       - name: Regenerate docs/vocab (Vocabulary Browser data)
         run: python3 CODE/evaluation_qa/vocab_browser.py
+
+      - name: Regenerate docs/cq (Competency Questions page)
+        run: python3 CODE/evaluation_cq/cq_report_html.py
 
       - name: Regenerate docs/ontology (WIDOCO)
         run: |
@@ -63,14 +75,15 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           commit-message: "docs: regenerate published site from current ontology"
-          title: "Auto: regenerate docs/graph, docs/vocab, and docs/ontology"
+          title: "Auto: regenerate docs/graph, docs/vocab, docs/cq, and docs/ontology"
           body: |
-            Automated regeneration triggered by a change under `FRAMEWORK/**/*.ttl`
-            (or one of the report scripts themselves).
+            Automated regeneration triggered by a change under `FRAMEWORK/**/*.ttl`,
+            `EVALUATION/CQs/**/*.rq`, or one of the report scripts themselves.
 
             - `docs/graph/` rebuilt via `CODE/evaluation_qa/archetype_report.py`
             - `docs/vocab/` data blob refreshed via `CODE/evaluation_qa/vocab_browser.py`
               (its HTML/CSS/JS shell is untouched — only the embedded dataset changes)
+            - `docs/cq/` rebuilt via `CODE/evaluation_cq/cq_report_html.py`
             - `docs/ontology/` rebuilt via WIDOCO
 
             Please review the diff before merging — WIDOCO's flags here are a

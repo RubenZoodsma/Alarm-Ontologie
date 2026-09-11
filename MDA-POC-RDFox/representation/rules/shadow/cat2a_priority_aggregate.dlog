@@ -1,0 +1,82 @@
+####################################################################
+# cat2a_priority_aggregate.dlog — SHADOW, EXPERIMENTAL. NOT WIRED INTO
+# THE PRODUCTION PATH (engine/replay_driver.py's build_script does not
+# import this file; nothing in the live pipeline depends on it).
+#
+# Rewrite of cat2a_process_priority.dlog's expensive 14-atom self-join
+# ("does an active alarm with rank >= mine exist for the same process")
+# as a standing, incrementally-maintained AGGREGATE instead. Confirmed
+# empirically (this session's spike work) that RDFox maintains a standing
+# MAX aggregate's value in genuinely constant time per insert/retract,
+# flat from group sizes of 10 up to 1500, including with graph-scoped
+# members retracted via whole-graph DELETE WHERE (the real production
+# eviction mechanism) — not just theoretically "more RSP-aligned," but
+# empirically verified not to reintroduce the same concurrency-scaling
+# cost the self-join has.
+#
+# GROUP KEY: composite (patient, process), NOT process alone —
+# mda:isPropertyOf's pivot (?process) is a STANDING, patient-independent
+# CONCEPT node (e.g. physiologicalProcess:CardiacContraction), so grouping
+# by ?process alone would silently aggregate ACROSS different patients the
+# instant they share one dstore — the exact cross-patient leak bug already
+# found and fixed once in the self-join version (see
+# cat2a_process_priority.dlog's own "SAME-PATIENT CONSTRAINT" comment).
+# SKOLEM is NOT usable inside AGGREGATE's BIND (confirmed empirically:
+# "Builtin function with name 'SKOLEM' does not exist" in this context) —
+# CONCAT+IRI mints the composite key instead, confirmed correct.
+#
+# ORDERING REQUIREMENT THIS RULE IMPOSES ON ITS CALLER (see
+# engine/shadow_incremental.py): mda:shadowMaxActiveRank for a
+# (patient,process) key reflects EVERY alarm whose full chain — INCLUDING
+# hasPriority/priorityRank — is currently present. An arriving alarm's own
+# rank would trivially satisfy MAX(?activeRank) >= itself the instant it's
+# inserted, so the caller MUST query this aggregate BEFORE inserting the
+# arriving alarm's own hasPriority triple (a two-phase insert — chain data
+# first, priority triple held back until after the check) to correctly
+# answer "did some OTHER, already-active alarm already qualify" rather
+# than "do I qualify against myself."
+####################################################################
+
+@prefix mda:      <https://w3id.org/mda/ontology#> .
+@prefix alarmcat:  <https://w3id.org/mda/vocab/alarm-category/> .
+
+## FIX (this session, confirmed against real patient 2826): independent
+## per-hop graph variables (?g8..?g14) let RDFox mix-and-match across
+## every currently-open alarm's own redundant copy of the same structural
+## facts, since hasSensor/sensorProducesSignal/analyzedBy get re-minted
+## into EVERY currently-active alarm's own persistent graph (kb.node_kind:
+## Device/Sensor/Signal "individuated", SignalAnalysis untagged — both
+## route to ground_chain's `background`) and hasMessage/triggeredBy/
+## producesMetric/approximates/hasPriority always co-locate in that same
+## alarm's own transient graph (Metric is "stateful" -> `condition`;
+## insert_alarm bundles msg_graph+cond_graph into one tgraph block). A
+## direct CSV dump of one alarm's own (non-cross-alarm) chain lookup
+## under the old ?g8..?g14 shape returned 24,435 redundant rows for what
+## is structurally exactly 1 fact — confirmed the independent-variable
+## shape, not group size, was the multiplier. ?gCond groups everything
+## that lives in one alarm's transient graph; ?gStruct groups everything
+## that lives in that same alarm's persistent graph.
+[?ppKey, mda:shadowMaxActiveRank, ?maxRank] :-
+    AGGREGATE(
+        [?active, mda:hasCategory, alarmcat:Physiological] ?gCond,
+        [?active, mda:hasMessage, ?activeMsg] ?gCond,
+        [?activeMsg, mda:concernsPatient, ?patient] ?gCond,
+        [?activeMsg, mda:triggeredBy, ?activeDevice] ?gCond,
+        [?activeDevice, mda:hasSensor, ?activeSensor] ?gStruct,
+        [?activeSensor, mda:sensorProducesSignal, ?activeSignal] ?gStruct,
+        [?activeSignal, mda:analyzedBy, ?activeAnalysis] ?gStruct,
+        [?activeAnalysis, mda:producesMetric, ?activeMetric] ?gCond,
+        [?activeMetric, mda:approximates, ?activeProperty] ?gCond,
+        [?activeProperty, mda:isPropertyOf, ?process],
+        [?active, mda:hasPriority, ?activePrio] ?gCond,
+        [?activePrio, mda:priorityRank, ?activeRank],
+        BIND(IRI(CONCAT(STR(?patient), "|", STR(?process))) AS ?ppKey)
+        ON ?ppKey
+        BIND MAX(?activeRank) AS ?maxRank
+    ) .
+
+# VALIDATION — see engine/shadow_incremental.py's own harness for the
+# equivalence check against cat2a_pos/cat2a_neg and the composite-key
+# cross-patient isolation check; not yet run against real RDFox as part of
+# a validated regression at the time this file was written (that's the
+# whole point of the shadow harness — verify before promoting).

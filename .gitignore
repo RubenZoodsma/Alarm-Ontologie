@@ -5,5 +5,11 @@
 **/documentation/*
 *.md
 __pycache__/
-.vscode/
+.vscode/*
 /PREVIOUS_STALE**
+*.lic
+MDA-POC-RDFox/engine/_scratch/
+*.rData
+*scratch/*    
+*.trig
+*.rdfox

@@ -1,0 +1,55 @@
+####################################################################
+# cat2b_sensor_count_aggregate.dlog — SHADOW, EXPERIMENTAL. NOT WIRED
+# INTO THE PRODUCTION PATH. See cat2a_priority_aggregate.dlog's own header
+# for the general rationale.
+#
+# GROUP KEY: composite (patient, metricType) — same reasoning as cat2a's
+# shadow rule: ?metricType (via rdf:type) is a STANDING, patient-
+# independent CONCEPT node (e.g. metric:HeartRate), so grouping by
+# ?metricType alone would leak across patients the instant they share one
+# dstore — the identical bug cat2b_metric_sensor.dlog's own header already
+# documents for the self-join version.
+#
+# NO ORDERING REQUIREMENT (unlike cat2a — this is the one place cat2a and
+# cat2b's shadow rewrites genuinely differ in shape, not just
+# coincidentally similar): cat2a's aggregate folds candidates into a
+# single scalar (MAX) that can't be decomposed after the fact to "exclude
+# me." cat2b's aggregate is COUNT(DISTINCT ?sensor) — and the arriving
+# alarm's own sensor IS one of the counted members once fully inserted,
+# but that's fine: if the post-insert count is >= 2, at least one of those
+# distinct sensors is NOT mine (mine is only ever one), so "some OTHER
+# sensor is active for this metric type" is answered correctly by
+# `FILTER(?c >= 2)` AFTER a completely normal, single-phase insert — no
+# need to hold back part of the arriving alarm's own data the way cat2a's
+# rewrite does.
+####################################################################
+
+@prefix mda: <https://w3id.org/mda/ontology#> .
+@prefix alarmcat: <https://w3id.org/mda/vocab/alarm-category/> .
+
+## FIX (this session): same independent-per-hop-graph-variable issue as
+## cat2a_priority_aggregate.dlog — see its header for the confirmed
+## mechanism and the CSV evidence. ?gCond groups everything living in one
+## alarm's transient graph; ?gStruct groups everything living in that same
+## alarm's persistent graph.
+[?mtKey, mda:shadowSensorCount, ?c] :-
+    AGGREGATE(
+        [?active, mda:hasCategory, alarmcat:Physiological] ?gCond,
+        [?active, mda:hasMessage, ?activeMsg] ?gCond,
+        [?activeMsg, mda:concernsPatient, ?patient] ?gCond,
+        [?activeMsg, mda:triggeredBy, ?activeDevice] ?gCond,
+        [?activeDevice, mda:hasSensor, ?sensorActive] ?gStruct,
+        [?sensorActive, mda:sensorProducesSignal, ?signalActive] ?gStruct,
+        [?signalActive, mda:analyzedBy, ?analysisActive] ?gStruct,
+        [?analysisActive, mda:producesMetric, ?activeMetric] ?gCond,
+        [?activeMetric, rdf:type, ?metricType] ?gCond,
+        BIND(IRI(CONCAT(STR(?patient), "|", STR(?metricType))) AS ?mtKey)
+        ON ?mtKey
+        BIND COUNT(DISTINCT ?sensorActive) AS ?c
+    ) .
+
+# Check shape: resolve the arriving alarm's own ?metricType via a
+# one-sided chain lookup of its OWN already-inserted data (same shape as
+# today's cat2b, minus the cross-alarm half), mint the same ?mtKey, then
+# `?mtKey mda:shadowSensorCount ?c . FILTER(?c >= 2)` — checked AFTER a
+# normal single-phase insert.

@@ -1,0 +1,71 @@
+####################################################################
+# cat2b_metric_sensor.dlog — HAND-AUTHORED. NOT GENERATED.
+#
+# NOT LOADED AS A STANDING RULE — see cat2a_process_priority.dlog's own
+# header for the full reasoning (same rationale, same fix, applied to both
+# files together). The join below is instead run as a one-shot
+# `select ... limit 1` query, hand-translated into
+# engine/replay_driver.py's ONDEMAND_QUERY_BODIES["cat2b"]. THIS FILE
+# REMAINS THE CANONICAL DEFINITION of the join/filter logic —
+# replay_driver.py's copy must be kept in sync BY HAND with any change
+# made here, verified via the same cat2b_pos/cat2b_neg regression
+# fixtures that validate this file.
+#
+# One rule per file (split out of the former cat_rules.dlog) so
+# poc_entry.py can enable/disable each CAT rule independently. RDFox Datalog
+# port of CODE/evaluation_poc/reasoner/rules/cat2b_metric_sensor.rq, plus
+# the same arrival-order fix as cat2a_process_priority.dlog (confirmed
+# independently needed here too — CAT2b has no priority comparison to
+# accidentally mask the symmetry the way an unequal-rank CAT2a fixture
+# can) — see the migration plan for full background.
+#
+# mda:silencedBy has exactly one consumer (the per-alarm check in
+# build_script) — see cat2a_process_priority.dlog's header for why that's
+# what makes this rule no longer worth loading as standing/materialized at
+# all. The ?g1/?g7 etc. graph terms below are vestigial from a since-moot
+# intermediate fix, kept because the on-demand SPARQL translation still
+# needs to know which graph each atom's content actually lives in.
+#
+# SAME-PATIENT CONSTRAINT — REQUIRED, NOT OPTIONAL, ONCE PATIENTS SHARE
+# ONE DSTORE. See cat2a_process_priority.dlog's header for the full
+# explanation — the identical bug, for the identical reason: ?metricType
+# is a STANDING, CONCEPT-level node (e.g. metric:HeartRate), legitimately
+# shared across every patient with that metric type, so without an
+# explicit same-patient constraint this rule derives silencedBy ACROSS
+# different patients the instant they share one dstore.
+####################################################################
+
+@prefix mda:              <https://w3id.org/mda/ontology#> .
+@prefix alarmcat:         <https://w3id.org/mda/vocab/alarm-category/> .
+
+[?alarm, mda:silencedBy, ?active] ?g1 :-
+    [?alarm, mda:hasCategory, alarmcat:Physiological] ?g1,
+    [?alarm, mda:hasMessage, ?msg] ?g1,
+    [?msg, mda:concernsPatient, ?patient] ?g1,
+    [?msg, mda:triggeredBy, ?device] ?g2,
+    [?device, mda:hasSensor, ?sensorIn] ?g3,
+    [?sensorIn, mda:sensorProducesSignal, ?signalIn] ?g4,
+    [?signalIn, mda:analyzedBy, ?analysisIn] ?g5,
+    [?analysisIn, mda:producesMetric, ?metricIn] ?g6,
+    [?metricIn, rdf:type, ?metricType] ?g6,
+    [?alarm, mda:hasStart, ?alarmStart] ?g1,
+
+    [?active, mda:hasCategory, alarmcat:Physiological] ?g7,
+    [?active, mda:hasMessage, ?activeMsg] ?g7,
+    [?activeMsg, mda:concernsPatient, ?patient] ?g7,
+    [?activeMsg, mda:triggeredBy, ?activeDevice] ?g8,
+    [?activeDevice, mda:hasSensor, ?sensorActive] ?g9,
+    [?sensorActive, mda:sensorProducesSignal, ?signalActive] ?g10,
+    [?signalActive, mda:analyzedBy, ?analysisActive] ?g11,
+    [?analysisActive, mda:producesMetric, ?metricActive] ?g12,
+    [?metricActive, rdf:type, ?metricType] ?g12,
+    [?active, mda:hasStart, ?activeStart] ?g7,
+
+    FILTER(?active != ?alarm),
+    FILTER(?sensorActive != ?sensorIn),
+    FILTER(?activeStart < ?alarmStart) .
+
+# VALIDATION — executed against real RDFox: positive (different sensors,
+# same metric type) → 1 (only after the arrival-order fix). negative
+# (same sensor) → 0. Re-validated end-to-end via engine/replay_driver.py's
+# cat2b_pos/cat2b_neg fabricated cases.

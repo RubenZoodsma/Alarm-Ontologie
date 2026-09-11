@@ -1,0 +1,123 @@
+####################################################################
+# cat2a_process_priority.dlog — HAND-AUTHORED. NOT GENERATED.
+#
+# NOT LOADED AS A STANDING RULE — engine/replay_driver.py's build_script
+# no longer `import`s this file (see its own ONDEMAND_RULE_NAMES comment).
+# The join below is instead run as a one-shot `select ... limit 1` query,
+# hand-translated into engine/replay_driver.py's ONDEMAND_QUERY_BODIES["cat2a"]
+# (RDFox's bracket quad syntax used throughout this file is rule-only —
+# confirmed directly it errors inside a plain `select` command — so the
+# query version is a real, separately-maintained SPARQL rewrite, not this
+# file re-used verbatim). THIS FILE REMAINS THE CANONICAL DEFINITION of
+# the join/filter logic — replay_driver.py's copy must be kept in sync BY
+# HAND with any change made here, verified via the same cat2a_pos/cat2a_neg
+# regression fixtures that validate this file.
+#
+# One rule per file (split out of the former cat_rules.dlog) so
+# poc_entry.py can enable/disable each CAT rule independently. RDFox Datalog
+# port of CODE/evaluation_poc/reasoner/rules/cat2a_process_priority.rq,
+# plus an arrival-order fix the original translation was missing — see
+# the migration plan for full background.
+#
+# REAL BUG FOUND AND FIXED, NOT JUST A SYNTAX CHECK: this rule originally
+# derived `silencedBy` in BOTH directions for any two mutually-qualifying
+# alarms (confirmed via an equal-priority fixture returning 2 answers
+# instead of 1), because the original SPARQL's pre-bound `?alarm`
+# (assess.py's initBindings, fixing it to specifically the ARRIVING alarm)
+# enforced an arrival-order guarantee invisibly that a continuously-
+# materializing Datalog rule does not get for free. Fixed with explicit
+# `mda:hasStart` comparisons.
+#
+# The category guard (`hasCategory alarmcat:Physiological` on BOTH
+# alarms) is preserved exactly — closes a real bug in the original SPARQL
+# (a Technical alarm borrowing clinical content from a shared Signal
+# particular), confirmed still blocked under RDFox's own graph-scoped
+# join semantics via the category-guard regression fixture.
+#
+# mda:priorityRank and mda:isPropertyOf are left UNGRAPHED deliberately:
+# both are STANDING, concept-level facts (priority_rank.ttl,
+# inference.ttl), loaded once into the default graph, never touched by
+# the window operator — not per-alarm content. An earlier version of this
+# rule scoped priorityRank to the alarm's own transient graph, matching a
+# bug in the (now-deleted) hand-authored data/archetypes.py that re-minted
+# it per occurrence; reverted once that bug was found.
+#
+# mda:silencedBy (domain mda:Alarm, range mda:Alarm, the only new
+# predicate this file introduces) has exactly one consumer: the per-alarm
+# `silencedBy` check in build_script, run once right when that alarm
+# arrives — nothing else ever reads it back. That's WHY this rule is no
+# longer loaded as a standing rule at all (see the NOT LOADED note above):
+# a fact with one point-in-time reader doesn't need RDFox continuously,
+# incrementally re-maintaining it against every unrelated transaction in
+# the store for the rest of the process's life. (History: it was briefly
+# left permanently ungraphed — "faithful port of the original CSV-row
+# semantics" — then briefly scoped to ?g1/the alarm's own transient graph
+# once that permanence was found to be the likely cause of a progressive
+# incremental-materialization slowdown that timed a real run out on a
+# 6272-alarm patient. Both are moot now that the rule isn't materialized
+# at all — this file's ?g1 graph terms below are vestigial from that
+# scoped version, harmless to leave since they document which graph each
+# atom's own content actually lives in, which the on-demand SPARQL
+# translation still needs to know.)
+#
+# SAME-PATIENT CONSTRAINT — REQUIRED, NOT OPTIONAL, ONCE PATIENTS SHARE
+# ONE DSTORE. mda:approximates/mda:isPropertyOf's shared pivot (?process)
+# is a STANDING, CONCEPT-level node (e.g. physiologicalProcess:
+# CardiacContraction) — legitimately the SAME node across every patient
+# who has a HeartRate-derived metric, not a per-patient particular. Under
+# the original one-dstore-per-patient design this was harmless (nothing
+# from a DIFFERENT patient's dstore could ever be visible to this join at
+# all); confirmed as a REAL bug the moment patients started sharing one
+# dstore (engine/replay_driver.py's build_script): two different real
+# corpus patients, each with their own tachycardia/bradycardia-style
+# alarm active at an overlapping real-world instant, derived silencedBy
+# ACROSS patients. `?msg`/`?activeMsg` share `?patient` below to close
+# this — the same fix cat2b_metric_sensor.dlog needs for the identical
+# reason.
+####################################################################
+
+@prefix mda:              <https://w3id.org/mda/ontology#> .
+@prefix alarmcat:         <https://w3id.org/mda/vocab/alarm-category/> .
+
+[?alarm, mda:silencedBy, ?active] ?g1 :-
+    [?alarm, mda:hasCategory, alarmcat:Physiological] ?g1,
+    [?alarm, mda:hasMessage, ?msg] ?g1,
+    [?msg, mda:concernsPatient, ?patient] ?g1,
+    [?msg, mda:triggeredBy, ?device] ?g2,
+    [?device, mda:hasSensor, ?sensor] ?g3,
+    [?sensor, mda:sensorProducesSignal, ?signal] ?g4,
+    [?signal, mda:analyzedBy, ?analysis] ?g5,
+    [?analysis, mda:producesMetric, ?metric] ?g6,
+    [?metric, mda:approximates, ?property] ?g7,
+    [?property, mda:isPropertyOf, ?process],
+    [?alarm, mda:hasPriority, ?incomingPrio] ?g1,
+    [?incomingPrio, mda:priorityRank, ?incomingRank],
+    [?alarm, mda:hasStart, ?alarmStart] ?g1,
+
+    [?active, mda:hasCategory, alarmcat:Physiological] ?g8,
+    [?active, mda:hasMessage, ?activeMsg] ?g8,
+    [?activeMsg, mda:concernsPatient, ?patient] ?g8,
+    [?activeMsg, mda:triggeredBy, ?activeDevice] ?g9,
+    [?activeDevice, mda:hasSensor, ?activeSensor] ?g10,
+    [?activeSensor, mda:sensorProducesSignal, ?activeSignal] ?g11,
+    [?activeSignal, mda:analyzedBy, ?activeAnalysis] ?g12,
+    [?activeAnalysis, mda:producesMetric, ?activeMetric] ?g13,
+    [?activeMetric, mda:approximates, ?activeProperty] ?g14,
+    [?activeProperty, mda:isPropertyOf, ?process],
+    [?active, mda:hasPriority, ?activePrio] ?g8,
+    [?activePrio, mda:priorityRank, ?activeRank],
+    [?active, mda:hasStart, ?activeStart] ?g8,
+
+    FILTER(?active != ?alarm),
+    FILTER(?activeRank >= ?incomingRank),
+    FILTER(?activeStart < ?alarmStart) .
+
+# VALIDATION — executed against real RDFox: positive (unequal priority,
+# arrival-order respected) → 1. Equal-priority variant → 1 (only after the
+# arrival-order fix). Category-guard regression (Technical alarm sharing a
+# Signal/Metric chain with a Physiological one, via a SEPARATE persistent
+# graph) → 0. Re-validated end-to-end via engine/replay_driver.py's
+# cat2a_pos/cat2a_neg fabricated cases — cat2a_pos required
+# mint.py's clinical_context (mda:approximates is an OWL-RL entailment
+# off inference.ttl's bridge axioms, not a directly-minted fact; see
+# mint.py's own docstring).

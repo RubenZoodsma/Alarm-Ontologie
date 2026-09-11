@@ -1,0 +1,62 @@
+####################################################################
+# cat1a_signal_quality.dlog — HAND-AUTHORED. NOT GENERATED.
+#
+# NOT LOADED AS A STANDING RULE — engine/replay_driver.py's build_script
+# no longer `import`s this file (see its own ONDEMAND_RULE_NAMES comment).
+# The join below is instead run as a one-shot `select` query, hand-
+# translated into engine/replay_driver.py's
+# ONDEMAND_QUERY_BODIES["cat1a"] (RDFox's bracket quad syntax used
+# throughout this file is rule-only — confirmed directly it errors inside
+# a plain `select` command). THIS FILE REMAINS THE CANONICAL DEFINITION
+# of the join/filter logic — replay_driver.py's copy must be kept in sync
+# BY HAND with any change made here, verified via the same cat1a_pos/
+# cat1a_neg regression fixtures that validate this file. Why on-demand,
+# not standing: `mda:flaggedLikelyFalsePositive` and `mda:hasQualityState`
+# (a `kb.last_wins_str`-tagged predicate this rule reads) each have
+# exactly one consumer — the per-alarm check at arrival — so there's no
+# reason to pay RDFox's standing incremental-maintenance cost for values
+# nothing else ever reads back. No validFrom/validUntil interval
+# filtering needed in the on-demand version either: Driver's physical
+# graph-drop mechanism (unchanged) already guarantees "currently in the
+# store" == "currently valid," per this project's own RDF-stream-
+# processing design (landmark/sliding-window discard, not append-only —
+# see the migration plan's §2).
+#
+# One rule per file (split out of the former cat_rules.dlog) so
+# poc_entry.py can enable/disable each CAT rule independently. RDFox Datalog
+# port of CODE/evaluation_poc/reasoner/rules/cat1a_signal_quality.rq —
+# see that file and the migration plan (/Users/rzoodsm2/.claude/plans/
+# we-re-going-for-the-magical-candy.md) for full background.
+#
+# Every pattern carries its own independent graph term (`[?s,?p,?o] ?gN`,
+# RDFox's documented syntax, docs.oxfordsemantic.tech/7.6/reasoning.html
+# §10.4) — confirmed hasQualityState can legitimately come from a
+# DIFFERENT, coincidentally-active alarm sharing the same Signal
+# particular (Phase 0's own trace), so independent graph variables per
+# pattern are what make that cross-alarm case matchable at all.
+#
+# mda:flaggedLikelyFalsePositive (domain mda:Alarm, range rdfs:Resource,
+# the only new predicate this file introduces) is scoped to ?g1 — the
+# ARRIVING alarm's own transient graph. Vestigial now that this rule isn't
+# materialized at all (see NOT LOADED note above), kept because the
+# on-demand SPARQL translation still needs to know which graph each
+# atom's content actually lives in.
+####################################################################
+
+@prefix mda:              <https://w3id.org/mda/ontology#> .
+@prefix qualitystate:     <https://w3id.org/mda/vocab/quality-state/> .
+
+[?alarm, mda:flaggedLikelyFalsePositive, ?signal] ?g1 :-
+    [?alarm, mda:hasMessage, ?msg] ?g1,
+    [?msg, mda:triggeredBy, ?device] ?g2,
+    [?device, mda:hasSensor, ?sensor] ?g3,
+    [?sensor, mda:sensorProducesSignal, ?signal] ?g4,
+    [?signal, mda:analyzedBy, ?analysis] ?g5,
+    [?analysis, mda:producesMetric, ?metric] ?g6,
+    [?signal, mda:hasQualityState, ?quality] ?g7,
+    FILTER(?quality != qualitystate:Good) .
+
+# VALIDATION — executed against real RDFox: positive (bad-quality signal,
+# own alarm's transient graph; structural chain in the persistent graph)
+# → 1. negative (Good quality) → 0. Re-validated end-to-end via
+# engine/replay_driver.py's cat1a_pos/cat1a_neg fabricated cases.

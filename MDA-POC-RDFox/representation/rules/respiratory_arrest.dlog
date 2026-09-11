@@ -1,0 +1,27 @@
+####################################################################
+# respiratory_arrest.dlog — HAND-AUTHORED. NOT GENERATED.
+#
+# TRIED as an on-demand query and REVERTED — kept as a STANDING rule. See
+# cardiac_arrest.dlog's own header for the full reasoning (identical
+# rationale: unscoped, unconditional-per-alarm check, worse on demand).
+#
+# One rule per file (split out of the former clinical_rules.dlog) so
+# poc_entry.py can enable/disable each rule independently. RDFox Datalog
+# port of FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl's
+# RespiratoryArrestCondition — see cardiac_arrest.dlog's header (same
+# design) and the migration plan for full background.
+####################################################################
+
+@prefix mda:          <https://w3id.org/mda/ontology#> .
+@prefix metric:       <https://w3id.org/mda/vocab/metric/> .
+@prefix metricRate:   <https://w3id.org/mda/vocab/metric-rate/> .
+@prefix clinicalEvent: <https://w3id.org/mda/vocab/clinical-event/> .
+
+[?process, mda:impliesClinicalEvent, clinicalEvent:RespiratoryArrest] ?gRate :-
+    [?metric, rdf:type, metric:RespirationRate] ?gType,
+    [?metric, mda:hasRate, metricRate:Absent] ?gRate,
+    [?metric, mda:approximates, ?property] ?gApprox,
+    [?property, mda:isPropertyOf, ?process] .
+
+# VALIDATION — executed against real RDFox: positive (RespirationRate +
+# hasRate Absent) → 1.

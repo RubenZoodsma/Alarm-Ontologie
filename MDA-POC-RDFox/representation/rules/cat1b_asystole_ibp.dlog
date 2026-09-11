@@ -1,0 +1,133 @@
+####################################################################
+# cat1b_asystole_ibp.dlog — HAND-AUTHORED. NOT GENERATED.
+#
+# REDESIGNED from an open-world "no other alarm on this pathway" check
+# to a closed-world "this pathway's own current state looks healthy"
+# check — see the reasoning conversation this session for the full
+# analysis; summarized here since it materially changes what this rule
+# means clinically, not just how it's computed.
+#
+# Original clinical requirement (verbatim): "If an asystole alarm occurs
+# when an invasive blood pressure sensor is present without alarms on
+# that sensing pathway, it may be flagged as likely false positive." The
+# original translation of "without alarms on that pathway" was a literal
+# NOT EXISTS over other alarms triggered by the same FU — an open-world
+# existential search that RDFox has to prove by walking every candidate,
+# confirmed this session to be the actual, severe (12+s cumulative over
+# ~800 alarms in one real-corpus window, dwarfing every other rule) cost
+# driver once cat2a/cat2b's own self-join cost was fixed separately.
+#
+# NEW translation of the same clinical intent, as three POSITIVE, LOCAL
+# criteria on the IBP pathway's own current readings — collectively
+# inferring "FU present and enabled, metric measured correctly" as a
+# derivative proxy for "pulsatile IBP waveform present, i.e. not
+# consistent with asystole" — instead of proving the absence of some
+# other alarm:
+#   1. FU operation state (on its Sensor — see below) does not indicate
+#      a fault: not opstate:Disabled/Disconnected/Malfunction/Warning.
+#   2. Signal quality is not opstate:Impaired/ScalingError.
+#   3. Metric rate is not any of the five known abnormal values.
+#
+# EACH of the three is wrapped in its own OPTIONAL, not a mandatory
+# pattern — this is the corrected version of an earlier draft that
+# required each chain to resolve as a prerequisite, confirmed empirically
+# to make the rule UNSATISFIABLE, not just narrow: mint.py's own grounding
+# never asserts hasOperationState on the FunctionalUnit directly (only
+# hasSensorOperationState, on the Sensor — the OWL property-chain axiom
+# that would propagate it upward is never materialized, since this
+# pipeline only runs explicit .dlog rules, not full OWL-RL), and — the
+# harder problem — mda:producesMetric (the SignalAnalysis->Metric hop)
+# only ever exists in an alarm's TRANSIENT graph, never persistent, and
+# every rate-bearing IBP archetype in the corpus pairs it with one of the
+# 5 bad rate values in that SAME transient grounding. So a MANDATORY
+# metric-chain requirement can never be satisfied together with "rate is
+# not bad" — confirmed by direct inspection of mint.py's own output for
+# every archetype touching FU_InvasiveBloodPressure in kg_generated.ttl,
+# not assumed.
+#
+# The "no information should not resolve to a healthy state" principle
+# (this session's own explicit design decision) is still upheld, but by a
+# DIFFERENT, already-existing gate: [?patient, mda:isMonitoredBy,
+# ?ibpDevice] only resolves at all if the IBP device has had its OWN
+# recent alarm activity (mda:isMonitoredBy is asserted per-instant, by
+# that device's own grounding — see ontology.ttl's own comment on it).
+# That gate is what prevents an IBP pathway that's never been touched at
+# all from vacuously passing; the three OPTIONAL leaf checks don't need
+# to separately re-derive it, and forcing them to (the earlier, broken
+# draft) is what made the rule unsatisfiable.
+#
+# NOT LOADED AS A STANDING RULE — see cat1a_signal_quality.dlog's own
+# header for the full reasoning (same rationale, applied here because this
+# rule reads `mda:hasRate`, also `kb.last_wins_str`-tagged, with the same
+# single-consumer argument). The join below runs as a one-shot `select`
+# query instead, hand-translated into engine/replay_driver.py's
+# ONDEMAND_QUERY_BODIES["cat1b"]. THIS FILE REMAINS THE CANONICAL
+# DEFINITION for the join/filter LOGIC, though note OPTIONAL/BOUND() have
+# no native Datalog-rule equivalent (they're query-only SPARQL
+# constructs) — this file was already never loaded as a standing rule
+# (see above), so that's not a new limitation, just worth being explicit
+# about: the SPARQL translation in replay_driver.py is what actually
+# executes, this file documents its logic in the same bracket-quad style
+# used throughout this project for readability, not as literal loadable
+# Datalog.
+#
+# One rule per file (split out of the former cat_rules.dlog) so
+# poc_entry.py can enable/disable each CAT rule independently.
+####################################################################
+
+@prefix mda:              <https://w3id.org/mda/ontology#> .
+@prefix metric:           <https://w3id.org/mda/vocab/metric/> .
+@prefix metricRate:       <https://w3id.org/mda/vocab/metric-rate/> .
+@prefix functionalUnit:   <https://w3id.org/mda/vocab/functional-unit/> .
+@prefix qualitystate:     <https://w3id.org/mda/vocab/quality-state/> .
+@prefix opstate:          <https://w3id.org/mda/vocab/operation-state/> .
+
+[?alarm, mda:flaggedLikelyFalsePositive, ?ibpFunctionalUnit] ?g1 :-
+    [?alarm, mda:hasMessage, ?msg] ?g1,
+    [?msg, mda:concernsPatient, ?patient] ?g1,
+    [?msg, mda:triggeredBy, ?device] ?g2,
+    [?device, mda:hasSensor, ?sensor] ?g3,
+    [?sensor, mda:sensorProducesSignal, ?signal] ?g4,
+    [?signal, mda:analyzedBy, ?analysis] ?g5,
+    [?analysis, mda:producesMetric, ?metric] ?g6,
+    [?metric, rdf:type, metric:HeartRate] ?g7,
+    [?metric, mda:hasRate, metricRate:Absent] ?g8,
+    [?patient, mda:isMonitoredBy, ?ibpDevice] ?g9,
+    [?ibpDevice, mda:hasFunctionalUnit, ?ibpFunctionalUnit] ?g10,
+    [?ibpFunctionalUnit, rdf:type, functionalUnit:FU_InvasiveBloodPressure] ?g11,
+
+    OPTIONAL( [?ibpFunctionalUnit, mda:hasSensor, ?ibpSensor1] ?g12a,
+              [?ibpSensor1, mda:hasSensorOperationState, ?ibpState] ?g12b ),
+    FILTER( !BOUND(?ibpState) ||
+            (?ibpState != opstate:Disabled && ?ibpState != opstate:Disconnected &&
+             ?ibpState != opstate:Malfunction && ?ibpState != opstate:Warning) ),
+
+    OPTIONAL( [?ibpFunctionalUnit, mda:hasSensor, ?ibpSensor2] ?g13a,
+              [?ibpSensor2, mda:sensorProducesSignal, ?ibpSignal] ?g13b,
+              [?ibpSignal, mda:hasQualityState, ?ibpQuality] ?g13c ),
+    FILTER( !BOUND(?ibpQuality) ||
+            (?ibpQuality != qualitystate:Impaired && ?ibpQuality != qualitystate:ScalingError) ),
+
+    OPTIONAL( [?ibpFunctionalUnit, mda:hasSensor, ?ibpSensor3] ?g14a,
+              [?ibpSensor3, mda:sensorProducesSignal, ?ibpSignal2] ?g14b,
+              [?ibpSignal2, mda:analyzedBy, ?ibpAnalysis] ?g14c,
+              [?ibpAnalysis, mda:producesMetric, ?ibpMetric] ?g14d,
+              [?ibpMetric, mda:hasRate, ?ibpRate] ?g14e ),
+    FILTER( !BOUND(?ibpRate) ||
+            (?ibpRate != metricRate:Absent && ?ibpRate != metricRate:Decreased &&
+             ?ibpRate != metricRate:Increased && ?ibpRate != metricRate:SeverelyDecreased &&
+             ?ibpRate != metricRate:SeverelyIncreased) ) .
+
+# VALIDATION — see engine/replay_driver.py's own run() regression against
+# the cat1b_pos/cat1b_neg fixtures for the current pass/fail record; not
+# re-stated here to avoid this comment drifting out of sync with the
+# actual, machine-checked result. Both fixtures are expected to pass
+# UNMODIFIED under this design (unlike the earlier, broken mandatory-chain
+# draft) — see this session's own analysis of why: cat1b_pos's asystole
+# arrives 9m40s after "ABP verkleinen" ends, within its 15-minute
+# persistent window (isMonitoredBy/hasFunctionalUnit/rdf:type still
+# resolve) but after its transient hasRate/hasSensorOperationState/
+# hasQualityState (none of which that archetype ever asserts anyway) have
+# long since dropped — all three OPTIONAL checks pass unbound.
+# cat1b_neg's asystole arrives WHILE "ABP verkleinen" is still active, so
+# ?ibpRate is currently bound to metricRate:Increased, failing criterion 3.
