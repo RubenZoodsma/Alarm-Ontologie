@@ -27,9 +27,9 @@
 @prefix patient:    <https://w3id.org/mda/vocab/patient/> .
 @prefix therapeuticModality: <https://w3id.org/mda/vocab/therapeutic-modality/> .
 @prefix metricPhase: <https://w3id.org/mda/vocab/metric-phase/> .
-@prefix aggregation: <https://w3id.org/mda/vocab/aggregation/> .
-@prefix valuestate:  <https://w3id.org/mda/vocab/value-state/> .
-@prefix rhythm:     <https://w3id.org/mda/vocab/rhythm/> .
+@prefix metricAggregation: <https://w3id.org/mda/vocab/metric-aggregation/> .
+@prefix metricValueState: <https://w3id.org/mda/vocab/metric-value-state/> .
+@prefix metricRhythm: <https://w3id.org/mda/vocab/metric-rhythm/> .
 @prefix deviceType: <https://w3id.org/mda/vocab/device-type/> .
 @prefix manufacturer: <https://w3id.org/mda/vocab/manufacturer/> .
 @prefix alarmLabel: <https://w3id.org/mda/vocab/alarm-label/> .
@@ -598,9 +598,10 @@ mda:approximates a owl:ObjectProperty ;
 # dat we de waarde (value) interpreteren als te hoog?").
 #
 # Both were right, and both were wider than the alarm she was reading. The
-# old metricPhase: scheme held 15 compositions (Mean, Minute, Tidal) against
-# exactly 1 real phase (EndExpiratory) — so mean arterial pressure carried
-# the identical defect to minute volume. And the old metricRate: scheme held
+# old metricPhase: scheme held Minute alongside genuine single-cycle values,
+# which is the split (b)/(d) now draws — see the boundary note under (d),
+# which corrects a first attempt that over-corrected and pulled Mean and
+# Tidal out of the phase axis too. And the old metricRate: scheme held
 # no rates at all: its five values (Absent/Increased/Decreased and the two
 # severe variants) are directions of a limit breach, which is what its own
 # skos:definition already said.
@@ -612,9 +613,10 @@ mda:approximates a owl:ObjectProperty ;
 #       mda:hasRate. Per-alarm STATE: the same metric is Increased in one
 #       alarm and Decreased in another, so it never folds into identity.
 #
-#   (b) mda:hasPhase        the point in a cycle the value is taken at
-#       (end-expiratory, and systolic/diastolic/inspiratory when a corpus
-#       needs them). Kept, but now genuinely only this.
+#   (b) mda:hasPhase        which part of ONE cycle the value characterises
+#       — a point in it (end-expiratory, and systolic/diastolic/inspiratory
+#       when a corpus needs them) or the cycle taken whole (mean, tidal).
+#
 #
 #   (c) mda:hasRhythm       how the value fluctuates across cycles over time
 #       (irregular, atrial fibrillation). Currently unpopulated — no corpus
@@ -622,8 +624,35 @@ mda:approximates a owl:ObjectProperty ;
 #       Deliberately NOT retired despite being empty: it is a distinct one
 #       of the four characteristics, not an unused duplicate of another.
 #
-#   (d) mda:hasAggregation  the composition of the metric over time into a
-#       single figure (minute, tidal, mean). New.
+#   (d) mda:hasAggregation  the composition of the metric ACROSS MANY cycles
+#       into a single figure over a fixed window (minute). New.
+#
+# THE LINE BETWEEN (b) AND (d) IS ONE CYCLE, NOT SAMPLED-VERSUS-COMPUTED
+#
+# Revised later in the same curation round. The first cut put anything
+# computed on (d) and anything sampled on (b), which sent Mean and Tidal to
+# aggregation alongside Minute. Two objections retired it.
+#
+# The clinical one: a monitor displays systolic, diastolic and mean as the
+# three readouts of one arterial pressure, "ABP 120/80 (93)". Splitting that
+# triple across two axes serves nothing, and mean is no more a separate
+# quantity from systolic than diastolic is.
+#
+# The structural one: mean pressure and tidal volume are the same shape.
+# Both are integrals over exactly one cycle — mean over one cardiac cycle,
+# tidal over one breath. Whatever axis takes one has to take the other.
+# Minute volume is the odd one out: it spans many cycles over a fixed
+# wall-clock window, and that is a genuinely different kind of composition.
+#
+# Note on the mechanism, since the formula misleads: MAP is the
+# time-weighted average of the arterial waveform across the cycle. The
+# familiar 1/3 systolic + 2/3 diastolic is an approximation of that
+# integral, and the two thirds is the fraction of a normal cycle that
+# diastole occupies — which is why the estimate drifts in tachycardia, as
+# diastole shortens. An invasive line, which is what every Mean row in this
+# corpus is, integrates the waveform directly. So mean IS computed over an
+# extent; it just happens to be computed over one cycle, and one cycle is
+# what (b) is now about.
 #
 # (b) and (d) are both mda:refinesUniversalIdentity, (a) and (c) are not,
 # and that split is the substantive claim here. Minute volume and tidal
@@ -644,8 +673,8 @@ mda:hasPhase a owl:ObjectProperty ;
     dcterms:identifier  "hasPhase" ;
     rdfs:label          "has phase"@en,
                         "heeft fase"@nl ;
-    rdfs:comment        "The point in a physiological cycle at which the metric's value is taken (e.g. systolic, diastolic, inspiratory, end-expiratory). Not how the value is composed over time — see mda:hasAggregation."@en,
-                        "Het punt in een fysiologische cyclus waarop de waarde van de metriek wordt genomen (bijv. systolisch, diastolisch, inspiratoir, eind-expiratoir). Niet hoe de waarde over tijd is samengesteld — zie mda:hasAggregation."@nl ;
+    rdfs:comment        "Which part of a single physiological cycle the metric's value characterises — either a point within it (systolic, diastolic, inspiratory, end-expiratory) or the cycle taken whole (mean, tidal). Confined to one cycle: composition across many cycles is mda:hasAggregation."@en,
+                        "Welk deel van één fysiologische cyclus de waarde van de metriek kenmerkt — een punt daarbinnen (systolisch, diastolisch, inspiratoir, eind-expiratoir) of de cyclus als geheel (gemiddeld, teug). Beperkt tot één cyclus: samenstelling over meerdere cycli is mda:hasAggregation."@nl ;
     rdfs:domain         mda:Metric ;
     rdfs:range          skos:Concept .
 
@@ -653,8 +682,8 @@ mda:hasAggregation a owl:ObjectProperty ;
     dcterms:identifier  "hasAggregation" ;
     rdfs:label          "has aggregation"@en,
                         "heeft aggregatie"@nl ;
-    rdfs:comment        "How the metric is composed over time into a single reported figure (e.g. minute, tidal, mean). Distinct from mda:hasPhase, which names a point in a cycle rather than a composition across one."@en,
-                        "Hoe de metriek over tijd wordt samengesteld tot één gerapporteerd getal (bijv. minuut, teug, gemiddeld). Onderscheiden van mda:hasPhase, dat een punt in een cyclus aanduidt in plaats van een samenstelling daarover."@nl ;
+    rdfs:comment        "How the metric is composed across MANY physiological cycles into a single reported figure over a fixed window (e.g. minute). Distinct from mda:hasPhase, which stays within one cycle — mean pressure and tidal volume are single-cycle quantities and belong there, not here."@en,
+                        "Hoe de metriek over MEERDERE fysiologische cycli wordt samengesteld tot één gerapporteerd getal over een vast tijdvenster (bijv. minuut). Onderscheiden van mda:hasPhase, dat binnen één cyclus blijft — gemiddelde druk en teugvolume zijn grootheden van één cyclus en horen daar thuis, niet hier."@nl ;
     rdfs:domain         mda:Metric ;
     rdfs:range          skos:Concept .
 
@@ -1238,9 +1267,9 @@ mda:hasComponentOperationState  mda:valuesFromScheme    opstate:Scheme .
 mda:hasMetricOperationState     mda:valuesFromScheme    opstate:Scheme .
 mda:hasQualityState     mda:valuesFromScheme    qualitystate:Scheme .
 mda:hasPhase            mda:valuesFromScheme    metricPhase:Scheme .
-mda:hasAggregation      mda:valuesFromScheme    aggregation:Scheme .
-mda:hasValueState       mda:valuesFromScheme    valuestate:Scheme .
-mda:hasRhythm           mda:valuesFromScheme    rhythm:Scheme .
+mda:hasAggregation      mda:valuesFromScheme    metricAggregation:Scheme .
+mda:hasValueState       mda:valuesFromScheme    metricValueState:Scheme .
+mda:hasRhythm           mda:valuesFromScheme    metricRhythm:Scheme .
 mda:hasDeviceType       mda:valuesFromScheme    deviceType:Scheme .
 mda:hasManufacturer     mda:valuesFromScheme    manufacturer:Scheme .
 

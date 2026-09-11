@@ -48,8 +48,8 @@
 @prefix signal:      <https://w3id.org/mda/vocab/signal/> .
 @prefix signalAnalysis: <https://w3id.org/mda/vocab/signal-analysis/> .
 @prefix metric:      <https://w3id.org/mda/vocab/metric/> .
-@prefix valuestate:  <https://w3id.org/mda/vocab/value-state/> .
-@prefix rhythm:      <https://w3id.org/mda/vocab/rhythm/> .
+@prefix metricValueState: <https://w3id.org/mda/vocab/metric-value-state/> .
+@prefix metricRhythm: <https://w3id.org/mda/vocab/metric-rhythm/> .
 @prefix qualitystate: <https://w3id.org/mda/vocab/quality-state/> .
 @prefix physiologicalProperty: <https://w3id.org/mda/vocab/physiological-property/> .
 @prefix physiologicalProcess:  <https://w3id.org/mda/vocab/physiological-process/> .
@@ -592,7 +592,7 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
             [ a owl:Restriction ; owl:onProperty mda:producesMetric ;
               owl:someValuesFrom
                 [ a owl:Class ; owl:intersectionOf ( metric:PulseRate
-                    [ a owl:Restriction ; owl:onProperty mda:hasRhythm ; owl:hasValue rhythm:Absent ] ) ] ] ) ] ] )
+                    [ a owl:Restriction ; owl:onProperty mda:hasRhythm ; owl:hasValue metricRhythm:Absent ] ) ] ] ) ] ] )
 ] rdfs:subClassOf
   [ a owl:Restriction ; owl:onProperty mda:hasQualityState ; owl:hasValue qualitystate:Impaired ] .
 
@@ -603,7 +603,7 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
             [ a owl:Restriction ; owl:onProperty mda:producesMetric ;
               owl:someValuesFrom
                 [ a owl:Class ; owl:intersectionOf ( metric:PulseFlowIndex
-                    [ a owl:Restriction ; owl:onProperty mda:hasValueState ; owl:hasValue valuestate:Decreased ] ) ] ] ) ] ] )
+                    [ a owl:Restriction ; owl:onProperty mda:hasValueState ; owl:hasValue metricValueState:Decreased ] ) ] ] ) ] ] )
 ] rdfs:subClassOf
   [ a owl:Restriction ; owl:onProperty mda:hasQualityState ; owl:hasValue qualitystate:Impaired ] .
 
@@ -938,7 +938,7 @@ opstate:Monitored a skos:Concept ;
                                               owl:someValuesFrom
                                                 [ a owl:Class ; owl:intersectionOf ( metric:VentilationCircuitLeak
                                                     [ a owl:Restriction ; owl:onProperty mda:hasValueState ;
-                                                      owl:hasValue valuestate:Increased ] ) ] ] ) ] ] ) ] ] ) ] ] ) ] ] ) ] ] )
+                                                      owl:hasValue metricValueState:Increased ] ) ] ] ) ] ] ) ] ] ) ] ] ) ] ] ) ] ] )
 ] rdfs:subClassOf
   [ a owl:Restriction ; owl:onProperty mda:hasTherapyDeliveryQuality ; owl:hasValue qualitystate:Impaired ] .
 

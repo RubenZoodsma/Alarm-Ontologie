@@ -16,14 +16,26 @@ Method: for each archetype, build a "signature" — the sorted set of every
   (a) hasCategory/hasPriority on the archetype itself,
   (b) rdf:type of every node reachable via hasMessage/(concernsPatient|
       triggeredBy/(hasComponent|hasFunctionalUnit|hasSensor|producesSignal|
-      analyzedBy|producesMetric)*) — the node's identity. Restricted to
+      analyzedBy|producesMetric|administers)*) — the node's identity.
+      mda:administers is in the path so the therapeutic modality node is
+      reached at all: hasTherapyDeliveryQuality in (c) is borne by that
+      node and by nothing else, so without this step the predicate could
+      never match. Restricted to
       skos:Concept types so entailed
       supertype noise (mda:Device, owl:Thing, ...) doesn't erase real
       distinctions,
-  (c) hasQualityState/hasRate/hasComponentOperationState/
+  (c) hasQualityState/hasValueState/hasAggregation/hasPhase/hasRhythm/
+      hasTherapyDeliveryQuality/hasComponentOperationState/
       hasSensorOperationState/hasDeviceOperationState/hasAnatomicalPosition/
       hasManufacturer/hasDeviceType asserted on those nodes — their leaf
-      values. hasManufacturer/hasDeviceType are included even though a
+      values. The four metric characteristics replaced the single
+      mda:hasRate this filter used to name; while it still named the
+      retired property, the signature captured nothing that distinguished
+      a high reading from a low one, and every high/low alarm pair in the
+      catalogue was reported as a duplicate (15 groups, all spurious bar
+      one). hasTherapyDeliveryQuality is listed for the same reason: it is
+      entailed onto the modality node, never asserted, and without it the
+      four leak alarms lose their only distinguishing fact. hasManufacturer/hasDeviceType are included even though a
       device's precise leaf concept is also entailed and already covered by
       (b) (kg_generated.ttl asserts the base device class
       plus these leaves, not the precoordinated leaf concept directly — see
@@ -98,26 +110,28 @@ SELECT ?a ?label (GROUP_CONCAT(DISTINCT ?fact; separator="^") AS ?signature) WHE
         BIND(CONCAT("hasPriority=", STR(?v)) AS ?fact)
       } UNION {
         # node identity — which concept each node is asserted or entailed to be
-        ?a mda:hasMessage/(mda:concernsPatient|mda:triggeredBy/(mda:hasComponent|mda:hasFunctionalUnit|mda:hasSensor|mda:producesSignal|mda:analyzedBy|mda:producesMetric)*) ?node .
+        ?a mda:hasMessage/(mda:concernsPatient|mda:triggeredBy/(mda:hasComponent|mda:hasFunctionalUnit|mda:hasSensor|mda:producesSignal|mda:analyzedBy|mda:producesMetric|mda:administers)*) ?node .
         ?node rdf:type ?t .
         ?t a skos:Concept .
         BIND(CONCAT("type=", STR(?t)) AS ?fact)
       } UNION {
         # node values — the leaf facts asserted on those nodes
-        ?a mda:hasMessage/(mda:concernsPatient|mda:triggeredBy/(mda:hasComponent|mda:hasFunctionalUnit|mda:hasSensor|mda:producesSignal|mda:analyzedBy|mda:producesMetric)*) ?node .
+        ?a mda:hasMessage/(mda:concernsPatient|mda:triggeredBy/(mda:hasComponent|mda:hasFunctionalUnit|mda:hasSensor|mda:producesSignal|mda:analyzedBy|mda:producesMetric|mda:administers)*) ?node .
         ?node ?p ?v .
-        FILTER(?p IN (mda:hasQualityState, mda:hasRate, mda:hasComponentOperationState,
+        FILTER(?p IN (mda:hasQualityState, mda:hasValueState, mda:hasAggregation,
+                       mda:hasPhase, mda:hasRhythm, mda:hasTherapyDeliveryQuality,
+                       mda:hasComponentOperationState,
                        mda:hasSensorOperationState, mda:hasDeviceOperationState, mda:hasAnatomicalPosition,
                        mda:hasManufacturer, mda:hasDeviceType))
         BIND(CONCAT(STRAFTER(STR(?p), "#"), "=", STR(?v)) AS ?fact)
       } UNION {
         # net effect — entailed operation state anywhere in the tree
-        ?a mda:hasMessage/(mda:concernsPatient|mda:triggeredBy/(mda:hasComponent|mda:hasFunctionalUnit|mda:hasSensor|mda:producesSignal|mda:analyzedBy|mda:producesMetric)*) ?node .
+        ?a mda:hasMessage/(mda:concernsPatient|mda:triggeredBy/(mda:hasComponent|mda:hasFunctionalUnit|mda:hasSensor|mda:producesSignal|mda:analyzedBy|mda:producesMetric|mda:administers)*) ?node .
         ?node mda:hasOperationState ?v .
         BIND(CONCAT("hasOperationState=", STR(?v)) AS ?fact)
       } UNION {
         # net effect — terminal situational implication (clinical/therapeutic)
-        ?a mda:hasMessage/(mda:concernsPatient|mda:triggeredBy/(mda:hasComponent|mda:hasFunctionalUnit|mda:hasSensor|mda:producesSignal|mda:analyzedBy|mda:producesMetric)*) ?node .
+        ?a mda:hasMessage/(mda:concernsPatient|mda:triggeredBy/(mda:hasComponent|mda:hasFunctionalUnit|mda:hasSensor|mda:producesSignal|mda:analyzedBy|mda:producesMetric|mda:administers)*) ?node .
         ?node (mda:approximates|mda:isPropertyOf|mda:presentIn|mda:organPartOfSystem|mda:administers|mda:targetsProcess)+ ?effect .
         FILTER NOT EXISTS { ?effect (mda:approximates|mda:isPropertyOf|mda:presentIn|mda:organPartOfSystem|mda:administers|mda:targetsProcess) ?next }
         BIND(CONCAT("effect=", STR(?effect)) AS ?fact)

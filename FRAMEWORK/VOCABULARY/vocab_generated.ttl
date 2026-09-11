@@ -1,4 +1,3 @@
-@prefix aggregation: <https://w3id.org/mda/vocab/aggregation/> .
 @prefix alarmcat: <https://w3id.org/mda/vocab/alarm-category/> .
 @prefix alarmprio: <https://w3id.org/mda/vocab/alarm-priority/> .
 @prefix anatomicalPosition: <https://w3id.org/mda/vocab/anatomical-position/> .
@@ -9,7 +8,10 @@
 @prefix manufacturer: <https://w3id.org/mda/vocab/manufacturer/> .
 @prefix mda: <https://w3id.org/mda/ontology#> .
 @prefix metric: <https://w3id.org/mda/vocab/metric/> .
+@prefix metricAggregation: <https://w3id.org/mda/vocab/metric-aggregation/> .
 @prefix metricPhase: <https://w3id.org/mda/vocab/metric-phase/> .
+@prefix metricRhythm: <https://w3id.org/mda/vocab/metric-rhythm/> .
+@prefix metricValueState: <https://w3id.org/mda/vocab/metric-value-state/> .
 @prefix opstate: <https://w3id.org/mda/vocab/operation-state/> .
 @prefix organ: <https://w3id.org/mda/vocab/organ/> .
 @prefix organSystem: <https://w3id.org/mda/vocab/organ-system/> .
@@ -19,12 +21,10 @@
 @prefix qualitystate: <https://w3id.org/mda/vocab/quality-state/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rhythm: <https://w3id.org/mda/vocab/rhythm/> .
 @prefix sensor: <https://w3id.org/mda/vocab/sensor/> .
 @prefix signal: <https://w3id.org/mda/vocab/signal/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix therapeuticModality: <https://w3id.org/mda/vocab/therapeutic-modality/> .
-@prefix valuestate: <https://w3id.org/mda/vocab/value-state/> .
 
 alarmcat:Physiological a skos:Concept ;
     skos:broader alarmcat:AlarmCategory ;
@@ -977,6 +977,51 @@ functionalUnit:FU_Temperature a skos:Concept ;
     skos:prefLabel "FU_Temperature"@en,
         "FU_Temperature"@nl .
 
+metricRhythm:Absent a skos:Concept ;
+    skos:broader metricRhythm:Rhythm ;
+    skos:definition "Absent"@en,
+        "Absent"@nl ;
+    skos:inScheme metricRhythm:Scheme ;
+    skos:notation "Absent" ;
+    skos:prefLabel "Absent"@en,
+        "Absent"@nl .
+
+metricValueState:Decreased a skos:Concept ;
+    skos:broader metricValueState:ValueState ;
+    skos:definition "Decreased"@en,
+        "Decreased"@nl ;
+    skos:inScheme metricValueState:Scheme ;
+    skos:notation "Decreased" ;
+    skos:prefLabel "Decreased"@en,
+        "Decreased"@nl .
+
+metricValueState:Increased a skos:Concept ;
+    skos:broader metricValueState:ValueState ;
+    skos:definition "Increased"@en,
+        "Increased"@nl ;
+    skos:inScheme metricValueState:Scheme ;
+    skos:notation "Increased" ;
+    skos:prefLabel "Increased"@en,
+        "Increased"@nl .
+
+metricValueState:SeverelyDecreased a skos:Concept ;
+    skos:broader metricValueState:ValueState ;
+    skos:definition "Severely Decreased"@en,
+        "Severely Decreased"@nl ;
+    skos:inScheme metricValueState:Scheme ;
+    skos:notation "SeverelyDecreased" ;
+    skos:prefLabel "Severely Decreased"@en,
+        "Severely Decreased"@nl .
+
+metricValueState:SeverelyIncreased a skos:Concept ;
+    skos:broader metricValueState:ValueState ;
+    skos:definition "Severely Increased"@en,
+        "Severely Increased"@nl ;
+    skos:inScheme metricValueState:Scheme ;
+    skos:notation "SeverelyIncreased" ;
+    skos:prefLabel "Severely Increased"@en,
+        "Severely Increased"@nl .
+
 metric:AirTemperature a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
     skos:broader metric:Metric ;
@@ -1003,13 +1048,13 @@ metric:ArterialBloodPressure_Mean a skos:Concept ;
     rdfs:subClassOf metric:ArterialBloodPressure ;
     owl:equivalentClass [ a owl:Class ;
             owl:intersectionOf ( metric:ArterialBloodPressure [ a owl:Restriction ;
-                        owl:hasValue aggregation:Mean ;
-                        owl:onProperty mda:hasAggregation ] ) ] ;
+                        owl:hasValue metricPhase:Mean ;
+                        owl:onProperty mda:hasPhase ] ) ] ;
     skos:broader metric:ArterialBloodPressure ;
     skos:inScheme metric:Scheme ;
     skos:notation "ArterialBloodPressure_Mean" ;
     skos:prefLabel "Arterial Blood Pressure_Mean"@en ;
-    mda:hasAggregation aggregation:Mean .
+    mda:hasPhase metricPhase:Mean .
 
 metric:CO2 a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
@@ -1085,25 +1130,25 @@ metric:RespirationVolume_Minute a skos:Concept ;
     rdfs:subClassOf metric:RespirationVolume ;
     owl:equivalentClass [ a owl:Class ;
             owl:intersectionOf ( metric:RespirationVolume [ a owl:Restriction ;
-                        owl:hasValue aggregation:Minute ;
+                        owl:hasValue metricAggregation:Minute ;
                         owl:onProperty mda:hasAggregation ] ) ] ;
     skos:broader metric:RespirationVolume ;
     skos:inScheme metric:Scheme ;
     skos:notation "RespirationVolume_Minute" ;
     skos:prefLabel "Respiration Volume_Minute"@en ;
-    mda:hasAggregation aggregation:Minute .
+    mda:hasAggregation metricAggregation:Minute .
 
 metric:RespirationVolume_Tidal a skos:Concept ;
     rdfs:subClassOf metric:RespirationVolume ;
     owl:equivalentClass [ a owl:Class ;
             owl:intersectionOf ( metric:RespirationVolume [ a owl:Restriction ;
-                        owl:hasValue aggregation:Tidal ;
-                        owl:onProperty mda:hasAggregation ] ) ] ;
+                        owl:hasValue metricPhase:Tidal ;
+                        owl:onProperty mda:hasPhase ] ) ] ;
     skos:broader metric:RespirationVolume ;
     skos:inScheme metric:Scheme ;
     skos:notation "RespirationVolume_Tidal" ;
     skos:prefLabel "Respiration Volume_Tidal"@en ;
-    mda:hasAggregation aggregation:Tidal .
+    mda:hasPhase metricPhase:Tidal .
 
 metric:SpO2 a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
@@ -1505,15 +1550,6 @@ qualitystate:ScalingError a skos:Concept ;
     skos:notation "ScalingError" ;
     skos:prefLabel "Scaling Error"@en,
         "Scaling Error"@nl .
-
-rhythm:Absent a skos:Concept ;
-    skos:broader rhythm:Rhythm ;
-    skos:definition "Absent"@en,
-        "Absent"@nl ;
-    skos:inScheme rhythm:Scheme ;
-    skos:notation "Absent" ;
-    skos:prefLabel "Absent"@en,
-        "Absent"@nl .
 
 sensor:ABP_transducer a skos:Concept ;
     rdfs:subClassOf mda:Sensor ;
@@ -2085,69 +2121,6 @@ therapeuticModality:VentilationTherapy a skos:Concept ;
     skos:prefLabel "Ventilation Therapy"@en,
         "Ventilation Therapy"@nl .
 
-valuestate:Decreased a skos:Concept ;
-    skos:broader valuestate:ValueState ;
-    skos:definition "Decreased"@en,
-        "Decreased"@nl ;
-    skos:inScheme valuestate:Scheme ;
-    skos:notation "Decreased" ;
-    skos:prefLabel "Decreased"@en,
-        "Decreased"@nl .
-
-valuestate:Increased a skos:Concept ;
-    skos:broader valuestate:ValueState ;
-    skos:definition "Increased"@en,
-        "Increased"@nl ;
-    skos:inScheme valuestate:Scheme ;
-    skos:notation "Increased" ;
-    skos:prefLabel "Increased"@en,
-        "Increased"@nl .
-
-valuestate:SeverelyDecreased a skos:Concept ;
-    skos:broader valuestate:ValueState ;
-    skos:definition "Severely Decreased"@en,
-        "Severely Decreased"@nl ;
-    skos:inScheme valuestate:Scheme ;
-    skos:notation "SeverelyDecreased" ;
-    skos:prefLabel "Severely Decreased"@en,
-        "Severely Decreased"@nl .
-
-valuestate:SeverelyIncreased a skos:Concept ;
-    skos:broader valuestate:ValueState ;
-    skos:definition "Severely Increased"@en,
-        "Severely Increased"@nl ;
-    skos:inScheme valuestate:Scheme ;
-    skos:notation "SeverelyIncreased" ;
-    skos:prefLabel "Severely Increased"@en,
-        "Severely Increased"@nl .
-
-aggregation:Mean a skos:Concept ;
-    skos:broader aggregation:Aggregation ;
-    skos:definition "Mean"@en,
-        "Mean"@nl ;
-    skos:inScheme aggregation:Scheme ;
-    skos:notation "Mean" ;
-    skos:prefLabel "Mean"@en,
-        "Mean"@nl .
-
-aggregation:Minute a skos:Concept ;
-    skos:broader aggregation:Aggregation ;
-    skos:definition "Minute"@en,
-        "Minute"@nl ;
-    skos:inScheme aggregation:Scheme ;
-    skos:notation "Minute" ;
-    skos:prefLabel "Minute"@en,
-        "Minute"@nl .
-
-aggregation:Tidal a skos:Concept ;
-    skos:broader aggregation:Aggregation ;
-    skos:definition "Tidal"@en,
-        "Tidal"@nl ;
-    skos:inScheme aggregation:Scheme ;
-    skos:notation "Tidal" ;
-    skos:prefLabel "Tidal"@en,
-        "Tidal"@nl .
-
 deviceType:CardioHelp a skos:Concept ;
     skos:broader deviceType:DeviceType ;
     skos:definition "Cardio Help"@en,
@@ -2274,6 +2247,15 @@ manufacturer:LowensteinMedical a skos:Concept ;
     skos:prefLabel "Lowenstein Medical"@en,
         "Lowenstein Medical"@nl .
 
+metricAggregation:Minute a skos:Concept ;
+    skos:broader metricAggregation:Aggregation ;
+    skos:definition "Minute"@en,
+        "Minute"@nl ;
+    skos:inScheme metricAggregation:Scheme ;
+    skos:notation "Minute" ;
+    skos:prefLabel "Minute"@en,
+        "Minute"@nl .
+
 metricPhase:EndExpiratory a skos:Concept ;
     skos:broader metricPhase:MetricPhase ;
     skos:definition "End Expiratory"@en,
@@ -2282,6 +2264,24 @@ metricPhase:EndExpiratory a skos:Concept ;
     skos:notation "EndExpiratory" ;
     skos:prefLabel "End Expiratory"@en,
         "End Expiratory"@nl .
+
+metricPhase:Mean a skos:Concept ;
+    skos:broader metricPhase:MetricPhase ;
+    skos:definition "Mean"@en,
+        "Mean"@nl ;
+    skos:inScheme metricPhase:Scheme ;
+    skos:notation "Mean" ;
+    skos:prefLabel "Mean"@en,
+        "Mean"@nl .
+
+metricPhase:Tidal a skos:Concept ;
+    skos:broader metricPhase:MetricPhase ;
+    skos:definition "Tidal"@en,
+        "Tidal"@nl ;
+    skos:inScheme metricPhase:Scheme ;
+    skos:notation "Tidal" ;
+    skos:prefLabel "Tidal"@en,
+        "Tidal"@nl .
 
 device:CardiacMonitor a skos:Concept ;
     rdfs:subClassOf mda:Device ;

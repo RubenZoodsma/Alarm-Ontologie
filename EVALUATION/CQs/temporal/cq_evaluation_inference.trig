@@ -102,7 +102,7 @@ snapshot:cq10_pos_20260101T080200 {
     entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 }
 
 snapshot:cq9_pos_20260101T080130 {
@@ -146,7 +146,7 @@ snapshot:cq9_pos_20260101T080130 {
     entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 
     entity:Patient_cq9_pos mda:isMonitoredBy entity:Device_cq9pos_PhilipsMonitor_00 .
 
@@ -190,7 +190,7 @@ snapshot:cq10_neg_20260101T080200 {
     entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 
     <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
 
@@ -274,7 +274,7 @@ snapshot:cq9_neg_20260101T080030 {
     entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 
     entity:Patient_cq9_neg mda:isMonitoredBy entity:Device_cq9neg_CardioHelp_00,
             entity:Device_cq9neg_PhilipsMonitor_00 .
@@ -332,7 +332,7 @@ snapshot:cq10_neg_20260101T080030 {
     entity:Metric_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate a <https://w3id.org/mda/vocab/metric/HeartRate> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Increased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Increased> .
 
     inst:Msg_cq10neg_PhilipsMonitor_00_20260101T080000 a mda:AlarmMessage ;
         mda:concernsPatient entity:Patient_cq10_neg ;
@@ -343,7 +343,7 @@ snapshot:cq10_neg_20260101T080030 {
     entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 
     <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
 
@@ -393,7 +393,7 @@ snapshot:cq11_pos_20260101T080000 {
     entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate a <https://w3id.org/mda/vocab/metric/HeartRate> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Absent> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Absent> .
 
     <https://w3id.org/mda/vocab/organ/Heart> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/CardioVascular> .
 
@@ -521,7 +521,7 @@ snapshot:cq9_neg_20260101T080130 {
     entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 
     entity:Patient_cq9_neg mda:isMonitoredBy entity:Device_cq9neg_CardioHelp_00,
             entity:Device_cq9neg_PhilipsMonitor_00 .
@@ -612,7 +612,7 @@ snapshot:cq11_pos_20260101T080200 {
     entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate a <https://w3id.org/mda/vocab/metric/HeartRate> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Absent> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Absent> .
 }
 
 snapshot:cq9_pos_20260101T080200 {
@@ -642,7 +642,7 @@ snapshot:cq9_pos_20260101T080200 {
     entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 
     <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
 
@@ -693,7 +693,7 @@ snapshot:cq10_pos_20260101T080130 {
     entity:Metric_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 
     inst:Msg_cq10pos_DraegerMonitor_00_20260101T080000 a mda:AlarmMessage ;
         mda:concernsPatient entity:Patient_cq10_pos ;
@@ -705,7 +705,7 @@ snapshot:cq10_pos_20260101T080130 {
     entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 
     <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
 
@@ -758,7 +758,7 @@ snapshot:cq10_neg_20260101T080130 {
     entity:Metric_cq10neg_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate a <https://w3id.org/mda/vocab/metric/HeartRate> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Increased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Increased> .
 
     <https://w3id.org/mda/vocab/organ/Heart> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/CardioVascular> .
 
@@ -771,7 +771,7 @@ snapshot:cq10_neg_20260101T080130 {
     entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 
     <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
 
@@ -819,7 +819,7 @@ snapshot:cq9_neg_20260101T080000 {
     entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 
     <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
 
@@ -884,7 +884,7 @@ snapshot:cq10_pos_20260101T080000 {
     entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 
     <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
 
@@ -936,7 +936,7 @@ snapshot:cq9_pos_20260101T080030 {
     entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 
     <https://w3id.org/mda/vocab/organ/Lungs> mda:organPartOfSystem <https://w3id.org/mda/vocab/organ-system/Pulmonary> .
 
@@ -1335,7 +1335,7 @@ snapshot:cq10_pos_20260101T080030 {
     entity:Metric_cq10pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 
     entity:Sensor_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter mda:hasOperationState opstate:Enabled .
 
@@ -1348,7 +1348,7 @@ snapshot:cq10_pos_20260101T080030 {
     entity:Metric_cq10pos_DraegerMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 
     entity:Patient_cq10_pos mda:isMonitoredBy entity:Device_cq10pos_DraegerMonitor_00,
             entity:Device_cq10pos_PhilipsMonitor_00 .
@@ -1401,7 +1401,7 @@ snapshot:cq9_neg_20260101T080200 {
     entity:Metric_cq9neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 
     entity:Patient_cq9_neg mda:isMonitoredBy entity:Device_cq9neg_CardioHelp_00,
             entity:Device_cq9neg_PhilipsMonitor_00 .
@@ -1468,7 +1468,7 @@ snapshot:cq9_pos_20260101T080000 {
     entity:Metric_cq9pos_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_Peripheral_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 
     entity:Patient_cq9_pos mda:isMonitoredBy entity:Device_cq9pos_PhilipsMonitor_00 .
 
@@ -1510,7 +1510,7 @@ snapshot:cq11_pos_20260101T080130 {
     entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_RespirationRate a <https://w3id.org/mda/vocab/metric/RespirationRate> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/RespirationRate> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Absent> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Absent> .
 
     entity:SignalAnalysis_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis mda:producesMetric entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate,
             entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_RespirationRate .
@@ -1535,7 +1535,7 @@ snapshot:cq11_pos_20260101T080130 {
     entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate a <https://w3id.org/mda/vocab/metric/HeartRate> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Absent> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Absent> .
 
     entity:Patient_cq11_pos mda:isMonitoredBy entity:Device_cq11pos_PhilipsMonitor_00 .
 
@@ -1584,7 +1584,7 @@ snapshot:cq10_neg_20260101T080000 {
     entity:Metric_cq10neg_PhilipsMonitor_00_FU_PulseOximetry_PulseOximeter_PPG_waveform_SignalAnalysis_SpO2 a <https://w3id.org/mda/vocab/metric/SpO2> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/SaO2> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Decreased> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Decreased> .
 
     entity:Patient_cq10_neg mda:isMonitoredBy entity:Device_cq10neg_PhilipsMonitor_00 .
 
@@ -1670,7 +1670,7 @@ snapshot:cq11_pos_20260101T080030 {
     entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_RespirationRate a <https://w3id.org/mda/vocab/metric/RespirationRate> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/RespirationRate> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Absent> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Absent> .
 
     entity:Sensor_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor mda:hasOperationState opstate:Enabled .
 
@@ -1686,7 +1686,7 @@ snapshot:cq11_pos_20260101T080030 {
     entity:Metric_cq11pos_PhilipsMonitor_00_FU_ElectroCardiography_Sensor_Signal_SignalAnalysis_HeartRate a <https://w3id.org/mda/vocab/metric/HeartRate> ;
         mda:approximates <https://w3id.org/mda/vocab/physiological-property/ElectricalHeartRate> ;
         mda:hasOperationState opstate:Monitored ;
-        mda:hasValueState <https://w3id.org/mda/vocab/value-state/Absent> .
+        mda:hasValueState <https://w3id.org/mda/vocab/metric-value-state/Absent> .
 
     entity:Patient_cq11_pos mda:isMonitoredBy entity:Device_cq11pos_PhilipsMonitor_00 .
 

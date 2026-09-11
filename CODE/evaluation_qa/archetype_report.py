@@ -101,7 +101,12 @@ NAMESPACE_GROUP = {
     "device": "technical", "device-type": "technical", "manufacturer": "technical",
     "component": "technical", "functional-unit": "technical", "sensor": "technical",
     "signal": "technical", "signal-analysis": "technical", "metric": "technical",
-    "metric-phase": "technical", "metric-rate": "technical", "rhythm": "technical",
+    # The four metric characteristics. "metric-rate" was retired when
+    # mda:hasRate split four ways, and the three that replaced it were
+    # renamed metric-* in the same pass that renamed their prefixes —
+    # without this line they would all have fallen through to "other".
+    "metric-phase": "technical", "metric-aggregation": "technical",
+    "metric-value-state": "technical", "metric-rhythm": "technical",
     "quality-state": "technical", "operation-state": "technical",
     "anatomical-position": "technical", "laterality": "technical",
     "physiological-property": "clinical", "physiological-process": "clinical",

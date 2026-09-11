@@ -146,10 +146,13 @@ COLUMN_SCHEMES = {
     # Metric.Phase and Metric.Aggregation are both identity-refining
     # (pre-coordinated into the metric concept); Metric.ValueState and
     # Metric.Rhythm are per-alarm state.
+    # All four share the metric- prefix on purpose: they are characteristics
+    # OF a metric, not free-standing axes, and three of them used to read
+    # aggregation:/valuestate:/rhythm: against metricPhase:.
     "Metric.Phase":              ("metricPhase",           VOCAB + "metric-phase/"),
-    "Metric.Aggregation":        ("aggregation",           VOCAB + "aggregation/"),
-    "Metric.ValueState":         ("valuestate",            VOCAB + "value-state/"),
-    "Metric.Rhythm":             ("rhythm",                VOCAB + "rhythm/"),
+    "Metric.Aggregation":        ("metricAggregation",     VOCAB + "metric-aggregation/"),
+    "Metric.ValueState":         ("metricValueState",      VOCAB + "metric-value-state/"),
+    "Metric.Rhythm":             ("metricRhythm",          VOCAB + "metric-rhythm/"),
     "PhysiologicalProperty":     ("physiologicalProperty", VOCAB + "physiological-property/"),
     "PhysiologicalProcess":      ("physiologicalProcess",  VOCAB + "physiological-process/"),
     "Organ":                     ("organ",                 VOCAB + "organ/"),
