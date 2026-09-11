@@ -98,9 +98,9 @@ PREFIX mda: <https://w3id.org/mda/ontology#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
-SELECT ?a ?label (GROUP_CONCAT(DISTINCT ?fact; separator="^") AS ?signature) WHERE {
+SELECT DISTINCT ?a ?label ?fact WHERE {
   {
-    SELECT ?a ?label ?fact WHERE {
+    {
       ?a a mda:AlarmType ; mda:hasLabel ?label .
       {
         ?a mda:hasCategory ?v .
@@ -139,8 +139,6 @@ SELECT ?a ?label (GROUP_CONCAT(DISTINCT ?fact; separator="^") AS ?signature) WHE
     }
   }
 }
-GROUP BY ?a ?label
-ORDER BY ?label
 """
 
 
@@ -154,13 +152,26 @@ def load_reasoned_graph() -> Graph:
 
 def find_duplicate_groups(g: Graph) -> dict:
     """{signature: [(alarmtype_iri, label), ...]} for every signature shared
-    by more than one archetype."""
-    by_signature = {}
+    by more than one archetype.
+
+    The signature is a SET of facts, and it is assembled here rather than in
+    the query on purpose. It used to be a GROUP_CONCAT inside the SPARQL,
+    which SPARQL leaves free to emit its members in any order — so two
+    archetypes holding the identical fact set could serialise to two
+    different strings and fail to group. The check was genuinely
+    nondeterministic: consecutive runs over an unchanged framework reported
+    one duplicate group or none. Sorting the facts into a tuple makes the
+    comparison order-independent, which is what a set comparison was always
+    meant to be.
+    """
+    facts_by_archetype = {}
     for row in g.query(SIGNATURE_QUERY):
-        by_signature.setdefault(str(row.signature), []).append(
-            (str(row.a), str(row.label))
-        )
-    return {sig: rows for sig, rows in by_signature.items() if len(rows) > 1}
+        facts_by_archetype.setdefault((str(row.a), str(row.label)), set()).add(str(row.fact))
+    by_signature = {}
+    for (iri, label), facts in facts_by_archetype.items():
+        by_signature.setdefault(tuple(sorted(facts)), []).append((iri, label))
+    return {sig: sorted(rows, key=lambda r: r[1])
+            for sig, rows in by_signature.items() if len(rows) > 1}
 
 
 def write_report(duplicates: dict, total_archetypes: int) -> str:

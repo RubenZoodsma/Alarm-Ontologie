@@ -634,16 +634,6 @@ anatomicalPosition:Peripheral a skos:Concept ;
     skos:prefLabel "Peripheral"@en,
         "Peripheral"@nl .
 
-anatomicalPosition:Thoracic a skos:Concept ;
-    rdfs:subClassOf mda:AnatomicalPosition ;
-    skos:broader anatomicalPosition:AnatomicalPosition ;
-    skos:definition "Thoracic"@en,
-        "Thoracic"@nl ;
-    skos:inScheme anatomicalPosition:Scheme ;
-    skos:notation "Thoracic" ;
-    skos:prefLabel "Thoracic"@en,
-        "Thoracic"@nl .
-
 component:AirwayCircuit a skos:Concept ;
     rdfs:subClassOf mda:Component ;
     skos:broader component:Component ;
@@ -1571,15 +1561,15 @@ sensor:AW_transducer a skos:Concept ;
     skos:prefLabel "AW_transducer"@en,
         "AW_transducer"@nl .
 
-sensor:CapnoSensor a skos:Concept ;
+sensor:AirTemperature_sensor a skos:Concept ;
     rdfs:subClassOf mda:Sensor ;
     skos:broader sensor:Sensor ;
-    skos:definition "Capno Sensor"@en,
-        "Capno Sensor"@nl ;
+    skos:definition "Air Temperature_sensor"@en,
+        "Air Temperature_sensor"@nl ;
     skos:inScheme sensor:Scheme ;
-    skos:notation "CapnoSensor" ;
-    skos:prefLabel "Capno Sensor"@en,
-        "Capno Sensor"@nl .
+    skos:notation "AirTemperature_sensor" ;
+    skos:prefLabel "Air Temperature_sensor"@en,
+        "Air Temperature_sensor"@nl .
 
 sensor:Capnometer a skos:Concept ;
     rdfs:subClassOf mda:Sensor ;
@@ -1721,6 +1711,16 @@ sensor:Humidity_sensor a skos:Concept ;
     skos:prefLabel "Humidity_sensor"@en,
         "Humidity_sensor"@nl .
 
+sensor:PatientTemperature_sensor a skos:Concept ;
+    rdfs:subClassOf mda:Sensor ;
+    skos:broader sensor:Sensor ;
+    skos:definition "Patient Temperature_sensor"@en,
+        "Patient Temperature_sensor"@nl ;
+    skos:inScheme sensor:Scheme ;
+    skos:notation "PatientTemperature_sensor" ;
+    skos:prefLabel "Patient Temperature_sensor"@en,
+        "Patient Temperature_sensor"@nl .
+
 sensor:PneumoTachograph a skos:Concept ;
     rdfs:subClassOf mda:Sensor ;
     skos:broader sensor:Sensor ;
@@ -1740,16 +1740,6 @@ sensor:PulseOximeter a skos:Concept ;
     skos:notation "PulseOximeter" ;
     skos:prefLabel "Pulse Oximeter"@en,
         "Pulse Oximeter"@nl .
-
-sensor:Temperature_sensor a skos:Concept ;
-    rdfs:subClassOf mda:Sensor ;
-    skos:broader sensor:Sensor ;
-    skos:definition "Temperature_sensor"@en,
-        "Temperature_sensor"@nl ;
-    skos:inScheme sensor:Scheme ;
-    skos:notation "Temperature_sensor" ;
-    skos:prefLabel "Temperature_sensor"@en,
-        "Temperature_sensor"@nl .
 
 sensor:VenousPressureTransducer a skos:Concept ;
     rdfs:subClassOf mda:Sensor ;
@@ -1771,6 +1761,16 @@ signal:ABP_waveform a skos:Concept ;
     skos:prefLabel "ABP_waveform"@en,
         "ABP_waveform"@nl .
 
+signal:AirTemperature_signal a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "Air Temperature_signal"@en,
+        "Air Temperature_signal"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "AirTemperature_signal" ;
+    skos:prefLabel "Air Temperature_signal"@en,
+        "Air Temperature_signal"@nl .
+
 signal:AirwayFlow_waveform a skos:Concept ;
     rdfs:subClassOf mda:Signal ;
     skos:broader signal:Signal ;
@@ -1790,16 +1790,6 @@ signal:AirwayPressure_waveform a skos:Concept ;
     skos:notation "AirwayPressure_waveform" ;
     skos:prefLabel "Airway Pressure_waveform"@en,
         "Airway Pressure_waveform"@nl .
-
-signal:CO2Signal a skos:Concept ;
-    rdfs:subClassOf mda:Signal ;
-    skos:broader signal:Signal ;
-    skos:definition "CO2Signal"@en,
-        "CO2Signal"@nl ;
-    skos:inScheme signal:Scheme ;
-    skos:notation "CO2Signal" ;
-    skos:prefLabel "CO2Signal"@en,
-        "CO2Signal"@nl .
 
 signal:Capnogram_waveform a skos:Concept ;
     rdfs:subClassOf mda:Signal ;
@@ -2061,6 +2051,16 @@ signal:PPG_waveform a skos:Concept ;
     skos:prefLabel "PPG_waveform"@en,
         "PPG_waveform"@nl .
 
+signal:PatientTemperature_signal a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "Patient Temperature_signal"@en,
+        "Patient Temperature_signal"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "PatientTemperature_signal" ;
+    skos:prefLabel "Patient Temperature_signal"@en,
+        "Patient Temperature_signal"@nl .
+
 signal:Pressure_waveform a skos:Concept ;
     rdfs:subClassOf mda:Signal ;
     skos:broader signal:Signal ;
@@ -2070,16 +2070,6 @@ signal:Pressure_waveform a skos:Concept ;
     skos:notation "Pressure_waveform" ;
     skos:prefLabel "Pressure_waveform"@en,
         "Pressure_waveform"@nl .
-
-signal:Temp_signal a skos:Concept ;
-    rdfs:subClassOf mda:Signal ;
-    skos:broader signal:Signal ;
-    skos:definition "Temp_signal"@en,
-        "Temp_signal"@nl ;
-    skos:inScheme signal:Scheme ;
-    skos:notation "Temp_signal" ;
-    skos:prefLabel "Temp_signal"@en,
-        "Temp_signal"@nl .
 
 therapeuticModality:ExtraCorporealMembraneOxygenation a skos:Concept ;
     rdfs:subClassOf mda:TherapeuticModality ;

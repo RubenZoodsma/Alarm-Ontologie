@@ -493,12 +493,47 @@ sensor:Humidity_sensor mda:sensorProducesSignal signal:Humidity_signal .
 signal:Humidity_signal mda:analyzedBy signalAnalysis:HumidityAnalysis .
 signalAnalysis:HumidityAnalysis mda:producesMetric metric:Humidity .
 
-## Trace: Temperature sensing pathway
-functionalUnit:FU_Temperature mda:hasSensor sensor:Temperature_sensor .
+## Trace: Temperature sensing pathways — TWO probes, not one
+##
+## FU_Temperature serves two different readings that were previously served
+## by one chain, which is why the two patient-temperature alarms
+## (PHILIPSMONITOR - ?? Temp hoog / Temp laag) dead-ended on a bare
+## mda:Sensor: the recipe is keyed on (FunctionalUnit, Metric), and the only
+## chain here produced metric:AirTemperature, so the key
+## (FU_Temperature, Temperature) matched nothing.
+##
+## They are two probes because they are two probes in the room. An incubator
+## air probe hangs in the hood; a patient probe is on or in the patient.
+## Nothing about one is derivable from the other, and neither is an
+## aggregate or a phase of the other — so this is the FU_InvasiveBloodPressure
+## pattern (arterial and venous transducers on one unit), not the
+## FU_ElectroCardiography pattern (one electrode set, many derived leads).
+##
+## The former sensor:Temperature_sensor is renamed to make that split
+## legible: a bare "Temperature_sensor" producing specifically an AIR
+## temperature was the ambiguity that hid this. Both names are
+## inference-authored only — no CSV row names either — so the rename costs
+## nothing downstream.
+##
+## The patient probe is deliberately unqualified. Peripheral and core
+## temperature are clinically different readings, but the alarm export does
+## not say which this is, so the framework must not assume one. Should a
+## corpus ever distinguish them, they refine off metric:Temperature the same
+## way the pre-coordinated metrics do.
 
-sensor:Temperature_sensor mda:sensorProducesSignal signal:Temp_signal .
-signal:Temp_signal mda:analyzedBy signalAnalysis:TemperatureAnalysis .
-signalAnalysis:TemperatureAnalysis mda:producesMetric metric:AirTemperature .
+## Trace: Temperature sensing pathway — incubator air
+functionalUnit:FU_Temperature mda:hasSensor sensor:AirTemperature_sensor .
+
+sensor:AirTemperature_sensor mda:sensorProducesSignal signal:AirTemperature_signal .
+signal:AirTemperature_signal mda:analyzedBy signalAnalysis:AirTemperatureAnalysis .
+signalAnalysis:AirTemperatureAnalysis mda:producesMetric metric:AirTemperature .
+
+## Trace: Temperature sensing pathway — patient body
+functionalUnit:FU_Temperature mda:hasSensor sensor:PatientTemperature_sensor .
+
+sensor:PatientTemperature_sensor mda:sensorProducesSignal signal:PatientTemperature_signal .
+signal:PatientTemperature_signal mda:analyzedBy signalAnalysis:PatientTemperatureAnalysis .
+signalAnalysis:PatientTemperatureAnalysis mda:producesMetric metric:Temperature .
 
 
 ####################################################################
