@@ -19,6 +19,7 @@
 @prefix qualitystate: <https://w3id.org/mda/vocab/quality-state/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rhythm: <https://w3id.org/mda/vocab/rhythm/> .
 @prefix sensor: <https://w3id.org/mda/vocab/sensor/> .
 @prefix signal: <https://w3id.org/mda/vocab/signal/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
@@ -1505,6 +1506,15 @@ qualitystate:ScalingError a skos:Concept ;
     skos:prefLabel "Scaling Error"@en,
         "Scaling Error"@nl .
 
+rhythm:Absent a skos:Concept ;
+    skos:broader rhythm:Rhythm ;
+    skos:definition "Absent"@en,
+        "Absent"@nl ;
+    skos:inScheme rhythm:Scheme ;
+    skos:notation "Absent" ;
+    skos:prefLabel "Absent"@en,
+        "Absent"@nl .
+
 sensor:ABP_transducer a skos:Concept ;
     rdfs:subClassOf mda:Sensor ;
     skos:broader sensor:Sensor ;
@@ -1754,15 +1764,6 @@ therapeuticModality:VentilationTherapy a skos:Concept ;
     skos:notation "VentilationTherapy" ;
     skos:prefLabel "Ventilation Therapy"@en,
         "Ventilation Therapy"@nl .
-
-valuestate:Absent a skos:Concept ;
-    skos:broader valuestate:ValueState ;
-    skos:definition "Absent"@en,
-        "Absent"@nl ;
-    skos:inScheme valuestate:Scheme ;
-    skos:notation "Absent" ;
-    skos:prefLabel "Absent"@en,
-        "Absent"@nl .
 
 valuestate:Decreased a skos:Concept ;
     skos:broader valuestate:ValueState ;

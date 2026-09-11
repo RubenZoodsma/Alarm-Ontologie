@@ -13,6 +13,7 @@
 @prefix physiologicalProcess: <https://w3id.org/mda/vocab/physiological-process/> .
 @prefix physiologicalProperty: <https://w3id.org/mda/vocab/physiological-property/> .
 @prefix qualitystate: <https://w3id.org/mda/vocab/quality-state/> .
+@prefix rhythm: <https://w3id.org/mda/vocab/rhythm/> .
 @prefix sensor: <https://w3id.org/mda/vocab/sensor/> .
 @prefix signal: <https://w3id.org/mda/vocab/signal/> .
 @prefix therapeuticModality: <https://w3id.org/mda/vocab/therapeutic-modality/> .
@@ -837,7 +838,7 @@ alarmtype:PhilipsmonitorApneu_Hoog a mda:AlarmType ;
                                     mda:sensorProducesSignal [ a mda:Signal ;
                                             mda:analyzedBy [ a mda:SignalAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationRate ;
-                                                            mda:hasValueState valuestate:Absent ] ] ] ] ] ;
+                                                            mda:hasRhythm rhythm:Absent ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -853,7 +854,7 @@ alarmtype:PhilipsmonitorAsystolie_Hoog a mda:AlarmType ;
                                     mda:sensorProducesSignal [ a mda:Signal ;
                                             mda:analyzedBy [ a mda:SignalAnalysis ;
                                                     mda:producesMetric [ a metric:HeartRate ;
-                                                            mda:hasValueState valuestate:Absent ] ] ] ] ] ;
+                                                            mda:hasRhythm rhythm:Absent ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -1064,7 +1065,7 @@ alarmtype:PhilipsmonitorSpo2GeenPols_Medium a mda:AlarmType ;
                                     mda:sensorProducesSignal [ a signal:PPG_waveform ;
                                             mda:analyzedBy [ a <https://w3id.org/mda/vocab/signal-analysis/PulseAnalysis> ;
                                                     mda:producesMetric [ a metric:PulseRate ;
-                                                            mda:hasValueState valuestate:Absent ] ] ] ] ] ;
+                                                            mda:hasRhythm rhythm:Absent ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 

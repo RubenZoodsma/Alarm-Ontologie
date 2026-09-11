@@ -223,6 +223,35 @@ mda:Device a owl:Class ;
 # time it was added — concernsPatient now dead-ends at Patient — so there is
 # exactly one path to Device again, just a different, shorter one.
 
+# A MODEL DESIGNATION, NEVER A COMMUNICATION PROTOCOL — recorded here in the
+# 2026-09 curation round in answer to Nena's MEDIBUS comments ("deze heeft
+# geen device type, ik zie deze ook niet in de vocabulary terug").
+#
+# She is right that the MEDIBUS archetypes carry no device type, and right
+# that "Medibus" is absent from the vocabulary. Both are correct and should
+# stay that way. Medibus is Draeger's serial communication protocol — the
+# channel an alarm arrives over — not a kind of device. Hulbus is the same
+# kind of thing. A future annotator reaching for the obvious fix should NOT
+# mint deviceType:Medibus.
+#
+# The alarm-label prefixes in this corpus are inconsistent about what they
+# name, and that inconsistency is in the source data rather than in the
+# model: some prefixes are device models (SERVOU, CARDIOHELP, TRILOGY),
+# others are the protocol the alarm was received through (MEDIBUS, HULBUS),
+# and one is a bare role (Monitor). Only the first kind can populate this
+# property.
+#
+# So Device.Type is legitimately blank on those rows, and the affected
+# devices pre-coordinate one level coarser — device:Incubator_Draeger and
+# device:MechanicalVentilator_Draeger rather than a model-specific concept.
+# That is an honest unknown, not an annotation gap: the real Draeger model
+# behind each MEDIBUS alarm is not recoverable from the alarm catalogue and
+# would have to come from clinical engineering records.
+#
+# Representing the protocol itself as alarm provenance is a legitimate
+# extension and was considered; it is deliberately not modelled, because
+# nothing in the current competency questions asks how an alarm was
+# transported.
 mda:hasDeviceType a owl:ObjectProperty ;
     dcterms:identifier  "hasDeviceType" ;
     rdfs:label          "has device type"@en,
@@ -276,12 +305,59 @@ mda:hasOperationState a owl:ObjectProperty ;
                         "heeft operatiestatus"@nl ;
     rdfs:comment        "The operational state of a device, sensor, signal, component, or the therapeutic modality a device administers (the latter inferred from the administering device's own state, not asserted directly)."@en,
                         "De operationele status van een apparaat, sensor, signaal, onderdeel, of de therapeutische modaliteit die een apparaat toedient (dit laatste afgeleid van de status van het toedienende apparaat, niet direct toegekend)."@nl ;
-    rdfs:domain         [ owl:unionOf ( mda:Device mda:Sensor mda:Signal mda:Component mda:TherapeuticModality ) ] ;
+    rdfs:domain         [ owl:unionOf ( mda:Device mda:FunctionalUnit mda:Sensor mda:Signal mda:SignalAnalysis mda:Component mda:TherapeuticModality ) ] ;
     rdfs:range          skos:Concept ;
-    owl:propertyChainAxiom  ( mda:producesSignal    mda:hasOperationState ) ;
-    owl:propertyChainAxiom  ( mda:hasSensor         mda:hasOperationState ) ;
-    owl:propertyChainAxiom  ( mda:hasFunctionalUnit mda:hasOperationState ) ;
     owl:propertyChainAxiom  ( [ owl:inverseOf mda:administers ] mda:hasOperationState ) .
+
+# THREE CHAINS REMOVED HERE in the 2026-09 curation round — producesSignal,
+# hasSensor and hasFunctionalUnit. They are replaced by the "Structural
+# operational-state propagation" axioms in inference.ttl, which make a
+# DIFFERENT claim. This is the substantive change; the rest of this comment
+# is why.
+#
+# A propertyChainAxiom copies WHATEVER VALUE it finds and cannot be
+# conditioned on which value that is. So hasSensor + hasFunctionalUnit
+# lifted a fault as readily as a healthy state: a single inoperable humidity
+# sensor made the whole incubator Malfunction (confirmed against
+# MEDIBUS - Humidity Sensor inoperable before the change). That is wrong in
+# the same way the ontology already knew hasComponent would be wrong — see
+# the note below on why hasComponent was never a chain link. The sensor path
+# had the identical critical/peripheral split and never got the same
+# treatment.
+#
+# The replacement is not "propagate only the good values". It is a different
+# and stronger reading, and it is worth stating plainly: a child node
+# reporting ANY operational state at all is evidence that its PARENT is
+# operational, because the alarm carrying that state reached us through the
+# parent. A broken sensor still proves the device it hangs off is powered
+# and talking. So any state on a child entails opstate:Enabled on the
+# parent — never the child's own value.
+#
+# A device that is genuinely down is therefore never inferred to be down
+# from one of its parts. It says so itself, through its own alarm
+# (Device.OperationalState, e.g. MEDIBUS - Ventilator storing) or through
+# the one hand-authored exception for single-point-of-failure parts
+# (inference.ttl's CriticalComponent rule, which is what makes
+# MEDIBUS - Verbinding verbroken correctly Disconnected).
+#
+# mda:FunctionalUnit and mda:SignalAnalysis were ADDED to the domain union
+# above. FunctionalUnit always carried this property in practice — the old
+# hasSensor chain put it there — but was missing from the declared domain, so
+# every functional unit with a state was being typed into the union class by
+# prp-dom. SignalAnalysis is new: it carries a state for the first time now
+# that the propagation ladder runs the full sensing pathway rather than
+# jumping from Metric straight to Sensor. Its lack of an mda:nodeKind and of
+# a vocabulary scheme of its own is about how it is MINTED from a CSV row —
+# it never is — and says nothing about whether it can bear an inferred fact;
+# it already bears mda:producesMetric and is the object of mda:analyzedBy.
+#
+# The inverse-administers chain is deliberately KEPT as value-copying. A
+# device and the therapy it administers are not a part/whole pair: if the
+# ventilator is Disconnected, the ventilation genuinely is not being
+# delivered, so copying the value there is the correct claim rather than a
+# convenience. Whether operation state should reach a modality at all, now
+# that mda:hasTherapyDeliveryQuality carries "is the therapy compromised",
+# is a fair question — but a separate one, and not what was raised.
 
 # Deliberately NOT a chain link: mda:hasComponent. The other four chains above
 # describe the device's core measuring/administering pathway, where
@@ -827,23 +903,52 @@ mda:administers a owl:ObjectProperty ;
 # volume) — conflating that into hasOperationState would be wrong (see
 # inference.ttl's Therapy delivery quality axioms).
 #
-# Domain is a flat union of Device and TherapeuticModality, deliberately not
-# a narrower "TherapeuticDevice" marker class — mirrors hasOperationState's
-# own domain union above. Scoping to devices that actually administer
-# something is already enforced by the propertyChainAxiom's antecedent (only
-# fires where mda:administers actually holds) and by the class-restriction
-# axiom's own structural condition, not by a type-level gate; a
-# PhysiologicalMonitor never satisfies either and so never gets a value,
-# without needing to be excluded from the domain declaration.
+# DOMAIN IS mda:TherapeuticModality ALONE — narrowed in the 2026-09
+# curation round, from Nena's HULBUS - Leak too high comment ("Therapy
+# delivery quality staat weer onder therapie en onder het device").
+#
+# It previously had a flat union domain of Device and TherapeuticModality
+# plus an owl:propertyChainAxiom over inverse-administers, so the value was
+# asserted on the device by inference.ttl's axiom and then ALSO lifted onto
+# the modality by the chain. Both nodes carried it. That was defended as
+# mirroring mda:hasOperationState's own union, but the two are not
+# analogous, and that is the substantive point:
+#
+#   mda:hasOperationState is a fact about a PIECE OF EQUIPMENT — a device,
+#   a sensor, a component. Its union domain is a list of equipment kinds,
+#   and a modality inherits a value only as a derived convenience.
+#
+#   mda:hasTherapyDeliveryQuality is a fact about the THERAPY. Whether the
+#   delivered ventilation is compromised is a property of the treatment
+#   being given, not of the box giving it. The whole reason this property
+#   exists separately from hasOperationState is that a device can be fully
+#   connected and functioning while what it delivers is impaired (a circuit
+#   leak reducing effective delivered volume — see inference.ttl's Therapy
+#   delivery quality axioms). Asserting the same value on the device
+#   partially undoes that distinction: it reads as a claim about the
+#   device's own condition, which is exactly what the property was carved
+#   out to avoid saying.
+#
+# So the modality is the only correct bearer, and the propertyChainAxiom is
+# gone with the union — with nothing asserting the value on a device, there
+# is no longer anything for a device-to-modality chain to carry. The
+# structural condition still starts at the device; inference.ttl's axiom now
+# reaches it from the modality through an inverse-administers hop instead
+# (verified firing under this OWL-RL stack before the rewrite, with an
+# isolated probe: the modality classifies, the device does not).
+#
+# mda:hasOperationState's own union and chain are deliberately left as they
+# are. Whether a modality should inherit its administering device's
+# operation state is the same shape of question and may deserve the same
+# scrutiny, but it is a different property and was not what was raised.
 mda:hasTherapyDeliveryQuality a owl:ObjectProperty ;
     dcterms:identifier  "hasTherapyDeliveryQuality" ;
     rdfs:label          "has therapy delivery quality"@en,
                         "heeft therapietoedieningskwaliteit"@nl ;
-    rdfs:comment        "Whether the therapeutic intervention itself is being delivered without compromise, as distinct from the device's own connectivity/functioning (hasOperationState) or a signal's measurement reliability (hasQualityState)."@en,
-                        "Of de therapeutische interventie zelf zonder compromis wordt toegediend, als onderscheiden van de eigen connectiviteit/werking van het apparaat (hasOperationState) of de meetbetrouwbaarheid van een signaal (hasQualityState)."@nl ;
-    rdfs:domain         [ owl:unionOf ( mda:Device mda:TherapeuticModality ) ] ;
-    rdfs:range          skos:Concept ;
-    owl:propertyChainAxiom  ( [ owl:inverseOf mda:administers ] mda:hasTherapyDeliveryQuality ) .
+    rdfs:comment        "Whether the therapeutic intervention itself is being delivered without compromise, as distinct from the administering device's own connectivity/functioning (hasOperationState) or a signal's measurement reliability (hasQualityState). Borne by the therapeutic modality, never by the device that administers it."@en,
+                        "Of de therapeutische interventie zelf zonder compromis wordt toegediend, als onderscheiden van de eigen connectiviteit/werking van het toedienende apparaat (hasOperationState) of de meetbetrouwbaarheid van een signaal (hasQualityState). Gedragen door de therapeutische modaliteit, nooit door het apparaat dat deze toedient."@nl ;
+    rdfs:domain         mda:TherapeuticModality ;
+    rdfs:range          skos:Concept .
 
 
 #################################################################
@@ -900,31 +1005,51 @@ mda:impliesClinicalEvent a owl:ObjectProperty ;
                         "impliceert klinische gebeurtenis"@nl ;
     rdfs:comment        "Names the clinical-event concept that a process's current condition implies — an inference, not a possession: the process does not 'have' the event (a patient does, see mda:evidencedBy/mda:concernsPatient on the minted mda:ClinicalEvent individual for that claim); this property only records that the process's state is evidence pointing to it. Requires no separately-minted mda:ClinicalEvent individual on its own."@en,
                         "Noemt het klinische-gebeurtenisconcept dat de huidige toestand van een proces impliceert — een gevolgtrekking, geen bezit: het proces 'heeft' de gebeurtenis niet (dat geldt voor een patiënt, zie mda:evidencedBy/mda:concernsPatient op het aangemaakte mda:ClinicalEvent-individu voor die bewering); deze eigenschap legt alleen vast dat de toestand van het proces daarvoor bewijs vormt. Vereist op zichzelf geen apart aangemaakt mda:ClinicalEvent-individu."@nl ;
-    rdfs:domain         mda:PhysiologicalProcess ;
+    rdfs:domain         mda:Metric ;
     rdfs:range          skos:Concept .
 
-# RECONSIDERED AGAIN (during CardioRespiratoryArrest work): moved from
-# mda:Metric to mda:PhysiologicalProcess after all, reversing the rejection
-# note this section used to carry. That note's concern was real and stays
-# true in general (see mda:PhysiologicalProcess's own section above): a
-# STATIC, standing assertion on a Referential, shared-IRI concept would
-# leak across every alarm/device/patient that ever reaches it. What makes
-# this property specifically safe despite that is where it is actually
-# reasoned: 4_OPERATIONAL/op_knowledge.py's Timeline.situation_at/
-# background_at build a FRESH graph per (patient, instant), containing
-# only that patient's currently-relevant facts, reasoned once and
-# discarded — never a merged, accumulating graph a tag could persist in
-# across patients or across time. physiologicalProcess:CardiacContraction
-# being tagged in one patient's tick has no way to reach a different
-# patient's tick, or a later instant of the SAME patient's tick, because
-# each is a separate Graph object built from separate ABox input. The
-# over-generalisation risk is real for a STATIC file reasoned once as one
-# shared graph (kg_generated.ttl, the vocabulary/ontology TBox); it does
-# not apply to this per-tick, per-patient operational reasoning pattern.
-# Moving the domain here is what lets cat3a_cardiorespiratory_arrest.rq's
-# coincidence check be device/pathway-agnostic (mda:PhysiologicalProcess is
-# reached the same way regardless of which sensing pathway produced it) —
-# see that file's own header for the query this enables.
+# DOMAIN IS mda:Metric — moved BACK from mda:PhysiologicalProcess in the
+# 2026-09 curation round. This section previously argued the opposite at
+# length; that argument is kept below, because it was not wrong so much as
+# scoped to one consumer, and the scoping is the whole lesson.
+#
+# The old argument: a standing tag on a Referential, shared-IRI concept
+# would leak across every alarm that reaches it, BUT that never bites
+# because the operational engine (CODE/evaluation_poc/core/op_knowledge.py's
+# Timeline.situation_at/background_at) builds a FRESH graph per (patient,
+# instant), so a tag on physiologicalProcess:CardiacContraction cannot
+# travel to another patient or another tick. It also conceded, explicitly,
+# that "the over-generalisation risk is real for a STATIC file reasoned once
+# as one shared graph (kg_generated.ttl, the vocabulary/ontology TBox)".
+#
+# That concession is the bug. Reasoning once over the whole catalogue is not
+# a hypothetical: it is exactly what CODE/evaluation_qa/archetype_report.py
+# does to build the published docs/graph page, and it is what anyone
+# resolving this ontology at w3id.org/mda and loading it will do. Measured
+# before the change: three tags existed
+# (CardiacContraction -> CardiacArrest, PulmonaryVentilation ->
+# RespiratoryArrest and -> ReducedPulmonaryFunction), and because those
+# concepts are shared, SEVENTY-PLUS archetypes inherited them. A
+# CARDIOHELP arterial-pressure warning read as implying cardiac arrest,
+# because arterial pressure is a property of cardiac contraction and one
+# unrelated asystole alarm elsewhere in the catalogue had tagged that
+# concept.
+#
+# An axiom that is only true when the graph is sliced a particular way is
+# not a property of the ontology, it is a property of one consumer. mda:
+# Metric is Stateful (see its nodeKind below): its node is minted per alarm,
+# so a tag there cannot reach any other alarm no matter how the graph is
+# assembled. The condition axioms in clinicalEvents.ttl are correspondingly
+# simpler — they no longer walk backwards through inverse isPropertyOf and
+# inverse approximates to reach a process, they just test the metric.
+#
+# What the old argument got right, and what is NOT lost: cat3a's coincidence
+# check stays device- and pathway-agnostic. It asks which clinical events
+# are implied within one patient's graph, and it never cared whether the
+# bearer was a process or a metric — a HeartRate reached through ECG and one
+# reached through pulse oximetry are still both simply metrics carrying the
+# tag. The operational layer's queries name the process node today and will
+# need updating; that is application-layer work, deliberately deferred.
 
 
 #################################################################
@@ -1060,9 +1185,17 @@ mda:Laterality         mda:nodeKind mda:Referential .
 # concrete treatment episode particular to the alarm's own device, not a
 # universal shared across every alarm that happens to name the same modality
 # concept (e.g. VentilationTherapy) — needed so mda:hasTherapyDeliveryQuality
-# can be derived per-alarm via the propertyChainAxiom below, rather than
-# landing on one globally-shared concept for every alarm that ever
-# administers it.
+# can be derived per-alarm, rather than landing on one globally-shared
+# concept for every alarm that ever administers it.
+#
+# This requirement got STRONGER, not weaker, when that property's
+# propertyChainAxiom was removed in the 2026-09 curation round (see its own
+# declaration above). The chain used to be what derived the value onto the
+# modality; now inference.ttl's axiom is subjected on the modality directly,
+# reaching its device through an inverse-administers hop. A Referential
+# modality would make that axiom classify the one shared concept, so every
+# alarm naming VentilationTherapy anywhere would inherit an Impaired therapy
+# from any single leaking circuit.
 mda:TherapeuticModality mda:nodeKind mda:Individuated .
 
 # Individuated, not Referential: each ClinicalEvent is a fresh,

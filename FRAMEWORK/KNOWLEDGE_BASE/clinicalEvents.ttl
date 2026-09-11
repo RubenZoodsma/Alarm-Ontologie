@@ -47,7 +47,7 @@
 # NOT mda:persistsPostAlarm, which is for facts with a physical reason to
 # outlive their alarm (device connectivity, signal quality). A clinical
 # event has no such reason: it is only true while the condition that
-# asserted it (hasValueState Absent) is still being reported. Verified directly:
+# asserted it (hasRhythm Absent) is still being reported. Verified directly:
 # the entailed impliesClinicalEvent triple is present in Timeline.situation_at()
 # while its triggering alarm is active, and gone within 1 second of that
 # alarm ending — no grace period, confirmed empirically before trusting
@@ -107,6 +107,7 @@
 @prefix rdfs:         <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix metric:       <https://w3id.org/mda/vocab/metric/> .
 @prefix valuestate:   <https://w3id.org/mda/vocab/value-state/> .
+@prefix rhythm:       <https://w3id.org/mda/vocab/rhythm/> .
 @prefix clinicalEvent: <https://w3id.org/mda/vocab/clinical-event/> .
 
 
@@ -119,7 +120,7 @@
 # through the already-existing chain via inverse-property restrictions:
 # any process that is isPropertyOf-reached from a property that is
 # approximates-reached from a Metric which is BOTH metric:HeartRate AND
-# currently reports hasValueState valuestate:Absent gets tagged impliesClinicalEvent
+# currently reports hasRhythm rhythm:Absent gets tagged impliesClinicalEvent
 # CardiacArrest. Verified with an isolated reasoner test before writing
 # this (positive: HeartRate+Absent -> tagged; negative: HeartRate+Normal
 # -> untagged) — the inverse-restriction construct is heavier than
@@ -138,13 +139,8 @@
 ####################################################################
 
 mda:CardiacArrestCondition a owl:Class ;
-    owl:intersectionOf ( mda:PhysiologicalProcess
-        [ a owl:Restriction ; owl:onProperty [ owl:inverseOf mda:isPropertyOf ] ;
-          owl:someValuesFrom
-            [ a owl:Restriction ; owl:onProperty [ owl:inverseOf mda:approximates ] ;
-              owl:someValuesFrom
-                [ a owl:Class ; owl:intersectionOf ( metric:HeartRate
-                    [ a owl:Restriction ; owl:onProperty mda:hasValueState ; owl:hasValue valuestate:Absent ] ) ] ] ] ) ;
+    owl:intersectionOf ( metric:HeartRate
+        [ a owl:Restriction ; owl:onProperty mda:hasRhythm ; owl:hasValue rhythm:Absent ] ) ;
     rdfs:subClassOf
       [ a owl:Restriction ; owl:onProperty mda:impliesClinicalEvent ; owl:hasValue clinicalEvent:CardiacArrest ] .
 
@@ -158,13 +154,8 @@ mda:CardiacArrestCondition a owl:Class ;
 ####################################################################
 
 mda:RespiratoryArrestCondition a owl:Class ;
-    owl:intersectionOf ( mda:PhysiologicalProcess
-        [ a owl:Restriction ; owl:onProperty [ owl:inverseOf mda:isPropertyOf ] ;
-          owl:someValuesFrom
-            [ a owl:Restriction ; owl:onProperty [ owl:inverseOf mda:approximates ] ;
-              owl:someValuesFrom
-                [ a owl:Class ; owl:intersectionOf ( metric:RespirationRate
-                    [ a owl:Restriction ; owl:onProperty mda:hasValueState ; owl:hasValue valuestate:Absent ] ) ] ] ] ) ;
+    owl:intersectionOf ( metric:RespirationRate
+        [ a owl:Restriction ; owl:onProperty mda:hasRhythm ; owl:hasValue rhythm:Absent ] ) ;
     rdfs:subClassOf
       [ a owl:Restriction ; owl:onProperty mda:impliesClinicalEvent ; owl:hasValue clinicalEvent:RespiratoryArrest ] .
 
@@ -196,12 +187,7 @@ mda:RespiratoryArrestCondition a owl:Class ;
 ####################################################################
 
 mda:ReducedPulmonaryFunctionCondition a owl:Class ;
-    owl:intersectionOf ( mda:PhysiologicalProcess
-        [ a owl:Restriction ; owl:onProperty [ owl:inverseOf mda:isPropertyOf ] ;
-          owl:someValuesFrom
-            [ a owl:Restriction ; owl:onProperty [ owl:inverseOf mda:approximates ] ;
-              owl:someValuesFrom
-                [ a owl:Class ; owl:intersectionOf ( metric:RespirationVolume_Minute
-                    [ a owl:Restriction ; owl:onProperty mda:hasValueState ; owl:hasValue valuestate:Decreased ] ) ] ] ] ) ;
+    owl:intersectionOf ( metric:RespirationVolume_Minute
+        [ a owl:Restriction ; owl:onProperty mda:hasValueState ; owl:hasValue valuestate:Decreased ] ) ;
     rdfs:subClassOf
       [ a owl:Restriction ; owl:onProperty mda:impliesClinicalEvent ; owl:hasValue clinicalEvent:ReducedPulmonaryFunction ] .

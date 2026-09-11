@@ -49,6 +49,7 @@
 @prefix signalAnalysis: <https://w3id.org/mda/vocab/signal-analysis/> .
 @prefix metric:      <https://w3id.org/mda/vocab/metric/> .
 @prefix valuestate:  <https://w3id.org/mda/vocab/value-state/> .
+@prefix rhythm:      <https://w3id.org/mda/vocab/rhythm/> .
 @prefix qualitystate: <https://w3id.org/mda/vocab/quality-state/> .
 @prefix physiologicalProperty: <https://w3id.org/mda/vocab/physiological-property/> .
 @prefix physiologicalProcess:  <https://w3id.org/mda/vocab/physiological-process/> .
@@ -403,7 +404,7 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
             [ a owl:Restriction ; owl:onProperty mda:producesMetric ;
               owl:someValuesFrom
                 [ a owl:Class ; owl:intersectionOf ( metric:PulseRate
-                    [ a owl:Restriction ; owl:onProperty mda:hasValueState ; owl:hasValue valuestate:Absent ] ) ] ] ) ] ] )
+                    [ a owl:Restriction ; owl:onProperty mda:hasRhythm ; owl:hasValue rhythm:Absent ] ) ] ] ) ] ] )
 ] rdfs:subClassOf
   [ a owl:Restriction ; owl:onProperty mda:hasQualityState ; owl:hasValue qualitystate:Impaired ] .
 
@@ -495,6 +496,138 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
 
 
 ####################################################################
+# Structural operational-state propagation
+#
+# Replaces the producesSignal / hasSensor / hasFunctionalUnit
+# owl:propertyChainAxioms that mda:hasOperationState used to carry — see its
+# declaration in ontology.ttl for the full reasoning, including the
+# MEDIBUS - Humidity Sensor inoperable case that exposed them.
+#
+# THE CLAIM: a child node reporting ANY operational state is evidence its
+# PARENT is operational, because the alarm carrying that state reached us
+# through the parent. Not "propagate the good values and suppress the bad
+# ones" — the parent's entailed value is always opstate:Enabled, never a
+# copy of whatever the child reported. A sensor that is Malfunction,
+# Disconnected or Disabled still proves the device it hangs off is powered
+# and communicating.
+#
+# WHY THIS SHAPE AND NOT A GUARDED CHAIN: a chain copies the value it finds
+# and cannot be conditioned on it. Expressing "only enabling values
+# propagate" would need the polarity in a separate sub-property plus one
+# pairing axiom per concept, and would still copy the value rather than
+# assert Enabled. Writing the rule on the PARENT instead needs neither, and
+# is the shape the CriticalComponent rule above and the Metric monitoring
+# rule below already use.
+#
+# WHY IT CANNOT SELF-APPLY: the antecedent tests the CHILD's state and the
+# consequent lands on the PARENT, so a device carrying its own
+# Disconnected never thereby infers itself Enabled. That failure mode is
+# real and was the reason for not routing this through a sub-property of
+# hasOperationState with a chain: such a property is entailed onto the node
+# itself, re-satisfies its own antecedent, and hands a genuinely dead device
+# an Enabled alongside its Disconnected.
+#
+# A device that IS down says so itself — its own Device.OperationalState
+# row, or the CriticalComponent rule above for single-point-of-failure
+# parts. Those two paths are untouched.
+#
+# mda:hasComponent is absent here for exactly the reason it was absent from
+# the old chains (see ontology.ttl): a Component may be peripheral, and the
+# CriticalComponent rule above is the deliberate, targeted exception.
+#
+# The Signal -> Sensor level is deliberately NOT written. No corpus row
+# annotates an operational state on a Signal (signals carry
+# mda:hasQualityState instead), and the Sensor baseline axiom above already
+# gives every metric-producing sensor opstate:Enabled, so the rule would be
+# inert twice over.
+####################################################################
+
+# THE LADDER RUNS THE WHOLE SENSING PATHWAY, one hop per rung:
+#
+#   Metric          -- opstate:Monitored, from the Metric monitoring axiom
+#                      below, whenever the metric carries any of its four
+#                      characteristics (value state, phase, aggregation,
+#                      rhythm). This is the bottom of the ladder and the
+#                      only rung not written here.
+#   SignalAnalysis  -- its metric reports something, so the analysis ran
+#   Signal          -- its analysis reports something, so the signal flowed
+#   Sensor          -- its signal reports something, so the sensor produced
+#   FunctionalUnit  -- its sensor reports something
+#   Device          -- its functional unit reports something
+#
+# Each rung looks exactly one hop down and asserts on itself, so the chain
+# composes without any rung needing to know the pathway's depth.
+#
+# VALUE: opstate:Enabled at every rung above Metric, deliberately NOT
+# opstate:Active. Active is already in use for a genuinely different sense —
+# DATEXOHMEDACOMVENTILATOR - Plimit Reached annotates a
+# component:PressureReleaseValve as Active, meaning the valve is currently
+# venting, an event rather than an operational status. Overloading it to
+# also mean "this signal is flowing" would make the two indistinguishable
+# to any query. opstate:Monitored stays specific to Metric, as it already
+# was. The resulting reading is consistent: data is Monitored, everything
+# that carries or produces it is Enabled.
+#
+# RELATIONSHIP TO THE SENSOR BASELINE AXIOM ABOVE: that axiom tests the
+# whole pathway in one shot (sensor -> signal -> analysis -> some Metric)
+# and asserts Enabled on the sensor, skipping the two middle rungs — which
+# is exactly why Signal and SignalAnalysis were the only nodes in a
+# metric-bearing archetype with no operational state at all before this
+# ladder existed (confirmed against MEDIBUS - MV ondergrens and
+# PHILIPSMONITOR - SpO2 laag). Both are kept. They currently fire on the
+# same archetypes, since every metric-bearing corpus row carries at least
+# one metric characteristic and therefore always reaches Monitored — but
+# they are not redundant in principle: the baseline still covers a metric
+# with no characteristic, and the ladder still covers a signal given a state
+# by some route other than its own metric.
+
+# SignalAnalysis whose Metric reports any state  ->  the analysis is Enabled
+[ a owl:Class ; owl:intersectionOf ( mda:SignalAnalysis
+    [ a owl:Restriction ; owl:onProperty mda:producesMetric ;
+      owl:someValuesFrom
+        [ a owl:Restriction ; owl:onProperty mda:hasOperationState ;
+          owl:someValuesFrom owl:Thing ] ] )
+] rdfs:subClassOf
+  [ a owl:Restriction ; owl:onProperty mda:hasOperationState ; owl:hasValue opstate:Enabled ] .
+
+# Signal whose SignalAnalysis reports any state  ->  the signal is Enabled
+[ a owl:Class ; owl:intersectionOf ( mda:Signal
+    [ a owl:Restriction ; owl:onProperty mda:analyzedBy ;
+      owl:someValuesFrom
+        [ a owl:Restriction ; owl:onProperty mda:hasOperationState ;
+          owl:someValuesFrom owl:Thing ] ] )
+] rdfs:subClassOf
+  [ a owl:Restriction ; owl:onProperty mda:hasOperationState ; owl:hasValue opstate:Enabled ] .
+
+# Signal reporting any state  ->  its Sensor is Enabled
+[ a owl:Class ; owl:intersectionOf ( mda:Sensor
+    [ a owl:Restriction ; owl:onProperty mda:sensorProducesSignal ;
+      owl:someValuesFrom
+        [ a owl:Restriction ; owl:onProperty mda:hasOperationState ;
+          owl:someValuesFrom owl:Thing ] ] )
+] rdfs:subClassOf
+  [ a owl:Restriction ; owl:onProperty mda:hasSensorOperationState ; owl:hasValue opstate:Enabled ] .
+
+# Sensor reporting any state  ->  its FunctionalUnit is Enabled
+[ a owl:Class ; owl:intersectionOf ( mda:FunctionalUnit
+    [ a owl:Restriction ; owl:onProperty mda:hasSensor ;
+      owl:someValuesFrom
+        [ a owl:Restriction ; owl:onProperty mda:hasOperationState ;
+          owl:someValuesFrom owl:Thing ] ] )
+] rdfs:subClassOf
+  [ a owl:Restriction ; owl:onProperty mda:hasOperationState ; owl:hasValue opstate:Enabled ] .
+
+# FunctionalUnit reporting any state  ->  its Device is Enabled
+[ a owl:Class ; owl:intersectionOf ( mda:Device
+    [ a owl:Restriction ; owl:onProperty mda:hasFunctionalUnit ;
+      owl:someValuesFrom
+        [ a owl:Restriction ; owl:onProperty mda:hasOperationState ;
+          owl:someValuesFrom owl:Thing ] ] )
+] rdfs:subClassOf
+  [ a owl:Restriction ; owl:onProperty mda:hasDeviceOperationState ; owl:hasValue opstate:Enabled ] .
+
+
+####################################################################
 # Metric monitoring axiom
 #
 # Complementary to the Sensor baseline axiom directly above, not a
@@ -580,24 +713,44 @@ opstate:Monitored a skos:Concept ;
 # every other clinical/technical axiom in this file is.
 ####################################################################
 
-[ a owl:Class ; owl:intersectionOf ( mda:Device
-    [ a owl:Restriction ; owl:onProperty mda:hasFunctionalUnit ;
+# SUBJECT IS THE MODALITY, NOT THE DEVICE — rewritten in the 2026-09
+# curation round alongside narrowing mda:hasTherapyDeliveryQuality's domain
+# (see its declaration in ontology.ttl for the full reasoning).
+#
+# This axiom used to be subjected on mda:Device, because the structural
+# condition it tests — functional unit, sensor, signal, analysis, leaking
+# metric — physically hangs off the device. The value then reached the
+# modality only via a propertyChainAxiom, leaving BOTH nodes carrying it.
+# The condition still starts at the device; the axiom now walks to it from
+# the modality through an inverse-administers hop, so exactly one node ends
+# up with the value and it is the one the claim is actually about.
+#
+# The inverse-property-expression restriction (owl:onProperty [owl:inverseOf
+# mda:administers]) is the same shape clinicalEvents.ttl already uses over
+# inverse isPropertyOf/approximates. Confirmed firing under this OWL-RL
+# stack with an isolated probe before adopting it here: a modality
+# administered by a matching device classifies; the device itself does not.
+[ a owl:Class ; owl:intersectionOf ( mda:TherapeuticModality
+    [ a owl:Restriction ; owl:onProperty [ owl:inverseOf mda:administers ] ;
       owl:someValuesFrom
-        [ a owl:Class ; owl:intersectionOf ( mda:FunctionalUnit
-            [ a owl:Restriction ; owl:onProperty mda:hasSensor ;
+        [ a owl:Class ; owl:intersectionOf ( mda:Device
+            [ a owl:Restriction ; owl:onProperty mda:hasFunctionalUnit ;
               owl:someValuesFrom
-                [ a owl:Class ; owl:intersectionOf ( mda:Sensor
-                    [ a owl:Restriction ; owl:onProperty mda:sensorProducesSignal ;
+                [ a owl:Class ; owl:intersectionOf ( mda:FunctionalUnit
+                    [ a owl:Restriction ; owl:onProperty mda:hasSensor ;
                       owl:someValuesFrom
-                        [ a owl:Class ; owl:intersectionOf ( mda:Signal
-                            [ a owl:Restriction ; owl:onProperty mda:analyzedBy ;
+                        [ a owl:Class ; owl:intersectionOf ( mda:Sensor
+                            [ a owl:Restriction ; owl:onProperty mda:sensorProducesSignal ;
                               owl:someValuesFrom
-                                [ a owl:Class ; owl:intersectionOf ( mda:SignalAnalysis
-                                    [ a owl:Restriction ; owl:onProperty mda:producesMetric ;
+                                [ a owl:Class ; owl:intersectionOf ( mda:Signal
+                                    [ a owl:Restriction ; owl:onProperty mda:analyzedBy ;
                                       owl:someValuesFrom
-                                        [ a owl:Class ; owl:intersectionOf ( metric:VentilationCircuitLeak
-                                            [ a owl:Restriction ; owl:onProperty mda:hasValueState ;
-                                              owl:hasValue valuestate:Increased ] ) ] ] ) ] ] ) ] ] ) ] ] ) ] ] )
+                                        [ a owl:Class ; owl:intersectionOf ( mda:SignalAnalysis
+                                            [ a owl:Restriction ; owl:onProperty mda:producesMetric ;
+                                              owl:someValuesFrom
+                                                [ a owl:Class ; owl:intersectionOf ( metric:VentilationCircuitLeak
+                                                    [ a owl:Restriction ; owl:onProperty mda:hasValueState ;
+                                                      owl:hasValue valuestate:Increased ] ) ] ] ) ] ] ) ] ] ) ] ] ) ] ] ) ] ] )
 ] rdfs:subClassOf
   [ a owl:Restriction ; owl:onProperty mda:hasTherapyDeliveryQuality ; owl:hasValue qualitystate:Impaired ] .
 
