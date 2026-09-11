@@ -1,22 +1,48 @@
-name: Rebuild published docs (graph + ontology + vocab + cq)
+name: Rebuild published docs (graph + vocab direct; ontology + cq via PR)
 
 # Regenerates the four docs/ pages that have a known, reproducible build
-# process — docs/graph/ (CODE/evaluation_qa/archetype_report.py),
-# docs/ontology/ (WIDOCO), docs/vocab/ (CODE/evaluation_qa/
-# vocab_browser.py, which only replaces that page's embedded data blob and
-# leaves its hand-built HTML/CSS/JS shell untouched), and docs/cq/
-# (CODE/evaluation_cq/cq_report_html.py, which reuses cq_QA.py and
-# cq_temporal_QA.py to re-run every competency question and embed the
-# results). docs/data/ is not covered — it has never had any content or
-# generator.
+# process, SPLIT BY RISK into two independent jobs.
 #
-# Opens a PR instead of pushing straight to main, deliberately: WIDOCO's
-# exact flags here are a best-effort match to the site's existing structure,
-# not a recovered original config (none was ever committed), so its output
-# should be spot-checked once before it goes live rather than trusted blind.
-# The other three scripts' output is fully deterministic and low-risk by
-# comparison, but all four are routed through the same review step for
-# simplicity and consistency.
+# WHY THE SPLIT
+# -------------
+# These four outputs are not the same kind of thing, and treating them alike
+# was wrong in both directions — it held back deterministic re-renders behind
+# a review nobody was doing, while lumping in two outputs that genuinely do
+# need one.
+#
+#   publish-visual   docs/graph/ and docs/vocab/ — pushed STRAIGHT to main.
+#     Both are self-contained HTML re-renders of the framework, produced by
+#     deterministic scripts from the .ttl files already committed in the same
+#     push. There is no judgement in them: if the framework changed, the page
+#     is simply out of date until it is rebuilt. Nothing downstream consumes
+#     them as data.
+#
+#   propose-reviewed  docs/ontology/ and docs/cq/ — opened as a PR.
+#     Neither is "just visual notation":
+#
+#     docs/ontology/ is the DEREFERENCEABLE ONTOLOGY. w3id.org/mda/ontology
+#     302-redirects to this directory, which publishes ontology.ttl, .nt,
+#     .owl and .jsonld alongside the rendered page. Whatever lands here is
+#     what every downstream consumer resolves at the persistent identifier.
+#     It is also produced by WIDOCO with -rewriteAll, which overwrites the
+#     whole output folder, using flags that are a best-effort match to the
+#     site's existing structure rather than a recovered original config — so
+#     its output is worth a human glance, not a blind trust.
+#
+#     docs/cq/ is EVALUATION OUTPUT, not decoration: per-competency-question
+#     result counts and rows. A wrong number here is a wrong published
+#     finding. Stale is recoverable; published-and-wrong is not. This page
+#     must not auto-publish while any .rq file is out of step with the
+#     ontology (e.g. a query still naming a renamed property returns zero
+#     rows rather than failing).
+#
+# NO LOOP RISK from the direct push: docs/** is deliberately absent from the
+# paths filter below, and GitHub does not re-trigger workflows for pushes
+# made with the default GITHUB_TOKEN in any case. Both, on purpose.
+#
+# The two jobs are independent (no `needs`) so a WIDOCO or CQ failure never
+# blocks the deterministic re-render, which was the previous behaviour: the
+# job aborted mid-way and the site silently stayed months out of date.
 
 on:
   push:
@@ -35,12 +61,19 @@ on:
       - 'DATA/CQ_evaluation/events_data.csv'
   workflow_dispatch: {}
 
+# Serialise runs: two pushes in quick succession would otherwise race each
+# other pushing to main. Queue rather than cancel — a cancelled run would
+# leave the site half-rebuilt.
+concurrency:
+  group: rebuild-docs
+  cancel-in-progress: false
+
 jobs:
-  rebuild-docs:
+  # ── Deterministic re-renders → straight to main ────────────────────────
+  publish-visual:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
     steps:
       - uses: actions/checkout@v4
 
@@ -57,6 +90,38 @@ jobs:
       - name: Regenerate docs/vocab (Vocabulary Browser data)
         run: python3 CODE/evaluation_qa/vocab_browser.py
 
+      # Scoped to the two directories this job owns, so an unrelated stray
+      # file in the runner's tree can never ride along into main.
+      - name: Commit and push if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- docs/graph docs/vocab
+          if git diff --cached --quiet; then
+            echo "No change to docs/graph or docs/vocab — nothing to push."
+            exit 0
+          fi
+          git commit -m "docs: re-render graph + vocab from current framework"
+          # main may have moved while the reasoner was running.
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+  # ── Ontology + evaluation output → PR for review ───────────────────────
+  propose-reviewed:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install rdflib owlrl pandas
+
       - name: Regenerate docs/cq (Competency Questions page)
         run: python3 CODE/evaluation_cq/cq_report_html.py
 
@@ -66,13 +131,8 @@ jobs:
       # The docs/ontology/ pages currently published were therefore not built
       # by this job.
       #
-      # Pinned to v1.4.25 rather than :latest deliberately. This step opens a
-      # PR against the published site, and the flags below are a best-effort
-      # match to that site's existing structure rather than a recovered
-      # original config (see this file's header), so a silent WIDOCO upgrade
-      # could restructure the published ontology docs with nothing in the diff
-      # explaining why. The other three doc steps are deterministic; pinning
-      # makes this one match. Bump deliberately, reviewing the output.
+      # Pinned to v1.4.25 rather than :latest deliberately, for the same
+      # reason this job goes through review at all — see the header.
       - name: Regenerate docs/ontology (WIDOCO)
         run: |
           mkdir -p docs/ontology
@@ -84,25 +144,42 @@ jobs:
             -outFolder /usr/local/widoco/out/ontology \
             -rewriteAll -webVowl -getOntologyMetadata -lang en
 
-      - name: Open PR with regenerated docs
+      # The container runs as root, so everything it wrote is root-owned and
+      # the commit step below cannot stage it.
+      - name: Restore ownership of WIDOCO output
+        run: sudo chown -R "$(id -u):$(id -g)" docs/ontology
+
+      - name: Open PR with regenerated ontology + CQ pages
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "docs: regenerate published site from current ontology"
-          title: "Auto: regenerate docs/graph, docs/vocab, docs/cq, and docs/ontology"
+          # Scoped so this PR can never contain (and therefore never revert)
+          # the docs/graph or docs/vocab changes publish-visual pushes to main
+          # independently of it.
+          add-paths: |
+            docs/cq/**
+            docs/ontology/**
+          commit-message: "docs: regenerate published ontology and CQ pages"
+          title: "Auto: regenerate docs/ontology and docs/cq"
           body: |
             Automated regeneration triggered by a change under `FRAMEWORK/**/*.ttl`,
             `EVALUATION/CQs/**/*.rq`, or one of the report scripts themselves.
 
-            - `docs/graph/` rebuilt via `CODE/evaluation_qa/archetype_report.py`
-            - `docs/vocab/` data blob refreshed via `CODE/evaluation_qa/vocab_browser.py`
-              (its HTML/CSS/JS shell is untouched — only the embedded dataset changes)
-            - `docs/cq/` rebuilt via `CODE/evaluation_cq/cq_report_html.py`
             - `docs/ontology/` rebuilt via WIDOCO
+            - `docs/cq/` rebuilt via `CODE/evaluation_cq/cq_report_html.py`
 
-            Please review the diff before merging — WIDOCO's flags here are a
-            best-effort match to the existing site structure, not a recovered
-            original config, so its output is worth spot-checking rather than
-            trusting blind. No pull request is opened if regeneration produced
-            no changes.
+            `docs/graph/` and `docs/vocab/` are **not** in this PR — they are
+            deterministic re-renders and are pushed straight to `main` by the
+            `publish-visual` job.
+
+            **Please check two things before merging.**
+
+            1. `docs/ontology/` is what `w3id.org/mda/ontology` resolves to,
+               including the `.ttl`/`.nt`/`.owl`/`.jsonld` serialisations.
+               WIDOCO runs with `-rewriteAll`, so this diff is what every
+               downstream consumer will dereference.
+            2. `docs/cq/` carries evaluation results. Confirm no competency
+               question has silently dropped to zero rows — that is the
+               signature of a `.rq` file still naming a property the ontology
+               has since renamed, which returns nothing rather than failing.
           branch: auto/regenerate-docs
           delete-branch: true

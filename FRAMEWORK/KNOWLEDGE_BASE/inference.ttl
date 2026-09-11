@@ -238,18 +238,57 @@ signalAnalysis:VenousPressureAnalysis mda:producesMetric metric:VenousBloodPress
 functionalUnit:FU_AirwayPressure mda:hasSensor sensor:AW_transducer .
 
 sensor:AW_transducer mda:sensorProducesSignal signal:AirwayPressure_waveform .
-signal:AirwayPressure_waveform mda:analyzedBy signalAnalysis:AirwayPressureAnalysis .
+signal:AirwayPressure_waveform mda:analyzedBy signalAnalysis:AirwayPressureAnalysis,
+                                              signalAnalysis:CPAPAnalysis .
 signalAnalysis:AirwayPressureAnalysis mda:producesMetric metric:AirwayPressure .
+
+# CPAPAnalysis added in the 2026-09 curation round, from Nena's HULBUS -
+# CPAP high / CPAP low comments ("sensor is leeg: moet deze niet AW
+# transducer zijn?"). She is right: continuous positive airway pressure is
+# read off the same airway-pressure transducer and the same waveform as
+# peak pressure — it is a second analysis of one signal, which is the
+# fan-out shape this section's header already describes for
+# FU_PulseOximetry. Before this, (FU_AirwayPressure, CPAP) had no recipe,
+# so both alarms fell through to a generic mda:Sensor/mda:Signal node.
+#
+# SETTLED: metric:CPAP stays its own metric, and is deliberately NOT collapsed
+# into metric:AirwayPressure at a baseline phase. It is physically the same
+# baseline airway pressure that SERVOU - PEEP laag annotates as
+# metric:AirwayPressure + metricPhase:EndExpiratory, but the two arise under
+# different ventilation modes (spontaneous vs mandatory) and the annotator
+# call is that the mode distinction is clinically real. The consequence to be
+# aware of: HULBUS and SERVOU baseline-pressure alarms are therefore NOT
+# cross-manufacturer equivalent under CQ7, by choice rather than by oversight.
+signalAnalysis:CPAPAnalysis mda:producesMetric metric:CPAP .
 
 ## Trace: Ventilation volume sensing pathway
 functionalUnit:FU_PneumoTachograph mda:hasSensor sensor:PneumoTachograph .
 
 sensor:PneumoTachograph mda:sensorProducesSignal signal:AirwayFlow_waveform .
 
-signal:AirwayFlow_waveform mda:analyzedBy signalAnalysis:VolumeAnalysis, signalAnalysis:RespiratoryRateAnalysis .
+signal:AirwayFlow_waveform mda:analyzedBy signalAnalysis:VolumeAnalysis,
+                                          signalAnalysis:RespiratoryRateAnalysis,
+                                          signalAnalysis:LeakAnalysis .
 
 signalAnalysis:VolumeAnalysis          mda:producesMetric metric:RespirationVolume .
 signalAnalysis:RespiratoryRateAnalysis mda:producesMetric metric:RespirationRate .
+
+# LeakAnalysis added in the 2026-09 curation round. metric:VentilationCircuit
+# Leak used to be annotated under TWO functional units — FU_PneumoTachograph
+# on the two Dräger alarms, FU_AirwayPressure on HULBUS - Leak too high and
+# SERVOU - Te veel lekkage — which is what forced the recipe key onto
+# (FunctionalUnit, Metric) in the first place. Settled as an annotation slip,
+# not a second real pathway: a circuit leak is the difference between
+# inspired and expired volume, so it needs a flow sensor, and both devices
+# demonstrably have one (HULBUS - Vte high and SERVOU - Exp. minuutvol. both
+# annotate FU_PneumoTachograph on the same hardware). The two rows were
+# corrected in p75_annotated.csv and the metric now has exactly one trace.
+#
+# The (FunctionalUnit, Metric) key stays regardless: metric:RespirationRate
+# is still genuinely produced by two pathways (this one and impedance
+# pneumography under FU_ElectroCardiography), so the pair is still the only
+# key that resolves it.
+signalAnalysis:LeakAnalysis            mda:producesMetric metric:VentilationCircuitLeak .
 
 ## Trace : Capnography sensing pathway
 functionalUnit:FU_Capnograph mda:hasSensor sensor:Capnometer .
