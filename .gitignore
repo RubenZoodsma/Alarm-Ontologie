@@ -13,3 +13,18 @@ MDA-POC-RDFox/engine/_scratch/
 *scratch/*    
 *.trig
 *.rdfox
+
+# ── Exceptions to the blanket *.csv rule above ───────────────────────────
+#
+# The blanket rule keeps real clinical data out of the repository and stays.
+# These two datasets are hand-fabricated (synthetic patient ids, invented
+# timestamps — see each directory's README), contain no patient data, and
+# are REQUIRED INPUTS, not outputs:
+#
+# CQ_evaluation/events_data.csv is read by CODE/evaluation_cq/
+# cq_temporal_QA.py, which the rebuild-docs workflow runs on every push.
+# Without it that job fails with FileNotFoundError before it can regenerate
+# docs/cq — and the workflow even lists this path as one of its own triggers,
+# which could never fire while the file was invisible to git.
+!DATA/CQ_evaluation/events_data.csv
+!DATA/CAT_evaluation/events_data.csv

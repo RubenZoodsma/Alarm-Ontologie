@@ -1,0 +1,13 @@
+patientID;label;device_id;start;end
+cq9_pos;PHILIPSMONITOR - SpO2 laag;cq9pos_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cq9_pos;PHILIPSMONITOR - Storing in SpO2;cq9pos_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:30
+cq9_neg;PHILIPSMONITOR - SpO2 laag;cq9neg_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cq9_neg;CARDIOHELP - Verbinding verbroken;cq9neg_CardioHelp_00;2026-01-01T08:00:30;2026-01-01T08:01:30
+cq10_pos;Monitor - Lage SpO2;cq10pos_DraegerMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cq10_pos;PHILIPSMONITOR - SpO2 laag;cq10pos_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:30
+cq10_neg;PHILIPSMONITOR - SpO2 laag;cq10neg_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cq10_neg;PHILIPSMONITOR - HF hoog;cq10neg_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:30
+cq11_pos;PHILIPSMONITOR - Asystolie;cq11pos_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cq11_pos;PHILIPSMONITOR - Apneu;cq11pos_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:30
+cq11_neg;SERVOU - Volume uit blokkade;cq11neg_ServoU_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cq11_neg;PHILIPSMONITOR - Niet te leren ECG;cq11neg_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:30

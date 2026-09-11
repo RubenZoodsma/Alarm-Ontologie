@@ -1,0 +1,31 @@
+patientID;label;device_id;start;end
+cat1a_pos;PHILIPSMONITOR - Storing in SpO2;cat1apos_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat1a_pos;PHILIPSMONITOR - SpO2 laag;cat1apos_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat1a_neg;PHILIPSMONITOR - Storing in SpO2;cat1aneg_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat1a_neg;PHILIPSMONITOR - SpO2 laag;cat1aneg_PhilipsMonitor_01;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat2a_pos;PHILIPSMONITOR - HF hoog;cat2apos_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat2a_pos;PHILIPSMONITOR - Lage hartfreq.;cat2apos_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat2a_neg;PHILIPSMONITOR - HF hoog;cat2aneg_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat2a_neg;SERVOU - Ademfrequentie laag;cat2aneg_ServoU_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat2b_pos;Monitor - Lage SpO2;cat2bpos_DraegerMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat2b_pos;PHILIPSMONITOR - SpO2 laag;cat2bpos_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat2b_neg;PHILIPSMONITOR - SpO2 laag;cat2bneg_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat2b_neg;PHILIPSMONITOR - HF hoog;cat2bneg_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat1b_pos;PHILIPSMONITOR - ABP verkleinen;cat1bpos_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:00:20
+cat1b_pos;PHILIPSMONITOR - Asystolie;cat1bpos_PhilipsMonitor_00;2026-01-01T08:10:00;2026-01-01T08:10:20
+cat1b_neg;PHILIPSMONITOR - ABP verkleinen;cat1bneg_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat1b_neg;PHILIPSMONITOR - Asystolie;cat1bneg_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:00:50
+cat3a_pos;PHILIPSMONITOR - Asystolie;cat3apos_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:01:00
+cat3a_pos;PHILIPSMONITOR - Apneu;cat3apos_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:30
+cat3a_neg;PHILIPSMONITOR - Asystolie;cat3aneg_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:00:20
+cat3a_neg;PHILIPSMONITOR - Apneu;cat3aneg_PhilipsMonitor_00;2026-01-01T08:00:40;2026-01-01T08:01:00
+cat3c;PHILIPSMONITOR - Apneu;cat3c_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:01:00
+cat3c;PHILIPSMONITOR - Asystolie;cat3c_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:30
+cat3b_pos;MEDIBUS - Ventilator storing;cat3bpos_Medibus_00;2026-01-01T08:00:00;2026-01-01T08:01:00
+cat3b_pos;MEDIBUS - MV ondergrens;cat3bpos_Medibus_00;2026-01-01T08:00:30;2026-01-01T08:01:30
+cat3b_neg;MEDIBUS - Ventilator storing;cat3bneg_Medibus_00;2026-01-01T08:00:00;2026-01-01T08:00:20
+cat3b_neg;MEDIBUS - MV ondergrens;cat3bneg_Medibus_00;2026-01-01T08:20:00;2026-01-01T08:20:30
+cat3d;MEDIBUS - MV ondergrens;cat3d_Medibus_00;2026-01-01T08:00:00;2026-01-01T08:01:00
+cat3d;MEDIBUS - Ventilator storing;cat3d_Medibus_00;2026-01-01T08:00:30;2026-01-01T08:01:30
+cat3e;MEDIBUS - Ventilator storing;cat3e_Medibus_00;2026-01-01T08:00:00;2026-01-01T08:00:20
+cat3e;MEDIBUS - MV ondergrens;cat3e_Medibus_00;2026-01-01T08:10:00;2026-01-01T08:10:30
