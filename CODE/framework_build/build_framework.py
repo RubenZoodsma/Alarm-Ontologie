@@ -404,11 +404,17 @@ def collect_inference_concepts(inference: Graph, base: Graph, onto: Graph,
 def build_metric_recipe(inference: Graph) -> dict:
     """
     {(functional_unit_concept, metric_concept):
-        (sensor_concept, signal_concept, analysis_concept)},
+        {(sensor_concept, signal_concept, analysis_concept), ...}},
     derived by walking inference.ttl's FunctionalUnit-recipe reference
-    triples forward: FunctionalUnit -hasSensor-> Sensor
-    -sensorProducesSignal-> Signal -analyzedBy-> SignalAnalysis
-    -producesMetric-> Metric.
+    triples forward from each sensor, through any number of derivation
+    layers, to every metric that sensor can reach.
+
+    A SET per key, not a single trace. Most pathways yield exactly one and
+    behave as before. A COMPOSITE instrument yields several: the 12-lead
+    ECG derives metric:HeartRate from nine different electrodes, because
+    every augmented and precordial lead references the limb electrodes
+    through Wilson's central terminal. recipe_override() asserts a trace
+    only where the set is a singleton — see there for why.
 
     KEYED ON THE PAIR, NOT ON METRIC ALONE. A metric name is not unique
     across functional units: metric:RespirationRate is produced both by
@@ -436,13 +442,85 @@ def build_metric_recipe(inference: Graph) -> dict:
     visible gap is preferable to a trace picked by a metric name that two
     different pathways both use.
     """
-    recipe = {}
+    recipe: dict = {}
     for fu, sensor in inference.subject_objects(MDA.hasSensor):
-        for signal in inference.objects(sensor, MDA.sensorProducesSignal):
+        # Walk forward from this electrode/transducer through however many
+        # derivation layers the pathway has. A SignalAnalysis may produce a
+        # derived signal (mda:producesSignal) instead of, or as well as, a
+        # metric — the 12-lead ECG does exactly this, deriving lead traces
+        # from raw electrode traces before any metric is computed — so the
+        # walk cannot assume the metric sits one analysis away.
+        frontier = list(inference.objects(sensor, MDA.sensorProducesSignal))
+        seen = set()
+        while frontier:
+            signal = frontier.pop()
+            if signal in seen:
+                continue
+            seen.add(signal)
             for analysis in inference.objects(signal, MDA.analyzedBy):
                 for metric in inference.objects(analysis, MDA.producesMetric):
-                    recipe[(fu, metric)] = (sensor, signal, analysis)
+                    recipe.setdefault((fu, metric), set()).add((sensor, signal, analysis))
+                frontier.extend(inference.objects(analysis, MDA.producesSignal))
     return recipe
+
+
+def build_sensor_of_signal(inference: Graph) -> dict:
+    """
+    {(functional_unit_concept, signal_concept): sensor_concept} — the same
+    inference.ttl recipe data, keyed one hop shorter.
+
+    recipe_override()'s fallback for a TECHNICAL row that names a Signal but
+    no Metric, where build_metric_recipe()'s key cannot apply: e.g.
+    "Monitor - ECG artefact" (signal:ECG_signal, no metric) or
+    "PHILIPSMONITOR - SpO2 zwak signaal" (signal:PPG_waveform, no metric).
+    Which sensor produced a given signal on a given functional unit is
+    already fully determined by the recipe, so leaving those rows with a
+    generic mda:Sensor node was a gap rather than a limitation — this is
+    exactly what Nena flagged on "Monitor - ECG artefact" ("sensor: electro
+    cardio graphy_sensor?").
+
+    Fills the SENSOR only. The signal is what the row already names, and the
+    analysis is deliberately NOT derivable this way: one signal can feed
+    several analyses (signal:PPG_waveform is analyzed by SpO2Analysis,
+    PulseAnalysis and PulseFlowIndexAnalysis at once), so a row that names no
+    metric gives nothing to choose between them, and guessing would assert a
+    processing step the alarm does not evidence.
+    """
+    mapping = {}
+    for fu, sensor in inference.subject_objects(MDA.hasSensor):
+        for signal in inference.objects(sensor, MDA.sensorProducesSignal):
+            mapping[(fu, signal)] = sensor
+    return mapping
+
+
+def _shared_supertype(concepts: set, inference: Graph):
+    """
+    The most specific class every concept in `concepts` is a subclass of,
+    following inference.ttl's own rdfs:subClassOf edges, or None if they
+    share nothing above the ontology's top class.
+
+    Used when a metric's trace is not determined down to one sensor or one
+    signal. Asserting the ontology class (mda:Sensor) in that position is
+    too weak to be worth saying — a pulse oximeter satisfies it — whereas
+    the shared supertype (sensor:ElectroCardioGraphy_sensor) is exactly the
+    claim the alarm supports.
+    """
+    def ancestors(c):
+        out, frontier = set(), [c]
+        while frontier:
+            x = frontier.pop()
+            for parent in inference.objects(x, RDFS.subClassOf):
+                if isinstance(parent, URIRef) and parent not in out:
+                    out.add(parent); frontier.append(parent)
+        return out
+    if not concepts:
+        return None
+    common = set.intersection(*(ancestors(c) for c in concepts))
+    common = {c for c in common if str(c).startswith(VOCAB)}
+    if not common:
+        return None
+    # most specific = the one with the most ancestors of its own
+    return max(common, key=lambda c: len(ancestors(c)))
 
 
 def build_administers_map(inference: Graph) -> dict:
@@ -679,7 +757,8 @@ def precoordinate(ref: Graph, concept: URIRef, refs: list) -> URIRef:
 def build_alarmtype_triples(row: pd.Series, kg: Graph, ref: Graph, index: dict,
                             tree: dict, node_kind: dict, node_columns: dict,
                             leaf_specs: list, target_types: dict,
-                            metric_recipe: dict, administers_map: dict) -> None:
+                            metric_recipe: dict, sensor_of_signal: dict,
+                            administers_map: dict, inference_graph: Graph) -> None:
     """
     Emit one CSV row as an mda:AlarmType, routing triples to two graphs:
     per-alarm particulars to `kg`, deduplicable universals to `ref`.
@@ -736,17 +815,54 @@ def build_alarmtype_triples(row: pd.Series, kg: Graph, ref: Graph, index: dict,
             return administers_map.get(device_concept)
         if cls not in (MDA.Sensor, MDA.Signal, MDA.SignalAnalysis):
             return None
-        metric_concept = column_concept(MDA.Metric)
-        if metric_concept is None:
-            return None
         fu_concept = column_concept(MDA.FunctionalUnit)
         if fu_concept is None:
             return None
-        chain = metric_recipe.get((fu_concept, metric_concept))
-        if chain is None:
+        metric_concept = column_concept(MDA.Metric)
+        if metric_concept is None:
+            # No Metric: a technical row may still name a Signal, which
+            # together with the FunctionalUnit determines the Sensor (see
+            # build_sensor_of_signal). Sensor only — the analysis step stays
+            # generic, since one signal can feed several.
+            if cls != MDA.Sensor:      # NB: `is not` is wrong here — URIRef
+                                       # equality is by value, not identity
+                return None
+            signal_concept = column_concept(MDA.Signal)
+            if signal_concept is not None:
+                sensor_c = sensor_of_signal.get((fu_concept, signal_concept))
+                if sensor_c is not None:
+                    return sensor_c
+            # Last resort: the row names no Metric, and no specific sensor is
+            # determined — but if every sensor this FunctionalUnit reads from
+            # shares a supertype, that much IS known. "Monitor - ECG artefact"
+            # names signal:ECG_signal, the group type, so no single electrode
+            # follows; "an ECG electrode" still does. Returns None where the
+            # unit's sensors share nothing (FU_InvasiveBloodPressure's arterial
+            # and venous transducers), leaving the node generic as before.
+            return _shared_supertype(
+                set(inference_graph.objects(fu_concept, MDA.hasSensor)),
+                inference_graph)
+        traces = metric_recipe.get((fu_concept, metric_concept))
+        if not traces:
             return None
-        sensor_c, signal_c, analysis_c = chain
-        return {MDA.Sensor: sensor_c, MDA.Signal: signal_c, MDA.SignalAnalysis: analysis_c}[cls]
+        # EACH SLOT RESOLVES INDEPENDENTLY. A composite instrument may pin
+        # down one level of the pathway while leaving another open: on a
+        # 12-lead ECG, heart rate comes from a known analysis over known
+        # rhythm leads, but not from a known electrode — every lead is a
+        # difference between several. So rather than accept or reject the
+        # trace as a whole, take each position on its own:
+        #
+        #   all traces agree      -> assert that concept
+        #   they differ          -> assert their most specific shared
+        #                            supertype (sensor:ElectroCardioGraphy_
+        #                            sensor rather than the bare mda:Sensor,
+        #                            which a pulse oximeter also satisfies)
+        #   they share nothing   -> assert nothing, node stays generic
+        slot = {MDA.Sensor: 0, MDA.Signal: 1, MDA.SignalAnalysis: 2}[cls]
+        candidates = {trace[slot] for trace in traces}
+        if len(candidates) == 1:
+            return next(iter(candidates))
+        return _shared_supertype(candidates, inference_graph)
 
     def _scheme_of_column(col):
         return Namespace(COLUMN_SCHEMES[col][1])["Scheme"]
@@ -957,7 +1073,8 @@ def build_alarmtype_triples(row: pd.Series, kg: Graph, ref: Graph, index: dict,
 
 def build_graphs(df: pd.DataFrame, index: dict, tree: dict, node_kind: dict,
                  node_columns: dict, leaf_specs: list, target_types: dict,
-                 metric_recipe: dict, administers_map: dict):
+                 metric_recipe: dict, sensor_of_signal: dict, administers_map: dict,
+                 inference_graph: Graph):
     """Return (kg, ref): per-alarm particulars, and deduplicated universals."""
     kg, ref = Graph(), Graph()
     for g in (kg, ref):
@@ -972,7 +1089,8 @@ def build_graphs(df: pd.DataFrame, index: dict, tree: dict, node_kind: dict,
         try:
             build_alarmtype_triples(row, kg, ref, index, tree,
                                     node_kind, node_columns, leaf_specs, target_types,
-                                    metric_recipe, administers_map)
+                                    metric_recipe, sensor_of_signal, administers_map,
+                                    inference_graph)
         except KeyError as e:
             failed.append(f"  Row {i + 2}: {e}")
     if failed:
@@ -1080,10 +1198,11 @@ def main() -> None:
     # 6. KG expansion — particulars → kg_generated; universals → vocab_generated
     index            = build_notation_index(base, vocab_out)
     metric_recipe    = build_metric_recipe(inference)
+    sensor_of_signal = build_sensor_of_signal(inference)
     administers_map  = build_administers_map(inference)
     kg_out, ref_out = build_graphs(df, index, tree, node_kind, node_columns,
                                    leaf_specs, target_types, metric_recipe,
-                                   administers_map)
+                                   sensor_of_signal, administers_map, inference)
     for t in ref_out:                     # merge the deduplicated universal graph
         vocab_out.add(t)
 

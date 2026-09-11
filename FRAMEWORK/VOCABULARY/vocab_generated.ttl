@@ -1555,6 +1555,106 @@ sensor:Capnometer a skos:Concept ;
     skos:prefLabel "Capnometer"@en,
         "Capnometer"@nl .
 
+sensor:ECG_LA_sensor a skos:Concept ;
+    rdfs:subClassOf mda:Sensor ;
+    skos:broader sensor:Sensor ;
+    skos:definition "ECG_LA_sensor"@en,
+        "ECG_LA_sensor"@nl ;
+    skos:inScheme sensor:Scheme ;
+    skos:notation "ECG_LA_sensor" ;
+    skos:prefLabel "ECG_LA_sensor"@en,
+        "ECG_LA_sensor"@nl .
+
+sensor:ECG_LL_sensor a skos:Concept ;
+    rdfs:subClassOf mda:Sensor ;
+    skos:broader sensor:Sensor ;
+    skos:definition "ECG_LL_sensor"@en,
+        "ECG_LL_sensor"@nl ;
+    skos:inScheme sensor:Scheme ;
+    skos:notation "ECG_LL_sensor" ;
+    skos:prefLabel "ECG_LL_sensor"@en,
+        "ECG_LL_sensor"@nl .
+
+sensor:ECG_RA_sensor a skos:Concept ;
+    rdfs:subClassOf mda:Sensor ;
+    skos:broader sensor:Sensor ;
+    skos:definition "ECG_RA_sensor"@en,
+        "ECG_RA_sensor"@nl ;
+    skos:inScheme sensor:Scheme ;
+    skos:notation "ECG_RA_sensor" ;
+    skos:prefLabel "ECG_RA_sensor"@en,
+        "ECG_RA_sensor"@nl .
+
+sensor:ECG_RL_sensor a skos:Concept ;
+    rdfs:subClassOf mda:Sensor ;
+    skos:broader sensor:Sensor ;
+    skos:definition "ECG_RL_sensor"@en,
+        "ECG_RL_sensor"@nl ;
+    skos:inScheme sensor:Scheme ;
+    skos:notation "ECG_RL_sensor" ;
+    skos:prefLabel "ECG_RL_sensor"@en,
+        "ECG_RL_sensor"@nl .
+
+sensor:ECG_V1_sensor a skos:Concept ;
+    rdfs:subClassOf mda:Sensor ;
+    skos:broader sensor:Sensor ;
+    skos:definition "ECG_V1_sensor"@en,
+        "ECG_V1_sensor"@nl ;
+    skos:inScheme sensor:Scheme ;
+    skos:notation "ECG_V1_sensor" ;
+    skos:prefLabel "ECG_V1_sensor"@en,
+        "ECG_V1_sensor"@nl .
+
+sensor:ECG_V2_sensor a skos:Concept ;
+    rdfs:subClassOf mda:Sensor ;
+    skos:broader sensor:Sensor ;
+    skos:definition "ECG_V2_sensor"@en,
+        "ECG_V2_sensor"@nl ;
+    skos:inScheme sensor:Scheme ;
+    skos:notation "ECG_V2_sensor" ;
+    skos:prefLabel "ECG_V2_sensor"@en,
+        "ECG_V2_sensor"@nl .
+
+sensor:ECG_V3_sensor a skos:Concept ;
+    rdfs:subClassOf mda:Sensor ;
+    skos:broader sensor:Sensor ;
+    skos:definition "ECG_V3_sensor"@en,
+        "ECG_V3_sensor"@nl ;
+    skos:inScheme sensor:Scheme ;
+    skos:notation "ECG_V3_sensor" ;
+    skos:prefLabel "ECG_V3_sensor"@en,
+        "ECG_V3_sensor"@nl .
+
+sensor:ECG_V4_sensor a skos:Concept ;
+    rdfs:subClassOf mda:Sensor ;
+    skos:broader sensor:Sensor ;
+    skos:definition "ECG_V4_sensor"@en,
+        "ECG_V4_sensor"@nl ;
+    skos:inScheme sensor:Scheme ;
+    skos:notation "ECG_V4_sensor" ;
+    skos:prefLabel "ECG_V4_sensor"@en,
+        "ECG_V4_sensor"@nl .
+
+sensor:ECG_V5_sensor a skos:Concept ;
+    rdfs:subClassOf mda:Sensor ;
+    skos:broader sensor:Sensor ;
+    skos:definition "ECG_V5_sensor"@en,
+        "ECG_V5_sensor"@nl ;
+    skos:inScheme sensor:Scheme ;
+    skos:notation "ECG_V5_sensor" ;
+    skos:prefLabel "ECG_V5_sensor"@en,
+        "ECG_V5_sensor"@nl .
+
+sensor:ECG_V6_sensor a skos:Concept ;
+    rdfs:subClassOf mda:Sensor ;
+    skos:broader sensor:Sensor ;
+    skos:definition "ECG_V6_sensor"@en,
+        "ECG_V6_sensor"@nl ;
+    skos:inScheme sensor:Scheme ;
+    skos:notation "ECG_V6_sensor" ;
+    skos:prefLabel "ECG_V6_sensor"@en,
+        "ECG_V6_sensor"@nl .
+
 sensor:ECG_lead_Resp a skos:Concept ;
     rdfs:subClassOf mda:Sensor ;
     skos:broader sensor:Sensor ;
@@ -1674,6 +1774,226 @@ signal:Capnogram_waveform a skos:Concept ;
     skos:notation "Capnogram_waveform" ;
     skos:prefLabel "Capnogram_waveform"@en,
         "Capnogram_waveform"@nl .
+
+signal:ECG_LA_signal a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_LA_signal"@en,
+        "ECG_LA_signal"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_LA_signal" ;
+    skos:prefLabel "ECG_LA_signal"@en,
+        "ECG_LA_signal"@nl .
+
+signal:ECG_LL_signal a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_LL_signal"@en,
+        "ECG_LL_signal"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_LL_signal" ;
+    skos:prefLabel "ECG_LL_signal"@en,
+        "ECG_LL_signal"@nl .
+
+signal:ECG_RA_signal a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_RA_signal"@en,
+        "ECG_RA_signal"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_RA_signal" ;
+    skos:prefLabel "ECG_RA_signal"@en,
+        "ECG_RA_signal"@nl .
+
+signal:ECG_V1_signal a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_V1_signal"@en,
+        "ECG_V1_signal"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_V1_signal" ;
+    skos:prefLabel "ECG_V1_signal"@en,
+        "ECG_V1_signal"@nl .
+
+signal:ECG_V2_signal a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_V2_signal"@en,
+        "ECG_V2_signal"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_V2_signal" ;
+    skos:prefLabel "ECG_V2_signal"@en,
+        "ECG_V2_signal"@nl .
+
+signal:ECG_V3_signal a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_V3_signal"@en,
+        "ECG_V3_signal"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_V3_signal" ;
+    skos:prefLabel "ECG_V3_signal"@en,
+        "ECG_V3_signal"@nl .
+
+signal:ECG_V4_signal a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_V4_signal"@en,
+        "ECG_V4_signal"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_V4_signal" ;
+    skos:prefLabel "ECG_V4_signal"@en,
+        "ECG_V4_signal"@nl .
+
+signal:ECG_V5_signal a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_V5_signal"@en,
+        "ECG_V5_signal"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_V5_signal" ;
+    skos:prefLabel "ECG_V5_signal"@en,
+        "ECG_V5_signal"@nl .
+
+signal:ECG_V6_signal a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_V6_signal"@en,
+        "ECG_V6_signal"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_V6_signal" ;
+    skos:prefLabel "ECG_V6_signal"@en,
+        "ECG_V6_signal"@nl .
+
+signal:ECG_lead_I a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_lead_I"@en,
+        "ECG_lead_I"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_lead_I" ;
+    skos:prefLabel "ECG_lead_I"@en,
+        "ECG_lead_I"@nl .
+
+signal:ECG_lead_II a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_lead_II"@en,
+        "ECG_lead_II"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_lead_II" ;
+    skos:prefLabel "ECG_lead_II"@en,
+        "ECG_lead_II"@nl .
+
+signal:ECG_lead_III a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_lead_III"@en,
+        "ECG_lead_III"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_lead_III" ;
+    skos:prefLabel "ECG_lead_III"@en,
+        "ECG_lead_III"@nl .
+
+signal:ECG_lead_Impedance a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_lead_Impedance"@en,
+        "ECG_lead_Impedance"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_lead_Impedance" ;
+    skos:prefLabel "ECG_lead_Impedance"@en,
+        "ECG_lead_Impedance"@nl .
+
+signal:ECG_lead_V1 a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_lead_V1"@en,
+        "ECG_lead_V1"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_lead_V1" ;
+    skos:prefLabel "ECG_lead_V1"@en,
+        "ECG_lead_V1"@nl .
+
+signal:ECG_lead_V2 a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_lead_V2"@en,
+        "ECG_lead_V2"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_lead_V2" ;
+    skos:prefLabel "ECG_lead_V2"@en,
+        "ECG_lead_V2"@nl .
+
+signal:ECG_lead_V3 a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_lead_V3"@en,
+        "ECG_lead_V3"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_lead_V3" ;
+    skos:prefLabel "ECG_lead_V3"@en,
+        "ECG_lead_V3"@nl .
+
+signal:ECG_lead_V4 a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_lead_V4"@en,
+        "ECG_lead_V4"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_lead_V4" ;
+    skos:prefLabel "ECG_lead_V4"@en,
+        "ECG_lead_V4"@nl .
+
+signal:ECG_lead_V5 a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_lead_V5"@en,
+        "ECG_lead_V5"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_lead_V5" ;
+    skos:prefLabel "ECG_lead_V5"@en,
+        "ECG_lead_V5"@nl .
+
+signal:ECG_lead_V6 a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_lead_V6"@en,
+        "ECG_lead_V6"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_lead_V6" ;
+    skos:prefLabel "ECG_lead_V6"@en,
+        "ECG_lead_V6"@nl .
+
+signal:ECG_lead_aVF a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_lead_a VF"@en,
+        "ECG_lead_a VF"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_lead_aVF" ;
+    skos:prefLabel "ECG_lead_a VF"@en,
+        "ECG_lead_a VF"@nl .
+
+signal:ECG_lead_aVL a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_lead_a VL"@en,
+        "ECG_lead_a VL"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_lead_aVL" ;
+    skos:prefLabel "ECG_lead_a VL"@en,
+        "ECG_lead_a VL"@nl .
+
+signal:ECG_lead_aVR a skos:Concept ;
+    rdfs:subClassOf mda:Signal ;
+    skos:broader signal:Signal ;
+    skos:definition "ECG_lead_a VR"@en,
+        "ECG_lead_a VR"@nl ;
+    skos:inScheme signal:Scheme ;
+    skos:notation "ECG_lead_aVR" ;
+    skos:prefLabel "ECG_lead_a VR"@en,
+        "ECG_lead_a VR"@nl .
 
 signal:ECG_signal a skos:Concept ;
     rdfs:subClassOf mda:Signal ;

@@ -186,33 +186,221 @@ device:MechanicalVentilator             mda:administers therapeuticModality:Vent
 # FunctionalUnit types no longer applies, but sensor names still don't
 # repeat here, simply because each is a genuinely distinct physical part.
 #
-# FU_ElectroCardiography still has no recipe — the real 12-lead expert
-# recipe is pending. The "nothing is blocking on it" claim this comment
-# used to carry was true of the p50 corpus and is NOT true of p75: ten
-# metric-bearing alarms now name FU_ElectroCardiography (seven HeartRate,
-# including PHILIPSMONITOR - Asystolie, and three impedance-derived
-# RespirationRate, including PHILIPSMONITOR - Apneu), and every one of them
-# gets a generic mda:Sensor/mda:Signal/mda:SignalAnalysis node for want of
-# a recipe to fall back on. That — not the blank Sensor column — is the
-# actual root cause of the gap logged as "CQ2 — ECG sensor-level annotation
-# gap" in EVALUATION/CQs/cq_discoveries.md; filling blanks is precisely
-# what recipe_override() exists to do, and there is nothing here to fall
-# back on. Authoring it needs two traces, not one: sensor:
-# ElectroCardioGraphy_sensor -> signal:ECG_signal -> HeartRate, and sensor:
-# ECG_lead_Resp -> (an impedance-respiration signal concept that does not
-# exist yet) -> RespirationRate. PHILIPSMONITOR - Niet te leren ECG and
-# PHILIPSMONITOR - Resp elektr.los are unaffected either way: both are
-# Signal.QualityState/OperationalState rows that assert their sensor
-# directly per-alarm (see mda:Sensor's own comment).
+# ── Trace: Electrocardiography sensing pathway ─────────────────────────
 #
-# Three other traces are likewise missing against p75, each blocking real
-# alarms: (FU_AirwayPressure, CPAP) 2 alarms, (FU_Temperature, Temperature)
-# 2 alarms — distinct from the incubator AirTemperature trace below — and
-# (FU_*, VentilationCircuitLeak) 4 alarms, whose annotation is split across
-# FU_PneumoTachograph and FU_AirwayPressure and needs an annotator ruling
-# on whether that split is a real vendor difference before either trace is
-# written. Deferred to the per-archetype curation walk; see
-# FRAMEWORK/CURATION_LOG.md.
+# Expanded to the real instrument in the 2026-09 curation round. Source:
+# Paul A, Jacob J. "Electrocardiographic lead reversals" (2023), PMC10685096.
+#
+# TEN ELECTRODES, TWELVE LEADS — not twelve sensors. The leads are DERIVED
+# measurements, which is why they are modelled as mda:Signal produced by an
+# mda:SignalAnalysis rather than as sensors or as metrics:
+#
+#   * a lead is a voltage trace over time, which is what a Signal is; a
+#     Metric in this framework is the quantity an alarm reports with a value
+#     state, and no alarm is ever "about aVR"
+#   * making leads Metrics would leave metric:HeartRate — which every ECG
+#     alarm actually names — with no producing analysis
+#   * mda:producesSignal's union domain (Sensor OR SignalAnalysis) exists
+#     for exactly this, and its comment already names "augmented lead aVF,
+#     combined from other leads" as the case it was written for
+#
+# Layers: electrode -> raw signal -> derivation -> lead signal ->
+# interpretation -> metric.
+#
+# sensor:ECG_RL_sensor is the neutral/ground electrode. It is modelled
+# because it is a real electrode that can come loose, but it produces no
+# raw signal and contributes to no lead — per the source, "the right leg
+# electrode serves as the neutral".
+#
+# THREE OR FIVE ELECTRODES IS A SUBSET OF THIS, NOT A DIFFERENT MAPPING.
+# Continuous ICU monitoring typically places 3 or 5 electrodes rather than
+# all 10; the derivations below are unchanged, a smaller set simply yields
+# fewer leads. Nothing here asserts that all ten are present on any given
+# alarm — see the per-alarm note at the end of this section.
+
+functionalUnit:FU_ElectroCardiography mda:hasSensor
+    sensor:ECG_RA_sensor,
+    sensor:ECG_LA_sensor,
+    sensor:ECG_LL_sensor,
+    sensor:ECG_RL_sensor,
+    sensor:ECG_V1_sensor,
+    sensor:ECG_V2_sensor,
+    sensor:ECG_V3_sensor,
+    sensor:ECG_V4_sensor,
+    sensor:ECG_V5_sensor,
+    sensor:ECG_V6_sensor .
+
+## Electrode -> raw signal (RL is ground: no signal, no lead)
+sensor:ECG_RA_sensor mda:sensorProducesSignal signal:ECG_RA_signal .
+sensor:ECG_LA_sensor mda:sensorProducesSignal signal:ECG_LA_signal .
+sensor:ECG_LL_sensor mda:sensorProducesSignal signal:ECG_LL_signal .
+sensor:ECG_V1_sensor mda:sensorProducesSignal signal:ECG_V1_signal .
+sensor:ECG_V2_sensor mda:sensorProducesSignal signal:ECG_V2_signal .
+sensor:ECG_V3_sensor mda:sensorProducesSignal signal:ECG_V3_signal .
+sensor:ECG_V4_sensor mda:sensorProducesSignal signal:ECG_V4_signal .
+sensor:ECG_V5_sensor mda:sensorProducesSignal signal:ECG_V5_signal .
+sensor:ECG_V6_sensor mda:sensorProducesSignal signal:ECG_V6_signal .
+
+## Derivation -> lead signal. Formulas from the source, verbatim in intent:
+##   I = LA - RA      II = LL - RA      III = LL - LA
+##   aVR = RA - (LA+LL)/2   aVL = LA - (RA+LL)/2   aVF = LL - (LA+RA)/2
+##   Vn  = Vn - Wilson's central terminal, WCT = (RA+LA+LL)/3
+## The dependency asserted is which raw signals each derivation INGESTS,
+## not the arithmetic — OWL carries no formulas. Every augmented and
+## every precordial lead therefore depends on all three limb electrodes,
+## the precordials because WCT is their reference.
+
+signal:ECG_LA_signal mda:analyzedBy signalAnalysis:ECG_derivation_I .
+signal:ECG_RA_signal mda:analyzedBy signalAnalysis:ECG_derivation_I .
+signalAnalysis:ECG_derivation_I mda:producesSignal signal:ECG_lead_I .
+
+signal:ECG_LL_signal mda:analyzedBy signalAnalysis:ECG_derivation_II .
+signal:ECG_RA_signal mda:analyzedBy signalAnalysis:ECG_derivation_II .
+signalAnalysis:ECG_derivation_II mda:producesSignal signal:ECG_lead_II .
+
+signal:ECG_LL_signal mda:analyzedBy signalAnalysis:ECG_derivation_III .
+signal:ECG_LA_signal mda:analyzedBy signalAnalysis:ECG_derivation_III .
+signalAnalysis:ECG_derivation_III mda:producesSignal signal:ECG_lead_III .
+
+signal:ECG_RA_signal mda:analyzedBy signalAnalysis:ECG_derivation_aVR .
+signal:ECG_LA_signal mda:analyzedBy signalAnalysis:ECG_derivation_aVR .
+signal:ECG_LL_signal mda:analyzedBy signalAnalysis:ECG_derivation_aVR .
+signalAnalysis:ECG_derivation_aVR mda:producesSignal signal:ECG_lead_aVR .
+
+signal:ECG_RA_signal mda:analyzedBy signalAnalysis:ECG_derivation_aVL .
+signal:ECG_LA_signal mda:analyzedBy signalAnalysis:ECG_derivation_aVL .
+signal:ECG_LL_signal mda:analyzedBy signalAnalysis:ECG_derivation_aVL .
+signalAnalysis:ECG_derivation_aVL mda:producesSignal signal:ECG_lead_aVL .
+
+signal:ECG_RA_signal mda:analyzedBy signalAnalysis:ECG_derivation_aVF .
+signal:ECG_LA_signal mda:analyzedBy signalAnalysis:ECG_derivation_aVF .
+signal:ECG_LL_signal mda:analyzedBy signalAnalysis:ECG_derivation_aVF .
+signalAnalysis:ECG_derivation_aVF mda:producesSignal signal:ECG_lead_aVF .
+
+signal:ECG_V1_signal mda:analyzedBy signalAnalysis:ECG_derivation_V1 .
+signal:ECG_RA_signal mda:analyzedBy signalAnalysis:ECG_derivation_V1 .
+signal:ECG_LA_signal mda:analyzedBy signalAnalysis:ECG_derivation_V1 .
+signal:ECG_LL_signal mda:analyzedBy signalAnalysis:ECG_derivation_V1 .
+signalAnalysis:ECG_derivation_V1 mda:producesSignal signal:ECG_lead_V1 .
+
+signal:ECG_V2_signal mda:analyzedBy signalAnalysis:ECG_derivation_V2 .
+signal:ECG_RA_signal mda:analyzedBy signalAnalysis:ECG_derivation_V2 .
+signal:ECG_LA_signal mda:analyzedBy signalAnalysis:ECG_derivation_V2 .
+signal:ECG_LL_signal mda:analyzedBy signalAnalysis:ECG_derivation_V2 .
+signalAnalysis:ECG_derivation_V2 mda:producesSignal signal:ECG_lead_V2 .
+
+signal:ECG_V3_signal mda:analyzedBy signalAnalysis:ECG_derivation_V3 .
+signal:ECG_RA_signal mda:analyzedBy signalAnalysis:ECG_derivation_V3 .
+signal:ECG_LA_signal mda:analyzedBy signalAnalysis:ECG_derivation_V3 .
+signal:ECG_LL_signal mda:analyzedBy signalAnalysis:ECG_derivation_V3 .
+signalAnalysis:ECG_derivation_V3 mda:producesSignal signal:ECG_lead_V3 .
+
+signal:ECG_V4_signal mda:analyzedBy signalAnalysis:ECG_derivation_V4 .
+signal:ECG_RA_signal mda:analyzedBy signalAnalysis:ECG_derivation_V4 .
+signal:ECG_LA_signal mda:analyzedBy signalAnalysis:ECG_derivation_V4 .
+signal:ECG_LL_signal mda:analyzedBy signalAnalysis:ECG_derivation_V4 .
+signalAnalysis:ECG_derivation_V4 mda:producesSignal signal:ECG_lead_V4 .
+
+signal:ECG_V5_signal mda:analyzedBy signalAnalysis:ECG_derivation_V5 .
+signal:ECG_RA_signal mda:analyzedBy signalAnalysis:ECG_derivation_V5 .
+signal:ECG_LA_signal mda:analyzedBy signalAnalysis:ECG_derivation_V5 .
+signal:ECG_LL_signal mda:analyzedBy signalAnalysis:ECG_derivation_V5 .
+signalAnalysis:ECG_derivation_V5 mda:producesSignal signal:ECG_lead_V5 .
+
+signal:ECG_V6_signal mda:analyzedBy signalAnalysis:ECG_derivation_V6 .
+signal:ECG_RA_signal mda:analyzedBy signalAnalysis:ECG_derivation_V6 .
+signal:ECG_LA_signal mda:analyzedBy signalAnalysis:ECG_derivation_V6 .
+signal:ECG_LL_signal mda:analyzedBy signalAnalysis:ECG_derivation_V6 .
+signalAnalysis:ECG_derivation_V6 mda:producesSignal signal:ECG_lead_V6 .
+
+## Interpretation -> metric. HeartRateAnalysis ingests the RHYTHM LEADS,
+## not the whole twelve. Continuous monitoring derives rate and arrhythmia
+## from a designated primary lead with a secondary for confirmation, II and
+## III conventionally; the precordials and augmented leads exist for
+## morphology (ST segment, axis), which no alarm in this corpus reports. A
+## future metric such as ST elevation collapses onto its own leads the same
+## way, by adding its own analysis here — that is what this layer is for.
+##
+## Narrowing this is what lets the SIGNAL slot of an ECG heart-rate alarm
+## resolve to something real instead of the ontology's bare mda:Signal.
+## Which of the two leads a given alarm used is still not determined, so
+## that slot lands on their shared supertype (signal:ECG_signal) rather than
+## on one of them — see build_metric_recipe()/recipe_override().
+signal:ECG_lead_II mda:analyzedBy signalAnalysis:HeartRateAnalysis .
+signal:ECG_lead_III mda:analyzedBy signalAnalysis:HeartRateAnalysis .
+signalAnalysis:HeartRateAnalysis mda:producesMetric metric:HeartRate .
+
+## GROUP TYPES — the supertype every ECG electrode and every ECG signal
+## shares. These are not new concepts: they are the two the researchers were
+## already annotating with (sensor:ElectroCardioGraphy_sensor on "ECG
+## afleidingen los" / "ECG alle leads los", signal:ECG_signal on "ECG
+## artefact"), given a formal place rather than left denoting a whole with
+## no relation to its parts.
+##
+## Their job is to keep a per-alarm node HONEST when the trace is not
+## determined. Before this, an ECG heart-rate alarm asserted "hasSensor [ a
+## mda:Sensor ]" — the ontology's top sensor class, which a pulse oximeter
+## satisfies just as well as an electrode. Saying "some ECG electrode"
+## claims exactly what the alarm does evidence and nothing more.
+##
+## Expressed as subtyping rather than as a SensorGroup entity with a
+## part-of property: a group here is a KIND of sensor, not a thing that has
+## members, so no new class or property is needed and existing queries over
+## mda:Sensor keep working unchanged.
+sensor:ECG_RA_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_LA_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_LL_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_RL_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_V1_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_V2_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_V3_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_V4_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_V5_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_V6_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_lead_Resp rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+
+signal:ECG_RA_signal rdfs:subClassOf signal:ECG_signal .
+signal:ECG_LA_signal rdfs:subClassOf signal:ECG_signal .
+signal:ECG_LL_signal rdfs:subClassOf signal:ECG_signal .
+signal:ECG_V1_signal rdfs:subClassOf signal:ECG_signal .
+signal:ECG_V2_signal rdfs:subClassOf signal:ECG_signal .
+signal:ECG_V3_signal rdfs:subClassOf signal:ECG_signal .
+signal:ECG_V4_signal rdfs:subClassOf signal:ECG_signal .
+signal:ECG_V5_signal rdfs:subClassOf signal:ECG_signal .
+signal:ECG_V6_signal rdfs:subClassOf signal:ECG_signal .
+signal:ECG_lead_I rdfs:subClassOf signal:ECG_signal .
+signal:ECG_lead_II rdfs:subClassOf signal:ECG_signal .
+signal:ECG_lead_III rdfs:subClassOf signal:ECG_signal .
+signal:ECG_lead_aVR rdfs:subClassOf signal:ECG_signal .
+signal:ECG_lead_aVL rdfs:subClassOf signal:ECG_signal .
+signal:ECG_lead_aVF rdfs:subClassOf signal:ECG_signal .
+signal:ECG_lead_V1 rdfs:subClassOf signal:ECG_signal .
+signal:ECG_lead_V2 rdfs:subClassOf signal:ECG_signal .
+signal:ECG_lead_V3 rdfs:subClassOf signal:ECG_signal .
+signal:ECG_lead_V4 rdfs:subClassOf signal:ECG_signal .
+signal:ECG_lead_V5 rdfs:subClassOf signal:ECG_signal .
+signal:ECG_lead_V6 rdfs:subClassOf signal:ECG_signal .
+signal:ECG_lead_Impedance rdfs:subClassOf signal:ECG_signal .
+
+## Impedance pneumography reuses the RA and LA electrodes, measuring
+## transthoracic impedance across them rather than potential.
+signal:ECG_RA_signal mda:analyzedBy signalAnalysis:ECG_derivation_Impedance .
+signal:ECG_LA_signal mda:analyzedBy signalAnalysis:ECG_derivation_Impedance .
+signalAnalysis:ECG_derivation_Impedance mda:producesSignal signal:ECG_lead_Impedance .
+signal:ECG_lead_Impedance mda:analyzedBy signalAnalysis:ImpedanceRespirationAnalysis .
+signalAnalysis:ImpedanceRespirationAnalysis mda:producesMetric metric:RespirationRate .
+
+# PER-ALARM CONSEQUENCE, and the reason build_metric_recipe() now resolves
+# to a SET: metric:HeartRate is reachable from nine different electrodes
+# here, so no heart-rate alarm determines which one it evidences. The
+# builder asserts a trace only where the set is a singleton, and otherwise
+# stops at the FunctionalUnit — see that function's docstring. Naming one
+# electrode on a high-heart-rate alarm would be a fabrication, not a
+# simplification. Contrast FU_InvasiveBloodPressure, whose two lines are
+# genuine ALTERNATIVES: there, an alarm naming one metric does pick out one
+# trace. The ECG lead set is not alternatives; it is one instrument.
+
+
 ####################################################################
 
 ## Trace: Pulse oximetry sensing pathway
