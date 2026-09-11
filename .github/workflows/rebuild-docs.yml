@@ -60,13 +60,26 @@ jobs:
       - name: Regenerate docs/cq (Competency Questions page)
         run: python3 CODE/evaluation_cq/cq_report_html.py
 
+      # Image is ghcr.io/dgarijo/widoco, NOT dgarijo/widoco — the latter has
+      # never existed on Docker Hub, so this step failed with "pull access
+      # denied ... repository does not exist" on every run it has ever had.
+      # The docs/ontology/ pages currently published were therefore not built
+      # by this job.
+      #
+      # Pinned to v1.4.25 rather than :latest deliberately. This step opens a
+      # PR against the published site, and the flags below are a best-effort
+      # match to that site's existing structure rather than a recovered
+      # original config (see this file's header), so a silent WIDOCO upgrade
+      # could restructure the published ontology docs with nothing in the diff
+      # explaining why. The other three doc steps are deterministic; pinning
+      # makes this one match. Bump deliberately, reviewing the output.
       - name: Regenerate docs/ontology (WIDOCO)
         run: |
           mkdir -p docs/ontology
           docker run --rm \
             -v "${{ github.workspace }}:/usr/local/widoco/in" \
             -v "${{ github.workspace }}/docs:/usr/local/widoco/out" \
-            dgarijo/widoco \
+            ghcr.io/dgarijo/widoco:v1.4.25 \
             -ontFile /usr/local/widoco/in/FRAMEWORK/ONTOLOGY/ontology.ttl \
             -outFolder /usr/local/widoco/out/ontology \
             -rewriteAll -webVowl -getOntologyMetadata -lang en
