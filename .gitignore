@@ -9,6 +9,7 @@ __pycache__/
 /PREVIOUS_STALE**
 *.lic
 MDA-POC-RDFox/engine/_scratch/
+MDA-POC-RDFox/_baseline/
 *.rData
 *scratch/*    
 *.trig
@@ -28,3 +29,4 @@ MDA-POC-RDFox/engine/_scratch/
 # which could never fire while the file was invisible to git.
 !DATA/CQ_evaluation/events_data.csv
 !DATA/CAT_evaluation/events_data.csv
+*_scratch*

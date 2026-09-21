@@ -15,7 +15,7 @@ Each alarm is written twice: as its label, for reading, and as its id
 ALARM_ID), for rebuilding — a label alone repeats far too often to
 identify an alarm.
 
-Input: the trace blocks replay_driver.execute_script collects (see
+Input: the trace blocks execution.execute_script collects (see
 clinical_events.trace_block), as (tag, check_key, rows):
   ("ended", None, rows)     rows: event, kind, start, end
   ("support", None, rows)   rows: event, support — an alarm graph
@@ -27,11 +27,11 @@ clinical_events.trace_block), as (tag, check_key, rows):
   ("withdraw <patient> <time>", None, rows)
                             rows: flagged alarm, arriving alarm — a stored
                             cat1b flag withdrawn because an alarm on its IBP
-                            pathway arrived (replay_driver.cat1b_withdraw)
+                            pathway arrived (actions.cat1b_withdraw)
   ("lift <patient> <time>", None, rows)
                             rows: silenced alarm, ended alarm — a CAT2a
                             silence lifted because the last active alarm
-                            justifying it ended (replay_driver.cat2_lift)
+                            justifying it ended (actions.cat2_lift)
 Nothing here is ever written back into the store.
 """
 

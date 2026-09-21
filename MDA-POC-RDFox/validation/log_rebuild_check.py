@@ -17,7 +17,7 @@ needs:
                              alarm (the rule's own facts are re-minted from
                              those alarms by the same code)
 
-Run engine/replay_driver.py first (it writes both logs into its scratch
+Run engine/regression.py first (it writes both logs into its scratch
 folder). No command-line arguments — edit SETTINGS and run the file.
 """
 from __future__ import annotations
@@ -30,10 +30,10 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "engine"))
 import event_log as EL  # noqa: E402
 import mint as M  # noqa: E402
-import replay_driver as R  # noqa: E402
+import stream as S  # noqa: E402
 
 SETTINGS = {
-    "events": R.DATASET,
+    "events": S.DATASET,
     "logs": ROOT / "engine" / "_scratch",
 }
 
@@ -80,7 +80,7 @@ CRITERIA["VentilationFailure"] = lambda g: (CRITERIA["ReducedPulmonaryFunction"]
 def main() -> int:
     kb = M.load_kb()
     by_id = {iri.rsplit("/", 1)[-1]: e
-             for iri, e in EL.alarm_index(R.load_events(SETTINGS["events"])).items()}
+             for iri, e in EL.alarm_index(S.load_events(SETTINGS["events"])).items()}
     failures = 0
 
     with (SETTINGS["logs"] / "clinical_events.csv").open(encoding="utf-8") as f:

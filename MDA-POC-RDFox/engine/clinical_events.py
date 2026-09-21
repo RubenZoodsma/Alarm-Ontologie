@@ -21,7 +21,7 @@ An event outlives the individual facts that support it (a second heart
 rate alarm keeps a cardiac arrest going after the first one ends), so it
 cannot be a derived Datalog fact: RDFox would retract it the moment the
 first alarm's graph is dropped, and a derived fact cannot carry an end
-time. And replay_driver.build_script writes the whole replay as ONE RDFox
+time. And processor.build_script writes the whole replay as ONE RDFox
 script before anything runs, so Python cannot react to a query result
 mid-run. The per-(patient, kind) state machine therefore runs inside
 RDFox, as guarded `INSERT ... WHERE` updates:
@@ -38,7 +38,7 @@ WHEN THE STATE MACHINE RUNS, AND WHY now IS THE RIGHT TIMESTAMP
 --------------------------------------------------------------------
 Evidence can only appear or disappear when a relevant alarm is inserted
 (arrival) or one of its graphs is dropped (end, window expiry) — no alarm
-ever edits another alarm's graphs (replay_driver's module docstring).
+ever edits another alarm's graphs (windows.py's module docstring).
 evaluate_commands() is emitted at exactly those moments, with `now` set to
 that moment's logical time. So the first moment a criterion holds, and the
 moment it stops holding, are always evaluation times — hasStart = now and
@@ -56,7 +56,7 @@ FLAGGED ALARMS ARE NO EVIDENCE (agreed 2026-09-21)
 --------------------------------------------------------------------
 An alarm CAT1 flagged as likely false positive (mdapoc:
 flaggedLikelyFalsePositive, stored in its own transient graph by
-replay_driver's cat1_flag_insert) supports no clinical event: a condition
+actions.cat1_flag_insert) supports no clinical event: a condition
 must not rest on an alarm the POC itself believes to be false. This is the
 rule order CAT1 -> clinical events: build_script runs an arrival's CAT1
 checks before its clinical-event evaluation. A CAT1b flag can be withdrawn

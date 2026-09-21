@@ -129,7 +129,7 @@ class KB:
     last_wins: set            # every leaf/condition property, any class (see leaf_properties)
     last_wins_str: set = field(default_factory=set)  # last_wins, as "<iri>" strings —
                                                        # populated by load_kb(), consulted by
-                                                       # engine/replay_driver.py to match its
+                                                       # engine/processor.py to match its
                                                        # own hand-formatted "s p o ." triple text
     archetype_cache: dict = field(default_factory=dict)  # type_iri -> Archetype, memoised
     refining_props_cache: dict = field(default_factory=dict)  # cls -> refining_properties(kb, cls)
@@ -360,7 +360,7 @@ def particular_iri(kb: KB, arch: "Archetype", patient_id: str, device_id: str, c
 def alarm_key(ev) -> str:
     """One alarm occurrence: patient, device, start, end and ALARM_ID (the
     event's own unique identifier — for the corpus, its row number in the
-    locked source data; see replay_driver.Event). Patient + device + start
+    locked source data; see stream.Event). Patient + device + start
     alone collided for 45.5% of the corpus: alarms raised in the same
     second on one monitor got one IRI, hence one pair of named graphs, and
     the first to end dropped the others' content. Everything an alarm
@@ -507,7 +507,7 @@ def condition_for_event(kb: KB, patient_id: str, label: str, device_id: str,
 #
 # load_priority_rank() (assess.py's third small enrichment) is NOT ported
 # here — dead code, confirmed unused: priority_rank.ttl is loaded directly
-# by replay_driver.py's FRAMEWORK_FILES instead.
+# by execution.py's FRAMEWORK_FILES instead.
 
 def resolve_identity(kb: KB, events: list) -> dict:
     """
