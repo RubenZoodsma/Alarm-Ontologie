@@ -358,17 +358,17 @@ def particular_iri(kb: KB, arch: "Archetype", patient_id: str, device_id: str, c
 
 
 def alarm_key(ev) -> str:
-    """One alarm occurrence: patient, device, start, end and ALARM_ID (the
+    """One alarm occurrence: patient, device, start and ALARM_ID (the
     event's own unique identifier — for the corpus, its row number in the
     locked source data; see stream.Event). Patient + device + start
     alone collided for 45.5% of the corpus: alarms raised in the same
     second on one monitor got one IRI, hence one pair of named graphs, and
     the first to end dropped the others' content. Everything an alarm
     reports lives in graphs named after this key, so no other alarm's
-    arrival or end can touch it."""
+    arrival or end can touch it. The end is NOT part of the key: it is not
+    known when the alarm arrives (stream.AlarmArrival)."""
     return "_".join([_clean(ev.patient), _clean(ev.device_id),
-                     ev.start.strftime("%Y%m%dT%H%M%S"), ev.end.strftime("%Y%m%dT%H%M%S"),
-                     _clean(ev.alarm_id)])
+                     ev.start.strftime("%Y%m%dT%H%M%S"), _clean(ev.alarm_id)])
 
 
 def alarm_iri(ev) -> URIRef:
@@ -465,7 +465,6 @@ def alarm_message(kb: KB, ev, identity: dict = None) -> Graph:
     g.add((a, MDA.isOfType, type_iri))
     g.add((a, MDA.hasLabel, Literal(ev.label, lang="en")))
     g.add((a, MDA.hasStart, Literal(ev.start.isoformat(), datatype=XSD.dateTime)))
-    g.add((a, MDA.hasEnd, Literal(ev.end.isoformat(), datatype=XSD.dateTime)))
     ground_leaf_properties(g, kb, arch, MDA.Alarm, a)
     g.add((a, MDA.hasMessage, msg))
     g.add((msg, RDF.type, MDA.AlarmMessage))

@@ -70,13 +70,8 @@ GRAPH ?gV { ?vAlarm mda:hasMessage ?vMsg . ?vMsg mda:concernsPatient ?patient . 
   GRAPH ?gV { ?vComp mda:hasComponentOperationState opstate:Disconnected . }
   GRAPH ?gVS { ?vDev mda:hasComponent ?vComp . ?vComp rdf:type component:AirwayCircuit . }
 }
-# validity of the structural graph, where a branch used one (outside the
-# UNION: a branch cannot see ?now, which is bound outside it)
-FILTER(!BOUND(?gVS) || EXISTS { ?gVS mdapoc:validUntil ?gVS_until . FILTER(?now <= ?gVS_until) })
 GRAPH ?gVT { ?vDev mda:administers ?therapy . ?therapy rdf:type ?therapyType . }
 ?therapyType rdfs:subClassOf* therapeuticModality:VentilationTherapy .
-?gV mdapoc:validUntil ?gV_until . FILTER(?now <= ?gV_until)
-?gVT mdapoc:validUntil ?gVT_until . FILTER(?now <= ?gVT_until)
 VALUES ?which { 1 2 }
 BIND(IF(?which = 1, ?rpf, ?therapy) AS ?evidence)
 BIND(IF(?which = 1, ?rpf, ?gV) AS ?support)

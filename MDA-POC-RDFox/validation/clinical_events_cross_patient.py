@@ -25,7 +25,6 @@ No command-line arguments — edit SETTINGS and run the file directly.
 """
 from __future__ import annotations
 
-import itertools
 import shutil
 import sys
 from datetime import datetime
@@ -33,13 +32,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "engine"))
-import actions as A  # noqa: E402
 import event_log as EL  # noqa: E402
 import mint as M  # noqa: E402
 import execution as X  # noqa: E402
 import rules as RU  # noqa: E402
 import stream as S  # noqa: E402
-import windows as W  # noqa: E402
+import processor as P  # noqa: E402
 
 SETTINGS = {
     "scratch": ROOT / "_scratch" / "clinical_events_cross_patient",
@@ -72,32 +70,12 @@ EXPECTED = {
 
 
 def build_interleaved_script(kb, scratch: Path, rule_names) -> str:
-    rules = RU.enabled_event_rules(rule_names)
-    lines = ["dstore create xp", "active xp"]
-    lines += [f"import {f}" for f in X.FRAMEWORK_FILES]
-    lines += X.SCRIPT_PREAMBLE
-    counter = itertools.count(1)
-    drivers = {}
-    pending = []  # (when, seq, command) across all patients, flushed in time order
-    seq = itertools.count()
-    for e in sorted(EVENTS, key=lambda ev: ev.start):
-        due = sorted(p for p in pending if p[0] <= e.start)
-        lines += [cmd for _, _, cmd in due]
-        pending = [p for p in pending if p[0] > e.start]
-
-        driver = drivers.setdefault(e.patient, W.WindowOperator(kb, scratch, counter, rules))
-        M.update_identity(kb, e, driver.identity_tracker)
-        kinds = frozenset(RU.relevant_kinds(kb, e.label, RU._alarm_metric_types(kb, e), rules))
-        driver.insert_alarm(e, driver.identity_tracker.identity, kinds)
-        lines += driver.commands
-        driver.commands.clear()
-        lines += A.evaluate_commands(kinds, rules, e.patient, e.start)
-        # Take this driver's scheduled drops into the shared, time-ordered queue.
-        pending += [(when, next(seq), cmd) for when, cmd in driver.pending]
-        driver.pending = []
-    lines += [cmd for _, _, cmd in sorted(pending)]
-    lines.append("quit")
-    return "\n".join(lines)
+    """One stream of all patients' alarms, interleaved in time, through the
+    engine's own processor into ONE store — as a live feed would arrive."""
+    proc = P.Processor(kb, scratch, rule_names)
+    proc.feed(S.replay_stream(EVENTS))
+    proc.close_windows()
+    return "\n".join(P.script_header("xp") + proc.lines + ["quit"])
 
 
 def main() -> int:

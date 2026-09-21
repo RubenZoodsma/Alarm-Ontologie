@@ -25,6 +25,4 @@
 PREFIX mdapoc: <https://w3id.org/mda/poc#>
 
 GRAPH ?gS { ?silenced mdapoc:silencedBy ?ended }
-# the silenced alarm is still active strictly after ?now
-?gS mdapoc:validUntil ?gS_until . FILTER(?now < ?gS_until)
 FILTER NOT EXISTS { GRAPH ?gS2 { ?silenced mdapoc:silencedBy ?other } FILTER(?other != ?ended) }

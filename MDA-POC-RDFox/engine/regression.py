@@ -273,6 +273,28 @@ def rule_logic_outside_rule_files() -> list:
     return hits
 
 
+def lookahead_possible() -> list:
+    """Ways an alarm's future could reach the store at its arrival: an end
+    on the arrival element, an end read by the modules that handle
+    arrivals, or validity metadata in a rule or action file. Empty when the
+    stream model rules lookahead out by construction."""
+    import dataclasses
+    import stream as S
+    from paths import ACTIONS_DIR, RULES_DIR
+    problems = []
+    if "end" in {f.name for f in dataclasses.fields(S.AlarmArrival)}:
+        problems.append("stream.AlarmArrival has an end field")
+    for name in ("mint.py", "windows.py", "processor.py", "actions.py", "rules.py"):
+        for i, line in enumerate((ENGINE_DIR / name).read_text().splitlines(), start=1):
+            if re.search(r"\.end\b", line.split("#", 1)[0]):
+                problems.append(f"{name}:{i}: reads .end: {line.strip()[:80]}")
+    for folder in (RULES_DIR, ACTIONS_DIR):
+        for path in sorted(folder.glob("*.rq")):
+            if "validUntil" in path.read_text():
+                problems.append(f"{path.name}: validUntil")
+    return problems
+
+
 def run():
     scratch = ENGINE_DIR / "_scratch"
     if scratch.exists():
@@ -368,6 +390,12 @@ def run():
         passed += status == "PASS"
         print(f"[{status}] {patient} (forbidden firings): must not see {sorted(forbidden)}, "
               f"saw {sorted(forbidden & got)}")
+
+    problems = lookahead_possible()
+    total += 1
+    passed += not problems
+    print(f"[{'FAIL' if problems else 'PASS'}] no lookahead: an alarm's end cannot reach the store at arrival"
+          + "".join(f"\n    {p}" for p in problems))
 
     hits = rule_logic_outside_rule_files()
     total += 1

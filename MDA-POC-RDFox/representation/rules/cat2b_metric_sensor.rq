@@ -95,8 +95,3 @@ FILTER(?activeSeverity >= ?severity)
 # a different sensor: another functional unit, or another sensor type
 FILTER(?activeFu != ?fu || ?activeSensorType != ?sensorType)
 BIND(?gA AS ?witness)
-# validity: every graph must still be in its window at ?now
-?gA mdapoc:validUntil ?gA_until . FILTER(?now <= ?gA_until)
-?gAP mdapoc:validUntil ?gAP_until . FILTER(?now <= ?gAP_until)
-?gP mdapoc:validUntil ?gP_until . FILTER(?now <= ?gP_until)
-?gT mdapoc:validUntil ?gT_until . FILTER(?now <= ?gT_until)

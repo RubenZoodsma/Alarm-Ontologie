@@ -80,10 +80,6 @@ GRAPH ?gIbp { ?patient mda:isMonitoredBy ?ibpDevice . ?ibpDevice rdf:type ?ibpDe
 # without a current alarm on that pathway
 FILTER NOT EXISTS {
   GRAPH ?gOther { ?other mda:hasMessage ?otherMsg . ?otherMsg mda:triggeredBy ?ibpFunctionalUnit . }
-  ?gOther mdapoc:validUntil ?gOther_until . FILTER(?now <= ?gOther_until)
 }
 BIND(?ibpFunctionalUnit AS ?evidence)
 BIND(?gIbp AS ?witness)
-# validity: every graph must still be in its window at ?now
-?gIbp mdapoc:validUntil ?gIbp_until . FILTER(?now <= ?gIbp_until)
-?gT mdapoc:validUntil ?gT_until . FILTER(?now <= ?gT_until)

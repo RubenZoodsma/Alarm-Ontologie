@@ -93,7 +93,3 @@ GRAPH ?gP { ?fu mda:hasSensor ?sensor . ?sensor mda:sensorProducesSignal ?signal
   BIND(?sensor AS ?evidence)
 }
 BIND(?gQ AS ?witness)
-# validity: every graph must still be in its window at ?now
-?gP mdapoc:validUntil ?gP_until . FILTER(?now <= ?gP_until)
-?gQ mdapoc:validUntil ?gQ_until . FILTER(?now <= ?gQ_until)
-?gT mdapoc:validUntil ?gT_until . FILTER(?now <= ?gT_until)

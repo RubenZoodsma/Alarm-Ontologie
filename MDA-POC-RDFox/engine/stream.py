@@ -2,9 +2,20 @@
 stream.py — the stream source (RSP-QL: the input stream).
 
 Reads an alarm corpus (`;`-separated: patientID;label;device_id;start;end
-[;alarm_id]) into Event records, per patient. Time is LOGICAL, not
-wall-clock: this replays a fixed historical corpus, in arrival order per
-patient.
+[;alarm_id]) into Event records, and replays them as the stream the
+engine consumes: separate AlarmArrival and AlarmEnd elements, in time
+order. Time is LOGICAL, not wall-clock.
+
+An AlarmArrival carries no end: nothing downstream can know when an alarm
+will end before its AlarmEnd arrives, exactly as with a live feed. A live
+source would emit the same two element types as they happen.
+
+ORDER AT ONE INSTANT t (replay_stream). All AlarmEnds at t come before the
+AlarmArrivals at t: an alarm that ended at t is no longer active for one
+arriving at t. An alarm's end never precedes its own arrival: a zero-length
+alarm (end == start; 32,391 in the corpus) ends right after its own
+arrival, before any later arrival at t; an end before the start (6 in the
+corpus) is treated as zero-length. Arrivals at t keep their input order.
 """
 
 from __future__ import annotations
@@ -97,3 +108,38 @@ def load_events_for_patients(path: Path, patient_ids: set) -> list:
               datetime.fromisoformat(row.start), datetime.fromisoformat(row.end), row.alarm_id)
         for row in df.itertuples(index=False)
     ]
+
+
+@dataclass(frozen=True)
+class AlarmArrival:
+    """An alarm, as known when it arrives: no end."""
+    patient: str
+    label: str
+    device_id: str
+    start: datetime
+    alarm_id: str
+
+    @property
+    def time(self) -> datetime:
+        return self.start
+
+
+@dataclass(frozen=True)
+class AlarmEnd:
+    """An alarm's end, as a stream element of its own."""
+    patient: str
+    alarm_id: str
+    time: datetime
+
+
+def replay_stream(events: list) -> list:
+    """Every event as an AlarmArrival and an AlarmEnd, in stream order (see
+    the module docstring for the order at one instant)."""
+    keyed = []
+    for seq, e in enumerate(sorted(events, key=lambda ev: ev.start)):
+        keyed.append(((e.start, 1, seq, 0), AlarmArrival(e.patient, e.label, e.device_id, e.start, e.alarm_id)))
+        if e.end > e.start:
+            keyed.append(((e.end, 0, seq, 0), AlarmEnd(e.patient, e.alarm_id, e.end)))
+        else:  # zero-length: right after its own arrival
+            keyed.append(((e.start, 1, seq, 1), AlarmEnd(e.patient, e.alarm_id, e.start)))
+    return [element for _, element in sorted(keyed, key=lambda k: k[0])]

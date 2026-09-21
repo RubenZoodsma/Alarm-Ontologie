@@ -109,6 +109,3 @@ FILTER(?property = ?activeProperty || (
   NOT EXISTS { ?property mda:isPropertyOf ?otherProcess . FILTER(?otherProcess != ?process) } &&
   NOT EXISTS { ?activeProperty mda:isPropertyOf ?otherProcess2 . FILTER(?otherProcess2 != ?process) }))
 BIND(?gA AS ?witness)
-# validity: every graph must still be in its window at ?now
-?gA mdapoc:validUntil ?gA_until . FILTER(?now <= ?gA_until)
-?gT mdapoc:validUntil ?gT_until . FILTER(?now <= ?gT_until)

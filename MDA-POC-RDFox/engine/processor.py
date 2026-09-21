@@ -1,11 +1,25 @@
 """
-processor.py — the query processor: turns each patient's alarm stream
-into one RDFox script, in arrival order.
+processor.py — the query processor (RSP-QL): consumes the stream
+(stream.py) and emits, per element, the RDFox commands that bring the
+store and the rules' results up to date, in order.
 
-Per alarm: due window drops, identity resolution, insertion (two phases),
-the CAT1 and CAT2 checks with their flags and silences, and the clinical-
-event evaluation. The script is written in full before anything runs
-(execution.py), so this module never reacts to a query result.
+At an instant t, in this order:
+  1. landmark windows closing at or before t: drop those persistent graphs
+     (windows.py), then re-evaluate the episodes they could support, at
+     their own closing time;
+  2. the AlarmEnds at t (stream.py orders them first): drop ALL their
+     transient graphs, then lift the CAT2 silences they were the last
+     justification for, then re-evaluate the episodes once;
+  3. each AlarmArrival at t: insert it (two phases), run its CAT1 and CAT2
+     checks with their flags and silences, then evaluate the episodes.
+Ending every alarm at t before any lift reproduces "the silenced alarm is
+still active strictly after t" without knowing anyone's end in advance.
+
+The script is written in full before anything runs (execution.py), so
+this module never reacts to a query result. The same Processor handles one
+patient's stream (build_script, the replay) or several patients interleaved
+in one store (validation/clinical_events_cross_patient.py) — as a live feed
+would deliver them.
 """
 
 from __future__ import annotations
@@ -16,242 +30,232 @@ import time
 from pathlib import Path
 
 import mint as M
-from actions import (check, dt, evaluate_commands, flag_insert, flag_withdraw, silence_bindings,
-                     silence_insert, values, iri)
+from actions import (check, dt, evaluate_commands, flag_insert, flag_withdraw, iri, silence_bindings,
+                     silence_insert, silence_lift, values)
 from event_log import trace_block
 from execution import FRAMEWORK_FILES, SCRIPT_PREAMBLE, _progress_bar, execute_script
 from rules import (ALARMPRIO, APPROXIMATES_COVERED_METRIC_TYPES, RULES, _alarm_functional_unit,
                    _alarm_metric_types, enabled_event_rules, kinds_supported_by_metric, relevant_kinds)
+from stream import AlarmArrival, AlarmEnd, replay_stream
 from windows import WindowOperator
+
+
+class Processor:
+    """Turns stream elements into RDFox commands (`lines`) and records the
+    CAT1/CAT2 checks it emitted (`checks`, matched to their results by
+    execution.execute_script)."""
+
+    def __init__(self, kb, scratch_dir: Path, rule_names, verify_identity: bool = False):
+        self.kb = kb
+        self.scratch = scratch_dir
+        self.lines: list = []
+        self.checks: list = []
+        self.verify_identity = verify_identity
+        self._file_counter = itertools.count(1)
+        self._windows: dict = {}       # patient -> WindowOperator
+        self._arrived: dict = {}       # patient -> [AlarmArrival] so far
+        # Which rules are enabled, grouped by what their result does.
+        self.flag_rules = [n for n in ("cat1a", "cat1b") if n in rule_names]
+        self.silence_rules = [n for n in ("cat2a", "cat2b") if n in rule_names]
+        # Episode rules in evaluation order; raises if a combined rule is
+        # enabled without its constituents.
+        self.event_rules = enabled_event_rules(rule_names)
+
+    def window(self, patient: str) -> WindowOperator:
+        if patient not in self._windows:
+            self._windows[patient] = WindowOperator(self.kb, self.scratch, self._file_counter)
+            self._arrived[patient] = []
+        return self._windows[patient]
+
+    # ----------------------------------------------------------------
+    # The stream
+    # ----------------------------------------------------------------
+
+    def feed(self, elements, on_arrival=None) -> None:
+        """Process `elements` (in stream order). Consecutive AlarmEnds of one
+        patient at one instant are handled together. `on_arrival(patient)`
+        is called after each arrival (progress reporting)."""
+        i = 0
+        while i < len(elements):
+            element = elements[i]
+            self.close_windows(element.time)
+            if isinstance(element, AlarmEnd):
+                j = i
+                while (j < len(elements) and isinstance(elements[j], AlarmEnd)
+                       and elements[j].time == element.time and elements[j].patient == element.patient):
+                    j += 1
+                self.on_ends(element.patient, element.time, elements[i:j])
+                i = j
+            else:
+                self.on_arrival(element)
+                if on_arrival is not None:
+                    on_arrival(element.patient)
+                i += 1
+
+    def close_windows(self, up_to=None) -> None:
+        """Close every landmark window due at or before `up_to` (all when
+        None), across patients, in time order."""
+        closing = []
+        for patient, window in self._windows.items():
+            closing += [(due, patient, alarms) for due, alarms in window.due(up_to)]
+        for due, patient, alarms in sorted(closing, key=lambda c: c[0]):
+            for alarm in alarms:
+                self.lines += WindowOperator.expire(alarm)
+            kinds = frozenset().union(*(a.kinds for a in alarms))
+            self.lines += evaluate_commands(kinds, self.event_rules, patient, due)
+
+    def on_ends(self, patient: str, when, ends: list) -> None:
+        window = self.window(patient)
+        ended = []
+        for end in ends:
+            commands, alarm = window.on_end(end)
+            self.lines += commands
+            ended.append(alarm)
+        if self.silence_rules:
+            for alarm in ended:
+                select, delete = silence_lift(alarm.alarm, when)
+                self.lines += trace_block(f"lift {patient} {when.isoformat()}", select)
+                self.lines.append(delete)
+        kinds = frozenset().union(*(a.kinds for a in ended))
+        self.lines += evaluate_commands(kinds, self.event_rules, patient, when)
+
+    def on_arrival(self, e: AlarmArrival) -> None:
+        kb, patient = self.kb, e.patient
+        window = self.window(patient)
+        arrived = self._arrived[patient]
+        arrived.append(e)
+        ei = len(arrived)  # this alarm's per-patient sequence number
+
+        M.update_identity(kb, e, window.identity_tracker)
+        identity = window.identity_tracker.identity
+        if self.verify_identity:
+            batch_identity = M.resolve_identity(kb, arrived)
+            assert identity == batch_identity, (
+                f"incremental identity tracker diverged from resolve_identity's batch "
+                f"computation for {patient} at {e.label}@{e.start}")
+
+        event_kinds = (frozenset(relevant_kinds(kb, e.label, _alarm_metric_types(kb, e), self.event_rules))
+                       if self.event_rules else frozenset())
+        commands, pending = window.on_arrive(e, identity, event_kinds)
+        self.lines += commands
+
+        # Every rule is evaluated on demand, at this moment (rules.py's
+        # docstring: why not standing Datalog), bound to THIS alarm (?alarm)
+        # and this moment (?now). This runs BETWEEN the insert's two phases:
+        # the arriving alarm's own hasPriority triple is not in the store
+        # yet. Each rule is its own query, never a UNION of rules: that
+        # keeps each rule individually timed (summarize_rule_timings), and
+        # RDFox's planner handled a cat2a/cat2b UNION badly (patient 2826,
+        # alarms 0-900: ~2-3 s each alone, ~90-97 s as one UNION). A check
+        # key carries the rule name and `ei`, so neither two rules nor two
+        # alarms sharing a start instant collide.
+        alarm = pending["alarm"]
+        now = dt(e.start)
+        for name in self.flag_rules:
+            self.lines += trace_block(f"check {len(self.checks)}", check(name, values(alarm=iri(alarm), now=now)))
+            self.checks.append((patient, e.start, "flaggedLikelyFalsePositive", name, ei))
+        # Store the flags (actions.flag_insert): clinical events ignore
+        # flagged alarms, and a later alarm on a cat1b flag's IBP pathway
+        # withdraws it. Only heart-rate alarms can be an asystole — a cheap
+        # gate for cat1b; the condition decides.
+        withdraw_kinds = frozenset()
+        if "cat1a" in self.flag_rules:
+            self.lines.append(flag_insert("cat1a", alarm, pending["tgraph"], now))
+        if "cat1b" in self.flag_rules:
+            if "HeartRate" in _alarm_metric_types(kb, e):
+                self.lines.append(flag_insert("cat1b", alarm, pending["tgraph"], now))
+            if _alarm_functional_unit(kb, e) == "FU_InvasiveBloodPressure":
+                select, delete = flag_withdraw(alarm)
+                self.lines += trace_block(f"withdraw {patient} {e.start.isoformat()}", select)
+                self.lines.append(delete)
+                # A withdrawn asystole becomes evidence at this moment.
+                withdraw_kinds = kinds_supported_by_metric("HeartRate", self.event_rules)
+
+        silence_rules = self.silence_rules
+        prio = pending["incoming_prio"]
+        if "cat2a" in silence_rules:
+            # An Unknown priority cannot be shown to be equal or lower than
+            # anything: never silenced by CAT2a (agreed 2026-09-21). A metric
+            # type without an approximates mapping can never reach a process
+            # (rules.APPROXIMATES_COVERED_METRIC_TYPES).
+            metric_types = _alarm_metric_types(kb, e)
+            if (prio is None or str(prio) == f"{ALARMPRIO}Unknown"
+                    or (metric_types and not (metric_types & APPROXIMATES_COVERED_METRIC_TYPES))):
+                silence_rules = [n for n in silence_rules if n != "cat2a"]
+        for name in silence_rules:
+            self.lines += trace_block(f"check {len(self.checks)}",
+                                      check(name, silence_bindings(name, alarm, now, prio)))
+            self.lines.append(silence_insert(name, alarm, pending["tgraph"], now, prio))
+            self.checks.append((patient, e.start, "silencedBy", name, ei))
+
+        self.lines += WindowOperator.complete(pending)
+        # This arrival may start or extend a clinical event of this patient
+        # (or, through a cat1b withdrawal, let a heart-rate alarm count).
+        self.lines += evaluate_commands(event_kinds | withdraw_kinds, self.event_rules, patient, e.start)
+        self.lines.append(f"echo ALARM_DONE:{patient}")
+
+
+def script_header(dstore: str) -> list:
+    """Create the store, load the framework, set the output format and the
+    prefixes."""
+    return ([f"dstore create {dstore}", f"active {dstore}"]
+            + [f"import {f}" for f in FRAMEWORK_FILES] + SCRIPT_PREAMBLE)
 
 
 def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
                   progress: bool = True, verify_identity: bool = False,
                   dstore: str = "poc") -> tuple:
-    """`enabled_rules`: iterable of rules.RULES names to evaluate, or None for
-    all of them (every rule enabled — the default validation behaviour).
+    """(script text, checks) for replaying each patient's alarms, one
+    patient after another, in ONE dstore.
 
-    `dstore`: ONE dstore shared by every patient in `patients`, created
-    and populated with the framework/rule files exactly once — not one
-    dstore per patient (the original Phase 2 design). Import time itself
-    was never the cost (single-digit ms/file, per RDFox's own logging);
-    the problem was memory: at the project's 3500-patient target, 3500
-    separate dstores each holding an independent copy of the ~3000-triple
-    static framework multiplies that memory ~3500x for data that's
-    identical across all of them. Safe to share now that every minted
-    entity/alarm/message IRI is patient-scoped (see mint.py's MINTING
-    section header) — before that fix, two patients sharing a real-corpus
-    device_id would have collided onto one IRI in a shared dstore.
+    `enabled_rules`: iterable of rules.RULES names, or None for all.
 
-    `progress`: print a per-patient header line, then an in-place
-    (carriage-return-updated) progress bar as that patient's own alarms
-    are minted — never one line per alarm (a real patient can carry tens
-    of thousands, see _progress_bar's own call site). Historically
-    load-bearing when per-alarm minting ran a real OWL-RL closure
-    (~2-3s/call, since removed — see mint.py's module docstring); kept on
-    by default since a multi-thousand-patient run is still worth showing
-    progress for even at the much lower per-alarm cost minting has now.
+    `dstore`: shared by every patient in `patients` and populated with the
+    framework once. Memory, not import time, was the cost of one dstore per
+    patient (a copy of the ~3000-triple framework each). Safe because every
+    minted entity/alarm/message IRI is patient-scoped (mint.py).
+
+    `progress`: a per-patient header line, then an in-place progress bar
+    (a real patient can carry tens of thousands of alarms; one real-corpus
+    patient had 25,793).
 
     `verify_identity`: development-only — also run the batch
-    M.resolve_identity(kb, events_so_far) per alarm and assert it matches
-    M.IdentityTracker's incremental result, mirroring how Timeline.
-    observe() (op_knowledge.py) was itself originally validated. Doubles
-    identity-resolution cost, so leave off by default; only turn on to
-    re-confirm the equivalence after touching either implementation.
-
-    KNOWN, HARMLESS FALSE-POSITIVE with this flag: when two of a
-    patient's alarms share the exact same `start` instant (real corpus
-    data — confirmed on alexKim_03), `events_so_far = [ev for ev in
-    events_sorted if ev.start <= e.start]` includes BOTH tied alarms
-    for the batch computation, while the incremental tracker has only
-    processed the first of the two (in `events_sorted`'s stable order) at
-    this exact check point — so the two can briefly disagree on an entry
-    for the *other* tied alarm's device_id. Confirmed inert: each alarm's
-    own grounding (`particular_iri`) only ever reads its OWN device_id's
-    identity entry, never a different device's, and the tracker converges
-    to the same content as soon as the second tied alarm is itself
-    processed one iteration later. Verified end-to-end (not just via this
-    assertion) by re-running poc_entry.py's exact same real-corpus sample
-    before and after this port and confirming identical fire counts."""
+    M.resolve_identity over the alarms arrived so far and assert it matches
+    the incremental tracker. Doubles identity-resolution cost; only turn on
+    to re-confirm the equivalence after touching either implementation."""
     rule_names = list(RULES) if enabled_rules is None else list(enabled_rules)
-    lines = []
-    checks = []
-    file_counter = itertools.count(1)
+    proc = Processor(kb, scratch_dir, rule_names, verify_identity)
+    lines = script_header(dstore)
     t0 = time.monotonic()
     num_patients = len(patients)
 
-    lines.append(f"dstore create {dstore}")
-    lines.append(f"active {dstore}")
-    for f in FRAMEWORK_FILES:
-        lines.append(f"import {f}")
-    lines.extend(SCRIPT_PREAMBLE)
-
-    # Which on-demand rules are enabled for THIS run, grouped by which
-    # check/predicate they feed — computed once, not per-alarm, since
-    # `rule_names` is fixed for the whole call.
-    flagged_active = [name for name in ("cat1a", "cat1b") if name in rule_names]
-    silenced_active = [name for name in ("cat2a", "cat2b") if name in rule_names]
-    # Clinical-event rules, in evaluation order; raises if a combined rule
-    # is enabled without its constituents.
-    event_rules = enabled_event_rules(rule_names)
-
     for pi, (patient, events) in enumerate(patients.items(), start=1):
-        events_sorted = sorted(events, key=lambda ev: ev.start)
+        n_events = len(events)
         if progress:
             print(f"  [{time.monotonic() - t0:7.1f}s] minting patient {pi}/{num_patients} "
-                  f"({patient}): {len(events_sorted)} alarm(s)")
-
-        # RDFox's own `echo <token>` shell command (confirmed via `help
-        # echo`: "Prints the tokens specified... separated by a single
-        # space" — an exact, undecorated line, nothing to disambiguate)
-        # gives execute_script an unambiguous per-patient/per-alarm marker
-        # to match live in RDFox's streamed stdout — see execute_script's
-        # own docstring for why this is the RDFox-execution counterpart to
-        # this function's own per-alarm minting progress bar above.
-        lines.append(f"echo PATIENT_START:{patient}")
-
-        driver = WindowOperator(kb, scratch_dir, file_counter, event_rules,
-                        cat2_lift=bool({"cat2a", "cat2b"} & set(rule_names)))
-        n_events = len(events_sorted)
-        # Update at most ~100 times per patient, not once per alarm — a
-        # real patient can carry tens of thousands of alarms (confirmed
-        # directly: one real-corpus patient had 25,793), and printing a
-        # full line per alarm at that scale floods the terminal with
-        # scrollback rather than showing progress. An in-place bar
-        # (carriage return, no newline until the patient is done) shows
-        # the same real-time signal in one line instead.
+                  f"({patient}): {n_events} alarm(s)")
+        # RDFox's `echo` prints its tokens as one exact line: an unambiguous
+        # per-patient/per-alarm marker for execute_script's live progress.
+        proc.lines.append(f"echo PATIENT_START:{patient}")
         report_every = max(1, n_events // 100)
-        for ei, e in enumerate(events_sorted, start=1):
-            if progress and (ei == 1 or ei == n_events or ei % report_every == 0):
-                bar = _progress_bar(ei, n_events)
-                print(f"\r    {bar} {ei}/{n_events} alarms "
-                      f"[{time.monotonic() - t0:7.1f}s]", end="", flush=True)
-            driver.flush_due(e.start)
-            M.update_identity(kb, e, driver.identity_tracker)
-            identity = driver.identity_tracker.identity
-            if verify_identity:
-                events_so_far = [ev for ev in events_sorted if ev.start <= e.start]
-                batch_identity = M.resolve_identity(kb, events_so_far)
-                assert identity == batch_identity, (
-                    f"incremental identity tracker diverged from resolve_identity's batch "
-                    f"computation for {patient} at {e.label}@{e.start}")
-            event_kinds = (frozenset(relevant_kinds(kb, e.label, _alarm_metric_types(kb, e), event_rules))
-                           if event_rules else frozenset())
-            pending = driver.insert_alarm(e, identity, event_kinds)
-            lines.extend(driver.commands)
-            driver.commands.clear()
+        done = itertools.count(1)
 
-            # Check THIS alarm's own firing status right at its arrival —
-            # matching assess.py's own timing discipline (mda_poc_
-            # assessment.py calls assess() once per arriving alarm, against
-            # the situation AT THAT INSTANT). Checking only once at the very
-            # end of the whole patient timeline (the original version of
-            # this driver did) is wrong: by then every alarm's transient
-            # graph — and eventually its persistent graph — has already
-            # been dropped, so nothing is left to match against at all.
-            #
-            # This runs BETWEEN insert_alarm()'s two phases — the arriving
-            # alarm's own hasPriority triple isn't inserted yet (see
-            # insert_alarm's own docstring for why cat2a's aggregate check
-            # needs that) — but every check below is unaffected by
-            # hasPriority's absence, so nothing else needs to know or care.
-            alarm = pending["alarm"]
-            patient_iri = pending["patient"]
-            now_literal = dt(e.start)
-            # Every rule is evaluated on demand, at this moment (rules.py's
-            # docstring: why not standing Datalog). Its condition file is
-            # bound to THIS alarm (?alarm) and this moment (?now) through a
-            # VALUES clause. Each group is only emitted when at least one
-            # contributing rule is enabled.
-            # Emitted as SEPARATE queries per rule, not UNIONed — mirrors
-            # cat2a/cat2b's own fix (see this_alarm_silenced's comment
-            # below) for the same reason: keeps each rule individually
-            # timed/counted for the per-rule instrumentation in
-            # execute_script, and avoids relying on RDFox's planner to
-            # handle a UNION of differently-shaped bodies well.
-            for name in flagged_active:
-                lines += trace_block(f"check {len(checks)}",
-                                     check(name, values(alarm=iri(alarm), now=now_literal)))
-                checks.append((patient, e.start, "flaggedLikelyFalsePositive", name, ei))
-            # Store the flags (see actions.flag_insert): clinical events ignore
-            # flagged alarms, and a later alarm on a cat1b flag's IBP
-            # pathway withdraws it. Only heart-rate alarms can be an
-            # asystole — a cheap gate for cat1b, the query decides.
-            withdraw_kinds = frozenset()
-            if "cat1a" in flagged_active:
-                lines.append(flag_insert("cat1a", alarm, pending["tgraph"], now_literal))
-            if "cat1b" in flagged_active:
-                if "HeartRate" in _alarm_metric_types(kb, e):
-                    lines.append(flag_insert("cat1b", alarm, pending["tgraph"], now_literal))
-                if _alarm_functional_unit(kb, e) == "FU_InvasiveBloodPressure":
-                    select, delete = flag_withdraw(alarm)
-                    lines += trace_block(f"withdraw {patient} {e.start.isoformat()}", select)
-                    lines.append(delete)
-                    # A withdrawn asystole becomes evidence at this moment:
-                    # re-evaluate what a heart-rate alarm can support.
-                    withdraw_kinds = kinds_supported_by_metric("HeartRate", event_rules)
-            # cat2a can only ever match if THIS alarm's own metric type has
-            # an mda:approximates mapping at all (see
-            # APPROXIMATES_COVERED_METRIC_TYPES's own comment — harmless to
-            # keep even now that cat2a is aggregate-based: the arriving-side
-            # chain hop still can't bind for an uncovered metric type, so
-            # this remains a correct, if now purely cosmetic, short-circuit).
-            # cat2b needs no such check: it joins on the metric's own
-            # rdf:type directly, a base fact that's never missing.
-            this_alarm_silenced = silenced_active
-            if "cat2a" in this_alarm_silenced:
-                metric_types = _alarm_metric_types(kb, e)
-                prio = pending["incoming_prio"]
-                # An Unknown priority cannot be shown to be equal or lower
-                # than anything: never silenced by CAT2a (agreed 2026-09-21).
-                if (prio is None or str(prio) == f"{ALARMPRIO}Unknown"
-                        or (metric_types and not (metric_types & APPROXIMATES_COVERED_METRIC_TYPES))):
-                    this_alarm_silenced = [n for n in this_alarm_silenced if n != "cat2a"]
-            # cat2a's and cat2b's aggregate checks are emitted as SEPARATE
-            # queries, NOT combined via UNION into one — confirmed
-            # empirically (real patient 2826, alarms 0-900): each alone
-            # (and both loaded as standing rules but only one checked) ran
-            # in ~2-3s for 900 alarms; UNIONing their two branches together
-            # into one query reproducibly cost ~90-97s for the same 900
-            # alarms. RDFox's planner produces a badly inefficient plan for
-            # this specific combination — not something either branch does
-            # on its own. checks gets a 5-tuple: name as the 4th element so
-            # cat2a's and cat2b's entries don't collide as the SAME dict
-            # key in execute_script's `dict(zip(checks, counts))` (which
-            # would silently drop one), and each alarm's own per-patient
-            # sequence index (`ei`) as the 5th so two alarms sharing the
-            # exact same `start` instant — a real, non-rare occurrence in
-            # the real corpus (confirmed on alexKim_03, see build_script's
-            # own `verify_identity` docstring) — don't ALSO collide with
-            # each other, which silently dropped one of their results
-            # before this index was added. See run()'s and poc_entry.py's
-            # report()'s own "at most one per alarm" grouping for how
-            # cat2a/cat2b are recombined into a single silencedBy verdict
-            # per alarm, matching the old single-UNIONed-query semantics —
-            # unaffected by the extra tuple element, since it only reads
-            # k[0]/k[1].
-            for name in this_alarm_silenced:
-                prio = pending["incoming_prio"]
-                lines += trace_block(f"check {len(checks)}",
-                                     check(name, silence_bindings(name, alarm, now_literal, prio)))
-                lines.append(silence_insert(name, alarm, pending["tgraph"], now_literal, prio))
-                checks.append((patient, e.start, "silencedBy", name, ei))
-            driver.complete_alarm(pending)
-            lines.extend(driver.commands)
-            driver.commands.clear()
-            # This arrival may start or extend a clinical event of this patient
-            # (or, through a cat1b withdrawal, let a heart-rate alarm count).
-            lines.extend(evaluate_commands(event_kinds | withdraw_kinds, event_rules, patient, e.start))
-            lines.append(f"echo ALARM_DONE:{patient}")
+        def report(_patient):
+            k = next(done)
+            if progress and (k == 1 or k == n_events or k % report_every == 0):
+                print(f"\r    {_progress_bar(k, n_events)} {k}/{n_events} alarms "
+                      f"[{time.monotonic() - t0:7.1f}s]", end="", flush=True)
+
+        proc.feed(replay_stream(events), on_arrival=report)
+        proc.close_windows()  # the patient's remaining landmark windows
         if progress:
-            print()  # finalize this patient's in-place progress line
-        driver.flush_all()
-        lines.extend(driver.commands)
+            print()
 
     if progress:
         print(f"  [{time.monotonic() - t0:7.1f}s] minting done for {num_patients} patient(s)")
+    lines += proc.lines
     lines.append("quit")
-    return "\n".join(lines), checks
+    return "\n".join(lines), proc.checks
 
 
 def run_batched(kb, patients: dict, scratch_root: Path, batch_size: "int | None" = None,

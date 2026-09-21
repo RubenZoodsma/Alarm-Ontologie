@@ -22,5 +22,4 @@ PREFIX rhythm: <https://w3id.org/mda/vocab/metric-rhythm/>
 GRAPH ?gEv { ?evAlarm mda:hasMessage ?evMsg . ?evMsg mda:concernsPatient ?patient .
              ?evidence rdf:type metric:RespirationRate . ?evidence mda:hasRhythm rhythm:Absent . }
 FILTER NOT EXISTS { GRAPH ?gEv { ?evAlarm mdapoc:flaggedLikelyFalsePositive ?why } }
-?gEv mdapoc:validUntil ?gEv_until . FILTER(?now <= ?gEv_until)
 BIND(?gEv AS ?support)
