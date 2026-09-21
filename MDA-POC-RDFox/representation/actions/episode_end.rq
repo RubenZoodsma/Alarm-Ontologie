@@ -1,0 +1,14 @@
+# episode_end.rq — END: an active event of ?kind for ?patient whose
+# criterion no longer holds gets hasEnd = ?now.
+# Slots: {{BINDINGS}} ?patient ?now ?kind; {{CONDITION}} the kind's rule.
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+INSERT { GRAPH ?eg { ?ev mda:hasEnd ?now } }
+WHERE {
+  {{BINDINGS}}
+  GRAPH ?eg { ?ev rdf:type ?kind . ?ev mda:concernsPatient ?patient .
+              FILTER NOT EXISTS { ?ev mda:hasEnd ?ev_end } }
+  FILTER NOT EXISTS { {{CONDITION}} }
+}

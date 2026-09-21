@@ -1,0 +1,59 @@
+####################################################################
+# cat3a_cardiorespiratory_arrest.rq — CAT3a, clinical event
+# CardioRespiratoryArrest. HAND-AUTHORED.
+#
+# Criterion (FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl):
+#   evidencedBy some CardiacArrest, and evidencedBy some RespiratoryArrest
+# — both events of this patient, both current (hence overlapping). The
+# combined event runs from the later constituent start to the earlier
+# constituent end. Requires the rules cardiac_arrest and respiratory_arrest.
+#
+# A DELIBERATE DEPARTURE from the NL rule table (decided 2026-09-21). The
+# table reads: "If alarms conveying [reduced heart rate, reduced respiratory
+# rate] occur within a 60s timeframe, they collectively convey a respiratory
+# arrest." Implemented instead, and the wording the table should carry: "If
+# a cardiac arrest (asystole) and a respiratory arrest (apnoea) are present
+# at the same time, they collectively convey a cardiorespiratory arrest."
+# Clause by clause:
+#   "reduced heart rate"       -> a CardiacArrest condition: a heart-rate
+#                                 metric with an ABSENT rhythm (asystole).
+#                                 Strict on purpose: faithful to clinical
+#                                 practice rather than to the table.
+#   "reduced respiratory rate" -> a RespiratoryArrest condition: a
+#                                 respiration-rate metric with an ABSENT
+#                                 rhythm (apnoea).
+#   "within a 60s timeframe"   -> both conditions active at the same moment;
+#                                 no tolerance window. Sub-analysis on
+#                                 DATA_LOCKED: overlap alone gives 929
+#                                 episodes in 199 patients; a 60 s window
+#                                 would add 44 patients — not needed to
+#                                 show the rule triggers.
+#   "respiratory arrest"       -> CardioRespiratoryArrest. RespiratoryArrest
+#                                 is a condition in its own right, and a
+#                                 constituent here.
+# Conditions are uniform labels: evidence from any source that meets the
+# criterion creates the same condition, so CAT3a combines conditions,
+# never specific alarms.
+#
+# CONTRACT. Bound on entry: ?patient, ?now. Binds: ?evidence and ?support
+# (one row per constituent event; the log resolves a constituent event to
+# its alarms). Used by the episode actions.
+#
+# VALIDATION — engine/regression.py: cat3a_pos, cat3c (arrival order
+# swapped) and cat3a_withdraw (from the CAT1b withdrawal on) fire;
+# cat3a_neg (20 s gap) and cat3a_flagged (CAT1a-flagged asystole) do not.
+####################################################################
+
+PREFIX mda:           <https://w3id.org/mda/ontology#>
+PREFIX rdf:           <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX clinicalEvent: <https://w3id.org/mda/vocab/clinical-event/>
+
+# a current cardiac arrest of this patient
+GRAPH ?gCa { ?ca rdf:type clinicalEvent:CardiacArrest . ?ca mda:concernsPatient ?patient .
+             FILTER NOT EXISTS { ?ca mda:hasEnd ?ca_end } }
+# a current respiratory arrest of this patient
+GRAPH ?gRa { ?ra rdf:type clinicalEvent:RespiratoryArrest . ?ra mda:concernsPatient ?patient .
+             FILTER NOT EXISTS { ?ra mda:hasEnd ?ra_end } }
+VALUES ?which { 1 2 }
+BIND(IF(?which = 1, ?ca, ?ra) AS ?evidence)
+BIND(?evidence AS ?support)

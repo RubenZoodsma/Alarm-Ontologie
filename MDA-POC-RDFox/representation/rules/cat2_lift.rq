@@ -1,0 +1,30 @@
+####################################################################
+# cat2_lift.rq — CAT2 lift condition. HAND-AUTHORED.
+#
+# A CAT2 silence (CAT2a or CAT2b) holds only while an active alarm
+# justifies it (agreed 2026-09-21): every active alarm that justified it at
+# arrival, under either rule, is stored as `incoming mdapoc:silencedBy
+# active` in the incoming alarm's own transient graph (so it disappears
+# when that alarm ends). When an active alarm ends, its silencedBy links
+# are removed (actions/silence_lift_delete.rq); an alarm left with none
+# from either rule, and still active, has its silence lifted — logged as a
+# cat2_lifted firing. One silence per alarm, whatever the rules behind it:
+# that is how it is presented to a clinician.
+#
+# This condition finds the alarms whose silence is lifted: silenced by the
+# ended alarm, still active after it, and silenced by nothing else.
+#
+# CONTRACT. Bound on entry: ?ended (the alarm that just ended), ?now.
+# Binds: ?silenced. Used by actions/silence_lift_select.rq.
+#
+# VALIDATION — engine/regression.py: cat2a_lift, cat2b_lift and cat3f are
+# lifted; cat2a_lift_last only when the LAST justifying alarm ends
+# (forbidden firing at the first one's end).
+####################################################################
+
+PREFIX mdapoc: <https://w3id.org/mda/poc#>
+
+GRAPH ?gS { ?silenced mdapoc:silencedBy ?ended }
+# the silenced alarm is still active strictly after ?now
+?gS mdapoc:validUntil ?gS_until . FILTER(?now < ?gS_until)
+FILTER NOT EXISTS { GRAPH ?gS2 { ?silenced mdapoc:silencedBy ?other } FILTER(?other != ?ended) }

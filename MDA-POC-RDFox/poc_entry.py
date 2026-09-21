@@ -66,7 +66,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "engine"))
-import clinical_events as CE
 import event_log as EL
 import mint as M
 import execution as X
@@ -102,9 +101,9 @@ SETTINGS = {
     # run is reproducible. Change it to get a different random subset.
     "seed": 42,
 
-    # One switch per rule (engine/rules.RULE_FILES' entries) —
+    # One switch per rule (engine/rules.RULES' entries) —
     # flip any of these to False to exclude that rule from the run.
-    #"enabled_rules": {name: True for name in RU.RULE_FILES},
+    #"enabled_rules": {name: True for name in RU.RULES},
     "enabled_rules": {
     "cardiac_arrest": True,
     "respiratory_arrest": True,
@@ -115,7 +114,7 @@ SETTINGS = {
     "cat2b": True,
     # cardiac_arrest/respiratory_arrest/reduced_pulmonary_function and
     # cat3a (cardiorespiratory arrest)/cat3b (ventilation failure) maintain
-    # clinical events per patient (engine/clinical_events.py). A combined
+    # clinical events per patient (engine/actions.py, episodes). A combined
     # rule needs its constituents enabled too (cat3a: cardiac_arrest +
     # respiratory_arrest; cat3b: reduced_pulmonary_function) — build_script
     # raises a clear error otherwise. Every event is scoped to one patient,
@@ -181,7 +180,7 @@ def choose_patient_ids(all_ids: list, n, seed: int) -> list:
 
 
 def report(patients: dict, rule_names: list, firings: list, records: list) -> None:
-    event_kinds = [r.kind for r in CE.enabled_event_rules(rule_names)]
+    event_kinds = [r.kind for r in RU.enabled_event_rules(rule_names)]
     episodes = {kind: EL.episodes_by_patient(records, kind) for kind in event_kinds}
     total_flagged = total_silenced = total_managed = total_alarms = 0
     total_events = {kind: 0 for kind in event_kinds}
@@ -226,12 +225,12 @@ def report(patients: dict, rule_names: list, firings: list, records: list) -> No
 def run():
     t_start = time.monotonic()
 
-    unknown = set(SETTINGS["enabled_rules"]) - set(RU.RULE_FILES)
+    unknown = set(SETTINGS["enabled_rules"]) - set(RU.RULES)
     if unknown:
         raise ValueError(f"Unknown rule name(s) in SETTINGS['enabled_rules']: {sorted(unknown)} "
-                          f"— valid names are {sorted(RU.RULE_FILES)}")
+                          f"— valid names are {sorted(RU.RULES)}")
     rule_names = sorted(name for name, on in SETTINGS["enabled_rules"].items() if on)
-    print(f"Rules enabled ({len(rule_names)}/{len(RU.RULE_FILES)}): "
+    print(f"Rules enabled ({len(rule_names)}/{len(RU.RULES)}): "
           f"{', '.join(rule_names) or '(none)'}")
 
     t = time.monotonic()

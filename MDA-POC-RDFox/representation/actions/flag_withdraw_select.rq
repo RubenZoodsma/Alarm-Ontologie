@@ -1,0 +1,5 @@
+# flag_withdraw_select.rq — the CAT1b flags an arriving alarm withdraws, for
+# the firing log (logged as cat1b_withdrawn).
+# Slots: {{BINDINGS}} ?new; {{CONDITION}} rules/cat1b_withdraw.rq.
+
+select distinct ?flagged ?new where { {{BINDINGS}} {{CONDITION}} }

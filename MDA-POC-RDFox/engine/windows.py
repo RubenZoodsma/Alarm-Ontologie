@@ -25,9 +25,9 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from pathlib import Path
 
-import clinical_events as CE
 import mint as M
-from actions import XSD_DATETIME, cat2_lift
+from actions import XSD_DATETIME, evaluate_commands, silence_lift
+from event_log import trace_block
 from stream import Event
 
 WINDOW = timedelta(minutes=15)  # ontology.ttl's postAlarmValidityDuration
@@ -80,12 +80,12 @@ class WindowOperator:
     def __init__(self, kb, scratch_dir: Path, file_counter, event_rules=(), cat2_lift=False):
         self.kb = kb
         # CAT2a or CAT2b enabled: an alarm's end may lift silences it
-        # justified (see cat2_lift).
+        # justified (see actions.silence_lift).
         self.lift_cat2 = cat2_lift
-        # Enabled clinical-event rules (clinical_events.EVENT_RULES order).
+        # Enabled episode rules (rules.EVENT_RULES order).
         # A dropped graph can take away an event's evidence, so each drop of
         # an alarm that is relevant to an event kind re-evaluates that kind
-        # at the drop's own logical time — see clinical_events' docstring.
+        # at the drop's own logical time — see actions.py's docstring (EPISODE).
         self.event_rules = list(event_rules)
         self.scratch = scratch_dir
         self.commands: list[str] = []
@@ -208,13 +208,13 @@ class WindowOperator:
         cmd = f"# end: {event.label} @ {event.device_id} {event.end.isoformat()}\n"
         cmd += f"DELETE WHERE {{ GRAPH {graph} {{ ?s ?p ?o }} }}"
         if self.lift_cat2:
-            select, delete = cat2_lift(graph[1:].split("#", 1)[0], event.end)
-            cmd += "\n" + "\n".join(CE.trace_block(f"lift {event.patient} {event.end.isoformat()}", select))
+            select, delete = silence_lift(graph[1:].split("#", 1)[0], event.end)
+            cmd += "\n" + "\n".join(trace_block(f"lift {event.patient} {event.end.isoformat()}", select))
             cmd += "\n" + delete
         return cmd
 
     def _with_events(self, cmd: str, event: Event, when: datetime, event_kinds) -> str:
-        lines = CE.evaluate_commands(event_kinds, self.event_rules, event.patient, when)
+        lines = evaluate_commands(event_kinds, self.event_rules, event.patient, when)
         return "\n".join([cmd] + lines)
 
     def _drop_persistent_cmd(self, event: Event, graph: str) -> str:

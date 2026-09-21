@@ -15,19 +15,20 @@ import shutil
 import time
 from pathlib import Path
 
-import clinical_events as CE
 import mint as M
-from actions import XSD_DATETIME, cat1_flag_insert, cat1b_withdraw, cat2a_values, cat2b_values, cat2_silence_insert
-from execution import FRAMEWORK_FILES, _progress_bar, execute_script
-from rules import (APPROXIMATES_COVERED_METRIC_TYPES, ONDEMAND_QUERY_BODIES, ONDEMAND_RULE_NAMES,
-                   RULE_FILES, _ALARMPRIO, _alarm_functional_unit, _alarm_metric_types)
+from actions import (check, dt, evaluate_commands, flag_insert, flag_withdraw, silence_bindings,
+                     silence_insert, values, iri)
+from event_log import trace_block
+from execution import FRAMEWORK_FILES, SCRIPT_PREAMBLE, _progress_bar, execute_script
+from rules import (ALARMPRIO, APPROXIMATES_COVERED_METRIC_TYPES, RULES, _alarm_functional_unit,
+                   _alarm_metric_types, enabled_event_rules, kinds_supported_by_metric, relevant_kinds)
 from windows import WindowOperator
 
 
 def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
                   progress: bool = True, verify_identity: bool = False,
                   dstore: str = "poc") -> tuple:
-    """`enabled_rules`: iterable of RULE_FILES keys to import, or None for
+    """`enabled_rules`: iterable of rules.RULES names to evaluate, or None for
     all of them (every rule enabled — the default validation behaviour).
 
     `dstore`: ONE dstore shared by every patient in `patients`, created
@@ -72,7 +73,7 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
     processed one iteration later. Verified end-to-end (not just via this
     assertion) by re-running poc_entry.py's exact same real-corpus sample
     before and after this port and confirming identical fire counts."""
-    rule_names = list(RULE_FILES) if enabled_rules is None else list(enabled_rules)
+    rule_names = list(RULES) if enabled_rules is None else list(enabled_rules)
     lines = []
     checks = []
     file_counter = itertools.count(1)
@@ -83,11 +84,7 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
     lines.append(f"active {dstore}")
     for f in FRAMEWORK_FILES:
         lines.append(f"import {f}")
-    lines.extend(CE.SCRIPT_PREAMBLE)
-    for name in rule_names:
-        if name in ONDEMAND_RULE_NAMES or name in CE.EVENT_RULE_NAMES:
-            continue  # queried/updated per alarm below, not a standing rule
-        lines.append(f"import {RULE_FILES[name]}")
+    lines.extend(SCRIPT_PREAMBLE)
 
     # Which on-demand rules are enabled for THIS run, grouped by which
     # check/predicate they feed — computed once, not per-alarm, since
@@ -96,7 +93,7 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
     silenced_active = [name for name in ("cat2a", "cat2b") if name in rule_names]
     # Clinical-event rules, in evaluation order; raises if a combined rule
     # is enabled without its constituents.
-    event_rules = CE.enabled_event_rules(rule_names)
+    event_rules = enabled_event_rules(rule_names)
 
     for pi, (patient, events) in enumerate(patients.items(), start=1):
         events_sorted = sorted(events, key=lambda ev: ev.start)
@@ -138,7 +135,7 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
                 assert identity == batch_identity, (
                     f"incremental identity tracker diverged from resolve_identity's batch "
                     f"computation for {patient} at {e.label}@{e.start}")
-            event_kinds = (frozenset(CE.relevant_kinds(kb, e.label, _alarm_metric_types(kb, e), event_rules))
+            event_kinds = (frozenset(relevant_kinds(kb, e.label, _alarm_metric_types(kb, e), event_rules))
                            if event_rules else frozenset())
             pending = driver.insert_alarm(e, identity, event_kinds)
             lines.extend(driver.commands)
@@ -160,25 +157,12 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
             # hasPriority's absence, so nothing else needs to know or care.
             alarm = pending["alarm"]
             patient_iri = pending["patient"]
-            now_literal = f'"{e.start.isoformat()}"^^{XSD_DATETIME}'
-            # None of cat1a/cat1b/cat2a/cat2b are
-            # standing rules anymore — see ONDEMAND_RULE_NAMES's own
-            # module-level comment for why. Each predicate is instead
-            # checked via a UNION'd, on-demand query over whichever
-            # contributing rules are enabled. Per the plan's §3, each
-            # on-demand body now carries its own validUntil FILTER
-            # (ONDEMAND_QUERY_BODIES/_append_validity_filters) bound to
-            # ?now here — physical graph presence is no longer what makes
-            # a match valid, now that eviction can be batched (plan's §4)
-            # and may lag a graph's own logical expiry.
-            #
-            # flaggedLikelyFalsePositive/silencedBy are alarm-scoped
-            # (?alarm bound via VALUES to THIS alarm's own IRI).
-            #
-            # Each group is only emitted when at least one contributing
-            # rule is enabled — with none enabled there's nothing to check
-            # (matches the old behaviour of the predicate simply never
-            # being derived).
+            now_literal = dt(e.start)
+            # Every rule is evaluated on demand, at this moment (rules.py's
+            # docstring: why not standing Datalog). Its condition file is
+            # bound to THIS alarm (?alarm) and this moment (?now) through a
+            # VALUES clause. Each group is only emitted when at least one
+            # contributing rule is enabled.
             # Emitted as SEPARATE queries per rule, not UNIONed — mirrors
             # cat2a/cat2b's own fix (see this_alarm_silenced's comment
             # below) for the same reason: keeps each rule individually
@@ -186,27 +170,26 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
             # execute_script, and avoids relying on RDFox's planner to
             # handle a UNION of differently-shaped bodies well.
             for name in flagged_active:
-                branch = f"VALUES (?alarm ?now) {{ (<{alarm}> {now_literal}) }} {ONDEMAND_QUERY_BODIES[name]}"
-                lines += CE.trace_block(f"check {len(checks)}",
-                                        f"select distinct ?alarm ?witness where {{ {branch} }}")
+                lines += trace_block(f"check {len(checks)}",
+                                     check(name, values(alarm=iri(alarm), now=now_literal)))
                 checks.append((patient, e.start, "flaggedLikelyFalsePositive", name, ei))
-            # Store the flags (see cat1_flag_insert): clinical events ignore
+            # Store the flags (see actions.flag_insert): clinical events ignore
             # flagged alarms, and a later alarm on a cat1b flag's IBP
             # pathway withdraws it. Only heart-rate alarms can be an
             # asystole — a cheap gate for cat1b, the query decides.
             withdraw_kinds = frozenset()
             if "cat1a" in flagged_active:
-                lines.append(cat1_flag_insert("cat1a", alarm, pending["tgraph"], now_literal))
+                lines.append(flag_insert("cat1a", alarm, pending["tgraph"], now_literal))
             if "cat1b" in flagged_active:
                 if "HeartRate" in _alarm_metric_types(kb, e):
-                    lines.append(cat1_flag_insert("cat1b", alarm, pending["tgraph"], now_literal))
+                    lines.append(flag_insert("cat1b", alarm, pending["tgraph"], now_literal))
                 if _alarm_functional_unit(kb, e) == "FU_InvasiveBloodPressure":
-                    select, delete = cat1b_withdraw(alarm)
-                    lines += CE.trace_block(f"withdraw {patient} {e.start.isoformat()}", select)
+                    select, delete = flag_withdraw(alarm)
+                    lines += trace_block(f"withdraw {patient} {e.start.isoformat()}", select)
                     lines.append(delete)
                     # A withdrawn asystole becomes evidence at this moment:
                     # re-evaluate what a heart-rate alarm can support.
-                    withdraw_kinds = CE.kinds_supported_by_metric("HeartRate", event_rules)
+                    withdraw_kinds = kinds_supported_by_metric("HeartRate", event_rules)
             # cat2a can only ever match if THIS alarm's own metric type has
             # an mda:approximates mapping at all (see
             # APPROXIMATES_COVERED_METRIC_TYPES's own comment — harmless to
@@ -221,7 +204,7 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
                 prio = pending["incoming_prio"]
                 # An Unknown priority cannot be shown to be equal or lower
                 # than anything: never silenced by CAT2a (agreed 2026-09-21).
-                if (prio is None or str(prio) == f"{_ALARMPRIO}Unknown"
+                if (prio is None or str(prio) == f"{ALARMPRIO}Unknown"
                         or (metric_types and not (metric_types & APPROXIMATES_COVERED_METRIC_TYPES))):
                     this_alarm_silenced = [n for n in this_alarm_silenced if n != "cat2a"]
             # cat2a's and cat2b's aggregate checks are emitted as SEPARATE
@@ -248,25 +231,17 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
             # unaffected by the extra tuple element, since it only reads
             # k[0]/k[1].
             for name in this_alarm_silenced:
-                if name == "cat2a":
-                    values = cat2a_values(alarm, now_literal, pending["incoming_prio"])
-                    lines += CE.trace_block(f"check {len(checks)}",
-                                            f"select distinct ?alarm ?witness where {{ "
-                                            f"{values} {ONDEMAND_QUERY_BODIES['cat2a']} }}")
-                    lines.append(cat2_silence_insert("cat2a", values, pending["tgraph"]))
-                else:
-                    values = cat2b_values(alarm, now_literal)
-                    lines += CE.trace_block(f"check {len(checks)}",
-                                            f"select distinct ?alarm ?witness where {{ "
-                                            f"{values} {ONDEMAND_QUERY_BODIES['cat2b']} }}")
-                    lines.append(cat2_silence_insert("cat2b", values, pending["tgraph"]))
+                prio = pending["incoming_prio"]
+                lines += trace_block(f"check {len(checks)}",
+                                     check(name, silence_bindings(name, alarm, now_literal, prio)))
+                lines.append(silence_insert(name, alarm, pending["tgraph"], now_literal, prio))
                 checks.append((patient, e.start, "silencedBy", name, ei))
             driver.complete_alarm(pending)
             lines.extend(driver.commands)
             driver.commands.clear()
             # This arrival may start or extend a clinical event of this patient
             # (or, through a cat1b withdrawal, let a heart-rate alarm count).
-            lines.extend(CE.evaluate_commands(event_kinds | withdraw_kinds, event_rules, patient, e.start))
+            lines.extend(evaluate_commands(event_kinds | withdraw_kinds, event_rules, patient, e.start))
             lines.append(f"echo ALARM_DONE:{patient}")
         if progress:
             print()  # finalize this patient's in-place progress line
@@ -335,7 +310,7 @@ def run_batched(kb, patients: dict, scratch_root: Path, batch_size: "int | None"
         # with a large concurrently-active cluster on one device (e.g.
         # patient 2826's ABP-verkleinen storm, 59 concurrent alarms) —
         # cat1a/cat1b's cross-alarm consolidation (see cat1a_signal_
-        # quality.dlog's own header) genuinely needs independent per-hop
+        # quality.rq's own header) genuinely needs independent per-hop
         # graph variables for correctness, so unlike cat2a/cat2b this cost
         # has no query-shape fix yet. 600s is a stopgap to let those
         # patients actually finish instead of silently truncating results —

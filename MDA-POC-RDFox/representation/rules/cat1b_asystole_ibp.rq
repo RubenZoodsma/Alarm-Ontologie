@@ -1,0 +1,89 @@
+####################################################################
+# cat1b_asystole_ibp.rq — CAT1b condition. HAND-AUTHORED.
+#
+# NL rule (CAT1): "If an asystole alarm occurs when an invasive blood
+# pressure sensor is present without alarms on that sensing pathway, it may
+# be flagged as likely false positive."
+#
+# Clause by clause (decisions agreed 2026-09-21):
+#   "an asystole alarm"        — the arriving alarm's OWN metric (?gT, its
+#                                transient graph) is a heart rate with an
+#                                absent rhythm. Never read from another
+#                                alarm's graph: that let e.g. "Lage
+#                                hartfreq." be flagged while an asystole
+#                                was active.
+#   "an invasive blood         — an ARTERIAL transducer (sensor:
+#    pressure sensor"            ABP_transducer) on the IBP functional unit
+#                                of a PATIENT MONITOR (device:
+#                                PhysiologicalMonitor or a subclass: Philips,
+#                                Draeger, ...). Deliberately narrower than
+#                                the NL wording, which should read
+#                                "invasive ARTERIAL blood pressure": ECMO
+#                                circuit pressures (CARDIOHELP pArt/pVen) and
+#                                venous pressure do not show that the heart
+#                                is beating — on VA-ECMO a real asystole
+#                                coexists with a stable pressure.
+#   "is present"               — observable only through the line's own
+#                                alarms: an IBP alarm's persistent graph
+#                                (?gIbp, holding the whole patient -> device
+#                                -> functional unit -> transducer chain)
+#                                remains in the store until 15 minutes after
+#                                that alarm ended (ontology.ttl's
+#                                postAlarmValidityDuration). After 15 minutes
+#                                of silence the line is no longer known to be
+#                                there, and an asystole is not flagged — the
+#                                safe error for a rule that downgrades one.
+#   "without alarms on that    — literally: no current alarm is triggered by
+#    sensing pathway"            that IBP functional unit (NOT EXISTS).
+#   "it may be flagged"        — flagged at onset, and WITHDRAWN if an alarm
+#                                on that same IBP pathway arrives while the
+#                                asystole is still active: in a genuine
+#                                asystole the pressure alarm follows the ECG
+#                                alarm by seconds. See cat1b_withdraw.rq.
+#
+# CONTRACT. Bound on entry: ?alarm (the arriving alarm), ?now.
+# Binds: ?evidence (the IBP functional unit) and ?witness (the IBP alarm's
+# persistent graph, hence the causing alarm).
+# Used by actions/check.rq and actions/flag_insert.rq. The engine only
+# evaluates it for alarms carrying a heart-rate metric (a cheap gate; this
+# condition decides).
+#
+# VALIDATION — engine/regression.py: cat1b_pos (arterial line alarmed 10
+# min earlier) and cat1b_other_monitor (arterial line on a Draeger monitor)
+# flag; cat1b_neg (arterial line alarming now) and cat1b_ecmo (ECMO circuit
+# pressure only) do not; cat1b_withdraw is flagged and withdrawn when the
+# arterial line alarms 8 s after onset; cat1b_borrow flags the asystole but
+# not a heart-rate alarm arriving during it.
+####################################################################
+
+PREFIX mda:            <https://w3id.org/mda/ontology#>
+PREFIX mdapoc:         <https://w3id.org/mda/poc#>
+PREFIX rdf:            <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:           <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX metric:         <https://w3id.org/mda/vocab/metric/>
+PREFIX rhythm:         <https://w3id.org/mda/vocab/metric-rhythm/>
+PREFIX functionalUnit: <https://w3id.org/mda/vocab/functional-unit/>
+PREFIX sensor:         <https://w3id.org/mda/vocab/sensor/>
+PREFIX device:         <https://w3id.org/mda/vocab/device/>
+
+# an asystole alarm (its own metric)
+GRAPH ?gT { ?alarm mda:hasMessage ?msg . ?msg mda:concernsPatient ?patient .
+            ?analysis mda:producesMetric ?metric . ?metric rdf:type metric:HeartRate .
+            ?metric mda:hasRhythm rhythm:Absent . }
+# an arterial line on a patient monitor, known present
+GRAPH ?gIbp { ?patient mda:isMonitoredBy ?ibpDevice . ?ibpDevice rdf:type ?ibpDeviceType .
+              ?ibpDevice mda:hasFunctionalUnit ?ibpFunctionalUnit .
+              ?ibpFunctionalUnit rdf:type functionalUnit:FU_InvasiveBloodPressure .
+              ?ibpFunctionalUnit mda:hasSensor ?ibpSensor .
+              ?ibpSensor rdf:type sensor:ABP_transducer . }
+?ibpDeviceType rdfs:subClassOf* device:PhysiologicalMonitor .
+# without a current alarm on that pathway
+FILTER NOT EXISTS {
+  GRAPH ?gOther { ?other mda:hasMessage ?otherMsg . ?otherMsg mda:triggeredBy ?ibpFunctionalUnit . }
+  ?gOther mdapoc:validUntil ?gOther_until . FILTER(?now <= ?gOther_until)
+}
+BIND(?ibpFunctionalUnit AS ?evidence)
+BIND(?gIbp AS ?witness)
+# validity: every graph must still be in its window at ?now
+?gIbp mdapoc:validUntil ?gIbp_until . FILTER(?now <= ?gIbp_until)
+?gT mdapoc:validUntil ?gT_until . FILTER(?now <= ?gT_until)

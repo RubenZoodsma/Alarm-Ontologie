@@ -1,0 +1,102 @@
+####################################################################
+# cat2b_metric_sensor.rq — CAT2b condition. HAND-AUTHORED.
+#
+# NL rule (CAT2, "simultaneous alarms likely carrying overlapping or
+# redundant information"): "If an alarm conveys the same metric via a
+# different sensor, an incoming alarm conveying that metric from another
+# sensor can be silenced."
+#
+# Clause by clause (decisions agreed 2026-09-21):
+#   "an incoming alarm"        — a PHYSIOLOGICAL alarm, at its arrival.
+#   "an alarm" (active)        — a physiological alarm of the same patient
+#                                whose transient graph is in the store now,
+#                                other than the incoming one.
+#   "the same metric"          — the same metric type, exactly (heart rate
+#                                is not pulse rate, systolic ABP is not MAP;
+#                                related metrics are CAT2a's business).
+#   "via a different sensor"   — a different functional unit, or a
+#                                different sensor type. Not the sensor IRI:
+#                                sensor refinements (anatomical position)
+#                                come only from technical alarms ("Storing
+#                                in SpO2", "ART buiten bereik laag", "ART
+#                                statische druk") and split ONE physical
+#                                sensor into two identities depending on
+#                                arrival order. No physiological alarm
+#                                carries a refinement, so two same-type
+#                                sensors on one functional unit (e.g. pre-
+#                                and post-ductal SpO2) cannot be told apart
+#                                in this catalogue anyway.
+#   "overlapping or redundant" — (from the category header, as CAT2a) the
+#                                incoming alarm deviates in the SAME
+#                                direction and is NOT MORE SEVERE
+#                                (metric_state_order.ttl): two sensors that
+#                                disagree (SpO2 low vs high) or an escalation
+#                                (low SpO2 -> desaturation) is information.
+#                                No priority condition — the NL rule has
+#                                none. The NL rule should read "...via a
+#                                different sensor, deviating in the same
+#                                direction and not more severely, ...".
+#   "can be silenced"          — for as long as an alarm that justified it
+#                                at arrival is still active, shared with
+#                                CAT2a: one silence per alarm, lifted when
+#                                the last alarm justifying it under EITHER
+#                                rule ends (cat2_lift.rq; logged as
+#                                cat2_lifted).
+#
+# REPORTED STATE. As CAT2a: the metric state is matched inside each alarm's
+# own graph, which relies on no alarm editing another's graph.
+#
+# GRAPHS. ?gT/?gA: the incoming/active alarm's transient graph. ?gP/?gAP: a
+# persistent copy of its sensor chain, anchored on its own analysis, so the
+# sensor is the one that produced its metric.
+#
+# CONTRACT. Bound on entry: ?alarm (the incoming alarm), ?now. Binds:
+# ?active (one row per active alarm justifying the silence; all are stored)
+# and ?witness (that alarm's transient graph).
+# Used by actions/check.rq and actions/silence_insert.rq.
+#
+# VALIDATION — engine/regression.py: cat2b_pos (low SpO2 on two monitors)
+# silences; cat2b_neg, cat2b_opposite and cat2b_escalation do not;
+# cat2b_same_sensor never fires CAT2b (forbidden firing); cat2b_lift and
+# cat3f are silenced and lifted when the justifying alarm ends.
+####################################################################
+
+PREFIX mda:      <https://w3id.org/mda/ontology#>
+PREFIX mdapoc:   <https://w3id.org/mda/poc#>
+PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX alarmcat: <https://w3id.org/mda/vocab/alarm-category/>
+
+# the incoming alarm (its own graphs)
+GRAPH ?gT { ?alarm mda:hasCategory alarmcat:Physiological .
+            ?alarm mda:hasMessage ?msg . ?msg mda:concernsPatient ?patient .
+            ?msg mda:triggeredBy ?fu .
+            ?analysis mda:producesMetric ?metric . ?metric rdf:type ?metricType .
+            ?metric ?stateProp ?state . }
+VALUES ?stateProp { mda:hasValueState mda:hasRhythm }
+GRAPH ?gP { ?fu mda:hasSensor ?sensor . ?sensor mda:sensorProducesSignal ?signal .
+            ?signal mda:analyzedBy ?analysis . ?sensor rdf:type ?sensorType . }
+?state mdapoc:deviationDirection ?direction . ?state mdapoc:deviationSeverity ?severity .
+
+# an active alarm of the same patient, same metric type (its own graphs)
+GRAPH ?gA { ?active mda:hasCategory alarmcat:Physiological .
+            ?active mda:hasMessage ?activeMsg . ?activeMsg mda:concernsPatient ?patient .
+            ?activeMsg mda:triggeredBy ?activeFu .
+            ?activeAnalysis mda:producesMetric ?activeMetric . ?activeMetric rdf:type ?metricType .
+            ?activeMetric ?activeStateProp ?activeState . }
+VALUES ?activeStateProp { mda:hasValueState mda:hasRhythm }
+GRAPH ?gAP { ?activeFu mda:hasSensor ?activeSensor .
+             ?activeSensor mda:sensorProducesSignal ?activeSignal .
+             ?activeSignal mda:analyzedBy ?activeAnalysis .
+             ?activeSensor rdf:type ?activeSensorType . }
+?activeState mdapoc:deviationDirection ?direction . ?activeState mdapoc:deviationSeverity ?activeSeverity .
+
+FILTER(?active != ?alarm)
+FILTER(?activeSeverity >= ?severity)
+# a different sensor: another functional unit, or another sensor type
+FILTER(?activeFu != ?fu || ?activeSensorType != ?sensorType)
+BIND(?gA AS ?witness)
+# validity: every graph must still be in its window at ?now
+?gA mdapoc:validUntil ?gA_until . FILTER(?now <= ?gA_until)
+?gAP mdapoc:validUntil ?gAP_until . FILTER(?now <= ?gAP_until)
+?gP mdapoc:validUntil ?gP_until . FILTER(?now <= ?gP_until)
+?gT mdapoc:validUntil ?gT_until . FILTER(?now <= ?gT_until)

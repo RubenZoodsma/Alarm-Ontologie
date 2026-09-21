@@ -2,7 +2,7 @@
 execution.py — running a generated script and reading its results.
 
 The engine behind it is RDFox (a sandbox process fed the script on stdin);
-results come back as trace blocks (clinical_events.trace_block) parsed by
+results come back as trace blocks (event_log.trace_block) parsed by
 event_log.parse_trace_blocks.
 """
 
@@ -15,6 +15,7 @@ import time
 from pathlib import Path
 
 import event_log as EL
+from rules import PREFIX_COMMANDS
 from paths import DATA_DIR, LICENSE, RDFOX_BIN, RULES_DIR
 
 FRAMEWORK_FILES = [
@@ -37,6 +38,13 @@ FRAMEWORK_FILES = [
     # that file's module docstring) — RDFox derives these natively now.
     RULES_DIR / "approximates_bridge.dlog",
 ]
+
+# Set once at the top of every script: every select prints its answers as
+# TSV (event_log.trace_block wraps each one), and the prefixes the rule and
+# action files use are declared once (rules.py: the RDFox shell rejects a
+# PREFIX clause inside a one-line command).
+SCRIPT_PREAMBLE = (["set query.answer-format text/tab-separated-values", "set output out"]
+                   + PREFIX_COMMANDS)
 
 
 def _progress_bar(done: int, total: int, width: int = 30) -> str:
@@ -197,7 +205,7 @@ def execute_script(script_text: str, checks: list, scratch: Path, timeout: int =
               f"({len(checks)} check(s) run)")
     output = "\n".join(out_lines)
 
-    # Every select runs inside a trace block (clinical_events.trace_block),
+    # Every select runs inside a trace block (event_log.trace_block),
     # with output switched on for the whole script, so results are read
     # from the rows each block printed — not from RDFox's "Number of query
     # answers" statistics, which updates and deletes print too. A check's

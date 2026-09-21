@@ -1,0 +1,5 @@
+# check.rq — a CAT1/CAT2 check at an alarm's arrival, for the firing log.
+# Rows: the arriving alarm and the witness graph (hence the causing alarm).
+# Slots: {{BINDINGS}} ?alarm ?now [?incomingPrio]; {{CONDITION}} a CAT1/CAT2 rule.
+
+select distinct ?alarm ?witness where { {{BINDINGS}} {{CONDITION}} }

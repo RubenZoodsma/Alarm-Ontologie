@@ -1,338 +1,185 @@
 """
 rules.py — the alarm-management rules (RSP-QL: R2R, what holds).
 
-The registry of every rule a run can enable, the query bodies of the
-on-demand CAT1/CAT2 checks, and the cheap Python-side gates that skip a
-check that cannot match.
+Every rule is a CONDITION in its own file, representation/rules/<name>.rq:
+a SPARQL graph pattern (the body of a WHERE clause) with a header stating
+the natural-language rule, its clause-by-clause reading, the variables it
+expects bound and those it binds, and the fixtures that validate it.
+What happens with a rule's result is an ACTION, representation/actions/
+<name>.rq: a complete SPARQL command with two slots, {{BINDINGS}} (a
+VALUES clause with this moment's data: the alarm, the time, the patient)
+and {{CONDITION}} (a rule). Composition is the only templating there is;
+no rule logic lives in Python.
+
+File format. Whole-line `#` comments; standard SPARQL `PREFIX` lines; the
+body. The RDFox shell does not accept a PREFIX clause inside a one-line
+command (it reads the leading PREFIX as its own `prefix` command), so the
+loader strips the PREFIX lines, checks that every file agrees on each
+prefix, and the script declares them once (PREFIX_COMMANDS). Each command
+is collapsed to one line, as the shell requires.
+
+WHY ON-DEMAND, NOT STANDING DATALOG. Every rule is evaluated as a query
+at the moment it can change (an alarm's arrival or end), not maintained as
+a standing Datalog rule. Measured on the real corpus (patient 2826): the
+cost of a standing rule is RDFox's incremental "delete, then re-derive"
+maintenance, triggered by every relevant import or graph drop anywhere in
+the store, proportional to how many standing rules a change could affect —
+not to how much matches. CAT2's cross-alarm self-join, maintained this way,
+stalled for tens of seconds per alarm; the same join issued as a query at
+the alarm's arrival answered in milliseconds. Some rule semantics are not
+expressible in monotone Datalog at all: absence (CAT1b: no alarm on the
+pathway), a flag withdrawn or a silence lifted later, and a clinical event
+that outlives its first evidence and carries an end time. Datalog is used
+where it fits: approximates_bridge.dlog materialises the ontology's
+metric -> physiological property axioms.
 """
 
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
 from pathlib import Path
 
 import mint as M
-from paths import ENGINE_DIR, RULES_DIR
+from paths import ACTIONS_DIR, RULES_DIR
 
-CLINICAL_EVENTS_MODULE = ENGINE_DIR / "clinical_events.py"
-
-# One file per rule (representation/rules/) so a caller (poc_entry.py) can
-# enable/disable each independently — split out of the original combined
-# clinical_rules.dlog/cat_rules.dlog for exactly that reason.
-RULE_FILES = {
-    # Clinical-event rules (clinical_events.EVENT_RULES): never imported —
-    # they run as guarded SPARQL updates at arrival and drop times. Point at
-    # the module that holds them, for traceability.
-    "cardiac_arrest": CLINICAL_EVENTS_MODULE,
-    "respiratory_arrest": CLINICAL_EVENTS_MODULE,
-    "reduced_pulmonary_function": CLINICAL_EVENTS_MODULE,
-    "cat1a": RULES_DIR / "cat1a_signal_quality.dlog",
-    "cat1b": RULES_DIR / "cat1b_asystole_ibp.dlog",
-    "cat2a": RULES_DIR / "cat2a_process_priority.dlog",
-    "cat2b": RULES_DIR / "cat2b_metric_sensor.dlog",
-    # CAT3a/CAT3b: the combined clinical events (cardiorespiratory arrest,
-    # ventilation failure) — same mechanism as the three rules above; each
-    # requires its constituent rules (clinical_events.EventRule.requires).
-    "cat3a": CLINICAL_EVENTS_MODULE,
-    "cat3b": CLINICAL_EVENTS_MODULE,
-}
+# --------------------------------------------------------------------
+# The registry
+# --------------------------------------------------------------------
 
 
-# cat2a/cat2b are NOT imported as standing Datalog rules (unlike every other
-# name in RULE_FILES) — build_script instead runs ONDEMAND_QUERY_BODIES below
-# as a one-shot `select ... limit 1` at each alarm's own check point. Why:
-# both rules' only new predicate (mdapoc:silencedBy) has exactly one consumer —
-# that same per-alarm check — so there's no reason to pay for RDFox
-# continuously, incrementally re-maintaining their 14-atom self-join against
-# every relevant transaction in the WHOLE store for the rule's entire
-# lifetime, when the answer is only ever read once, at one specific instant.
-# Root cause confirmed by direct RDFox instrumentation (not inferred): the
-# expense is RDFox's incremental "delete, then re-derive" maintenance for a
-# STANDING rule, triggered by every relevant import/DELETE WHERE anywhere in
-# the store — proportional to how many standing rules could be affected by
-# what changed, NOT to how much actually matches right now (a fresh,
-# stateless query shaped identically to a standing rule's own join,
-# re-issued over the exact same accumulated state, answered in 0.000s; the
-# structural fan-out at that exact point was trivial — every hop count 1).
-# cat1a/cat1b/cardiac_arrest/respiratory_arrest/reduced_pulmonary_function
-# join within a SINGLE alarm's own chain (lower combinatorial risk than
-# cat2a/cat2b's cross-alarm self-join), but all reference at least one
-# `kb.last_wins_str`-tagged predicate (hasQualityState, hasValueState, hasRhythm) — the same
-# argument applies: each predicate they read has exactly one consumer (this
-# same per-alarm/per-check point), so there's no reason to pay standing
-# incremental maintenance for a value nothing else ever reads back.
-#
-# IMPORTANT: this does NOT touch Driver's physical graph-drop mechanism
-# (_drop_transient_cmd/_drop_persistent_cmd) — it stays exactly as the project's own design doc
-# (~/.claude/plans/we-re-going-for-the-magical-candy.md) specifies: a
-# landmark/sliding-window RDF-stream-processing model where physically
-# dropping a graph the instant it's invalid IS the discard mechanism, and
-# "currently in the store" and "currently valid" are the same condition by
-# construction — the plan's own Phase 1 finding is exactly why NONE of
-# these on-demand query bodies below need any validFrom/validUntil interval
-# filtering: physical dropping already guarantees it. An earlier version of
-# this fix considered replacing physical dropping with an append-only store
-# filtered by explicit validity intervals at query time — reconsidered
-# because that would make the store grow unboundedly for the life of a
-# batch, directly working against the landmark-window discard model that's
-# this project's actual RDF-stream-processing design, and turned out to be
-# unnecessary once the real root cause (above) was understood: it's
-# standing-rule maintenance cost, not physical deletion itself, that's
-# expensive.
-# HISTORY (2026-09): cardiac_arrest/respiratory_arrest/
-# reduced_pulmonary_function were standing .dlog rules tagging a shared
-# process concept; they are now patient-scoped clinical-event updates
-# (clinical_events.py), gated per alarm by relevance, which removes both
-# the cross-patient leak and the unscoped cost described next.
-# They were tried
-# on-demand too and REVERTED — real-corpus timing (patient 2826) got WORSE,
-# not better: multiple new stalls (several seconds to 20s each) plus a
-# fresh dead stop near the end, timing out again. Root cause understood,
-# not just observed: unlike cat1a/cat1b/cat2a/cat2b, these three checks are
-# NOT alarm-scoped (impliesClinicalEvent's subject is a
-# PhysiologicalProcess, not an alarm — see the check-emission site's own
-# comment) and run UNCONDITIONALLY on every single alarm regardless of
-# relevance, with no VALUES-bound candidate set to narrow the search. Under
-# a standing rule, that same check is a cheap read against an answer
-# RDFox maintains incrementally; on demand, it's a full, unscoped query
-# recomputed from scratch on every alarm — the wrong trade for a check
-# that's both unconditional and unbounded, even though it was the right
-# trade for cat2a/cat2b (checked once each, alarm-scoped, but with a
-# 14-atom cross-alarm self-join RDFox had to re-justify on every unrelated
-# mutation in the store). On-demand conversion isn't a universal win — it
-# only pays off when what's being converted was itself the standing-rule
-# maintenance cost, not merely "any rule with a last-wins predicate."
-ONDEMAND_RULE_NAMES = {"cat1a", "cat1b", "cat2a", "cat2b"}
+@dataclass(frozen=True)
+class Rule:
+    """One switchable rule (a poc_entry.py SETTINGS['enabled_rules'] name).
 
-# Each flagging body also binds ?witness: the named graph holding the fact
-# that made the rule fire (for cat1a, the reported quality state; for
-# cat1b, the IBP pathway's link to the patient). Alarm graphs are named
-# <alarm#transient>/<alarm#persistent>, so the witness identifies the
-# causing alarm — which is all the firing log records (event_log.py).
-#
-# Hand-translated equivalents of cat2a_process_priority.dlog's/
-# cat2b_metric_sensor.dlog's rule BODIES (not the head — only the join
-# itself is needed here). NOT auto-generated from those files: confirmed
-# directly against the real RDFox 7.6b binary that its bracket quad syntax
-# (`[?s,?p,?o] ?g`), used throughout every .dlog file in this project, is
-# RULE-file-only — it errors ("Line 1, column 24: Resource expected.")
-# inside a plain `select` command, which only accepts standard SPARQL
-# (`GRAPH ?g { ?s ?p ?o }`). Translating one syntax into the other is a real
-# structural rewrite (bracket atoms -> GRAPH blocks, Datalog's comma
-# conjunction -> SPARQL's `.`), not a text substitution, so it's done here
-# by hand instead of by a fragile auto-translator.
-#
-# MUST BE KEPT IN SYNC BY HAND with the corresponding .dlog file if its join
-# logic ever changes — there is no automated link between the two. Verified
-# equivalent (not just assumed) by running engine/regression.py's
-# regression — the same cat2a_pos/cat2a_neg/cat2b_pos/cat2b_neg
-# fabricated fixtures that validate the .dlog files themselves — against
-# this on-demand version and confirming identical PASS/FAIL.
-#
-# `?alarm` is bound via a `VALUES` clause at the call site (build_script),
-# not string-substituted into this template — avoids any risk of a
-# substring match inside a longer variable name (e.g. `?alarmStart`).
-_ALARMCAT = "https://w3id.org/mda/vocab/alarm-category/"
-_RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-_METRIC = "https://w3id.org/mda/vocab/metric/"
-_METRIC_VALUE_STATE = "https://w3id.org/mda/vocab/metric-value-state/"
-_METRIC_RHYTHM = "https://w3id.org/mda/vocab/metric-rhythm/"
-_FUNCTIONAL_UNIT = "https://w3id.org/mda/vocab/functional-unit/"
-_OPERATION_STATE = "https://w3id.org/mda/vocab/operation-state/"
-_QUALITY_STATE = "https://w3id.org/mda/vocab/quality-state/"
-_CLINICAL_EVENT = "https://w3id.org/mda/vocab/clinical-event/"
-_DEVICE = "https://w3id.org/mda/vocab/device/"
-_ALARMPRIO = "https://w3id.org/mda/vocab/alarm-priority/"
-_SENSOR = "https://w3id.org/mda/vocab/sensor/"
-_RDFS = "http://www.w3.org/2000/01/rdf-schema#"
-_ONDEMAND_BODY_TEMPLATES = {
-    # Alarm-scoped (bound via VALUES ?alarm at the call site), projects
-    # ?signal — hand-translated from cat1a_signal_quality.dlog's body; see
-    # that file for the clause-by-clause reading of the NL rule. Only a
-    # PHYSIOLOGICAL alarm is flagged, and only for the signal on its own
-    # sensing pathway: ?gT is its transient graph (category, message,
-    # triggeredBy, producesMetric), ?gP a persistent copy of its
-    # FunctionalUnit -> sensor -> signal -> analysis chain. The former
-    # one-free-graph-variable-per-hop shape let hops come from another
-    # alarm's chain: it flagged technical alarms, and flagged e.g. a
-    # respiration-rate alarm (ECG_lead_Impedance) for an ECG_signal
-    # quality problem whenever a heart-rate alarm supplied the missing hop.
-    # Two ways the signal can be insufficient (the .dlog's two rules): a
-    # quality state on the signal itself, or a fault state on the sensor
-    # producing it (not being acquired at all — agreed extension of the NL
-    # rule, 2026-09-21).
-    "cat1a": """
-        GRAPH ?gT { ?alarm <@MDA@hasCategory> <@ALARMCAT@Physiological> .
-                    ?alarm <@MDA@hasMessage> ?msg . ?msg <@MDA@triggeredBy> ?fu .
-                    ?analysis <@MDA@producesMetric> ?metric . }
-        GRAPH ?gP { ?fu <@MDA@hasSensor> ?sensor . ?sensor <@MDA@sensorProducesSignal> ?signal .
-                    ?signal <@MDA@analyzedBy> ?analysis . }
-        {
-          GRAPH ?gQ { ?signal <@MDA@hasQualityState> ?quality }
-          FILTER(?quality != <@QUALITYSTATE@Good>)
-          BIND(?signal AS ?evidence)
-        } UNION {
-          GRAPH ?gQ { ?sensor <@MDA@hasSensorOperationState> ?sensorState }
-          VALUES ?sensorState { <@OPSTATE@Disabled> <@OPSTATE@Disconnected> <@OPSTATE@Malfunction> }
-          BIND(?sensor AS ?evidence)
-        }
-        BIND(?gQ AS ?witness)
-    """,
-    # Alarm-scoped, projects ?ibpFunctionalUnit — hand-translated from
-    # cat1b_asystole_ibp.dlog; see that file for the clause-by-clause
-    # reading of the NL rule and the agreed decisions (2026-09-21).
-    #   - asystole: the arriving alarm's OWN metric (?gT, its transient
-    #     graph) is a heart rate with an absent rhythm — not a metric
-    #     borrowed from another alarm's graph.
-    #   - IBP present: one IBP alarm's persistent graph (?gIbp, valid until
-    #     15 min after that alarm ended) links this patient to an ARTERIAL
-    #     transducer on a PATIENT MONITOR's IBP functional unit. ECMO
-    #     circuit pressures and venous pressure never count.
-    #   - without alarms on that pathway: no currently valid alarm is
-    #     triggered by that functional unit — a literal NOT EXISTS, not a
-    #     proxy over reported states. Its validity filter is written by
-    #     hand: _append_validity_filters skips NOT EXISTS spans.
-    # A flag is stored and withdrawn later if an alarm on the same pathway
-    # arrives while the asystole is active — see CAT1B_FLAG_INSERT and
-    # CAT1B_WITHDRAW below.
-    "cat1b": """
-        GRAPH ?gT { ?alarm <@MDA@hasMessage> ?msg . ?msg <@MDA@concernsPatient> ?patient .
-                    ?analysis <@MDA@producesMetric> ?metric . ?metric <@RDFTYPE@> <@METRIC@HeartRate> .
-                    ?metric <@MDA@hasRhythm> <@RHYTHM@Absent> . }
-        GRAPH ?gIbp { ?patient <@MDA@isMonitoredBy> ?ibpDevice . ?ibpDevice <@RDFTYPE@> ?ibpDeviceType .
-                      ?ibpDevice <@MDA@hasFunctionalUnit> ?ibpFunctionalUnit .
-                      ?ibpFunctionalUnit <@RDFTYPE@> <@FUNCTIONALUNIT@FU_InvasiveBloodPressure> .
-                      ?ibpFunctionalUnit <@MDA@hasSensor> ?ibpSensor .
-                      ?ibpSensor <@RDFTYPE@> <@SENSOR@ABP_transducer> . }
-        ?ibpDeviceType <@RDFS@subClassOf>* <@DEVICE@PhysiologicalMonitor> .
-        FILTER NOT EXISTS {
-          GRAPH ?gOther { ?other <@MDA@hasMessage> ?otherMsg . ?otherMsg <@MDA@triggeredBy> ?ibpFunctionalUnit . }
-          ?gOther <@MDAPOC@validUntil> ?gOther_until . FILTER(?now <= ?gOther_until)
-        }
-        BIND(?ibpFunctionalUnit AS ?evidence)
-        BIND(?gIbp AS ?witness)
-    """,
-    # Hand-translated from cat2a_process_priority.dlog; see that file for the
-    # clause-by-clause reading and the agreed decisions (2026-09-21). ?alarm
-    # (incoming), ?now and ?incomingPrio are bound via VALUES at the call
-    # site: the incoming alarm's own hasPriority is only inserted after its
-    # checks (Driver.insert_alarm's two phases), and an Unknown priority is
-    # never checked at all. ?gT is the incoming alarm's transient graph, ?gA
-    # an active alarm's — each pinned as one group, so no hop is borrowed
-    # from another alarm. Returns one row per active alarm that justifies
-    # the silence; all of them are stored (cat2_silence_insert) so the
-    # silence can be lifted when the last one ends.
-    "cat2a": """
-        GRAPH ?gT { ?alarm <@MDA@hasCategory> <@ALARMCAT@Physiological> .
-                    ?alarm <@MDA@hasMessage> ?msg . ?msg <@MDA@concernsPatient> ?patient .
-                    ?analysis <@MDA@producesMetric> ?metric . ?metric <@MDA@approximates> ?property .
-                    ?metric ?stateProp ?state . }
-        VALUES ?stateProp { <@MDA@hasValueState> <@MDA@hasRhythm> }
-        ?property <@MDA@isPropertyOf> ?process .
-        ?incomingPrio <@MDA@priorityRank> ?incomingRank .
-        ?state <@MDAPOC@deviationDirection> ?direction . ?state <@MDAPOC@deviationSeverity> ?severity .
+    condition: its file in representation/rules/.
+    action:    "flag" (CAT1), "silence" (CAT2) or "episode" (clinical
+               events, CAT3).
+    kind:      for an episode rule, the clinical-event class it maintains.
+    requires:  the rules whose events a combined episode rule is built on.
+    """
+    name: str
+    condition: str
+    action: str
+    kind: str | None = None
+    requires: frozenset = frozenset()
 
-        GRAPH ?gA { ?active <@MDA@hasCategory> <@ALARMCAT@Physiological> .
-                    ?active <@MDA@hasMessage> ?activeMsg . ?activeMsg <@MDA@concernsPatient> ?patient .
-                    ?active <@MDA@hasPriority> ?activePrio .
-                    ?activeAnalysis <@MDA@producesMetric> ?activeMetric .
-                    ?activeMetric <@MDA@approximates> ?activeProperty .
-                    ?activeMetric ?activeStateProp ?activeState . }
-        VALUES ?activeStateProp { <@MDA@hasValueState> <@MDA@hasRhythm> }
-        ?activeProperty <@MDA@isPropertyOf> ?process .
-        ?activePrio <@MDA@priorityRank> ?activeRank .
-        ?activeState <@MDAPOC@deviationDirection> ?direction . ?activeState <@MDAPOC@deviationSeverity> ?activeSeverity .
+    @property
+    def combined(self) -> bool:
+        return bool(self.requires)
 
-        FILTER(?active != ?alarm)
-        FILTER(?activePrio != <@ALARMPRIO@Unknown>)
-        FILTER(?activeRank >= ?incomingRank)
-        FILTER(?activeSeverity >= ?severity)
-        FILTER(?property = ?activeProperty || (
-          NOT EXISTS { ?property <@MDA@isPropertyOf> ?otherProcess . FILTER(?otherProcess != ?process) } &&
-          NOT EXISTS { ?activeProperty <@MDA@isPropertyOf> ?otherProcess2 . FILTER(?otherProcess2 != ?process) }))
-        BIND(?gA AS ?witness)
-    """,
-    # Hand-translated from cat2b_metric_sensor.dlog; see that file for the
-    # clause-by-clause reading and the agreed decisions (2026-09-21). ?alarm
-    # (incoming) and ?now are bound via VALUES at the call site. ?gT/?gA are
-    # the incoming/active alarm's transient graph, ?gP/?gAP a persistent copy
-    # of its sensor chain, anchored on its own analysis. "Different sensor"
-    # = a different functional unit or a different sensor type: refinements
-    # (anatomical position) come only from technical alarms and split one
-    # physical sensor into two identities depending on arrival order. One
-    # row per active alarm justifying the silence; all are stored.
-    "cat2b": """
-        GRAPH ?gT { ?alarm <@MDA@hasCategory> <@ALARMCAT@Physiological> .
-                    ?alarm <@MDA@hasMessage> ?msg . ?msg <@MDA@concernsPatient> ?patient .
-                    ?msg <@MDA@triggeredBy> ?fu .
-                    ?analysis <@MDA@producesMetric> ?metric . ?metric <@RDFTYPE@> ?metricType .
-                    ?metric ?stateProp ?state . }
-        VALUES ?stateProp { <@MDA@hasValueState> <@MDA@hasRhythm> }
-        GRAPH ?gP { ?fu <@MDA@hasSensor> ?sensor . ?sensor <@MDA@sensorProducesSignal> ?signal .
-                    ?signal <@MDA@analyzedBy> ?analysis . ?sensor <@RDFTYPE@> ?sensorType . }
-        ?state <@MDAPOC@deviationDirection> ?direction . ?state <@MDAPOC@deviationSeverity> ?severity .
-
-        GRAPH ?gA { ?active <@MDA@hasCategory> <@ALARMCAT@Physiological> .
-                    ?active <@MDA@hasMessage> ?activeMsg . ?activeMsg <@MDA@concernsPatient> ?patient .
-                    ?activeMsg <@MDA@triggeredBy> ?activeFu .
-                    ?activeAnalysis <@MDA@producesMetric> ?activeMetric . ?activeMetric <@RDFTYPE@> ?metricType .
-                    ?activeMetric ?activeStateProp ?activeState . }
-        VALUES ?activeStateProp { <@MDA@hasValueState> <@MDA@hasRhythm> }
-        GRAPH ?gAP { ?activeFu <@MDA@hasSensor> ?activeSensor .
-                     ?activeSensor <@MDA@sensorProducesSignal> ?activeSignal .
-                     ?activeSignal <@MDA@analyzedBy> ?activeAnalysis .
-                     ?activeSensor <@RDFTYPE@> ?activeSensorType . }
-        ?activeState <@MDAPOC@deviationDirection> ?direction . ?activeState <@MDAPOC@deviationSeverity> ?activeSeverity .
-
-        FILTER(?active != ?alarm)
-        FILTER(?activeSeverity >= ?severity)
-        FILTER(?activeFu != ?fu || ?activeSensorType != ?sensorType)
-        BIND(?gA AS ?witness)
-    """,
-    # The clinical-event rules have no template here: they are updates,
-    # not checks — see clinical_events.py.
-}
-# Plan's §3: replaces "still physically present" with an explicit
-# validity check, so a batched/delayed physical eviction (plan's §4) can't
-# silently make a stale-but-not-yet-dropped graph look active. Only graph
-# variables used OUTSIDE any FILTER NOT EXISTS or OPTIONAL span get a
-# filter appended here — a variable scoped entirely inside a negation
-# isn't bound in the outer WHERE at all (cat1b's ?g12 is handled by hand,
-# inside its own negation, in the template above), and a variable scoped
-# inside an OPTIONAL must stay genuinely optional: cat1b's rewritten
-# criteria (see its own .dlog header) rely on "unbound passes" — auto-
-# injecting a MANDATORY validUntil check for an OPTIONAL graph var would
-# force it to always resolve, silently turning "optional" back into
-# "required" and reintroducing the exact unsatisfiability bug that
-# rewrite exists to fix.
-_NOT_EXISTS_RE = re.compile(r"FILTER NOT EXISTS\s*\{(?:[^{}]|\{[^{}]*\})*\}")
-_OPTIONAL_RE = re.compile(r"OPTIONAL\s*\{(?:[^{}]|\{[^{}]*\})*\}")
-_GRAPH_VAR_RE = re.compile(r"GRAPH\s+(\?g\w*)\s*\{")
+    @property
+    def path(self) -> Path:
+        return RULES_DIR / self.condition
 
 
-def _append_validity_filters(body: str) -> str:
-    outer = _OPTIONAL_RE.sub(" ", _NOT_EXISTS_RE.sub(" ", body))
-    graph_vars = sorted(set(_GRAPH_VAR_RE.findall(outer)))
-    tail = " ".join(
-        f"{v} <{M.MDAPOC}validUntil> {v}_until . FILTER(?now <= {v}_until)"
-        for v in graph_vars
-    )
-    return f"{body} {tail}" if tail else body
+# Single-alarm episode kinds before combined ones: the evaluation order.
+RULES = {r.name: r for r in (
+    Rule("cardiac_arrest", "cardiac_arrest.rq", "episode", "CardiacArrest"),
+    Rule("respiratory_arrest", "respiratory_arrest.rq", "episode", "RespiratoryArrest"),
+    Rule("reduced_pulmonary_function", "reduced_pulmonary_function.rq", "episode",
+         "ReducedPulmonaryFunction"),
+    Rule("cat1a", "cat1a_signal_quality.rq", "flag"),
+    Rule("cat1b", "cat1b_asystole_ibp.rq", "flag"),
+    Rule("cat2a", "cat2a_process_priority.rq", "silence"),
+    Rule("cat2b", "cat2b_metric_sensor.rq", "silence"),
+    Rule("cat3a", "cat3a_cardiorespiratory_arrest.rq", "episode", "CardioRespiratoryArrest",
+         frozenset({"cardiac_arrest", "respiratory_arrest"})),
+    Rule("cat3b", "cat3b_ventilation_failure.rq", "episode", "VentilationFailure",
+         frozenset({"reduced_pulmonary_function"})),
+)}
+
+# Conditions that belong to a rule but are no rule of their own.
+CAT1B_WITHDRAW = "cat1b_withdraw.rq"
+CAT2_LIFT = "cat2_lift.rq"
+
+EVENT_RULES = tuple(r for r in RULES.values() if r.action == "episode")
+EVENT_RULE_NAMES = {r.name for r in EVENT_RULES}
+KIND_BY_RULE = {r.name: r.kind for r in EVENT_RULES}
+RULE_BY_KIND = {r.kind: r for r in EVENT_RULES}
 
 
-ONDEMAND_QUERY_BODIES = {
-    name: _append_validity_filters(" ".join(
-        tmpl.replace("@MDAPOC@", str(M.MDAPOC)).replace("@MDA@", str(M.MDA)).replace("@ALARMCAT@", _ALARMCAT)
-            .replace("@RDFTYPE@", _RDF_TYPE).replace("@METRIC@", _METRIC)
-            .replace("@VALUESTATE@", _METRIC_VALUE_STATE).replace("@RHYTHM@", _METRIC_RHYTHM)
-            .replace("@FUNCTIONALUNIT@", _FUNCTIONAL_UNIT)
-            .replace("@QUALITYSTATE@", _QUALITY_STATE).replace("@OPSTATE@", _OPERATION_STATE)
-            .replace("@DEVICE@", _DEVICE).replace("@SENSOR@", _SENSOR).replace("@RDFS@", _RDFS)
-            .replace("@ALARMPRIO@", _ALARMPRIO)
-            .split()
-    ))
-    for name, tmpl in _ONDEMAND_BODY_TEMPLATES.items()
-}
+def enabled_event_rules(rule_names) -> list:
+    """The enabled episode rules, in evaluation order. Raises if a combined
+    rule is enabled without the rules its evidence comes from — it would
+    silently never fire."""
+    names = set(rule_names)
+    rules = [r for r in EVENT_RULES if r.name in names]
+    for r in rules:
+        missing = r.requires - names
+        if missing:
+            raise ValueError(f"{r.name} requires {sorted(r.requires)} also enabled "
+                             f"(missing: {sorted(missing)})")
+    return rules
+
+
+# --------------------------------------------------------------------
+# Loading and composing .rq files
+# --------------------------------------------------------------------
+
+_PREFIX_RE = re.compile(r"^PREFIX\s+([\w-]*):\s*<([^>]*)>\s*$", re.IGNORECASE)
+
+
+def _read(path: Path) -> tuple:
+    """(prefixes, body) of one .rq file: whole-line comments dropped,
+    PREFIX lines collected, the rest collapsed to one line."""
+    prefixes, body = {}, []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        s = line.strip()
+        if not s or s.startswith("#"):
+            continue
+        m = _PREFIX_RE.match(s)
+        if m:
+            prefixes[m.group(1)] = m.group(2)
+        else:
+            body.append(s)
+    return prefixes, " ".join(" ".join(body).split())
+
+
+def _load_all() -> tuple:
+    bodies, prefixes = {}, {}
+    for folder in (RULES_DIR, ACTIONS_DIR):
+        for path in sorted(folder.glob("*.rq")):
+            file_prefixes, body = _read(path)
+            for p, iri in file_prefixes.items():
+                if prefixes.setdefault(p, iri) != iri:
+                    raise ValueError(f"{path.name}: prefix {p}: is <{iri}>, elsewhere <{prefixes[p]}>")
+            bodies[path] = body
+    return bodies, prefixes
+
+
+_BODIES, PREFIXES = _load_all()
+PREFIX_COMMANDS = [f"prefix {p}: <{iri}>" for p, iri in sorted(PREFIXES.items())]
+
+for _rule in RULES.values():
+    if _rule.path not in _BODIES:
+        raise FileNotFoundError(f"rule {_rule.name}: no condition file {_rule.path}")
+
+
+def condition(name: str) -> str:
+    """The body of a condition file in representation/rules/."""
+    return _BODIES[RULES_DIR / name]
+
+
+def compose(action: str, bindings: str, condition_file: str | None = None) -> str:
+    """One RDFox command: the action template `action` (representation/
+    actions/<action>.rq) with its {{BINDINGS}} and {{CONDITION}} slots
+    filled."""
+    text = _BODIES[ACTIONS_DIR / f"{action}.rq"].replace("{{BINDINGS}}", bindings)
+    if condition_file is not None:
+        text = text.replace("{{CONDITION}}", condition(condition_file))
+    if "{{" in text:
+        raise ValueError(f"action {action}: unfilled slot in {text[:120]}...")
+    return text
+
+
+# --------------------------------------------------------------------
+# Gates: cheap Python-side checks that skip a query that cannot match.
+# They may over-include, never under-include; the conditions decide.
+# --------------------------------------------------------------------
+
+ALARMPRIO = "https://w3id.org/mda/vocab/alarm-priority/"
+DEVICE = "https://w3id.org/mda/vocab/device/"
 
 
 def _alarm_functional_unit(kb, event) -> str | None:
@@ -342,7 +189,6 @@ def _alarm_functional_unit(kb, event) -> str | None:
         return None
     concept = M.archetype_structure(kb, type_iri).concept(M.MDA.FunctionalUnit)
     return str(concept).rsplit("/", 1)[-1] if concept is not None else None
-
 
 
 # Metric types representation/rules/approximates_bridge.dlog derives
@@ -362,8 +208,7 @@ APPROXIMATES_COVERED_METRIC_TYPES = set(re.findall(
 def _alarm_metric_types(kb, event) -> set:
     """Every distinct Metric-kind concept name (e.g. {"ArterialBloodPressure_Mean"})
     M.ground_chain would mint for this alarm's own archetype — used only to
-    decide whether cat2a's on-demand query can possibly match (see
-    APPROXIMATES_COVERED_METRIC_TYPES above), not part of any minted
+    decide whether a query can possibly match, not part of any minted
     output itself. Cheap: archetype_structure is memoized on `kb`
     (kb.archetype_cache), so this is a small, already-cached tree walk,
     safe to call once per alarm."""
@@ -383,3 +228,51 @@ def _alarm_metric_types(kb, event) -> set:
 
     walk(M.MDA.Device)
     return found
+
+
+# What an alarm must carry to possibly be evidence, per episode kind (see
+# relevant_kinds). Combined kinds are relevant whenever one of their
+# constituents is, plus — for ventilation failure — any ventilator alarm.
+_METRIC_FOR_KIND = {
+    "CardiacArrest": "HeartRate",
+    "RespiratoryArrest": "RespirationRate",
+    "ReducedPulmonaryFunction": "RespirationVolume_Minute",
+}
+
+
+def kinds_supported_by_metric(metric_type: str, rules: list) -> frozenset:
+    """The enabled kinds an alarm with `metric_type` can be evidence for,
+    directly or through a constituent — used when a CAT1b withdrawal lets a
+    heart-rate alarm count from that moment on."""
+    kinds = {r.kind for r in rules}
+    direct = {k for k, m in _METRIC_FOR_KIND.items() if k in kinds and m == metric_type}
+    combined = {r.kind for r in rules if r.combined and {KIND_BY_RULE[n] for n in r.requires} & direct}
+    return frozenset(direct | combined)
+
+
+def _is_ventilator(kb, concept) -> bool:
+    target = M.URIRef(f"{DEVICE}MechanicalVentilator")
+    if concept is None:
+        return False
+    return concept == target or target in set(
+        kb.reasoning_static.transitive_objects(concept, M.RDFS.subClassOf))
+
+
+def relevant_kinds(kb, label: str, metric_types: set, rules: list) -> set:
+    """The enabled episode kinds an alarm with this label could be evidence
+    for (directly, or through a constituent). Over-inclusion only costs a
+    few cheap queries; under-inclusion would miss an event, so when in
+    doubt a kind is included."""
+    kinds = {r.kind for r in rules}
+    direct = {k for k, m in _METRIC_FOR_KIND.items() if k in kinds and m in metric_types}
+    if "VentilationFailure" in kinds:
+        type_iri = kb.type_index.get(label)
+        if type_iri is not None:
+            arch = M.archetype_structure(kb, type_iri)
+            if _is_ventilator(kb, arch.concept(M.MDA.Device)):
+                direct.add("VentilationFailure")
+    if "CardioRespiratoryArrest" in kinds and direct & {"CardiacArrest", "RespiratoryArrest"}:
+        direct.add("CardioRespiratoryArrest")
+    if "VentilationFailure" in kinds and "ReducedPulmonaryFunction" in direct:
+        direct.add("VentilationFailure")
+    return direct

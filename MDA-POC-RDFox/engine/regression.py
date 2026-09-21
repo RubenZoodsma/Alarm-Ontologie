@@ -12,9 +12,10 @@ Usage
 
 from __future__ import annotations
 
+import re
 import shutil
 
-import clinical_events as CE
+import rules as RU
 import event_log as EL
 import mint as M
 from execution import execute_script, summarize_rule_timings
@@ -37,7 +38,7 @@ EXPECTED = {
     # cat1a_otherfu: an SpO2 fault does not flag a heart-rate alarm.
     # cat1a_sensor_pos/neg: a sensor fault (leads off) flags an alarm on its
     #   own pathway (asystole), not one on another pathway (SpO2 sensor off
-    #   vs heart rate). See cat1a_signal_quality.dlog.
+    #   vs heart rate). See rules/cat1a_signal_quality.rq.
     "cat1a_tech": False, "cat1a_sibling": False, "cat1a_otherfu": False,
     "cat1a_sensor_pos": True, "cat1a_sensor_neg": False,
     "cat1b_pos": True, "cat1b_neg": False,
@@ -57,7 +58,7 @@ EXPECTED = {
     "cat1b_borrow": True, "cat1b_ecmo": False, "cat1b_other_monitor": True,
     "cat1b_withdraw": False,
     "cat2a_pos": True, "cat2a_neg": False,
-    # CAT2a, agreed decisions 2026-09-21 (cat2a_process_priority.dlog):
+    # CAT2a, agreed decisions 2026-09-21 (rules/cat2a_process_priority.rq):
     # cat2a_pos: severe bradycardia active, bradycardia arrives — same
     #   direction, not more severe, lower priority: redundant, silenced.
     # cat2a_opposite: tachycardia active, bradycardia arrives — reversal.
@@ -77,7 +78,7 @@ EXPECTED = {
     "cat2a_hr_map": False, "cat2a_technical": False, "cat2a_unknown": False,
     "cat2a_gate": True, "cat2a_lift": False, "cat2a_lift_last": False,
     "cat2b_pos": True, "cat2b_neg": False,
-    # CAT2b, agreed decisions 2026-09-21 (cat2b_metric_sensor.dlog):
+    # CAT2b, agreed decisions 2026-09-21 (rules/cat2b_metric_sensor.rq):
     # cat2b_opposite: SpO2 low on one monitor, SpO2 high on another — the
     #   sensors disagree; that is information, not redundancy.
     # cat2b_escalation: low SpO2 active, severe desaturation arrives.
@@ -114,7 +115,7 @@ EXPECTED = {
 
 # CAT3a (cardiorespiratory arrest): a cardiac arrest (Asystolie) and a
 # respiratory arrest (Apneu) present at the same time — no tolerance window
-# (clinical_events.py, EVENT_RULES).
+# (rules/cat3a_cardiorespiratory_arrest.rq).
 #   cat3a_pos: 08:00:00-08:01:00 / 08:00:30-08:01:30 — genuine 30s overlap.
 #   cat3a_neg: 08:00:00-08:00:20 / 08:00:40-08:01:00 — 20s gap, no overlap.
 #   cat3c: same overlap as cat3a_pos, arrival order swapped (Apneu first)
@@ -247,6 +248,31 @@ FORBIDDEN_FIRINGS = {
 }
 
 
+def rule_logic_outside_rule_files() -> list:
+    """Python lines that look like rule logic: a select, a FILTER, a
+    negation, or a pattern over the flag/silence predicates. Rules live in
+    representation/rules/ and actions in representation/actions/ (rules.py);
+    Python only binds and orders them. Graph drops and the priority INSERT
+    DATA (windows.py) are window mechanics and do not match. Comments and
+    docstring lines are skipped."""
+    pattern = re.compile(r"(?i:select\s+(distinct\s+)?\?)|FILTER\s*\(|NOT EXISTS|silencedBy>|flaggedLikelyFalsePositive>")
+    hits = []
+    for path in sorted(ENGINE_DIR.glob("*.py")):
+        if path.name == "regression.py":
+            continue
+        in_docstring = False
+        for i, line in enumerate(path.read_text().splitlines(), start=1):
+            stripped = line.strip()
+            if stripped.count('"""') % 2 == 1:
+                in_docstring = not in_docstring
+                continue
+            if in_docstring or stripped.startswith("#"):
+                continue
+            if pattern.search(stripped.split("  #", 1)[0]):
+                hits.append(f"{path.name}:{i}: {stripped[:100]}")
+    return hits
+
+
 def run():
     scratch = ENGINE_DIR / "_scratch"
     if scratch.exists():
@@ -274,8 +300,8 @@ def run():
         print((scratch / name).read_text().rstrip())
     print()
 
-    cat3a_episodes = EL.episodes_by_patient(records, CE.KIND_BY_RULE["cat3a"])
-    cat3b_episodes = EL.episodes_by_patient(records, CE.KIND_BY_RULE["cat3b"])
+    cat3a_episodes = EL.episodes_by_patient(records, RU.KIND_BY_RULE["cat3a"])
+    cat3b_episodes = EL.episodes_by_patient(records, RU.KIND_BY_RULE["cat3b"])
 
     flagged = EL.flagged_alarms(firings)
     silenced = EL.silenced_alarms(firings)
@@ -342,6 +368,12 @@ def run():
         passed += status == "PASS"
         print(f"[{status}] {patient} (forbidden firings): must not see {sorted(forbidden)}, "
               f"saw {sorted(forbidden & got)}")
+
+    hits = rule_logic_outside_rule_files()
+    total += 1
+    passed += not hits
+    print(f"[{'FAIL' if hits else 'PASS'}] no rule logic in Python sources"
+          + "".join(f"\n    {h}" for h in hits))
 
     print(f"\n{passed}/{total} checks matched expected outcome")
 

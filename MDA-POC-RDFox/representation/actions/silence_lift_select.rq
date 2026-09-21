@@ -1,0 +1,5 @@
+# silence_lift_select.rq — when an alarm ends: the alarms whose CAT2 silence
+# it was the last justification for (logged as cat2_lifted).
+# Slots: {{BINDINGS}} ?ended ?now; {{CONDITION}} rules/cat2_lift.rq.
+
+select distinct ?silenced ?ended where { {{BINDINGS}} {{CONDITION}} }

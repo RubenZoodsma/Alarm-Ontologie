@@ -16,7 +16,7 @@ ALARM_ID), for rebuilding — a label alone repeats far too often to
 identify an alarm.
 
 Input: the trace blocks execution.execute_script collects (see
-clinical_events.trace_block), as (tag, check_key, rows):
+trace_block below), as (tag, check_key, rows):
   ("ended", None, rows)     rows: event, kind, start, end
   ("support", None, rows)   rows: event, support — an alarm graph
                             (<alarm#transient|#persistent>) or, for a
@@ -43,8 +43,18 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 
-import clinical_events as CE
 import mint as M
+
+# Every select whose answers matter runs inside a trace block, with output
+# switched on for the whole script (execution.SCRIPT_PREAMBLE): the block's
+# tag says what asked, its rows are the answers.
+TRACE_BEGIN = "TRACE_BEGIN"
+TRACE_END = "TRACE_END"
+
+
+def trace_block(tag: str, query: str) -> list:
+    """`query` wrapped in TRACE_BEGIN <tag> / TRACE_END marker lines."""
+    return [f"echo {TRACE_BEGIN} {tag}", query, f"echo {TRACE_END}"]
 
 
 def _term(token: str) -> str:
@@ -65,11 +75,11 @@ def parse_trace_blocks(out_lines: list) -> list:
     skipped. The statement's own "Total statement evaluation time" is
     returned alongside, for per-check timing."""
     blocks, tag, rows, seconds = [], None, [], None
-    begin = CE.TRACE_BEGIN + " "
+    begin = TRACE_BEGIN + " "
     for line in out_lines:
         if line.startswith(begin):
             tag, rows, seconds = line[len(begin):], [], None
-        elif line == CE.TRACE_END and tag is not None:
+        elif line == TRACE_END and tag is not None:
             blocks.append((tag, rows, seconds))
             tag = None
         elif tag is not None:
@@ -121,7 +131,7 @@ def event_records(blocks: list, patients=()) -> list:
     def alarms_behind(ev, seen=()):
         found = set()
         for s in supports.get(ev, ()):
-            if s.startswith(CE.EVENT_BASE):
+            if s.startswith(M.EVENT_BASE):
                 if s not in seen:
                     found |= alarms_behind(s, seen + (ev,))
             else:
@@ -134,7 +144,7 @@ def event_records(blocks: list, patients=()) -> list:
             continue
         for ev, kind, start, end in rows:
             kind_local = kind.rsplit("/", 1)[-1]
-            cleaned = ev[len(CE.EVENT_BASE) + len(kind_local) + 1:].rsplit("_", 1)[0]
+            cleaned = ev[len(M.EVENT_BASE) + len(kind_local) + 1:].rsplit("_", 1)[0]
             records[ev] = EventRecord(ev, kind_local, original.get(cleaned, cleaned),
                                       datetime.fromisoformat(start), datetime.fromisoformat(end),
                                       alarms_behind(ev))

@@ -33,7 +33,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "engine"))
-import clinical_events as CE  # noqa: E402
+import actions as A  # noqa: E402
 import event_log as EL  # noqa: E402
 import mint as M  # noqa: E402
 import execution as X  # noqa: E402
@@ -43,7 +43,7 @@ import windows as W  # noqa: E402
 
 SETTINGS = {
     "scratch": ROOT / "_scratch" / "clinical_events_cross_patient",
-    "enabled_rules": sorted(CE.EVENT_RULE_NAMES),
+    "enabled_rules": sorted(RU.EVENT_RULE_NAMES),
 }
 
 
@@ -72,10 +72,10 @@ EXPECTED = {
 
 
 def build_interleaved_script(kb, scratch: Path, rule_names) -> str:
-    rules = CE.enabled_event_rules(rule_names)
+    rules = RU.enabled_event_rules(rule_names)
     lines = ["dstore create xp", "active xp"]
     lines += [f"import {f}" for f in X.FRAMEWORK_FILES]
-    lines += CE.SCRIPT_PREAMBLE
+    lines += X.SCRIPT_PREAMBLE
     counter = itertools.count(1)
     drivers = {}
     pending = []  # (when, seq, command) across all patients, flushed in time order
@@ -87,11 +87,11 @@ def build_interleaved_script(kb, scratch: Path, rule_names) -> str:
 
         driver = drivers.setdefault(e.patient, W.WindowOperator(kb, scratch, counter, rules))
         M.update_identity(kb, e, driver.identity_tracker)
-        kinds = frozenset(CE.relevant_kinds(kb, e.label, RU._alarm_metric_types(kb, e), rules))
+        kinds = frozenset(RU.relevant_kinds(kb, e.label, RU._alarm_metric_types(kb, e), rules))
         driver.insert_alarm(e, driver.identity_tracker.identity, kinds)
         lines += driver.commands
         driver.commands.clear()
-        lines += CE.evaluate_commands(kinds, rules, e.patient, e.start)
+        lines += A.evaluate_commands(kinds, rules, e.patient, e.start)
         # Take this driver's scheduled drops into the shared, time-ordered queue.
         pending += [(when, next(seq), cmd) for when, cmd in driver.pending]
         driver.pending = []

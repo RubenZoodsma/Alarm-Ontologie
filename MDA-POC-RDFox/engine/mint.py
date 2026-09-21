@@ -61,7 +61,7 @@ from the catalogue like any other edge — nothing reads them yet.)
 FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl is NOT copied into data/ or
 parsed here either: it only states each clinical event's evidence
 criterion, nothing EXTRACTION/MINTING reads. Those criteria are implemented
-by engine/clinical_events.py (hand translations, kept in sync by hand).
+by the episode rules in representation/rules/ (hand translations, kept in sync by hand).
 
 Paths below point at MDA-POC-RDFox/data/ — physical copies of the
 FRAMEWORK/DATA files this pipeline needs (per the project's own
@@ -379,6 +379,14 @@ def message_iri(ev) -> URIRef:
     return INST[f"Msg_{alarm_key(ev)}"]
 
 
+# One clinical event (actions.py's episodes): its kind, patient and start.
+EVENT_BASE = str(INST) + "ClinicalEvent_"
+
+
+def event_iri(kind: str, patient_id: str, start) -> str:
+    return f"{EVENT_BASE}{kind}_{_clean(patient_id)}_{start.strftime('%Y%m%dT%H%M%S')}"
+
+
 def ground_chain(kb: KB, arch: "Archetype", patient_id: str, device_id: str,
                   identity: dict = None) -> tuple:
     background, condition, leaves = Graph(), Graph(), []
@@ -478,7 +486,7 @@ def condition_for_event(kb: KB, patient_id: str, label: str, device_id: str,
     # Device's own leaf property (hasDeviceOperationState) is grounded in
     # background_for_key for its post-alarm persistence — and ALSO here,
     # so the transient graph holds everything this alarm reports while it
-    # is active. CAT3b (clinical_events.py, VentilationFailure) needs a
+    # is active. CAT3b (rules/cat3b_ventilation_failure.rq) needs a
     # ventilator malfunction only while its alarm is active: read from the
     # persistent graph alone, a fault carried over 15 minutes joined the
     # next ventilator's alarms after a ventilator swap. Every OTHER leaf
