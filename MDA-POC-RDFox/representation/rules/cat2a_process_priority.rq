@@ -21,6 +21,9 @@
 #                                query) and never silences one.
 #   "represents the same       — metric -> mda:approximates -> physiological
 #    biological process"         property -> mda:isPropertyOf -> process,
+#                                the approximates hop read from inference.ttl's
+#                                class-level restriction on the metric's type
+#                                or any superclass (no per-alarm fact),
 #                                shared by both alarms. A property belonging
 #                                to MORE than one process (ArterialPressure,
 #                                TissuePerfusion: CardiacContraction and
@@ -53,8 +56,9 @@
 #
 # GRAPHS. ?gT is the incoming alarm's transient graph, ?gA an active
 # alarm's; everything each alarm contributes is matched inside its own
-# graph, so no hop is borrowed from another alarm. Priority rank, process
-# membership and state order are static facts in the default graph.
+# graph, so no hop is borrowed from another alarm. Priority rank, the
+# approximates axioms, process membership and state order are static facts
+# in the default graph.
 #
 # CONTRACT. Bound on entry: ?alarm (the incoming alarm), ?now, ?incomingPrio
 # (its priority: its own hasPriority triple is inserted only after its
@@ -62,9 +66,7 @@
 # per active alarm justifying the silence; all are stored) and ?witness
 # (that alarm's transient graph).
 # Used by actions/check.rq and actions/silence_insert.rq. Skipped by the
-# engine for an Unknown priority, and for a metric type outside
-# approximates_bridge.dlog, which can never reach a process (RDFox does not
-# find that dead end cheaply).
+# engine for an Unknown priority.
 #
 # VALIDATION — engine/regression.py: cat2a_pos (severe bradycardia, then
 # bradycardia) and cat2a_gate (low MAP on two monitors) silence;
@@ -77,13 +79,17 @@ PREFIX mda:       <https://w3id.org/mda/ontology#>
 PREFIX mdapoc:    <https://w3id.org/mda/poc#>
 PREFIX alarmcat:  <https://w3id.org/mda/vocab/alarm-category/>
 PREFIX alarmprio: <https://w3id.org/mda/vocab/alarm-priority/>
+PREFIX rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:       <http://www.w3.org/2002/07/owl#>
 
 # the incoming alarm (its own graph)
 GRAPH ?gT { ?alarm mda:hasCategory alarmcat:Physiological .
             ?alarm mda:hasMessage ?msg . ?msg mda:concernsPatient ?patient .
-            ?analysis mda:producesMetric ?metric . ?metric mda:approximates ?property .
+            ?analysis mda:producesMetric ?metric . ?metric rdf:type ?metricType .
             ?metric ?stateProp ?state . }
 VALUES ?stateProp { mda:hasValueState mda:hasRhythm }
+?metricType rdfs:subClassOf* ?r . ?r owl:onProperty mda:approximates ; owl:hasValue ?property .
 ?property mda:isPropertyOf ?process .
 ?incomingPrio mda:priorityRank ?incomingRank .
 ?state mdapoc:deviationDirection ?direction . ?state mdapoc:deviationSeverity ?severity .
@@ -93,9 +99,10 @@ GRAPH ?gA { ?active mda:hasCategory alarmcat:Physiological .
             ?active mda:hasMessage ?activeMsg . ?activeMsg mda:concernsPatient ?patient .
             ?active mda:hasPriority ?activePrio .
             ?activeAnalysis mda:producesMetric ?activeMetric .
-            ?activeMetric mda:approximates ?activeProperty .
+            ?activeMetric rdf:type ?activeMetricType .
             ?activeMetric ?activeStateProp ?activeState . }
 VALUES ?activeStateProp { mda:hasValueState mda:hasRhythm }
+?activeMetricType rdfs:subClassOf* ?activeR . ?activeR owl:onProperty mda:approximates ; owl:hasValue ?activeProperty .
 ?activeProperty mda:isPropertyOf ?process .
 ?activePrio mda:priorityRank ?activeRank .
 ?activeState mdapoc:deviationDirection ?direction . ?activeState mdapoc:deviationSeverity ?activeSeverity .

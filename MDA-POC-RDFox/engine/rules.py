@@ -29,9 +29,16 @@ stalled for tens of seconds per alarm; the same join issued as a query at
 the alarm's arrival answered in milliseconds. Some rule semantics are not
 expressible in monotone Datalog at all: absence (CAT1b: no alarm on the
 pathway), a flag withdrawn or a silence lifted later, and a clinical event
-that outlives its first evidence and carries an end time. Datalog is used
-where it fits: approximates_bridge.dlog materialises the ontology's
-metric -> physiological property axioms.
+that outlives its first evidence and carries an end time.
+
+NO MATERIALISATION. The rules read the framework's axioms where they are
+stated. CAT2a's metric -> physiological property hop follows inference.ttl's
+class-level restriction (metric:X rdfs:subClassOf [owl:onProperty
+mda:approximates ; owl:hasValue ?property]) through rdfs:subClassOf*, so a
+metric subtype inherits its parent's property without a copy of the axiom.
+Measured on the 5-patient sample against a per-graph Datalog port of the
+same axioms (the former approximates_bridge.dlog): identical logs, no
+measurable difference in RDFox time.
 """
 
 from __future__ import annotations
@@ -190,19 +197,6 @@ def _alarm_functional_unit(kb, event) -> str | None:
     concept = M.archetype_structure(kb, type_iri).concept(M.MDA.FunctionalUnit)
     return str(concept).rsplit("/", 1)[-1] if concept is not None else None
 
-
-# Metric types representation/rules/approximates_bridge.dlog derives
-# mda:approximates for. A metric type outside it can never satisfy cat2a's
-# ?metric -> approximates -> ?property hop, so cat2a is skipped for it in
-# Python: RDFox's planner does not discover that dead end cheaply (patient
-# 2826, an ArterialBloodPressure_Mean alarm: 100+ s to prove no match;
-# reordering or sub-querying the body did not change its plan).
-# Derived from the bridge file itself (every `rdf:type, metric:X` rule
-# body), not a hand-kept list: the hand-kept list went stale when the
-# bridge gained its _Mean/_Minute/_Tidal/_EndExpiratory rules, silently
-# excluding 14 alarm types from CAT2a as the incoming alarm.
-APPROXIMATES_COVERED_METRIC_TYPES = set(re.findall(
-    r"rdf:type,\s*metric:(\w+)\]", (RULES_DIR / "approximates_bridge.dlog").read_text()))
 
 
 def _alarm_metric_types(kb, event) -> set:

@@ -30,13 +30,6 @@ FRAMEWORK_FILES = [
     # Direction/severity of each metric state (mdapoc:) — CAT2's
     # redundancy test.
     DATA_DIR / "metric_state_order.ttl",
-    # A .dlog rules file, not framework .ttl data — deliberately mixed in
-    # here rather than RULE_FILES below: it's prerequisite infrastructure
-    # (mda:approximates, consumed by cat2a), not an
-    # optional domain rule a caller would ever want to disable. Replaces
-    # the per-alarm owlrl.DeductiveClosure call mint.py used to make (see
-    # that file's module docstring) — RDFox derives these natively now.
-    RULES_DIR / "approximates_bridge.dlog",
 ]
 
 # Set once at the top of every script: every select prints its answers as

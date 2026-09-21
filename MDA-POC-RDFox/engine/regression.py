@@ -108,7 +108,8 @@ EXPECTED = {
     "cat3b_cpap": False,
     # cat2a_peak: high tidal volume active, high peak pressure arrives —
     #   same process (pulmonary ventilation), same direction, equal
-    #   priority. Exercises the AirwayPressure_Peak bridge (decision 39):
+    #   priority. Exercises the AirwayPressure_Peak approximates axiom
+    #   in inference.ttl (decision 39):
     #   without it the peak-pressure alarm reaches no process at all.
     "cat2a_peak": True,
 }

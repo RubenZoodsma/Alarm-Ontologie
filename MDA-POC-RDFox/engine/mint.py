@@ -42,13 +42,10 @@ every call, ~2.8-4s measured) that the RDFox migration was undertaken to
 eliminate in the first place. At the project's 14M-alarm target that's
 over a decade of serial compute.
 
-CORRECTED AGAIN: mda:approximates' restriction axioms are all simple,
-enumerable, one-hop type-to-value mappings (14 of them, inference.ttl
-lines 520-614) — not a general reasoning problem requiring OWL-RL at
-all. They're ported instead as plain RDFox Datalog rules,
-representation/rules/approximates_bridge.dlog, loaded once like any
-other rule file — RDFox derives them natively and incrementally, no
-Python-side reasoning needed. `reason()`, `clinical_predicates()`,
+CORRECTED AGAIN: no reasoning is needed for it at all. The one rule that
+follows mda:approximates (cat2a_process_priority.rq) reads inference.ttl's
+class-level restriction directly, through rdfs:subClassOf* (engine/rules.py
+docstring: NO MATERIALISATION). `reason()`, `clinical_predicates()`,
 `clinical_context()`, `_extract_clinical()`, `owlrl`, and
 `KB.reasoning_static_closed` are gone from this module entirely — `owlrl`
 is not a dependency of this module at all. (mda:administers/
@@ -504,9 +501,9 @@ def condition_for_event(kb: KB, patient_id: str, label: str, device_id: str,
 #     STANDING, concept-level fact (alarmprio:Hoog priorityRank 3, not
 #     per-alarm) — load ONCE into the default graph, like isPropertyOf.
 #     data/archetypes.py's mistake (now deleted) was re-minting this INTO
-#     every alarm's own transient graph, which is also why
-#     representation/cat_rules.dlog's CAT2a rule needs its priorityRank
-#     patterns reverted to ungraphed (see that file).
+#     every alarm's own transient graph; CAT2a
+#     (representation/rules/cat2a_process_priority.rq) reads priorityRank
+#     ungraphed, from the default graph.
 #   - mda:triggeredBy (AlarmMessage -> FunctionalUnit, falling back to
 #     Device) is not part of op_knowledge.py's alarm_message() output at
 #     all — op_knowledge.py only asserts triggeredByStructure. Every

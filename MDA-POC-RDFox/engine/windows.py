@@ -115,8 +115,6 @@ class WindowOperator:
         M.add_triggered_by(msg_graph, [arrival], kb, identity)
         cond_graph = M.condition_for_event(kb, arrival.patient, arrival.label, arrival.device_id, identity)
         bg_graph = M.background_for_key(kb, arrival.patient, arrival.label, arrival.device_id, identity)
-        # mda:approximates is derived in RDFox by representation/rules/
-        # approximates_bridge.dlog, loaded with the framework files.
 
         incoming_prio = msg_graph.value(alarm_uri, M.MDA.hasPriority)
         priority_pred = f"<{M.MDA}hasPriority>"
