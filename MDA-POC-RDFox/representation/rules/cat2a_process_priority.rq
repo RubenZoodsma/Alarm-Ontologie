@@ -17,8 +17,12 @@
 #   "equal or higher priority" — priorityRank(active) >= priorityRank
 #                                (incoming), priority_rank.ttl. An Unknown
 #                                priority cannot be compared: an alarm with
-#                                it is never silenced (skipped before the
-#                                query) and never silences one.
+#                                it is never silenced and never silences one
+#                                (the two Unknown filters below; an alarm
+#                                without a priority is bound as Unknown).
+#                                Temporary: Unknown priorities are to be
+#                                resolved from incoming data, after which
+#                                both filters go.
 #   "represents the same       — metric -> mda:approximates -> physiological
 #    biological process"         property -> mda:isPropertyOf -> process,
 #                                the approximates hop read from inference.ttl's
@@ -65,8 +69,7 @@
 # checks, so it can never justify its own silence). Binds: ?active (one row
 # per active alarm justifying the silence; all are stored) and ?witness
 # (that alarm's transient graph).
-# Used by actions/check.rq and actions/silence_insert.rq. Skipped by the
-# engine for an Unknown priority.
+# Used by actions/check.rq and actions/silence_insert.rq.
 #
 # VALIDATION — engine/regression.py: cat2a_pos (severe bradycardia, then
 # bradycardia) and cat2a_gate (low MAP on two monitors) silence;
@@ -108,6 +111,7 @@ VALUES ?activeStateProp { mda:hasValueState mda:hasRhythm }
 ?activeState mdapoc:deviationDirection ?direction . ?activeState mdapoc:deviationSeverity ?activeSeverity .
 
 FILTER(?active != ?alarm)
+FILTER(?incomingPrio != alarmprio:Unknown)
 FILTER(?activePrio != alarmprio:Unknown)
 FILTER(?activeRank >= ?incomingRank)
 FILTER(?activeSeverity >= ?severity)

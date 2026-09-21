@@ -76,7 +76,7 @@ from datetime import datetime
 
 import mint as M
 from event_log import trace_block
-from rules import CAT1B_WITHDRAW, CAT2_LIFT, RULE_BY_KIND, RULES, compose
+from rules import ALARMPRIO, CAT1B_WITHDRAW, CAT2_LIFT, RULE_BY_KIND, RULES, compose
 
 XSD_DATETIME = "<http://www.w3.org/2001/XMLSchema#dateTime>"
 CLINICAL_EVENT = "https://w3id.org/mda/vocab/clinical-event/"
@@ -119,11 +119,18 @@ def flag_withdraw(alarm: str) -> tuple:
             compose("flag_withdraw_delete", bindings, CAT1B_WITHDRAW))
 
 
+def _incoming_prio(incoming_prio) -> str:
+    """The incoming alarm's priority as a binding. An alarm without one is
+    bound as alarmprio:Unknown — what the rules then do with it is in the
+    rule file (cat2a_process_priority.rq)."""
+    return iri(incoming_prio if incoming_prio is not None else f"{ALARMPRIO}Unknown")
+
+
 def silence_bindings(rule: str, alarm: str, now: str, incoming_prio=None) -> str:
     """The check's bindings; cat2a also needs the incoming alarm's priority,
     which is not in the store yet at its own check."""
     if rule == "cat2a":
-        return values(alarm=iri(alarm), now=now, incomingPrio=iri(incoming_prio))
+        return values(alarm=iri(alarm), now=now, incomingPrio=_incoming_prio(incoming_prio))
     return values(alarm=iri(alarm), now=now)
 
 
@@ -131,7 +138,7 @@ def silence_insert(rule: str, alarm: str, tgraph: str, now: str, incoming_prio=N
     """Store `rule`'s (cat2a or cat2b) silence on `alarm`: one silencedBy
     link per active alarm justifying it."""
     if rule == "cat2a":
-        bindings = values(alarm=iri(alarm), now=now, incomingPrio=iri(incoming_prio), tgraph=tgraph)
+        bindings = values(alarm=iri(alarm), now=now, incomingPrio=_incoming_prio(incoming_prio), tgraph=tgraph)
     else:
         bindings = values(alarm=iri(alarm), now=now, tgraph=tgraph)
     return compose("silence_insert", bindings, RULES[rule].condition)

@@ -34,7 +34,7 @@ from actions import (check, dt, evaluate_commands, flag_insert, flag_withdraw, i
                      silence_insert, silence_lift, values)
 from event_log import trace_block
 from execution import FRAMEWORK_FILES, SCRIPT_PREAMBLE, _progress_bar, execute_script
-from rules import (ALARMPRIO, RULES, _alarm_functional_unit,
+from rules import (RULES, _alarm_functional_unit,
                    _alarm_metric_types, enabled_event_rules, kinds_supported_by_metric, relevant_kinds)
 from stream import AlarmArrival, AlarmEnd, replay_stream
 from windows import WindowOperator
@@ -171,14 +171,8 @@ class Processor:
                 # A withdrawn asystole becomes evidence at this moment.
                 withdraw_kinds = kinds_supported_by_metric("HeartRate", self.event_rules)
 
-        silence_rules = self.silence_rules
         prio = pending["incoming_prio"]
-        if "cat2a" in silence_rules:
-            # An Unknown priority cannot be shown to be equal or lower than
-            # anything: never silenced by CAT2a (agreed 2026-09-21).
-            if prio is None or str(prio) == f"{ALARMPRIO}Unknown":
-                silence_rules = [n for n in silence_rules if n != "cat2a"]
-        for name in silence_rules:
+        for name in self.silence_rules:
             self.lines += trace_block(f"check {len(self.checks)}",
                                       check(name, silence_bindings(name, alarm, now, prio)))
             self.lines.append(silence_insert(name, alarm, pending["tgraph"], now, prio))
