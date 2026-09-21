@@ -80,7 +80,7 @@ class ShadowDriver:
         (cat1b, cat2b — see their own harnesses for why); cat2a needs its
         own two-phase variant instead (see shadow_cat2a_aggregate.py)."""
         kb = self.kb
-        alarm_uri = M.alarm_iri(event.patient, event.device_id, event.start)
+        alarm_uri = M.alarm_iri(event)
         alarm = str(alarm_uri)
         tgraph = R.graph_iri(alarm, "transient")
         pgraph = R.graph_iri(alarm, "persistent")
@@ -181,12 +181,14 @@ def load_real_events(dataset_path: Path, kb, patient_id: str, start_idx: int, en
     with open(dataset_path, encoding="utf-8") as f:
         reader = csv.reader(f, delimiter=";")
         next(reader)
-        for row in reader:
-            patient, label, device_id, start, end = row
+        for n, row in enumerate(reader, start=1):
+            patient, label, device_id, start, end = row[:5]
+            alarm_id = row[5] if len(row) > 5 else str(n)  # see replay_driver.Event
             if patient != patient_id or label not in kb.type_index:
                 continue
             events.append(R.Event(patient, label, device_id,
-                                   datetime.fromisoformat(start), datetime.fromisoformat(end)))
+                                   datetime.fromisoformat(start), datetime.fromisoformat(end),
+                                 alarm_id))
     events.sort(key=lambda e: e.start)
     return events[start_idx:end_idx]
 

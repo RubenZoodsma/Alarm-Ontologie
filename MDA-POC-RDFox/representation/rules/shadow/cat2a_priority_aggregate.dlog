@@ -1,3 +1,7 @@
+# NO LONGER LOADED (2026-09-21): CAT2a now compares direction, severity and
+# priority of one active alarm at once, which this per-key MAX cannot
+# express — see ../cat2a_process_priority.dlog. Kept only for
+# validation/shadow_cat2a_aggregate.py's historical comparison.
 ####################################################################
 # cat2a_priority_aggregate.dlog — SHADOW, EXPERIMENTAL. NOT WIRED INTO
 # THE PRODUCTION PATH (engine/replay_driver.py's build_script does not
@@ -80,3 +84,22 @@
 # cross-patient isolation check; not yet run against real RDFox as part of
 # a validated regression at the time this file was written (that's the
 # whole point of the shadow harness — verify before promoting).
+
+## WITNESSES (logging): which alarms are currently active on each
+## (patient, process) key. Same body as the aggregate above, so the same
+## alarms qualify; the aggregate answers "does something outrank me", this
+## answers "which alarm is it". Read by the cat2a check only through its
+## already-bound key — a lookup, not a search over active alarms.
+[?ppKey, mda:shadowPriorityKeyAlarm, ?active] :-
+    [?active, mda:hasCategory, alarmcat:Physiological] ?gCond,
+    [?active, mda:hasMessage, ?activeMsg] ?gCond,
+    [?activeMsg, mda:concernsPatient, ?patient] ?gCond,
+    [?activeMsg, mda:triggeredBy, ?activeDevice] ?gCond,
+    [?activeDevice, mda:hasSensor, ?activeSensor] ?gStruct,
+    [?activeSensor, mda:sensorProducesSignal, ?activeSignal] ?gStruct,
+    [?activeSignal, mda:analyzedBy, ?activeAnalysis] ?gStruct,
+    [?activeAnalysis, mda:producesMetric, ?activeMetric] ?gCond,
+    [?activeMetric, mda:approximates, ?activeProperty] ?gCond,
+    [?activeProperty, mda:isPropertyOf, ?process],
+    [?active, mda:hasPriority, ?activePrio] ?gCond,
+    BIND(IRI(CONCAT(STR(?patient), "|", STR(?process))) AS ?ppKey) .

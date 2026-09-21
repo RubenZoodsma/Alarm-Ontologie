@@ -17,12 +17,18 @@
 # ontology's actual signal-analysis model.
 #
 # Asserted only -- no inference.ttl predicate is involved, so this does not
-# require the OWL-RL closure. Three of the seven device classes present in
-# kg_generated.ttl (CardiacMonitor, Dialysator, Thermoregulator) are absent
-# from the results below: their only archetypes in this corpus are
-# connection/system-fault alarms with no measurement pathway at all
-# (e.g. "EDWARDS - Verbinding verbroken") -- correctly excluded, not a
-# query defect.
+# require the OWL-RL closure. Four device classes present in
+# kg_generated.ttl are absent from the results (CardiacMonitor, Dialysator,
+# Thermoregulator, and the plain mda:Device of "MEDIBUS - Check patient"):
+# their only archetypes in this corpus are connection/system-fault alarms
+# with no measurement pathway at all (e.g. "EDWARDS - Verbinding
+# verbroken") -- correctly excluded, not a query defect.
+#
+# The answer is bounded by the annotated alarms: a measurement a device
+# never alarmed on in the corpus is not listed. Phase/aggregation variants
+# (e.g. ArterialBloodPressure and ArterialBloodPressure_Mean,
+# AirwayPressure_Peak and AirwayPressure_EndExpiratory) count as distinct
+# measurements, as each is a distinct displayed value.
 
 PREFIX mda: <https://w3id.org/mda/ontology#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>

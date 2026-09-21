@@ -23,6 +23,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sensor: <https://w3id.org/mda/vocab/sensor/> .
 @prefix signal: <https://w3id.org/mda/vocab/signal/> .
+@prefix signalAnalysis: <https://w3id.org/mda/vocab/signal-analysis/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix therapeuticModality: <https://w3id.org/mda/vocab/therapeutic-modality/> .
 
@@ -1034,6 +1035,18 @@ metric:AirwayPressure_EndExpiratory a skos:Concept ;
     skos:prefLabel "Airway Pressure_End Expiratory"@en ;
     mda:hasPhase metricPhase:EndExpiratory .
 
+metric:AirwayPressure_Peak a skos:Concept ;
+    rdfs:subClassOf metric:AirwayPressure ;
+    owl:equivalentClass [ a owl:Class ;
+            owl:intersectionOf ( metric:AirwayPressure [ a owl:Restriction ;
+                        owl:hasValue metricPhase:Peak ;
+                        owl:onProperty mda:hasPhase ] ) ] ;
+    skos:broader metric:AirwayPressure ;
+    skos:inScheme metric:Scheme ;
+    skos:notation "AirwayPressure_Peak" ;
+    skos:prefLabel "Airway Pressure_Peak"@en ;
+    mda:hasPhase metricPhase:Peak .
+
 metric:ArterialBloodPressure_Mean a skos:Concept ;
     rdfs:subClassOf metric:ArterialBloodPressure ;
     owl:equivalentClass [ a owl:Class ;
@@ -1055,16 +1068,6 @@ metric:CO2 a skos:Concept ;
     skos:notation "CO2" ;
     skos:prefLabel "CO2"@en,
         "CO2"@nl .
-
-metric:CPAP a skos:Concept ;
-    rdfs:subClassOf mda:Metric ;
-    skos:broader metric:Metric ;
-    skos:definition "CPAP"@en,
-        "CPAP"@nl ;
-    skos:inScheme metric:Scheme ;
-    skos:notation "CPAP" ;
-    skos:prefLabel "CPAP"@en,
-        "CPAP"@nl .
 
 metric:HeartRate a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
@@ -1751,6 +1754,286 @@ sensor:VenousPressureTransducer a skos:Concept ;
     skos:prefLabel "Venous Pressure Transducer"@en,
         "Venous Pressure Transducer"@nl .
 
+signalAnalysis:AirTemperatureAnalysis a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "Air Temperature Analysis"@en,
+        "Air Temperature Analysis"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "AirTemperatureAnalysis" ;
+    skos:prefLabel "Air Temperature Analysis"@en,
+        "Air Temperature Analysis"@nl .
+
+signalAnalysis:AirwayPressureAnalysis a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "Airway Pressure Analysis"@en,
+        "Airway Pressure Analysis"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "AirwayPressureAnalysis" ;
+    skos:prefLabel "Airway Pressure Analysis"@en,
+        "Airway Pressure Analysis"@nl .
+
+signalAnalysis:ArterialPressureAnalysis a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "Arterial Pressure Analysis"@en,
+        "Arterial Pressure Analysis"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "ArterialPressureAnalysis" ;
+    skos:prefLabel "Arterial Pressure Analysis"@en,
+        "Arterial Pressure Analysis"@nl .
+
+signalAnalysis:CO2Analysis a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "CO2Analysis"@en,
+        "CO2Analysis"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "CO2Analysis" ;
+    skos:prefLabel "CO2Analysis"@en,
+        "CO2Analysis"@nl .
+
+signalAnalysis:ECG_derivation_I a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "ECG_derivation_I"@en,
+        "ECG_derivation_I"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "ECG_derivation_I" ;
+    skos:prefLabel "ECG_derivation_I"@en,
+        "ECG_derivation_I"@nl .
+
+signalAnalysis:ECG_derivation_II a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "ECG_derivation_II"@en,
+        "ECG_derivation_II"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "ECG_derivation_II" ;
+    skos:prefLabel "ECG_derivation_II"@en,
+        "ECG_derivation_II"@nl .
+
+signalAnalysis:ECG_derivation_III a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "ECG_derivation_III"@en,
+        "ECG_derivation_III"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "ECG_derivation_III" ;
+    skos:prefLabel "ECG_derivation_III"@en,
+        "ECG_derivation_III"@nl .
+
+signalAnalysis:ECG_derivation_Impedance a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "ECG_derivation_Impedance"@en,
+        "ECG_derivation_Impedance"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "ECG_derivation_Impedance" ;
+    skos:prefLabel "ECG_derivation_Impedance"@en,
+        "ECG_derivation_Impedance"@nl .
+
+signalAnalysis:ECG_derivation_V1 a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "ECG_derivation_V1"@en,
+        "ECG_derivation_V1"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "ECG_derivation_V1" ;
+    skos:prefLabel "ECG_derivation_V1"@en,
+        "ECG_derivation_V1"@nl .
+
+signalAnalysis:ECG_derivation_V2 a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "ECG_derivation_V2"@en,
+        "ECG_derivation_V2"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "ECG_derivation_V2" ;
+    skos:prefLabel "ECG_derivation_V2"@en,
+        "ECG_derivation_V2"@nl .
+
+signalAnalysis:ECG_derivation_V3 a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "ECG_derivation_V3"@en,
+        "ECG_derivation_V3"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "ECG_derivation_V3" ;
+    skos:prefLabel "ECG_derivation_V3"@en,
+        "ECG_derivation_V3"@nl .
+
+signalAnalysis:ECG_derivation_V4 a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "ECG_derivation_V4"@en,
+        "ECG_derivation_V4"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "ECG_derivation_V4" ;
+    skos:prefLabel "ECG_derivation_V4"@en,
+        "ECG_derivation_V4"@nl .
+
+signalAnalysis:ECG_derivation_V5 a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "ECG_derivation_V5"@en,
+        "ECG_derivation_V5"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "ECG_derivation_V5" ;
+    skos:prefLabel "ECG_derivation_V5"@en,
+        "ECG_derivation_V5"@nl .
+
+signalAnalysis:ECG_derivation_V6 a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "ECG_derivation_V6"@en,
+        "ECG_derivation_V6"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "ECG_derivation_V6" ;
+    skos:prefLabel "ECG_derivation_V6"@en,
+        "ECG_derivation_V6"@nl .
+
+signalAnalysis:ECG_derivation_aVF a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "ECG_derivation_a VF"@en,
+        "ECG_derivation_a VF"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "ECG_derivation_aVF" ;
+    skos:prefLabel "ECG_derivation_a VF"@en,
+        "ECG_derivation_a VF"@nl .
+
+signalAnalysis:ECG_derivation_aVL a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "ECG_derivation_a VL"@en,
+        "ECG_derivation_a VL"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "ECG_derivation_aVL" ;
+    skos:prefLabel "ECG_derivation_a VL"@en,
+        "ECG_derivation_a VL"@nl .
+
+signalAnalysis:ECG_derivation_aVR a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "ECG_derivation_a VR"@en,
+        "ECG_derivation_a VR"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "ECG_derivation_aVR" ;
+    skos:prefLabel "ECG_derivation_a VR"@en,
+        "ECG_derivation_a VR"@nl .
+
+signalAnalysis:HeartRateAnalysis a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "Heart Rate Analysis"@en,
+        "Heart Rate Analysis"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "HeartRateAnalysis" ;
+    skos:prefLabel "Heart Rate Analysis"@en,
+        "Heart Rate Analysis"@nl .
+
+signalAnalysis:HumidityAnalysis a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "Humidity Analysis"@en,
+        "Humidity Analysis"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "HumidityAnalysis" ;
+    skos:prefLabel "Humidity Analysis"@en,
+        "Humidity Analysis"@nl .
+
+signalAnalysis:ImpedanceRespirationAnalysis a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "Impedance Respiration Analysis"@en,
+        "Impedance Respiration Analysis"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "ImpedanceRespirationAnalysis" ;
+    skos:prefLabel "Impedance Respiration Analysis"@en,
+        "Impedance Respiration Analysis"@nl .
+
+signalAnalysis:LeakAnalysis a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "Leak Analysis"@en,
+        "Leak Analysis"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "LeakAnalysis" ;
+    skos:prefLabel "Leak Analysis"@en,
+        "Leak Analysis"@nl .
+
+signalAnalysis:PatientTemperatureAnalysis a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "Patient Temperature Analysis"@en,
+        "Patient Temperature Analysis"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "PatientTemperatureAnalysis" ;
+    skos:prefLabel "Patient Temperature Analysis"@en,
+        "Patient Temperature Analysis"@nl .
+
+signalAnalysis:PulseAnalysis a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "Pulse Analysis"@en,
+        "Pulse Analysis"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "PulseAnalysis" ;
+    skos:prefLabel "Pulse Analysis"@en,
+        "Pulse Analysis"@nl .
+
+signalAnalysis:PulseFlowIndexAnalysis a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "Pulse Flow Index Analysis"@en,
+        "Pulse Flow Index Analysis"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "PulseFlowIndexAnalysis" ;
+    skos:prefLabel "Pulse Flow Index Analysis"@en,
+        "Pulse Flow Index Analysis"@nl .
+
+signalAnalysis:RespiratoryRateAnalysis a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "Respiratory Rate Analysis"@en,
+        "Respiratory Rate Analysis"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "RespiratoryRateAnalysis" ;
+    skos:prefLabel "Respiratory Rate Analysis"@en,
+        "Respiratory Rate Analysis"@nl .
+
+signalAnalysis:SpO2Analysis a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "Sp O2Analysis"@en,
+        "Sp O2Analysis"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "SpO2Analysis" ;
+    skos:prefLabel "Sp O2Analysis"@en,
+        "Sp O2Analysis"@nl .
+
+signalAnalysis:VenousPressureAnalysis a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "Venous Pressure Analysis"@en,
+        "Venous Pressure Analysis"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "VenousPressureAnalysis" ;
+    skos:prefLabel "Venous Pressure Analysis"@en,
+        "Venous Pressure Analysis"@nl .
+
+signalAnalysis:VolumeAnalysis a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "Volume Analysis"@en,
+        "Volume Analysis"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "VolumeAnalysis" ;
+    skos:prefLabel "Volume Analysis"@en,
+        "Volume Analysis"@nl .
+
 signal:ABP_waveform a skos:Concept ;
     rdfs:subClassOf mda:Signal ;
     skos:broader signal:Signal ;
@@ -2071,6 +2354,16 @@ signal:Pressure_waveform a skos:Concept ;
     skos:prefLabel "Pressure_waveform"@en,
         "Pressure_waveform"@nl .
 
+therapeuticModality:CPAP a skos:Concept ;
+    rdfs:subClassOf mda:TherapeuticModality ;
+    skos:broader therapeuticModality:TherapeuticModality ;
+    skos:definition "CPAP"@en,
+        "CPAP"@nl ;
+    skos:inScheme therapeuticModality:Scheme ;
+    skos:notation "CPAP" ;
+    skos:prefLabel "CPAP"@en,
+        "CPAP"@nl .
+
 therapeuticModality:ExtraCorporealMembraneOxygenation a skos:Concept ;
     rdfs:subClassOf mda:TherapeuticModality ;
     skos:broader therapeuticModality:TherapeuticModality ;
@@ -2264,6 +2557,15 @@ metricPhase:Mean a skos:Concept ;
     skos:prefLabel "Mean"@en,
         "Mean"@nl .
 
+metricPhase:Peak a skos:Concept ;
+    skos:broader metricPhase:MetricPhase ;
+    skos:definition "Peak"@en,
+        "Peak"@nl ;
+    skos:inScheme metricPhase:Scheme ;
+    skos:notation "Peak" ;
+    skos:prefLabel "Peak"@en,
+        "Peak"@nl .
+
 metricPhase:Tidal a skos:Concept ;
     skos:broader metricPhase:MetricPhase ;
     skos:definition "Tidal"@en,
@@ -2323,16 +2625,6 @@ device:Thermoregulator a skos:Concept ;
     skos:prefLabel "Thermoregulator"@en,
         "Thermoregulator"@nl .
 
-metric:AirwayPressure a skos:Concept ;
-    rdfs:subClassOf mda:Metric ;
-    skos:broader metric:Metric ;
-    skos:definition "Airway Pressure"@en,
-        "Airway Pressure"@nl ;
-    skos:inScheme metric:Scheme ;
-    skos:notation "AirwayPressure" ;
-    skos:prefLabel "Airway Pressure"@en,
-        "Airway Pressure"@nl .
-
 metric:ArterialBloodPressure a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
     skos:broader metric:Metric ;
@@ -2379,6 +2671,16 @@ manufacturer:Getinge a skos:Concept ;
     skos:notation "Getinge" ;
     skos:prefLabel "Getinge"@en,
         "Getinge"@nl .
+
+metric:AirwayPressure a skos:Concept ;
+    rdfs:subClassOf mda:Metric ;
+    skos:broader metric:Metric ;
+    skos:definition "Airway Pressure"@en,
+        "Airway Pressure"@nl ;
+    skos:inScheme metric:Scheme ;
+    skos:notation "AirwayPressure" ;
+    skos:prefLabel "Airway Pressure"@en,
+        "Airway Pressure"@nl .
 
 metric:RespirationVolume a skos:Concept ;
     rdfs:subClassOf mda:Metric ;

@@ -32,11 +32,17 @@ arrive/end/end+window lifecycle as real RDFox transactions:
   - Alarm ends: DROP the transient graph.
   - Alarm end + PT15M: DROP the persistent graph (always scheduled, never
     conditionally skipped — see above).
-  - kb.last_wins conflict resolution (every leaf/condition property the
-    ontology tags as such, read generically off mint.py's KB, not a
-    hand-picked predicate list): retract-on-insert, restore-on-end, via a
-    small per-(subject,predicate) stack — see the plan's §2 for the full
-    design.
+  - Nothing else. An alarm's graphs hold exactly what that alarm
+    reported, from its arrival to its own end (+PT15M); no other alarm's
+    arrival or end ever edits them. Shared particulars (device, sensor,
+    signal, metric, ...) are re-minted into each alarm's own graphs, so a
+    shared node can carry several states at once — one per active alarm
+    reporting it — and every rule reads a state through the alarm that
+    reports it. (REMOVED 2026-09-21: kb.last_wins retract-on-insert /
+    restore-on-end, which edited OTHER alarms' graphs by design. It had
+    never taken effect: each alarm's drop command was built at its
+    arrival, which popped its own stack entry at once, so the stack was
+    always empty — 0 retractions over patient 2826's 5,926 alarms.)
 
 Identity resolution (mint.py's resolve_identity) is re-run per arriving
 alarm over that patient's events STRICTLY so far (start <= this alarm's
@@ -73,6 +79,8 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
 
+import clinical_events as CE
+import event_log as EL
 import mint as M
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -88,35 +96,225 @@ WINDOW = timedelta(minutes=15)  # ontology.ttl's postAlarmValidityDuration
 # silencedBy outcome. The CAT3 patients below are included here too
 # (all False) as a sanity check that neither CAT3 fixture accidentally
 # also trips a CAT1/CAT2 rule — see EXPECTED_CAT3A/EXPECTED_CAT3B for
-# their own, actual expected outcome.
+# their own, actual expected outcome (whether the clinical event log holds
+# a CardioRespiratoryArrest / VentilationFailure event for the patient).
 EXPECTED = {
     "cat1a_pos": True, "cat1a_neg": False,
+    # cat1a_tech: a technical alarm on a bad signal is never flagged itself.
+    # cat1a_sibling: an ECG-signal quality problem does not flag a
+    #   respiration-rate alarm (ECG_lead_Impedance) on the same sensor, even
+    #   while a heart-rate alarm on the bad signal is active.
+    # cat1a_otherfu: an SpO2 fault does not flag a heart-rate alarm.
+    # cat1a_sensor_pos/neg: a sensor fault (leads off) flags an alarm on its
+    #   own pathway (asystole), not one on another pathway (SpO2 sensor off
+    #   vs heart rate). See cat1a_signal_quality.dlog.
+    "cat1a_tech": False, "cat1a_sibling": False, "cat1a_otherfu": False,
+    "cat1a_sensor_pos": True, "cat1a_sensor_neg": False,
     "cat1b_pos": True, "cat1b_neg": False,
+    # identity_collision: two alarms start in the same second on one
+    #   monitor; the first to end must not take the other's content with
+    #   it (mint.alarm_key). The low MAP still active then silences a low
+    #   MAP arriving on a second monitor.
+    "identity_collision": True,
+    # cat1b_borrow: the asystole is flagged; a heart-rate alarm arriving
+    #   while it is active is not (FORBIDDEN_FIRINGS) — it is no asystole.
+    #   Still fires overall: the asystole's flag, and a CAT2a silence.
+    # cat1b_ecmo: an ECMO circuit pressure is no arterial line — no flag.
+    # cat1b_other_monitor: the arterial line may be on another patient
+    #   monitor (Draeger vs Philips) — flagged.
+    # cat1b_withdraw: flagged at onset, withdrawn when the arterial line
+    #   alarms 8 s later — not flagged in the end.
+    "cat1b_borrow": True, "cat1b_ecmo": False, "cat1b_other_monitor": True,
+    "cat1b_withdraw": False,
     "cat2a_pos": True, "cat2a_neg": False,
+    # CAT2a, agreed decisions 2026-09-21 (cat2a_process_priority.dlog):
+    # cat2a_pos: severe bradycardia active, bradycardia arrives — same
+    #   direction, not more severe, lower priority: redundant, silenced.
+    # cat2a_opposite: tachycardia active, bradycardia arrives — reversal.
+    # cat2a_escalation: severe bradycardia active, asystole arrives.
+    # cat2a_reversal: extreme tachycardia active, asystole arrives.
+    # cat2a_hr_map: bradycardia active, low MAP arrives — arterial pressure
+    #   belongs to two processes, so it only matches arterial pressure.
+    # cat2a_technical: a technical alarm is never the incoming alarm.
+    # cat2a_unknown: an Unknown-priority alarm is never silenced.
+    # cat2a_gate: low MAP on two monitors — a metric subtype (_Mean) that
+    #   the former hand-kept gate excluded; silenced (cat2a and cat2b).
+    # cat2a_lift: silenced, lifted when the silencing alarm ends while the
+    #   silenced one continues — not silenced in the end.
+    # cat2a_lift_last: silenced by two alarms; lifted only when the LAST
+    #   of them ends (FORBIDDEN_FIRINGS: not at the first one's end).
+    "cat2a_opposite": False, "cat2a_escalation": False, "cat2a_reversal": False,
+    "cat2a_hr_map": False, "cat2a_technical": False, "cat2a_unknown": False,
+    "cat2a_gate": True, "cat2a_lift": False, "cat2a_lift_last": False,
     "cat2b_pos": True, "cat2b_neg": False,
+    # CAT2b, agreed decisions 2026-09-21 (cat2b_metric_sensor.dlog):
+    # cat2b_opposite: SpO2 low on one monitor, SpO2 high on another — the
+    #   sensors disagree; that is information, not redundancy.
+    # cat2b_escalation: low SpO2 active, severe desaturation arrives.
+    # cat2b_same_sensor: "Storing in SpO2" refines the sensor (Peripheral)
+    #   between two "SpO2 laag" alarms on ONE monitor, splitting one physical
+    #   sensor into two identities — not "a different sensor"
+    #   (FORBIDDEN_FIRINGS). Still fires overall: a genuine CAT2a silence.
+    # cat2b_lift: silenced by another monitor's low SpO2; lifted when it ends.
+    "cat2b_opposite": False, "cat2b_escalation": False, "cat2b_same_sensor": True,
+    "cat2b_lift": False,
     "cat3a_pos": False, "cat3a_neg": False, "cat3c": False,
     "cat3b_pos": False, "cat3b_neg": False, "cat3d": False, "cat3e": False,
+    # cat3f's second asystole comes from another sensor with the same
+    # metric type while the first is active — a genuine CAT2b (and CAT2a)
+    # silence — but the first ends at 08:01 while the second runs to
+    # 08:02, so the silence is lifted: not silenced in the end.
+    "cat3f": False,
+    # cat3a_flagged: CAT1a flags the asystole (ECG signal impaired).
+    # cat3a_withdraw: CAT1b's flag on the asystole is withdrawn when the
+    #   arterial line alarms — not flagged in the end.
+    "cat3a_flagged": True, "cat3a_withdraw": False,
+    "cat3b_leak": False, "cat3b_circuit": False, "cat3b_disconnect": False,
+    "cat3b_swap": False, "cat3b_datalink": False,
+    # cat3b_cpap: the low minute volume could be a CAT2a redundancy of the
+    #   active CPAP low (same process), but its priority is Unknown — never
+    #   silenced (see cat2a_unknown).
+    "cat3b_cpap": False,
+    # cat2a_peak: high tidal volume active, high peak pressure arrives —
+    #   same process (pulmonary ventilation), same direction, equal
+    #   priority. Exercises the AirwayPressure_Peak bridge (decision 39):
+    #   without it the peak-pressure alarm reaches no process at all.
+    "cat2a_peak": True,
 }
 
-# CAT3a (cardiorespiratory arrest): Asystolie + Apneu.
+# CAT3a (cardiorespiratory arrest): a cardiac arrest (Asystolie) and a
+# respiratory arrest (Apneu) present at the same time — no tolerance window
+# (clinical_events.py, EVENT_RULES).
 #   cat3a_pos: 08:00:00-08:01:00 / 08:00:30-08:01:30 — genuine 30s overlap.
 #   cat3a_neg: 08:00:00-08:00:20 / 08:00:40-08:01:00 — 20s gap, no overlap.
 #   cat3c: same overlap as cat3a_pos, arrival order swapped (Apneu first)
 #     — confirms order doesn't matter, no ?alarm anchor in the check.
-EXPECTED_CAT3A = {"cat3a_pos": True, "cat3a_neg": False, "cat3c": True}
+#   cat3a_flagged: the asystole is CAT1a-flagged, hence no evidence — no
+#     cardiac arrest, no CAT3a.
+#   cat3a_withdraw: the asystole's CAT1b flag is withdrawn at 08:00:20 —
+#     CAT3a from then on.
+EXPECTED_CAT3A = {"cat3a_pos": True, "cat3a_neg": False, "cat3c": True,
+                  "cat3a_flagged": False, "cat3a_withdraw": True}
 
-# CAT3b (ventilation failure): MEDIBUS Ventilator storing (device fault) +
-# MEDIBUS MV ondergrens (reduced pulmonary function).
-#   cat3b_pos: 08:00:00-08:01:00 / 08:00:30-08:01:30 — direct overlap.
-#   cat3b_neg: fault ends 08:00:20, second alarm arrives 08:20:00 — past
-#     the 15-minute post-alarm window, does not fire.
+# CAT3b (ventilation failure): reduced pulmonary function (low minute
+# volume) while the ventilation therapy is compromised (a leak, a
+# malfunctioning ventilator, a disconnected patient circuit), both at the
+# same time (clinicalEvents.ttl, VentilationFailure).
+#   cat3b_pos: Ventilator storing 08:00:00-08:01:00 / MV ondergrens
+#     08:00:30-08:01:30 — direct overlap.
+#   cat3b_neg: fault ends 08:00:20, low minute volume at 08:20:00.
 #   cat3d: same overlap as cat3b_pos, arrival order swapped.
-#   cat3e: fault ends 08:00:20, second alarm arrives 08:10:00 — inside the
-#     15-minute window, fires. Specifically exercises mint.py's
-#     background_for_key routing hasDeviceOperationState into the
-#     persistent graph (see that function's own comment) — this is the
-#     exact case that was silently broken before that fix.
-EXPECTED_CAT3B = {"cat3b_pos": True, "cat3b_neg": False, "cat3d": True, "cat3e": True}
+#   cat3e: fault ends 08:00:20, low minute volume at 08:10:00 — the device
+#     state still persists, but its alarm is over: negative (positive
+#     before 2026-09-21, when the fault counted for its 15-minute window).
+#   cat3b_leak / cat3b_circuit: a leak / a disconnected circuit on the
+#     same ServoU — positive.
+#   cat3b_disconnect: Datex "Patient Disconnected" (a patient circuit
+#     disconnection) with low minute volume on ANOTHER ventilator —
+#     positive, no same-ventilator constraint.
+#   cat3b_swap: the ventilator-swap pattern (disconnected from one
+#     ventilator, low minute volume on the next 5 min later) — negative.
+#   cat3b_datalink: a lost data link is no ventilation failure — negative.
+#   cat3b_cpap: a HULBUS in CPAP mode (therapeuticModality:CPAP, a subclass
+#     of VentilationTherapy) with a leak, low minute volume on a ServoU —
+#     positive; CPAP alarms leave CAT3b intact.
+EXPECTED_CAT3B = {"cat3b_pos": True, "cat3b_neg": False, "cat3d": True, "cat3e": False,
+                  "cat3b_leak": True, "cat3b_circuit": True, "cat3b_disconnect": True,
+                  "cat3b_swap": False, "cat3b_datalink": False, "cat3b_cpap": True}
+
+# Exact clinical events for patients where timing matters — (kind, start,
+# end, number of supporting alarms). hasStart/hasEnd must be when the
+# criterion started/stopped holding, never when the driver noticed.
+#   cat3a_pos: the combined event runs from the LATER constituent start
+#     (Apneu 08:00:30) to the EARLIER constituent end (Asystolie 08:01:00).
+#   cat3e: the ventilator fault ended at 08:00:20; low minute volume at
+#     08:10:00 is reduced pulmonary function on its own, no ventilation
+#     failure.
+#   cat3b_leak: ventilation failure from the later start (08:00:20) to the
+#     earlier end (the leak, 08:01:00).
+#   cat3f: two asystole alarms on two devices, 08:00:00–08:01:00 and
+#     08:00:30–08:02:00 — ONE cardiac arrest, extended by the second
+#     alarm's evidence, ending when the LAST evidence ends (08:02:00).
+EXPECTED_EVENTS = {
+    "cat3a_pos": {
+        ("CardiacArrest", "08:00:00", "08:01:00", 1),
+        ("RespiratoryArrest", "08:00:30", "08:01:30", 1),
+        ("CardioRespiratoryArrest", "08:00:30", "08:01:00", 2),
+    },
+    "cat3e": {
+        ("ReducedPulmonaryFunction", "08:10:00", "08:10:30", 1),
+    },
+    "cat3b_leak": {
+        ("ReducedPulmonaryFunction", "08:00:20", "08:01:30", 1),
+        ("VentilationFailure", "08:00:20", "08:01:00", 2),
+    },
+    "cat3b_cpap": {
+        ("ReducedPulmonaryFunction", "08:00:20", "08:01:30", 1),
+        ("VentilationFailure", "08:00:20", "08:01:00", 2),
+    },
+    "cat3f": {
+        ("CardiacArrest", "08:00:00", "08:02:00", 2),
+    },
+    # cat3a_flagged: the flagged asystole supports nothing; the apnoea's
+    #   respiratory arrest stands alone.
+    "cat3a_flagged": {
+        ("RespiratoryArrest", "08:00:20", "08:01:10", 1),
+    },
+    # cat3a_withdraw: the asystole counts from the withdrawal (08:00:20),
+    #   so the cardiac arrest — and CAT3a — start there, not at its onset.
+    "cat3a_withdraw": {
+        ("RespiratoryArrest", "08:00:05", "08:01:30", 1),
+        ("CardiacArrest", "08:00:20", "08:01:00", 1),
+        ("CardioRespiratoryArrest", "08:00:20", "08:01:00", 2),
+    },
+}
+
+# Firings that must appear in rule_firings.csv, as (rule, arriving alarm,
+# causing alarms) — taken from the fixture design (DATA/CAT_evaluation/
+# README.md), so the log is checked to name the alarm that actually caused
+# each firing. Other firings for the same patient are allowed (and printed).
+EXPECTED_FIRINGS = {
+    "cat1a_pos": {("cat1a", "PHILIPSMONITOR - SpO2 laag", "PHILIPSMONITOR - Storing in SpO2")},
+    "cat1a_sensor_pos": {("cat1a", "PHILIPSMONITOR - Asystolie", "PHILIPSMONITOR - ECG alle leads los")},
+    "cat3a_flagged": {("cat1a", "PHILIPSMONITOR - Asystolie", "PHILIPSMONITOR - Niet te leren ECG")},
+    "cat1b_pos": {("cat1b", "PHILIPSMONITOR - Asystolie", "PHILIPSMONITOR - ABP verkleinen")},
+    "cat2a_pos": {("cat2a", "PHILIPSMONITOR - Lage hartfreq.", "PHILIPSMONITOR - Extr. lage hartfreq.")},
+    "cat2a_peak": {("cat2a", "DATEXOHMEDACOMVENTILATOR - Ppeak High", "DATEXOHMEDACOMVENTILATOR - VTexp High")},
+    "cat2a_gate": {("cat2a", "PHILIPSMONITOR - ABPm laag", "PHILIPSMONITOR - ABPm laag")},
+    "identity_collision": {("cat2a", "PHILIPSMONITOR - ABPm laag", "PHILIPSMONITOR - ABPm laag")},
+    "cat2a_lift": {
+        ("cat2a", "PHILIPSMONITOR - Lage hartfreq.", "PHILIPSMONITOR - Extr. lage hartfreq."),
+        ("cat2_lifted", "PHILIPSMONITOR - Lage hartfreq.", "PHILIPSMONITOR - Extr. lage hartfreq."),
+    },
+    "cat2a_lift_last": {
+        ("cat2a", "PHILIPSMONITOR - Lage hartfreq.",
+         "PHILIPSMONITOR - Extr. lage hartfreq. + PHILIPSMONITOR - Asystolie"),
+        ("cat2_lifted", "PHILIPSMONITOR - Lage hartfreq.", "PHILIPSMONITOR - Asystolie"),
+    },
+    "cat2b_pos": {("cat2b", "PHILIPSMONITOR - SpO2 laag", "Monitor - Lage SpO2")},
+    "cat3f": {("cat2b", "PHILIPSMONITOR - Asystolie", "PHILIPSMONITOR - Asystolie"),
+              ("cat2_lifted", "PHILIPSMONITOR - Asystolie", "PHILIPSMONITOR - Asystolie")},
+    "cat2b_lift": {("cat2b", "PHILIPSMONITOR - SpO2 laag", "Monitor - Lage SpO2"),
+                   ("cat2_lifted", "PHILIPSMONITOR - SpO2 laag", "Monitor - Lage SpO2")},
+    "cat1b_borrow": {("cat1b", "PHILIPSMONITOR - Asystolie", "PHILIPSMONITOR - ABP verkleinen")},
+    "cat1b_other_monitor": {("cat1b", "PHILIPSMONITOR - Asystolie", "Monitor - Lage ARTmean")},
+    "cat1b_withdraw": {
+        ("cat1b", "PHILIPSMONITOR - Asystolie", "PHILIPSMONITOR - ABP verkleinen"),
+        ("cat1b_withdrawn", "PHILIPSMONITOR - Asystolie", "PHILIPSMONITOR - ABPm laag"),
+    },
+}
+
+# Firings that must NOT appear, as (rule, alarm label) or (rule, alarm
+# label, causing alarm labels) — for failure modes a patient-level
+# fire/no-fire check cannot see, because the patient fires for another,
+# legitimate reason (or, for a lift, because the timing is what matters).
+FORBIDDEN_FIRINGS = {
+    "cat2b_same_sensor": {("cat2b", "PHILIPSMONITOR - SpO2 laag")},
+    "cat2a_lift_last": {("cat2_lifted", "PHILIPSMONITOR - Lage hartfreq.",
+                         "PHILIPSMONITOR - Extr. lage hartfreq.")},
+    "cat1b_borrow": {("cat1b", "PHILIPSMONITOR - Lage hartfreq."),
+                     ("cat1b_withdrawn", "PHILIPSMONITOR - Asystolie")},
+}
 
 
 @dataclass
@@ -126,18 +324,31 @@ class Event:
     device_id: str
     start: datetime
     end: datetime
+    # ALARM_ID: this alarm occurrence's own unique identifier, part of its
+    # IRI (mint.alarm_key). Taken from the file's `alarm_id` column when
+    # present (the corpus: the row number in the locked source data, see
+    # data/tools/export_rdata.R), otherwise the 1-based data-row number in
+    # the file being read — unique and stable for as long as that file is.
+    alarm_id: str
+
+
+def _alarm_ids(header: list, rows: list) -> list:
+    """The ALARM_ID of each data row: its `alarm_id` column, or its
+    1-based data-row number when the file has none."""
+    if "alarm_id" in header:
+        col = header.index("alarm_id")
+        return [row[col] for row in rows]
+    return [str(i) for i in range(1, len(rows) + 1)]
 
 
 def load_events(path: Path) -> list:
-    events = []
     with path.open(encoding="utf-8") as f:
         reader = csv.reader(f, delimiter=";")
-        next(reader)  # header
-        for row in reader:
-            patient, label, device_id, start, end = row
-            events.append(Event(patient, label, device_id,
-                                 datetime.fromisoformat(start), datetime.fromisoformat(end)))
-    return events
+        header = next(reader)
+        rows = [row for row in reader if row]
+    return [Event(row[0], row[1], row[2], datetime.fromisoformat(row[3]), datetime.fromisoformat(row[4]),
+                  alarm_id)
+            for row, alarm_id in zip(rows, _alarm_ids(header, rows))]
 
 
 def group_by_patient(events: list) -> dict:
@@ -176,10 +387,12 @@ def load_events_for_patients(path: Path, patient_ids: set) -> list:
     `patient_ids` first."""
     import pandas as pd
     df = pd.read_csv(path, sep=";", dtype=str)
+    if "alarm_id" not in df.columns:
+        df["alarm_id"] = [str(i) for i in range(1, len(df) + 1)]  # before filtering, like load_events
     df = df[df["patientID"].isin(patient_ids)]
     return [
         Event(row.patientID, row.label, row.device_id,
-              datetime.fromisoformat(row.start), datetime.fromisoformat(row.end))
+              datetime.fromisoformat(row.start), datetime.fromisoformat(row.end), row.alarm_id)
         for row in df.itertuples(index=False)
     ]
 
@@ -188,8 +401,8 @@ def graph_iri(alarm: str, suffix: str) -> str:
     return f"<{alarm}#{suffix}>"
 
 
-VALID_FROM = f"<{M.MDA}validFrom>"
-VALID_UNTIL = f"<{M.MDA}validUntil>"
+VALID_FROM = f"<{M.MDAPOC}validFrom>"
+VALID_UNTIL = f"<{M.MDAPOC}validUntil>"
 XSD_DATETIME = "<http://www.w3.org/2001/XMLSchema#dateTime>"
 
 
@@ -229,12 +442,19 @@ class Driver:
     scratch directory, since all patients' scripts are generated before
     RDFox ever reads any of them back."""
 
-    def __init__(self, kb, scratch_dir: Path, file_counter):
+    def __init__(self, kb, scratch_dir: Path, file_counter, event_rules=(), cat2_lift=False):
         self.kb = kb
+        # CAT2a or CAT2b enabled: an alarm's end may lift silences it
+        # justified (see cat2_lift).
+        self.lift_cat2 = cat2_lift
+        # Enabled clinical-event rules (clinical_events.EVENT_RULES order).
+        # A dropped graph can take away an event's evidence, so each drop of
+        # an alarm that is relevant to an event kind re-evaluates that kind
+        # at the drop's own logical time — see clinical_events' docstring.
+        self.event_rules = list(event_rules)
         self.scratch = scratch_dir
         self.commands: list[str] = []
         self.pending: list[tuple] = []  # (when, command_text)
-        self.last_wins_stack: dict = {}  # (subj,pred) -> [(start, graph, triple), ...]
         self._file_counter = file_counter
         self.identity_tracker = M.new_identity_tracker(kb)
 
@@ -268,20 +488,16 @@ class Driver:
             self.commands.append(cmd)
         self.pending = []
 
-    def insert_alarm(self, event: Event, identity: dict) -> dict:
+    def insert_alarm(self, event: Event, identity: dict, event_kinds: frozenset = frozenset()) -> dict:
         """Phase 1 of a two-phase insert: everything about this alarm
         EXCEPT its own `hasPriority` triple, which is held back and must
         be completed via complete_alarm() after any per-alarm checks have
-        run. This is what lets cat2a's on-demand check (see
-        representation/rules/shadow/cat2a_priority_aggregate.dlog and
-        this module's CAT2A_AGGREGATE_RULE) query the standing
-        `shadowMaxActiveRank` aggregate BEFORE this alarm's own rank
-        could pollute it — a MAX aggregate can't be decomposed after the
-        fact to "exclude me" the way a COUNT can, so the check has to run
-        against the pre-arrival state, not the post-insert one. Every
-        other check (cat1a/cat1b/cat2b/impliesClinicalEvent) is
-        unaffected by hasPriority's absence and runs fine against
-        phase-1-only data.
+        run. Until then the arriving alarm has no priority in the store, so
+        it can never count as an "active alarm of equal or higher priority"
+        in its own CAT2a check (whose incoming priority is passed in via
+        VALUES instead). Every other check (cat1a/cat1b/cat2b) and the
+        clinical-event updates are unaffected by hasPriority's absence and
+        run fine against phase-1-only data.
 
         Returns the pending state complete_alarm() needs; always
         two-phase now regardless of which rules are enabled — holding
@@ -289,7 +505,7 @@ class Driver:
         to be worth conditioning on enabled_rules.
         """
         kb = self.kb
-        alarm_uri = M.alarm_iri(event.patient, event.device_id, event.start)
+        alarm_uri = M.alarm_iri(event)
         alarm = str(alarm_uri)
         tgraph = graph_iri(alarm, "transient")
         pgraph = graph_iri(alarm, "persistent")
@@ -317,23 +533,9 @@ class Driver:
                 phase1_msg_triples.append(t)
 
         transient_triples_phase1 = phase1_msg_triples + graph_triples(cond_graph)
-        full_transient_triples = all_msg_triples + graph_triples(cond_graph)
         patient = M.patient_iri(event.patient)
         dev = M.device_iri(event.patient, event.device_id)
         persistent_triples = graph_triples(bg_graph) + [f"<{patient}> <{M.MDA}isMonitoredBy> <{dev}> ."]
-
-        # last_wins conflict handling uses the FULL triple set (hasPriority
-        # is never last_wins-tagged, so holding it back doesn't affect this).
-        for triple in list(full_transient_triples):
-            subj, pred = subject_predicate(triple)
-            if pred not in self.kb.last_wins_str:
-                continue
-            key = (subj, pred)
-            stack = self.last_wins_stack.setdefault(key, [])
-            if stack:
-                _, old_graph, old_triple = stack[-1]
-                self.commands.append(f"DELETE WHERE {{ GRAPH {old_graph} {{ {old_triple} }} }}")
-            stack.append((event.start, tgraph, triple))
 
         metadata = (
             validity_triples(tgraph, event.start, event.end)
@@ -343,8 +545,10 @@ class Driver:
         self.commands.append(f"# arrive (phase1): {event.label} @ {event.device_id} {event.start.isoformat()}")
         self.commands.append(f"import {path}")
 
-        self.schedule(event.end, self._drop_transient_cmd(event, tgraph, full_transient_triples))
-        self.schedule(event.end + WINDOW, self._drop_persistent_cmd(event, pgraph))
+        self.schedule(event.end, self._with_events(
+            self._drop_transient_cmd(event, tgraph), event, event.end, event_kinds))
+        self.schedule(event.end + WINDOW, self._with_events(
+            self._drop_persistent_cmd(event, pgraph), event, event.end + WINDOW, event_kinds))
 
         return {
             "alarm": alarm, "tgraph": tgraph, "pgraph": pgraph, "patient": str(patient),
@@ -363,25 +567,20 @@ class Driver:
             f"INSERT DATA {{ GRAPH {pending['tgraph']} {{ {pending['priority_triple']} }} }}"
         )
 
-    def _drop_transient_cmd(self, event: Event, graph: str, transient_triples: list) -> str:
-        restores = []
-        for triple in transient_triples:
-            subj, pred = subject_predicate(triple)
-            if pred not in self.kb.last_wins_str:
-                continue
-            key = (subj, pred)
-            stack = self.last_wins_stack.get(key, [])
-            if not stack or stack[-1][2] != triple:
-                continue
-            stack.pop()
-            if stack:
-                _, restore_graph, restore_triple = stack[-1]
-                restores.append(f"INSERT DATA {{ GRAPH {restore_graph} {{ {restore_triple} }} }}")
+    def _drop_transient_cmd(self, event: Event, graph: str) -> str:
+        """Built at arrival, run at the alarm's end: drop THIS alarm's
+        transient graph — only its own content (see the module docstring)."""
         cmd = f"# end: {event.label} @ {event.device_id} {event.end.isoformat()}\n"
         cmd += f"DELETE WHERE {{ GRAPH {graph} {{ ?s ?p ?o }} }}"
-        for r in restores:
-            cmd += "\n" + r
+        if self.lift_cat2:
+            select, delete = cat2_lift(graph[1:].split("#", 1)[0], event.end)
+            cmd += "\n" + "\n".join(CE.trace_block(f"lift {event.patient} {event.end.isoformat()}", select))
+            cmd += "\n" + delete
         return cmd
+
+    def _with_events(self, cmd: str, event: Event, when: datetime, event_kinds) -> str:
+        lines = CE.evaluate_commands(event_kinds, self.event_rules, event.patient, when)
+        return "\n".join([cmd] + lines)
 
     def _drop_persistent_cmd(self, event: Event, graph: str) -> str:
         return (f"# window-expiry: {event.label} @ {event.device_id}\n"
@@ -389,6 +588,7 @@ class Driver:
 
 
 RULES_DIR = REPRESENTATION_DIR / "rules"
+CLINICAL_EVENTS_MODULE = Path(__file__).resolve().parent / "clinical_events.py"
 
 FRAMEWORK_FILES = [
     DATA_DIR / "ontology.ttl",
@@ -396,13 +596,15 @@ FRAMEWORK_FILES = [
     DATA_DIR / "clinicalEvent_vocab.ttl",
     DATA_DIR / "inference.ttl",
     DATA_DIR / "priority_rank.ttl",
-    # mda:validFrom/validUntil — the reified-time redesign's own vocabulary
-    # (see the plan's §1). Additive only; nothing consumes these terms
-    # until the rollout's later steps land.
-    DATA_DIR / "graph_metadata.ttl",
+    # mdapoc: — the POC's own terms (graph validity, silencing, false-
+    # positive flags, metric-state order), outside the mda: ontology.
+    DATA_DIR / "mdapoc.ttl",
+    # Direction/severity of each metric state (mdapoc:) — CAT2's
+    # redundancy test.
+    DATA_DIR / "metric_state_order.ttl",
     # A .dlog rules file, not framework .ttl data — deliberately mixed in
     # here rather than RULE_FILES below: it's prerequisite infrastructure
-    # (mda:approximates, consumed by 4 of the domain rules), not an
+    # (mda:approximates, consumed by cat2a), not an
     # optional domain rule a caller would ever want to disable. Replaces
     # the per-alarm owlrl.DeductiveClosure call mint.py used to make (see
     # that file's module docstring) — RDFox derives these natively now.
@@ -413,59 +615,28 @@ FRAMEWORK_FILES = [
 # enable/disable each independently — split out of the original combined
 # clinical_rules.dlog/cat_rules.dlog for exactly that reason.
 RULE_FILES = {
-    "cardiac_arrest": RULES_DIR / "cardiac_arrest.dlog",
-    "respiratory_arrest": RULES_DIR / "respiratory_arrest.dlog",
-    "reduced_pulmonary_function": RULES_DIR / "reduced_pulmonary_function.dlog",
+    # Clinical-event rules (clinical_events.EVENT_RULES): never imported —
+    # they run as guarded SPARQL updates at arrival and drop times. Point at
+    # the module that holds them, for traceability.
+    "cardiac_arrest": CLINICAL_EVENTS_MODULE,
+    "respiratory_arrest": CLINICAL_EVENTS_MODULE,
+    "reduced_pulmonary_function": CLINICAL_EVENTS_MODULE,
     "cat1a": RULES_DIR / "cat1a_signal_quality.dlog",
     "cat1b": RULES_DIR / "cat1b_asystole_ibp.dlog",
     "cat2a": RULES_DIR / "cat2a_process_priority.dlog",
     "cat2b": RULES_DIR / "cat2b_metric_sensor.dlog",
-    # EXPERIMENTAL, not a real file (never imported — see
-    # ONDEMAND_RULE_NAMES/_cat2a_ondemand_aggregate_branch): a THIRD cat2a
-    # implementation, alongside the standing shadowMaxActiveRank aggregate
-    # rule ("cat2a") and the already-tried-and-worse on-demand self-join,
-    # for isolated A/B timing against real patient 2826. Points at the
-    # same file as "cat2a" purely for documentation/traceability — this
-    # variant checks the identical domain condition, just evaluated as a
-    # fresh MAX aggregate per alarm instead of a continuously-maintained
-    # one. Enable EITHER "cat2a" OR "cat2a_ondemand_agg" at a time to
-    # compare, not both (both together just runs and times the same check
-    # twice under two different implementations).
-    "cat2a_ondemand_agg": RULES_DIR / "cat2a_process_priority.dlog",
-    # CAT3a/CAT3b: coincidence checks over the CLINICAL_RULE_NAMES tags
-    # below, ported from the older rdflib POC's CODE/evaluation_poc/
-    # reasoner/rules/cat3a_cardiorespiratory_arrest.rq and
-    # cat3b_ventilation_failure.rq. Not real files (never imported — same
-    # documentation-only pattern as cat2a_ondemand_agg above): there is no
-    # standing Datalog rule for either, because minting a NEW ClinicalEvent
-    # individual on a rising-edge coincidence isn't something Datalog
-    # materialization can do (see clinicalEvents.ttl's own header) — the
-    # per-alarm on-demand query + Python-side episode dedup at the
-    # check-emission site (build_script) and count_cat3_episodes() IS the
-    # implementation. Point at their building-block dependency's own file
-    # purely for traceability.
-    "cat3a": RULES_DIR / "cardiac_arrest.dlog",
-    "cat3b": RULES_DIR / "reduced_pulmonary_function.dlog",
+    # CAT3a/CAT3b: the combined clinical events (cardiorespiratory arrest,
+    # ventilation failure) — same mechanism as the three rules above; each
+    # requires its constituent rules (clinical_events.EventRule.requires).
+    "cat3a": CLINICAL_EVENTS_MODULE,
+    "cat3b": CLINICAL_EVENTS_MODULE,
 }
 
-CLINICAL_RULE_NAMES = {"cardiac_arrest", "respiratory_arrest", "reduced_pulmonary_function"}
-
-# CAT3a/CAT3b's own dependency on specific CLINICAL_RULE_NAMES members
-# (not all three — cat3a needs the cardiac+respiratory pair, cat3b needs
-# only reduced_pulmonary_function, whose OTHER half is a raw device fact,
-# not a clinical-rule tag at all — see cat3b's own query comment below).
-# Checked in build_script, once, at rule_names-validation time: enabling
-# cat3a/cat3b without their inputs would silently just never fire, which
-# is a worse failure mode than a clear error.
-CAT3_DEPENDENCIES = {
-    "cat3a": {"cardiac_arrest", "respiratory_arrest"},
-    "cat3b": {"reduced_pulmonary_function"},
-}
 
 # cat2a/cat2b are NOT imported as standing Datalog rules (unlike every other
 # name in RULE_FILES) — build_script instead runs ONDEMAND_QUERY_BODIES below
 # as a one-shot `select ... limit 1` at each alarm's own check point. Why:
-# both rules' only new predicate (mda:silencedBy) has exactly one consumer —
+# both rules' only new predicate (mdapoc:silencedBy) has exactly one consumer —
 # that same per-alarm check — so there's no reason to pay for RDFox
 # continuously, incrementally re-maintaining their 14-atom self-join against
 # every relevant transaction in the WHOLE store for the rule's entire
@@ -481,14 +652,13 @@ CAT3_DEPENDENCIES = {
 # cat1a/cat1b/cardiac_arrest/respiratory_arrest/reduced_pulmonary_function
 # join within a SINGLE alarm's own chain (lower combinatorial risk than
 # cat2a/cat2b's cross-alarm self-join), but all reference at least one
-# `kb.last_wins_str`-tagged predicate (hasQualityState, hasRate) — the same
+# `kb.last_wins_str`-tagged predicate (hasQualityState, hasValueState, hasRhythm) — the same
 # argument applies: each predicate they read has exactly one consumer (this
 # same per-alarm/per-check point), so there's no reason to pay standing
 # incremental maintenance for a value nothing else ever reads back.
 #
 # IMPORTANT: this does NOT touch Driver's physical graph-drop mechanism
-# (_drop_transient_cmd/_drop_persistent_cmd) or its last_wins retract/
-# restore stack — those stay exactly as the project's own design doc
+# (_drop_transient_cmd/_drop_persistent_cmd) — it stays exactly as the project's own design doc
 # (~/.claude/plans/we-re-going-for-the-magical-candy.md) specifies: a
 # landmark/sliding-window RDF-stream-processing model where physically
 # dropping a graph the instant it's invalid IS the discard mechanism, and
@@ -504,7 +674,12 @@ CAT3_DEPENDENCIES = {
 # unnecessary once the real root cause (above) was understood: it's
 # standing-rule maintenance cost, not physical deletion itself, that's
 # expensive.
-# cardiac_arrest/respiratory_arrest/reduced_pulmonary_function were tried
+# HISTORY (2026-09): cardiac_arrest/respiratory_arrest/
+# reduced_pulmonary_function were standing .dlog rules tagging a shared
+# process concept; they are now patient-scoped clinical-event updates
+# (clinical_events.py), gated per alarm by relevance, which removes both
+# the cross-patient leak and the unscoped cost described next.
+# They were tried
 # on-demand too and REVERTED — real-corpus timing (patient 2826) got WORSE,
 # not better: multiple new stalls (several seconds to 20s each) plus a
 # fresh dead stop near the end, timing out again. Root cause understood,
@@ -522,8 +697,14 @@ CAT3_DEPENDENCIES = {
 # mutation in the store). On-demand conversion isn't a universal win — it
 # only pays off when what's being converted was itself the standing-rule
 # maintenance cost, not merely "any rule with a last-wins predicate."
-ONDEMAND_RULE_NAMES = {"cat1a", "cat1b", "cat2a", "cat2b", "cat2a_ondemand_agg", "cat3a", "cat3b"}
+ONDEMAND_RULE_NAMES = {"cat1a", "cat1b", "cat2a", "cat2b"}
 
+# Each flagging body also binds ?witness: the named graph holding the fact
+# that made the rule fire (for cat1a, the reported quality state; for
+# cat1b, the IBP pathway's link to the patient). Alarm graphs are named
+# <alarm#transient>/<alarm#persistent>, so the witness identifies the
+# causing alarm — which is all the firing log records (event_log.py).
+#
 # Hand-translated equivalents of cat2a_process_priority.dlog's/
 # cat2b_metric_sensor.dlog's rule BODIES (not the head — only the join
 # itself is needed here). NOT auto-generated from those files: confirmed
@@ -549,182 +730,162 @@ ONDEMAND_RULE_NAMES = {"cat1a", "cat1b", "cat2a", "cat2b", "cat2a_ondemand_agg",
 _ALARMCAT = "https://w3id.org/mda/vocab/alarm-category/"
 _RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
 _METRIC = "https://w3id.org/mda/vocab/metric/"
-_METRIC_RATE = "https://w3id.org/mda/vocab/metric-rate/"
+_METRIC_VALUE_STATE = "https://w3id.org/mda/vocab/metric-value-state/"
+_METRIC_RHYTHM = "https://w3id.org/mda/vocab/metric-rhythm/"
 _FUNCTIONAL_UNIT = "https://w3id.org/mda/vocab/functional-unit/"
 _OPERATION_STATE = "https://w3id.org/mda/vocab/operation-state/"
 _QUALITY_STATE = "https://w3id.org/mda/vocab/quality-state/"
 _CLINICAL_EVENT = "https://w3id.org/mda/vocab/clinical-event/"
 _DEVICE = "https://w3id.org/mda/vocab/device/"
+_ALARMPRIO = "https://w3id.org/mda/vocab/alarm-priority/"
+_SENSOR = "https://w3id.org/mda/vocab/sensor/"
+_RDFS = "http://www.w3.org/2000/01/rdf-schema#"
 _ONDEMAND_BODY_TEMPLATES = {
     # Alarm-scoped (bound via VALUES ?alarm at the call site), projects
-    # ?signal — hand-translated from cat1a_signal_quality.dlog's body.
-    # NOT given the same one-graph-var-per-group fix as cat2a/cat2b/cat1b's
-    # arriving-side prefix — tried it, and it broke cat1a_pos (a real
-    # fixture with two alarms on one device whose sensor/signal identity
-    # resolution genuinely diverges via add_triggered_by's identity-
-    # dependent FunctionalUnit lookup, not just redundant re-minting of
-    # one stable chain). That interaction needs its own dedicated
-    # verification before touching this rule again — reverted rather than
-    # guessed at further. Left in its original, correctness-verified shape.
+    # ?signal — hand-translated from cat1a_signal_quality.dlog's body; see
+    # that file for the clause-by-clause reading of the NL rule. Only a
+    # PHYSIOLOGICAL alarm is flagged, and only for the signal on its own
+    # sensing pathway: ?gT is its transient graph (category, message,
+    # triggeredBy, producesMetric), ?gP a persistent copy of its
+    # FunctionalUnit -> sensor -> signal -> analysis chain. The former
+    # one-free-graph-variable-per-hop shape let hops come from another
+    # alarm's chain: it flagged technical alarms, and flagged e.g. a
+    # respiration-rate alarm (ECG_lead_Impedance) for an ECG_signal
+    # quality problem whenever a heart-rate alarm supplied the missing hop.
+    # Two ways the signal can be insufficient (the .dlog's two rules): a
+    # quality state on the signal itself, or a fault state on the sensor
+    # producing it (not being acquired at all — agreed extension of the NL
+    # rule, 2026-09-21).
     "cat1a": """
-        GRAPH ?g1 { ?alarm <@MDA@hasMessage> ?msg }
-        GRAPH ?g2 { ?msg <@MDA@triggeredBy> ?device }
-        GRAPH ?g3 { ?device <@MDA@hasSensor> ?sensor }
-        GRAPH ?g4 { ?sensor <@MDA@sensorProducesSignal> ?signal }
-        GRAPH ?g5 { ?signal <@MDA@analyzedBy> ?analysis }
-        GRAPH ?g6 { ?analysis <@MDA@producesMetric> ?metric }
-        GRAPH ?g7 { ?signal <@MDA@hasQualityState> ?quality }
-        FILTER(?quality != <@QUALITYSTATE@Good>)
-        BIND(?signal AS ?evidence)
+        GRAPH ?gT { ?alarm <@MDA@hasCategory> <@ALARMCAT@Physiological> .
+                    ?alarm <@MDA@hasMessage> ?msg . ?msg <@MDA@triggeredBy> ?fu .
+                    ?analysis <@MDA@producesMetric> ?metric . }
+        GRAPH ?gP { ?fu <@MDA@hasSensor> ?sensor . ?sensor <@MDA@sensorProducesSignal> ?signal .
+                    ?signal <@MDA@analyzedBy> ?analysis . }
+        {
+          GRAPH ?gQ { ?signal <@MDA@hasQualityState> ?quality }
+          FILTER(?quality != <@QUALITYSTATE@Good>)
+          BIND(?signal AS ?evidence)
+        } UNION {
+          GRAPH ?gQ { ?sensor <@MDA@hasSensorOperationState> ?sensorState }
+          VALUES ?sensorState { <@OPSTATE@Disabled> <@OPSTATE@Disconnected> <@OPSTATE@Malfunction> }
+          BIND(?sensor AS ?evidence)
+        }
+        BIND(?gQ AS ?witness)
     """,
     # Alarm-scoped, projects ?ibpFunctionalUnit — hand-translated from
-    # cat1b_asystole_ibp.dlog's body. REDESIGNED this session from an
-    # open-world "no other alarm on this pathway" NOT EXISTS (confirmed
-    # the dominant real cost this session: 12+s cumulative over ~800
-    # alarms in one real-corpus window, dwarfing every other rule) into a
-    # closed-world "pathway's own current state looks healthy" check —
-    # three criteria, each independently OPTIONAL (unbound passes), no
-    # cross-alarm search. See cat1b_asystole_ibp.dlog's own header for the
-    # full reasoning, INCLUDING why each criterion is OPTIONAL rather than
-    # a mandatory prerequisite (a mandatory metric-chain requirement was
-    # confirmed empirically unsatisfiable: mda:producesMetric only ever
-    # exists in an alarm's transient graph, always paired with one of the
-    # 5 bad hasRate values in the same grounding — the "no information
-    # should not resolve to healthy" gate is instead the EXISTING,
-    # unchanged isMonitoredBy hop below, which only resolves if the IBP
-    # device has had its own recent alarm activity at all).
-    # g1/g3(struct)/g6(cond) below use the SAME ONE-graph-var-per-group fix
-    # as cat1a (see its own comment) for the arriving alarm's OWN chain —
-    # unambiguous, since there's exactly one arriving alarm. g9 onward
-    # (the IBP pathway's own state, reached via ?patient isMonitoredBy
-    # ?ibpDevice) is deliberately LEFT AS INDEPENDENT graph variables:
-    # unlike the arriving alarm's own chain, multiple currently-active
-    # alarms on the IBP pathway is a real, intentional "is ANY of them
-    # reporting a bad state" OR condition (matching this rule's own
-    # closed-world redesign, see this dict's own header comment) — forcing
-    # them onto one shared graph variable would silently collapse that OR
-    # into "the SAME one alarm must supply every criterion," an unverified
-    # and likely wrong semantic change. Left alone pending its own
-    # dedicated check, not fixed by assumption.
+    # cat1b_asystole_ibp.dlog; see that file for the clause-by-clause
+    # reading of the NL rule and the agreed decisions (2026-09-21).
+    #   - asystole: the arriving alarm's OWN metric (?gT, its transient
+    #     graph) is a heart rate with an absent rhythm — not a metric
+    #     borrowed from another alarm's graph.
+    #   - IBP present: one IBP alarm's persistent graph (?gIbp, valid until
+    #     15 min after that alarm ended) links this patient to an ARTERIAL
+    #     transducer on a PATIENT MONITOR's IBP functional unit. ECMO
+    #     circuit pressures and venous pressure never count.
+    #   - without alarms on that pathway: no currently valid alarm is
+    #     triggered by that functional unit — a literal NOT EXISTS, not a
+    #     proxy over reported states. Its validity filter is written by
+    #     hand: _append_validity_filters skips NOT EXISTS spans.
+    # A flag is stored and withdrawn later if an alarm on the same pathway
+    # arrives while the asystole is active — see CAT1B_FLAG_INSERT and
+    # CAT1B_WITHDRAW below.
     "cat1b": """
-        GRAPH ?g1 { ?alarm <@MDA@hasMessage> ?msg . ?msg <@MDA@concernsPatient> ?patient .
-                    ?msg <@MDA@triggeredBy> ?device . }
-        GRAPH ?g3 { ?device <@MDA@hasSensor> ?sensor . ?sensor <@MDA@sensorProducesSignal> ?signal .
-                    ?signal <@MDA@analyzedBy> ?analysis . }
-        GRAPH ?g6 { ?analysis <@MDA@producesMetric> ?metric . ?metric <@RDFTYPE@> <@METRIC@HeartRate> .
-                    ?metric <@MDA@hasRate> <@METRICRATE@Absent> . }
-        GRAPH ?g9 { ?patient <@MDA@isMonitoredBy> ?ibpDevice }
-        GRAPH ?g10 { ?ibpDevice <@MDA@hasFunctionalUnit> ?ibpFunctionalUnit }
-        GRAPH ?g11 { ?ibpFunctionalUnit <@RDFTYPE@> <@FUNCTIONALUNIT@FU_InvasiveBloodPressure> }
-
-        OPTIONAL {
-          GRAPH ?g12a { ?ibpFunctionalUnit <@MDA@hasSensor> ?ibpSensor1 }
-          GRAPH ?g12b { ?ibpSensor1 <@MDA@hasSensorOperationState> ?ibpState }
+        GRAPH ?gT { ?alarm <@MDA@hasMessage> ?msg . ?msg <@MDA@concernsPatient> ?patient .
+                    ?analysis <@MDA@producesMetric> ?metric . ?metric <@RDFTYPE@> <@METRIC@HeartRate> .
+                    ?metric <@MDA@hasRhythm> <@RHYTHM@Absent> . }
+        GRAPH ?gIbp { ?patient <@MDA@isMonitoredBy> ?ibpDevice . ?ibpDevice <@RDFTYPE@> ?ibpDeviceType .
+                      ?ibpDevice <@MDA@hasFunctionalUnit> ?ibpFunctionalUnit .
+                      ?ibpFunctionalUnit <@RDFTYPE@> <@FUNCTIONALUNIT@FU_InvasiveBloodPressure> .
+                      ?ibpFunctionalUnit <@MDA@hasSensor> ?ibpSensor .
+                      ?ibpSensor <@RDFTYPE@> <@SENSOR@ABP_transducer> . }
+        ?ibpDeviceType <@RDFS@subClassOf>* <@DEVICE@PhysiologicalMonitor> .
+        FILTER NOT EXISTS {
+          GRAPH ?gOther { ?other <@MDA@hasMessage> ?otherMsg . ?otherMsg <@MDA@triggeredBy> ?ibpFunctionalUnit . }
+          ?gOther <@MDAPOC@validUntil> ?gOther_until . FILTER(?now <= ?gOther_until)
         }
-        FILTER( !BOUND(?ibpState) ||
-                (?ibpState != <@OPSTATE@Disabled> && ?ibpState != <@OPSTATE@Disconnected> &&
-                 ?ibpState != <@OPSTATE@Malfunction> && ?ibpState != <@OPSTATE@Warning>) )
-
-        OPTIONAL {
-          GRAPH ?g13a { ?ibpFunctionalUnit <@MDA@hasSensor> ?ibpSensor2 }
-          GRAPH ?g13b { ?ibpSensor2 <@MDA@sensorProducesSignal> ?ibpSignal }
-          GRAPH ?g13c { ?ibpSignal <@MDA@hasQualityState> ?ibpQuality }
-        }
-        FILTER( !BOUND(?ibpQuality) ||
-                (?ibpQuality != <@QUALITYSTATE@Impaired> && ?ibpQuality != <@QUALITYSTATE@ScalingError>) )
-
-        OPTIONAL {
-          GRAPH ?g14a { ?ibpFunctionalUnit <@MDA@hasSensor> ?ibpSensor3 }
-          GRAPH ?g14b { ?ibpSensor3 <@MDA@sensorProducesSignal> ?ibpSignal2 }
-          GRAPH ?g14c { ?ibpSignal2 <@MDA@analyzedBy> ?ibpAnalysis }
-          GRAPH ?g14d { ?ibpAnalysis <@MDA@producesMetric> ?ibpMetric }
-          GRAPH ?g14e { ?ibpMetric <@MDA@hasRate> ?ibpRate }
-        }
-        FILTER( !BOUND(?ibpRate) ||
-                (?ibpRate != <@METRICRATE@Absent> && ?ibpRate != <@METRICRATE@Decreased> &&
-                 ?ibpRate != <@METRICRATE@Increased> && ?ibpRate != <@METRICRATE@SeverelyDecreased> &&
-                 ?ibpRate != <@METRICRATE@SeverelyIncreased>) )
-
         BIND(?ibpFunctionalUnit AS ?evidence)
+        BIND(?gIbp AS ?witness)
     """,
+    # Hand-translated from cat2a_process_priority.dlog; see that file for the
+    # clause-by-clause reading and the agreed decisions (2026-09-21). ?alarm
+    # (incoming), ?now and ?incomingPrio are bound via VALUES at the call
+    # site: the incoming alarm's own hasPriority is only inserted after its
+    # checks (Driver.insert_alarm's two phases), and an Unknown priority is
+    # never checked at all. ?gT is the incoming alarm's transient graph, ?gA
+    # an active alarm's — each pinned as one group, so no hop is borrowed
+    # from another alarm. Returns one row per active alarm that justifies
+    # the silence; all of them are stored (cat2_silence_insert) so the
+    # silence can be lifted when the last one ends.
     "cat2a": """
-        GRAPH ?g1 {
-          ?alarm <@MDA@hasCategory> <@ALARMCAT@Physiological> .
-          ?alarm <@MDA@hasMessage> ?msg .
-          ?msg <@MDA@concernsPatient> ?patient .
-          ?alarm <@MDA@hasPriority> ?incomingPrio .
-          ?alarm <@MDA@hasStart> ?alarmStart .
-        }
-        GRAPH ?g2 { ?msg <@MDA@triggeredBy> ?device }
-        GRAPH ?g3 { ?device <@MDA@hasSensor> ?sensor }
-        GRAPH ?g4 { ?sensor <@MDA@sensorProducesSignal> ?signal }
-        GRAPH ?g5 { ?signal <@MDA@analyzedBy> ?analysis }
-        GRAPH ?g6 { ?analysis <@MDA@producesMetric> ?metric }
-        GRAPH ?g7 { ?metric <@MDA@approximates> ?property }
+        GRAPH ?gT { ?alarm <@MDA@hasCategory> <@ALARMCAT@Physiological> .
+                    ?alarm <@MDA@hasMessage> ?msg . ?msg <@MDA@concernsPatient> ?patient .
+                    ?analysis <@MDA@producesMetric> ?metric . ?metric <@MDA@approximates> ?property .
+                    ?metric ?stateProp ?state . }
+        VALUES ?stateProp { <@MDA@hasValueState> <@MDA@hasRhythm> }
         ?property <@MDA@isPropertyOf> ?process .
         ?incomingPrio <@MDA@priorityRank> ?incomingRank .
+        ?state <@MDAPOC@deviationDirection> ?direction . ?state <@MDAPOC@deviationSeverity> ?severity .
 
-        GRAPH ?g8 {
-          ?active <@MDA@hasCategory> <@ALARMCAT@Physiological> .
-          ?active <@MDA@hasMessage> ?activeMsg .
-          ?activeMsg <@MDA@concernsPatient> ?patient .
-          ?active <@MDA@hasPriority> ?activePrio .
-          ?active <@MDA@hasStart> ?activeStart .
-        }
-        GRAPH ?g9 { ?activeMsg <@MDA@triggeredBy> ?activeDevice }
-        GRAPH ?g10 { ?activeDevice <@MDA@hasSensor> ?activeSensor }
-        GRAPH ?g11 { ?activeSensor <@MDA@sensorProducesSignal> ?activeSignal }
-        GRAPH ?g12 { ?activeSignal <@MDA@analyzedBy> ?activeAnalysis }
-        GRAPH ?g13 { ?activeAnalysis <@MDA@producesMetric> ?activeMetric }
-        GRAPH ?g14 { ?activeMetric <@MDA@approximates> ?activeProperty }
+        GRAPH ?gA { ?active <@MDA@hasCategory> <@ALARMCAT@Physiological> .
+                    ?active <@MDA@hasMessage> ?activeMsg . ?activeMsg <@MDA@concernsPatient> ?patient .
+                    ?active <@MDA@hasPriority> ?activePrio .
+                    ?activeAnalysis <@MDA@producesMetric> ?activeMetric .
+                    ?activeMetric <@MDA@approximates> ?activeProperty .
+                    ?activeMetric ?activeStateProp ?activeState . }
+        VALUES ?activeStateProp { <@MDA@hasValueState> <@MDA@hasRhythm> }
         ?activeProperty <@MDA@isPropertyOf> ?process .
         ?activePrio <@MDA@priorityRank> ?activeRank .
+        ?activeState <@MDAPOC@deviationDirection> ?direction . ?activeState <@MDAPOC@deviationSeverity> ?activeSeverity .
 
         FILTER(?active != ?alarm)
+        FILTER(?activePrio != <@ALARMPRIO@Unknown>)
         FILTER(?activeRank >= ?incomingRank)
-        FILTER(?activeStart < ?alarmStart)
+        FILTER(?activeSeverity >= ?severity)
+        FILTER(?property = ?activeProperty || (
+          NOT EXISTS { ?property <@MDA@isPropertyOf> ?otherProcess . FILTER(?otherProcess != ?process) } &&
+          NOT EXISTS { ?activeProperty <@MDA@isPropertyOf> ?otherProcess2 . FILTER(?otherProcess2 != ?process) }))
+        BIND(?gA AS ?witness)
     """,
+    # Hand-translated from cat2b_metric_sensor.dlog; see that file for the
+    # clause-by-clause reading and the agreed decisions (2026-09-21). ?alarm
+    # (incoming) and ?now are bound via VALUES at the call site. ?gT/?gA are
+    # the incoming/active alarm's transient graph, ?gP/?gAP a persistent copy
+    # of its sensor chain, anchored on its own analysis. "Different sensor"
+    # = a different functional unit or a different sensor type: refinements
+    # (anatomical position) come only from technical alarms and split one
+    # physical sensor into two identities depending on arrival order. One
+    # row per active alarm justifying the silence; all are stored.
     "cat2b": """
-        GRAPH ?g1 {
-          ?alarm <@MDA@hasCategory> <@ALARMCAT@Physiological> .
-          ?alarm <@MDA@hasMessage> ?msg .
-          ?msg <@MDA@concernsPatient> ?patient .
-          ?alarm <@MDA@hasStart> ?alarmStart .
-        }
-        GRAPH ?g2 { ?msg <@MDA@triggeredBy> ?device }
-        GRAPH ?g3 { ?device <@MDA@hasSensor> ?sensorIn }
-        GRAPH ?g4 { ?sensorIn <@MDA@sensorProducesSignal> ?signalIn }
-        GRAPH ?g5 { ?signalIn <@MDA@analyzedBy> ?analysisIn }
-        GRAPH ?g6 {
-          ?analysisIn <@MDA@producesMetric> ?metricIn .
-          ?metricIn <@RDFTYPE@> ?metricType .
-        }
+        GRAPH ?gT { ?alarm <@MDA@hasCategory> <@ALARMCAT@Physiological> .
+                    ?alarm <@MDA@hasMessage> ?msg . ?msg <@MDA@concernsPatient> ?patient .
+                    ?msg <@MDA@triggeredBy> ?fu .
+                    ?analysis <@MDA@producesMetric> ?metric . ?metric <@RDFTYPE@> ?metricType .
+                    ?metric ?stateProp ?state . }
+        VALUES ?stateProp { <@MDA@hasValueState> <@MDA@hasRhythm> }
+        GRAPH ?gP { ?fu <@MDA@hasSensor> ?sensor . ?sensor <@MDA@sensorProducesSignal> ?signal .
+                    ?signal <@MDA@analyzedBy> ?analysis . ?sensor <@RDFTYPE@> ?sensorType . }
+        ?state <@MDAPOC@deviationDirection> ?direction . ?state <@MDAPOC@deviationSeverity> ?severity .
 
-        GRAPH ?g7 {
-          ?active <@MDA@hasCategory> <@ALARMCAT@Physiological> .
-          ?active <@MDA@hasMessage> ?activeMsg .
-          ?activeMsg <@MDA@concernsPatient> ?patient .
-          ?active <@MDA@hasStart> ?activeStart .
-        }
-        GRAPH ?g8 { ?activeMsg <@MDA@triggeredBy> ?activeDevice }
-        GRAPH ?g9 { ?activeDevice <@MDA@hasSensor> ?sensorActive }
-        GRAPH ?g10 { ?sensorActive <@MDA@sensorProducesSignal> ?signalActive }
-        GRAPH ?g11 { ?signalActive <@MDA@analyzedBy> ?analysisActive }
-        GRAPH ?g12 {
-          ?analysisActive <@MDA@producesMetric> ?activeMetric .
-          ?activeMetric <@RDFTYPE@> ?metricType .
-        }
+        GRAPH ?gA { ?active <@MDA@hasCategory> <@ALARMCAT@Physiological> .
+                    ?active <@MDA@hasMessage> ?activeMsg . ?activeMsg <@MDA@concernsPatient> ?patient .
+                    ?activeMsg <@MDA@triggeredBy> ?activeFu .
+                    ?activeAnalysis <@MDA@producesMetric> ?activeMetric . ?activeMetric <@RDFTYPE@> ?metricType .
+                    ?activeMetric ?activeStateProp ?activeState . }
+        VALUES ?activeStateProp { <@MDA@hasValueState> <@MDA@hasRhythm> }
+        GRAPH ?gAP { ?activeFu <@MDA@hasSensor> ?activeSensor .
+                     ?activeSensor <@MDA@sensorProducesSignal> ?activeSignal .
+                     ?activeSignal <@MDA@analyzedBy> ?activeAnalysis .
+                     ?activeSensor <@RDFTYPE@> ?activeSensorType . }
+        ?activeState <@MDAPOC@deviationDirection> ?direction . ?activeState <@MDAPOC@deviationSeverity> ?activeSeverity .
 
         FILTER(?active != ?alarm)
-        FILTER(?sensorActive != ?sensorIn)
-        FILTER(?activeStart < ?alarmStart)
+        FILTER(?activeSeverity >= ?severity)
+        FILTER(?activeFu != ?fu || ?activeSensorType != ?sensorType)
+        BIND(?gA AS ?witness)
     """,
-    # cardiac_arrest/respiratory_arrest/reduced_pulmonary_function were
-    # tried here too and REVERTED to standing rules — see their own .dlog
-    # headers and ONDEMAND_RULE_NAMES's comment for why (unscoped,
-    # unconditional-per-alarm checks; on-demand made real-corpus timing
-    # WORSE, not better). No template for them here on purpose — don't
-    # re-add without re-measuring against the same real-corpus case.
+    # The clinical-event rules have no template here: they are updates,
+    # not checks — see clinical_events.py.
 }
 # Plan's §3: replaces "still physically present" with an explicit
 # validity check, so a batched/delayed physical eviction (plan's §4) can't
@@ -748,7 +909,7 @@ def _append_validity_filters(body: str) -> str:
     outer = _OPTIONAL_RE.sub(" ", _NOT_EXISTS_RE.sub(" ", body))
     graph_vars = sorted(set(_GRAPH_VAR_RE.findall(outer)))
     tail = " ".join(
-        f"{v} <{M.MDA}validUntil> {v}_until . FILTER(?now <= {v}_until)"
+        f"{v} <{M.MDAPOC}validUntil> {v}_until . FILTER(?now <= {v}_until)"
         for v in graph_vars
     )
     return f"{body} {tail}" if tail else body
@@ -756,177 +917,121 @@ def _append_validity_filters(body: str) -> str:
 
 ONDEMAND_QUERY_BODIES = {
     name: _append_validity_filters(" ".join(
-        tmpl.replace("@MDA@", str(M.MDA)).replace("@ALARMCAT@", _ALARMCAT)
+        tmpl.replace("@MDAPOC@", str(M.MDAPOC)).replace("@MDA@", str(M.MDA)).replace("@ALARMCAT@", _ALARMCAT)
             .replace("@RDFTYPE@", _RDF_TYPE).replace("@METRIC@", _METRIC)
-            .replace("@METRICRATE@", _METRIC_RATE).replace("@FUNCTIONALUNIT@", _FUNCTIONAL_UNIT)
+            .replace("@VALUESTATE@", _METRIC_VALUE_STATE).replace("@RHYTHM@", _METRIC_RHYTHM)
+            .replace("@FUNCTIONALUNIT@", _FUNCTIONAL_UNIT)
             .replace("@QUALITYSTATE@", _QUALITY_STATE).replace("@OPSTATE@", _OPERATION_STATE)
+            .replace("@DEVICE@", _DEVICE).replace("@SENSOR@", _SENSOR).replace("@RDFS@", _RDFS)
+            .replace("@ALARMPRIO@", _ALARMPRIO)
             .split()
     ))
     for name, tmpl in _ONDEMAND_BODY_TEMPLATES.items()
 }
 
-# cat2a/cat2b's PROMOTED aggregate rewrite (validation/shadow_cat2a_
-# aggregate.py, validation/shadow_cat2b_aggregate.py — validated there
-# first: correctness against the fabricated fixtures, and, against real
-# patient 2826, cat2a >=8x faster and cat2b >=30x faster than the
-# self-join above, which is what actually made that patient's replay
-# stall). Standing AGGREGATE rules instead of a per-alarm cross-alarm
-# self-join — see representation/rules/shadow/*.dlog's own headers for
-# the full reasoning. cat1a/cat1b are NOT promoted: cat1a needs no
-# redesign (no cross-alarm join at all), and cat1b's own shadow harness
-# showed a small performance REGRESSION (0.44s vs 0.31s on the same real
-# window) with no bottleneck to justify it — the aggregate pattern isn't
-# a universal win, only where a real self-join cost exists to eliminate.
+
+# CAT1 flags are STORED, in the flagged alarm's own transient graph (so a
+# flag disappears when its alarm ends), naming the node the verdict rests
+# on. Two consumers read them:
+#   - clinical events (clinical_events.py): a flagged alarm is no evidence
+#     for any condition (agreed 2026-09-21). build_script runs the CAT1
+#     checks before an arrival's clinical-event evaluation, so a flag is in
+#     place before the alarm could ever count.
+#   - CAT1b's withdrawal: the flag is withdrawn when the IBP pathway that
+#     justified it raises an alarm while the asystole is still active
+#     (agreed 2026-09-21) — in a genuine asystole the pressure alarm
+#     naturally follows the ECG alarm by seconds, so the flag set at onset
+#     must not stand. An alarm triggered by that functional unit deletes it;
+#     the deletion is traced ("withdraw <patient> <time>") and logged as a
+#     cat1b_withdrawn firing (event_log.py). A CAT1a flag rests on a signal
+#     or sensor, never a functional unit, so a withdrawal never touches it.
+_FLAGGED = f"<{M.MDAPOC}flaggedLikelyFalsePositive>"
+
+
+def cat1_flag_insert(rule: str, alarm: str, tgraph: str, now_literal: str) -> str:
+    """Store `rule`'s (cat1a or cat1b) flag on `alarm`, if it holds."""
+    return (f"INSERT {{ GRAPH {tgraph} {{ ?alarm {_FLAGGED} ?evidence }} }} WHERE {{ "
+            f"VALUES (?alarm ?now) {{ (<{alarm}> {now_literal}) }} {ONDEMAND_QUERY_BODIES[rule]} }}")
+
+
+def cat1b_withdraw(alarm: str) -> tuple:
+    """(select, delete): the stored cat1b flags resting on the functional
+    unit that triggered `alarm`, and their removal."""
+    where = (f"VALUES ?new {{ <{alarm}> }} "
+             f"GRAPH ?gNew {{ ?new <{M.MDA}hasMessage> ?newMsg . ?newMsg <{M.MDA}triggeredBy> ?fu . }} "
+             f"GRAPH ?gFlag {{ ?flagged {_FLAGGED} ?fu }}")
+    return (f"select distinct ?flagged ?new where {{ {where} }}",
+            f"DELETE {{ GRAPH ?gFlag {{ ?flagged {_FLAGGED} ?fu }} }} WHERE {{ {where} }}")
+
+
+# A CAT2 silence (CAT2a or CAT2b) holds only while an active alarm justifies
+# it (agreed 2026-09-21): every active alarm that justified it at arrival,
+# under either rule, is stored as `incoming mdapoc:silencedBy active` in the
+# incoming alarm's own transient graph (so it disappears when that alarm
+# ends). When an active alarm's transient graph is dropped, its silencedBy
+# links are removed; an alarm left with none from either rule, and still
+# active, has its silence lifted — traced ("lift <patient> <time>") and
+# logged as a cat2_lifted firing. One silence per alarm, whatever the rules
+# behind it: that is how it is presented to a clinician.
+_SILENCED_BY = f"<{M.MDAPOC}silencedBy>"
+
+
+def cat2a_values(alarm: str, now_literal: str, incoming_prio) -> str:
+    return f"VALUES (?alarm ?now ?incomingPrio) {{ (<{alarm}> {now_literal} <{incoming_prio}>) }}"
+
+
+def cat2b_values(alarm: str, now_literal: str) -> str:
+    return f"VALUES (?alarm ?now) {{ (<{alarm}> {now_literal}) }}"
+
+
+def cat2_silence_insert(rule: str, values: str, tgraph: str) -> str:
+    return (f"INSERT {{ GRAPH {tgraph} {{ ?alarm {_SILENCED_BY} ?active }} }} WHERE {{ "
+            f"{values} {ONDEMAND_QUERY_BODIES[rule]} }}")
+
+
+def cat2_lift(ended_alarm: str, when: datetime) -> tuple:
+    """(select, delete) run when `ended_alarm` stops being active: the
+    still-active alarms it was the LAST justification for (their silence
+    is lifted), and the removal of every silencedBy link to it."""
+    when_literal = f'"{when.isoformat()}"^^{XSD_DATETIME}'
+    link = f"GRAPH ?gS {{ ?silenced {_SILENCED_BY} <{ended_alarm}> }}"
+    select = (f"select distinct ?silenced ?ended where {{ {link} "
+              f"?gS <{M.MDAPOC}validUntil> ?gS_until . FILTER({when_literal} < ?gS_until) "
+              f"FILTER NOT EXISTS {{ GRAPH ?gS2 {{ ?silenced {_SILENCED_BY} ?other }} "
+              f"FILTER(?other != <{ended_alarm}>) }} "
+              f"BIND(<{ended_alarm}> AS ?ended) }}")
+    delete = f"DELETE {{ {link} }} WHERE {{ {link} }}"
+    return select, delete
+
+
+def _alarm_functional_unit(kb, event) -> str | None:
+    """The functional-unit concept name of this alarm's archetype."""
+    type_iri = kb.type_index.get(event.label)
+    if type_iri is None:
+        return None
+    concept = M.archetype_structure(kb, type_iri).concept(M.MDA.FunctionalUnit)
+    return str(concept).rsplit("/", 1)[-1] if concept is not None else None
+
+# cat2a/cat2b are no longer aggregate-based (2026-09-21): their redundancy
+# test compares direction and severity (and, for cat2a, priority) of ONE
+# active alarm at once, which per-key maxima or counts cannot express. Both
+# run as on-demand queries with pinned graph groups (ONDEMAND_QUERY_BODIES);
+# the standing rules in representation/rules/shadow/ are no longer loaded.
 SHADOW_RULES_DIR = RULES_DIR / "shadow"
-CAT2A_AGGREGATE_RULE = SHADOW_RULES_DIR / "cat2a_priority_aggregate.dlog"
-CAT2B_AGGREGATE_RULE = SHADOW_RULES_DIR / "cat2b_sensor_count_aggregate.dlog"
-AGGREGATE_PROMOTED_RULES = {"cat2a", "cat2b"}
 
 
-def _cat2a_aggregate_branch(alarm: str, patient_iri: str, incoming_prio) -> str | None:
-    """None if this archetype never minted hasPriority at all — cat2a can
-    never fire for it (mirrors APPROXIMATES_COVERED_METRIC_TYPES's own
-    dead-end short-circuit, just for a different reason).
-
-    ONE graph variable per co-asserted group, not one per hop — confirmed
-    directly (real patient 2826, this session) that independent per-hop
-    graph variables let RDFox mix-and-match across every currently-open
-    alarm's own redundant copy of the same structural facts, exploding a
-    single alarm's own chain lookup from 1 real answer into 24,435 (a real
-    CSV dump of the raw query results, not a guess) — because
-    hasSensor/sensorProducesSignal/analyzedBy are re-minted into EVERY
-    alarm's own persistent graph (kb.node_kind: Device/Sensor/Signal are
-    "individuated", SignalAnalysis untagged — both route to
-    ground_chain's `background`, i.e. the persistent graph), and every
-    alarm sharing this device currently has its own open copy. `?gStruct`
-    below pins all three hops to come from ONE such copy instead of
-    letting RDFox pick a different copy per hop. `?gCond` similarly pins
-    hasMessage/triggeredBy/producesMetric/approximates together — these
-    ARE always co-asserted in one alarm's own transient graph (confirmed:
-    ground_chain routes Metric, kb.node_kind "stateful", to `condition`;
-    insert_alarm bundles msg_graph + cond_graph into the same tgraph
-    block) — rather than each hop's own independent variable."""
-    if incoming_prio is None:
-        return None
-    return (
-        f"GRAPH ?gCond {{ <{alarm}> <{M.MDA}hasMessage> ?msg . ?msg <{M.MDA}triggeredBy> ?device . }} "
-        f"GRAPH ?gStruct {{ ?device <{M.MDA}hasSensor> ?sensor . "
-        f"?sensor <{M.MDA}sensorProducesSignal> ?signal . ?signal <{M.MDA}analyzedBy> ?analysis . }} "
-        f"GRAPH ?gCond {{ ?analysis <{M.MDA}producesMetric> ?metric . ?metric <{M.MDA}approximates> ?property . }} "
-        f"?property <{M.MDA}isPropertyOf> ?process . "
-        f'BIND(IRI(CONCAT(STR(<{patient_iri}>), "|", STR(?process))) AS ?ppKey) '
-        f"?ppKey <{M.MDA}shadowMaxActiveRank> ?maxRank . "
-        f"<{incoming_prio}> <{M.MDA}priorityRank> ?incomingRank . "
-        f"FILTER(?maxRank >= ?incomingRank) "
-        f"BIND(<{alarm}> AS ?active)"
-    )
-
-
-def _cat2a_ondemand_aggregate_branch(alarm: str, incoming_prio) -> str | None:
-    """Same domain condition as _cat2a_aggregate_branch (does some OTHER
-    currently-active alarm on this alarm's own (patient, process) key
-    have priorityRank >= mine), but computed as a genuinely fresh MAX
-    aggregate SPARQL query per alarm — no standing shadowMaxActiveRank
-    rule, nothing incrementally maintained, nothing for RDFox to pay a
-    rescan cost for on every DELETE WHERE that evicts an expired alarm
-    from the group. A third design point, distinct from both the standing
-    aggregate rule ("cat2a", AGGREGATE_PROMOTED_RULES) and the
-    already-tried-and-confirmed-worse on-demand self-join (the plan's own
-    "cat2a >=8x faster... than the self-join above, which is what
-    actually made that patient's replay stall") — this keeps the
-    self-join's absence of standing-rule state but expresses the "does
-    anything qualify" check as a single aggregate rather than a per-row
-    filter+limit-1, on the theory that RDFox's planner may handle a native
-    MAX differently (e.g. index-assisted) than the equivalent filtered
-    self-join. Unverified until timed against real patient 2826 — that's
-    the whole point of this variant existing as its own selectable rule
-    name rather than replacing "cat2a" outright.
-
-    ?process is bound once, from the arriving alarm's own chain, and
-    reused (not re-bound) on the active side — so the subquery's implicit
-    single group already corresponds to exactly this alarm's own
-    (patient, process) key; no explicit GROUP BY needed, mirroring how
-    _cat2a_aggregate_branch's ppKey plays the identical role.
-    """
-    if incoming_prio is None:
-        return None
-    return (
-        f"{{ SELECT (MAX(?activeRank) AS ?maxRank) WHERE {{ "
-        f"GRAPH ?gArrCond {{ <{alarm}> <{M.MDA}hasMessage> ?msg . ?msg <{M.MDA}triggeredBy> ?device . }} "
-        f"GRAPH ?gArrStruct {{ ?device <{M.MDA}hasSensor> ?sensor . "
-        f"?sensor <{M.MDA}sensorProducesSignal> ?signal . ?signal <{M.MDA}analyzedBy> ?analysis . }} "
-        f"GRAPH ?gArrCond {{ ?analysis <{M.MDA}producesMetric> ?metric . ?metric <{M.MDA}approximates> ?property . }} "
-        f"?property <{M.MDA}isPropertyOf> ?process . "
-        f"GRAPH ?gCandCond {{ "
-        f"?candidate <{M.MDA}hasCategory> <https://w3id.org/mda/vocab/alarm-category/Physiological> . "
-        f"?candidate <{M.MDA}hasMessage> ?activeMsg . "
-        f"?activeMsg <{M.MDA}triggeredBy> ?activeDevice . "
-        f"?candidate <{M.MDA}hasPriority> ?activePrio . "
-        f"}} "
-        f"GRAPH ?gCandStruct {{ ?activeDevice <{M.MDA}hasSensor> ?activeSensor . "
-        f"?activeSensor <{M.MDA}sensorProducesSignal> ?activeSignal . ?activeSignal <{M.MDA}analyzedBy> ?activeAnalysis . }} "
-        f"GRAPH ?gCandCond {{ ?activeAnalysis <{M.MDA}producesMetric> ?activeMetric . "
-        f"?activeMetric <{M.MDA}approximates> ?activeProperty . }} "
-        f"?activeProperty <{M.MDA}isPropertyOf> ?process . "
-        f"?activePrio <{M.MDA}priorityRank> ?activeRank . "
-        f"}} }} "
-        f"<{incoming_prio}> <{M.MDA}priorityRank> ?incomingRank . "
-        f"FILTER(?maxRank >= ?incomingRank) "
-        f"BIND(<{alarm}> AS ?active)"
-    )
-
-
-def _cat2b_aggregate_branch(alarm: str, patient_iri: str) -> str:
-    """Same ONE-graph-variable-per-co-asserted-group fix as
-    _cat2a_aggregate_branch — see its docstring for the confirmed
-    mechanism (hasSensor/sensorProducesSignal/analyzedBy always co-minted
-    into one alarm's own persistent graph; hasCategory/hasMessage/
-    triggeredBy/producesMetric/rdf:type always co-minted into that same
-    alarm's own transient graph)."""
-    return (
-        f"GRAPH ?gCond {{ "
-        f"<{alarm}> <{M.MDA}hasCategory> <https://w3id.org/mda/vocab/alarm-category/Physiological> . "
-        f"<{alarm}> <{M.MDA}hasMessage> ?msg . "
-        f"?msg <{M.MDA}triggeredBy> ?device . "
-        f"}} "
-        f"GRAPH ?gStruct {{ ?device <{M.MDA}hasSensor> ?sensorIn . "
-        f"?sensorIn <{M.MDA}sensorProducesSignal> ?signalIn . ?signalIn <{M.MDA}analyzedBy> ?analysisIn . }} "
-        f"GRAPH ?gCond {{ "
-        f"?analysisIn <{M.MDA}producesMetric> ?metricIn . "
-        f"?metricIn <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?metricType . "
-        f"}} "
-        f'BIND(IRI(CONCAT(STR(<{patient_iri}>), "|", STR(?metricType))) AS ?mtKey) '
-        f"?mtKey <{M.MDA}shadowSensorCount> ?c . "
-        f"FILTER(?c >= 2) "
-        f"BIND(<{alarm}> AS ?active)"
-    )
-
-
-# Metric types representation/rules/approximates_bridge.dlog actually
-# derives mda:approximates for (its 14 rule heads) — MUST be kept in sync
-# BY HAND if that file's coverage ever changes. Any metric type NOT in
-# this set can never satisfy cat2a's join at all: cat2a's arriving-side
-# ?metric -> approximates -> ?property hop can never bind for it, so the
-# whole query is guaranteed empty by construction.
-#
-# WHY THIS IS CHECKED HERE, IN PYTHON, RATHER THAN LEFT FOR RDFOX TO
-# DISCOVER: confirmed directly this is a real, live gap — patient 2826's
-# alarm 3499 (metric type ArterialBloodPressure_Mean, not in this set)
-# made cat2a's on-demand query take 100+ seconds to prove what this
-# lookup proves in microseconds: there is no possible match. RDFox's own
-# query planner does NOT discover the dead end cheaply on its own — tried
-# and empirically ruled out BOTH reordering the query body so the
-# arriving side's approximates hop comes first (100.19s, no improvement)
-# AND wrapping the arriving side in a SPARQL subquery to force it to
-# materialize before the join (still hadn't finished after 180s — worse).
-# Neither purely-SPARQL restructuring changed RDFox's chosen plan, which
-# is why this decision has to be made outside the query entirely, in
-# Python, before the query is even generated.
-APPROXIMATES_COVERED_METRIC_TYPES = {
-    "SpO2", "ArterialBloodPressure", "VenousBloodPressure", "PulseFlowIndex",
-    "HeartRate", "PulseRate", "CO2", "RespirationRate", "RespirationVolume",
-    "AirwayPressure", "CPAP", "AirTemperature", "Temperature", "Humidity",
-}
+# Metric types representation/rules/approximates_bridge.dlog derives
+# mda:approximates for. A metric type outside it can never satisfy cat2a's
+# ?metric -> approximates -> ?property hop, so cat2a is skipped for it in
+# Python: RDFox's planner does not discover that dead end cheaply (patient
+# 2826, an ArterialBloodPressure_Mean alarm: 100+ s to prove no match;
+# reordering or sub-querying the body did not change its plan).
+# Derived from the bridge file itself (every `rdf:type, metric:X` rule
+# body), not a hand-kept list: the hand-kept list went stale when the
+# bridge gained its _Mean/_Minute/_Tidal/_EndExpiratory rules, silently
+# excluding 14 alarm types from CAT2a as the incoming alarm.
+APPROXIMATES_COVERED_METRIC_TYPES = set(re.findall(
+    r"rdf:type,\s*metric:(\w+)\]", (RULES_DIR / "approximates_bridge.dlog").read_text()))
 
 
 def _alarm_metric_types(kb, event) -> set:
@@ -1019,43 +1124,20 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
     lines.append(f"active {dstore}")
     for f in FRAMEWORK_FILES:
         lines.append(f"import {f}")
+    lines.extend(CE.SCRIPT_PREAMBLE)
     for name in rule_names:
-        if name in ONDEMAND_RULE_NAMES:
-            continue  # queried on demand per alarm below, not a standing rule
+        if name in ONDEMAND_RULE_NAMES or name in CE.EVENT_RULE_NAMES:
+            continue  # queried/updated per alarm below, not a standing rule
         lines.append(f"import {RULE_FILES[name]}")
-    # cat2a/cat2b's promoted aggregate rewrite — standing rules (see
-    # AGGREGATE_PROMOTED_RULES's own comment), loaded instead of
-    # RULE_FILES["cat2a"/"cat2b"] (never loaded — self-join rules stay
-    # on-demand-only per ONDEMAND_RULE_NAMES, and these ARE the on-demand
-    # replacement for their check bodies, not additional standing rules
-    # alongside them).
-    if "cat2a" in rule_names:
-        lines.append(f"import {CAT2A_AGGREGATE_RULE}")
-    if "cat2b" in rule_names:
-        lines.append(f"import {CAT2B_AGGREGATE_RULE}")
 
     # Which on-demand rules are enabled for THIS run, grouped by which
     # check/predicate they feed — computed once, not per-alarm, since
     # `rule_names` is fixed for the whole call.
     flagged_active = [name for name in ("cat1a", "cat1b") if name in rule_names]
-    silenced_active = [name for name in ("cat2a", "cat2b", "cat2a_ondemand_agg") if name in rule_names]
-    # impliesClinicalEvent's 3 rules stay STANDING (see ONDEMAND_RULE_NAMES's
-    # own comment on why) — any_clinical just gates whether that check is
-    # emitted at all, same as before either conversion.
-    any_clinical = bool(CLINICAL_RULE_NAMES & set(rule_names))
-
-    # CAT3a/CAT3b: see RULE_FILES' own comment and CAT3_DEPENDENCIES.
-    # Fail fast rather than silently emitting a check that can never
-    # match — enabling cat3a/cat3b without their building-block inputs
-    # is a real misconfiguration a SETTINGS dict edit could hit, not a
-    # hypothetical.
-    cat3a_active = "cat3a" in rule_names
-    cat3b_active = "cat3b" in rule_names
-    for name, active in (("cat3a", cat3a_active), ("cat3b", cat3b_active)):
-        if active and not CAT3_DEPENDENCIES[name] <= set(rule_names):
-            missing = CAT3_DEPENDENCIES[name] - set(rule_names)
-            raise ValueError(f"{name} requires {sorted(CAT3_DEPENDENCIES[name])} also enabled "
-                              f"(missing: {sorted(missing)})")
+    silenced_active = [name for name in ("cat2a", "cat2b") if name in rule_names]
+    # Clinical-event rules, in evaluation order; raises if a combined rule
+    # is enabled without its constituents.
+    event_rules = CE.enabled_event_rules(rule_names)
 
     for pi, (patient, events) in enumerate(patients.items(), start=1):
         events_sorted = sorted(events, key=lambda ev: ev.start)
@@ -1072,7 +1154,8 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
         # this function's own per-alarm minting progress bar above.
         lines.append(f"echo PATIENT_START:{patient}")
 
-        driver = Driver(kb, scratch_dir, file_counter)
+        driver = Driver(kb, scratch_dir, file_counter, event_rules,
+                        cat2_lift=bool({"cat2a", "cat2b"} & set(rule_names)))
         n_events = len(events_sorted)
         # Update at most ~100 times per patient, not once per alarm — a
         # real patient can carry tens of thousands of alarms (confirmed
@@ -1096,7 +1179,9 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
                 assert identity == batch_identity, (
                     f"incremental identity tracker diverged from resolve_identity's batch "
                     f"computation for {patient} at {e.label}@{e.start}")
-            pending = driver.insert_alarm(e, identity)
+            event_kinds = (frozenset(CE.relevant_kinds(kb, e.label, _alarm_metric_types(kb, e), event_rules))
+                           if event_rules else frozenset())
+            pending = driver.insert_alarm(e, identity, event_kinds)
             lines.extend(driver.commands)
             driver.commands.clear()
 
@@ -1117,7 +1202,7 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
             alarm = pending["alarm"]
             patient_iri = pending["patient"]
             now_literal = f'"{e.start.isoformat()}"^^{XSD_DATETIME}'
-            # None of cat1a/cat1b/cat2a/cat2b/the 3 clinical rules are
+            # None of cat1a/cat1b/cat2a/cat2b are
             # standing rules anymore — see ONDEMAND_RULE_NAMES's own
             # module-level comment for why. Each predicate is instead
             # checked via a UNION'd, on-demand query over whichever
@@ -1130,22 +1215,6 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
             #
             # flaggedLikelyFalsePositive/silencedBy are alarm-scoped
             # (?alarm bound via VALUES to THIS alarm's own IRI).
-            # impliesClinicalEvent is NOT alarm-scoped — its subject is a
-            # PhysiologicalProcess, not an alarm, so (unlike the other two)
-            # it asks "is ANY clinical event currently implied ANYWHERE in
-            # the store" rather than "did THIS alarm/patient cause one".
-            #
-            # KNOWN IMPRECISE UNDER A SHARED DSTORE, NOT A REGRESSION THIS
-            # PHASE INTRODUCES: physiologicalProcess:X (e.g.
-            # CardiacContraction) is a STANDING, patient-independent
-            # CONCEPT — impliesClinicalEvent's own domain is Referential
-            # (one shared IRI globally), so this check can return a hit
-            # "belonging" to a DIFFERENT patient's concurrently-active
-            # alarm. This is the exact already-documented Phase 3 gap the
-            # design doc's own "Grounding facts" section describes (SKOLEM
-            # minting not yet implemented) — not something this phase
-            # needs to solve, since no CAT rule consumes
-            # impliesClinicalEvent. Revisit once Phase 3 lands.
             #
             # Each group is only emitted when at least one contributing
             # rule is enabled — with none enabled there's nothing to check
@@ -1159,8 +1228,26 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
             # handle a UNION of differently-shaped bodies well.
             for name in flagged_active:
                 branch = f"VALUES (?alarm ?now) {{ (<{alarm}> {now_literal}) }} {ONDEMAND_QUERY_BODIES[name]}"
-                lines.append(f"select distinct ?evidence where {{ {branch} }}")
+                lines += CE.trace_block(f"check {len(checks)}",
+                                        f"select distinct ?alarm ?witness where {{ {branch} }}")
                 checks.append((patient, e.start, "flaggedLikelyFalsePositive", name, ei))
+            # Store the flags (see cat1_flag_insert): clinical events ignore
+            # flagged alarms, and a later alarm on a cat1b flag's IBP
+            # pathway withdraws it. Only heart-rate alarms can be an
+            # asystole — a cheap gate for cat1b, the query decides.
+            withdraw_kinds = frozenset()
+            if "cat1a" in flagged_active:
+                lines.append(cat1_flag_insert("cat1a", alarm, pending["tgraph"], now_literal))
+            if "cat1b" in flagged_active:
+                if "HeartRate" in _alarm_metric_types(kb, e):
+                    lines.append(cat1_flag_insert("cat1b", alarm, pending["tgraph"], now_literal))
+                if _alarm_functional_unit(kb, e) == "FU_InvasiveBloodPressure":
+                    select, delete = cat1b_withdraw(alarm)
+                    lines += CE.trace_block(f"withdraw {patient} {e.start.isoformat()}", select)
+                    lines.append(delete)
+                    # A withdrawn asystole becomes evidence at this moment:
+                    # re-evaluate what a heart-rate alarm can support.
+                    withdraw_kinds = CE.kinds_supported_by_metric("HeartRate", event_rules)
             # cat2a can only ever match if THIS alarm's own metric type has
             # an mda:approximates mapping at all (see
             # APPROXIMATES_COVERED_METRIC_TYPES's own comment — harmless to
@@ -1170,11 +1257,14 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
             # cat2b needs no such check: it joins on the metric's own
             # rdf:type directly, a base fact that's never missing.
             this_alarm_silenced = silenced_active
-            if "cat2a" in this_alarm_silenced or "cat2a_ondemand_agg" in this_alarm_silenced:
+            if "cat2a" in this_alarm_silenced:
                 metric_types = _alarm_metric_types(kb, e)
-                if metric_types and not (metric_types & APPROXIMATES_COVERED_METRIC_TYPES):
-                    this_alarm_silenced = [n for n in this_alarm_silenced
-                                            if n not in ("cat2a", "cat2a_ondemand_agg")]
+                prio = pending["incoming_prio"]
+                # An Unknown priority cannot be shown to be equal or lower
+                # than anything: never silenced by CAT2a (agreed 2026-09-21).
+                if (prio is None or str(prio) == f"{_ALARMPRIO}Unknown"
+                        or (metric_types and not (metric_types & APPROXIMATES_COVERED_METRIC_TYPES))):
+                    this_alarm_silenced = [n for n in this_alarm_silenced if n != "cat2a"]
             # cat2a's and cat2b's aggregate checks are emitted as SEPARATE
             # queries, NOT combined via UNION into one — confirmed
             # empirically (real patient 2826, alarms 0-900): each alone
@@ -1200,111 +1290,24 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
             # k[0]/k[1].
             for name in this_alarm_silenced:
                 if name == "cat2a":
-                    branch = _cat2a_aggregate_branch(alarm, patient_iri, pending["incoming_prio"])
-                    if branch is None:
-                        continue
-                elif name == "cat2a_ondemand_agg":
-                    branch = _cat2a_ondemand_aggregate_branch(alarm, pending["incoming_prio"])
-                    if branch is None:
-                        continue
-                elif name == "cat2b":
-                    branch = _cat2b_aggregate_branch(alarm, patient_iri)
+                    values = cat2a_values(alarm, now_literal, pending["incoming_prio"])
+                    lines += CE.trace_block(f"check {len(checks)}",
+                                            f"select distinct ?alarm ?witness where {{ "
+                                            f"{values} {ONDEMAND_QUERY_BODIES['cat2a']} }}")
+                    lines.append(cat2_silence_insert("cat2a", values, pending["tgraph"]))
                 else:
-                    branch = (
-                        f"VALUES (?alarm ?now) {{ (<{alarm}> {now_literal}) }} {ONDEMAND_QUERY_BODIES[name]}"
-                    )
-                lines.append(f"select ?active where {{ {branch} }} limit 1")
+                    values = cat2b_values(alarm, now_literal)
+                    lines += CE.trace_block(f"check {len(checks)}",
+                                            f"select distinct ?alarm ?witness where {{ "
+                                            f"{values} {ONDEMAND_QUERY_BODIES['cat2b']} }}")
+                    lines.append(cat2_silence_insert("cat2b", values, pending["tgraph"]))
                 checks.append((patient, e.start, "silencedBy", name, ei))
-            if any_clinical:
-                # Standing rule (see ONDEMAND_RULE_NAMES's own comment for
-                # why this one stays materialized, unlike everything else
-                # in this function) — a read against RDFox's own
-                # incrementally-maintained answer. A standing Datalog rule
-                # has no notion of "now" (it's maintained against whatever
-                # the store currently contains), so per the plan's §3 the
-                # validity check has to live HERE, at the read site, not in
-                # any .dlog rule body — every clinical rule already keeps
-                # its head tied to its deciding antecedent's own graph
-                # variable (see e.g. cardiac_arrest.dlog's own header), so
-                # re-deriving that graph and checking its validUntil is
-                # enough; no .dlog file needs to change.
-                lines.append(
-                    f"select ?process ?event where {{ "
-                    f"VALUES ?now {{ {now_literal} }} "
-                    f"GRAPH ?g {{ ?process <{M.MDA}impliesClinicalEvent> ?event }} "
-                    f"?g <{M.MDA}validUntil> ?until . FILTER(?now <= ?until) }}"
-                )
-                checks.append((patient, e.start, "impliesClinicalEvent", "clinical", ei))
-            if cat3a_active:
-                # CAT3a — cardiorespiratory arrest: are CardiacArrest and
-                # RespiratoryArrest (cardiac_arrest.dlog/respiratory_arrest.
-                # dlog's own standing tags) BOTH currently valid, right now.
-                # No ?alarm anchor, deliberately, same as the older rdflib
-                # POC's cat3a_cardiorespiratory_arrest.rq: this is a genuine
-                # temporal-overlap check between two independent conditions,
-                # not something scoped to the arriving alarm. `limit 1` —
-                # only "does at least one such pair currently hold" matters;
-                # see count_cat3_episodes' own docstring for why a boolean
-                # is enough here (PhysiologicalProcess is Referential — one
-                # shared IRI per concept, so there is at most one such pair
-                # per patient at any instant, not a genuine set to dedupe
-                # over the way the older POC's open_pairs did).
-                #
-                # KNOWN, batch_size-DEPENDENT IMPRECISION: like
-                # impliesClinicalEvent's own check above, this can in
-                # principle match a DIFFERENT patient's concurrently-active
-                # tags under a shared dstore (PhysiologicalProcess carries
-                # no patient scoping — see that check's own comment). Inert
-                # under this project's current SETTINGS['batch_size']: 1
-                # (one patient's alarms in the dstore at a time) — would
-                # need real per-patient grounding of Process nodes
-                # ("Phase 3") before this is safe at batch_size > 1.
-                lines.append(
-                    f"select ?cardiacNode ?respiratoryNode where {{ "
-                    f"VALUES ?now {{ {now_literal} }} "
-                    f"GRAPH ?g1 {{ ?cardiacNode <{M.MDA}impliesClinicalEvent> <{_CLINICAL_EVENT}CardiacArrest> }} "
-                    f"?g1 <{M.MDA}validUntil> ?until1 . FILTER(?now <= ?until1) "
-                    f"GRAPH ?g2 {{ ?respiratoryNode <{M.MDA}impliesClinicalEvent> <{_CLINICAL_EVENT}RespiratoryArrest> }} "
-                    f"?g2 <{M.MDA}validUntil> ?until2 . FILTER(?now <= ?until2) }} limit 1"
-                )
-                checks.append((patient, e.start, "cat3aCoincidence", "cat3a", ei))
-            if cat3b_active:
-                # CAT3b — ventilation failure: a mechanical ventilator
-                # currently reporting a non-Enabled hasDeviceOperationState,
-                # AND ReducedPulmonaryFunction (reduced_pulmonary_function.
-                # dlog's own standing tag) both currently valid. Ported from
-                # cat3b_ventilation_failure.rq — device side matched
-                # directly (hasDeviceOperationState, not the more general
-                # hasOperationState the old rdflib POC used: that property's
-                # owl:propertyChainAxiom promotion was never ported to
-                # RDFox, and isn't needed — hasDeviceOperationState is
-                # grounded straight into the PERSISTENT/background graph by
-                # mint.py's background_for_key, specifically so it survives
-                # the 15-minute post-alarm window on its own; see that
-                # function's own comment for why this needed fixing first).
-                # device:MechanicalVentilator is matched as the device
-                # node's OWN asserted rdf:type, not via subclass reasoning —
-                # confirmed directly (data/kg_generated.ttl) that archetype
-                # instances are typed with this base class already; the
-                # manufacturer-specific SKOS concepts in vocab_generated.ttl
-                # are never the asserted rdf:type, only hasDeviceType's
-                # value, so no subClassOf hop is needed.
-                # Same no-?alarm-anchor, `limit 1`, batch_size-dependent
-                # patient-scoping caveats as cat3a above.
-                lines.append(
-                    f"select ?deviceNode ?processNode where {{ "
-                    f"VALUES ?now {{ {now_literal} }} "
-                    f"GRAPH ?g1 {{ ?deviceNode <{_RDF_TYPE}> <{_DEVICE}MechanicalVentilator> . "
-                    f"?deviceNode <{M.MDA}hasDeviceOperationState> ?state . "
-                    f"FILTER(?state != <{_OPERATION_STATE}Enabled>) }} "
-                    f"?g1 <{M.MDA}validUntil> ?until1 . FILTER(?now <= ?until1) "
-                    f"GRAPH ?g2 {{ ?processNode <{M.MDA}impliesClinicalEvent> <{_CLINICAL_EVENT}ReducedPulmonaryFunction> }} "
-                    f"?g2 <{M.MDA}validUntil> ?until2 . FILTER(?now <= ?until2) }} limit 1"
-                )
-                checks.append((patient, e.start, "cat3bCoincidence", "cat3b", ei))
             driver.complete_alarm(pending)
             lines.extend(driver.commands)
             driver.commands.clear()
+            # This arrival may start or extend a clinical event of this patient
+            # (or, through a cat1b withdrawal, let a heart-rate alarm count).
+            lines.extend(CE.evaluate_commands(event_kinds | withdraw_kinds, event_rules, patient, e.start))
             lines.append(f"echo ALARM_DONE:{patient}")
         if progress:
             print()  # finalize this patient's in-place progress line
@@ -1330,7 +1333,8 @@ def _reader_thread(pipe, q: queue.Queue) -> None:
 
 
 def execute_script(script_text: str, checks: list, scratch: Path, timeout: int = 600,
-                    progress: bool = True, patients: dict | None = None) -> tuple:
+                    progress: bool = True, patients: dict | None = None,
+                    trace: list | None = None) -> tuple:
     """Run `script_text` against a real RDFox instance and return
     ({check_key: answer_count}, {check_key: seconds}) for every entry in
     `checks`, in order — the second dict is per-statement wall-clock time
@@ -1358,8 +1362,8 @@ def execute_script(script_text: str, checks: list, scratch: Path, timeout: int =
     `echo`'s own RDFox semantics (`help echo`: "Prints the tokens
     specified... separated by a single space") make these unambiguous,
     exact lines to match on, unlike inferring progress from counting
-    select/DELETE-WHERE result lines (which still need the lookahead
-    disambiguation below, and don't carry a patient identity at all).
+    select/DELETE-WHERE result lines (which don't carry a patient
+    identity at all).
 
     `patients`: the same {patient: events} dict build_script was called
     with, used only to size the progress bar (alarm count per patient).
@@ -1369,6 +1373,11 @@ def execute_script(script_text: str, checks: list, scratch: Path, timeout: int =
     collapsed the progress bar to "patient N/0 ... /0 alarms" since it
     had nothing to size itself from. Pass `patients` to keep the bar
     correct in that case.
+
+    `trace`: if given, extended with every trace block printed during the
+    run, as (tag, check_key or None, rows) — the input of event_log's
+    event_records/firing_records. Optional so existing callers are
+    unaffected.
     """
     script_path = scratch / "replay.rdfox"
     script_path.write_text(script_text)
@@ -1464,49 +1473,42 @@ def execute_script(script_text: str, checks: list, scratch: Path, timeout: int =
               f"({len(checks)} check(s) run)")
     output = "\n".join(out_lines)
 
-    # "Number of query answers:" is printed by BOTH `select` and
-    # `DELETE WHERE` (the latter as its WHERE-clause match count, always
-    # followed within a few lines by "Number of attempted deletions:") —
-    # only lines NOT followed by that marker are real SELECT results.
-    # Each statement (select or delete) also prints its OWN "Total
-    # statement evaluation time: X s" a few lines after its own "Number
-    # of query answers" — confirmed directly from RDFox's own output
-    # shape (both spike-test and production runs) — so the same lookahead
-    # window that already isolates a real select's answer count also
-    # captures that select's own timing, giving per-check duration
-    # without needing any extra RDFox-side instrumentation.
-    select_counts = []
-    select_timings = []
-    for i, line in enumerate(out_lines):
-        m = re.match(r"Number of query answers:\s+(\d+)", line)
-        if not m:
-            continue
-        lookahead = out_lines[i:i + 6]
-        if any("Number of attempted deletions" in l for l in lookahead):
-            continue
-        select_counts.append(int(m.group(1)))
-        t = None
-        for l in lookahead:
-            tm = re.match(r"Total statement evaluation time:\s+([\d.]+)\s*s", l)
-            if tm:
-                t = float(tm.group(1))
-                break
-        select_timings.append(t)
+    # Every select runs inside a trace block (clinical_events.trace_block),
+    # with output switched on for the whole script, so results are read
+    # from the rows each block printed — not from RDFox's "Number of query
+    # answers" statistics, which updates and deletes print too. A check's
+    # count is its number of rows; its timing is the block's own "Total
+    # statement evaluation time".
+    blocks = EL.parse_trace_blocks(out_lines)
+    counts_by_check, timings_by_check = {}, {}
+    collected = []
+    for tag, rows, seconds in blocks:
+        if tag.startswith("check "):
+            key = checks[int(tag.split(" ", 1)[1])]
+            counts_by_check[key] = len(rows)
+            timings_by_check[key] = seconds
+            collected.append(("check", key, rows))
+        else:
+            collected.append((tag, None, rows))
 
-    if "rror" in output:
-        error_lines = [l for l in out_lines if "rror" in l]
-        if error_lines:
-            print("--- errors seen in RDFox output ---")
-            for l in error_lines:
-                print(" ", l)
+    error_lines = [l for i, l in enumerate(out_lines)
+                   if l.startswith("An error occurred")
+                   or (i and out_lines[i - 1].startswith("An error occurred"))]
+    if error_lines:
+        print("--- errors seen in RDFox output ---")
+        for l in error_lines:
+            print(" ", l)
 
-    counts_by_check = dict(zip(checks, select_counts))
-    timings_by_check = dict(zip(checks, select_timings))
+    if len(counts_by_check) != len(checks) and not timed_out:
+        print(f"  WARNING: {len(counts_by_check)} check result(s) for {len(checks)} check(s) — "
+              f"some check blocks are missing; counts below are incomplete.")
+    if trace is not None:
+        trace.extend(collected)
     return counts_by_check, timings_by_check
 
 
 def run_batched(kb, patients: dict, scratch_root: Path, batch_size: "int | None" = None,
-                 enabled_rules=None, progress: bool = True) -> tuple:
+                 enabled_rules=None, progress: bool = True, trace: list | None = None) -> tuple:
     """Process `patients` in bounded-size batches instead of one script for
     every patient in the run, returning the merged
     ({check_key: answer_count}, {check_key: seconds}) across all batches.
@@ -1569,7 +1571,8 @@ def run_batched(kb, patients: dict, scratch_root: Path, batch_size: "int | None"
         total_alarms = sum(len(events) for events in batch.values())
         timeout = max(1500, total_alarms // 100)
         batch_counts, batch_timings = execute_script(script_text, checks, batch_scratch,
-                                                      timeout=timeout, patients=batch)
+                                                      timeout=timeout, patients=batch,
+                                                      trace=trace)
         counts_by_check.update(batch_counts)
         timings_by_check.update(batch_timings)
     return counts_by_check, timings_by_check
@@ -1588,10 +1591,7 @@ def count_alarms_fired(check_items, kind: str) -> int:
     same `start` instant don't either (see build_script's own comment at
     its checks.append call sites). This counts each alarm AT MOST ONCE
     regardless of how many of its rules fired, matching the old
-    single-UNIONed-query "limit 1" semantics exactly. "impliesClinicalEvent"
-    still has exactly one checks entry per alarm, so summing its values
-    directly is already correct — this helper is a no-op harmless superset
-    for that case."""
+    single-UNIONed-query "limit 1" semantics exactly."""
     fired = set()
     for k, v in check_items:
         if k[2] != kind or v <= 0:
@@ -1600,49 +1600,9 @@ def count_alarms_fired(check_items, kind: str) -> int:
     return len(fired)
 
 
-def count_cat3_episodes(counts_by_check: dict, kind: str) -> dict:
-    """Rising-edge episode count per patient for a CAT3 coincidence check
-    (kind="cat3aCoincidence" or "cat3bCoincidence") — mirrors the older
-    rdflib POC's open_pairs dedup (CODE/evaluation_poc/mda_poc_
-    assessment.py's run()): the underlying coincidence re-fires on EVERY
-    arrival for as long as both conditions hold, so counting every hit
-    would count one arrest/failure many times over (once per alarm that
-    happens to arrive while it's still true). This counts only FALSE->TRUE
-    transitions — one per genuine episode — matching that module's own
-    "a patient who arrests, recovers, and arrests again hours later had
-    TWO events, not one" reasoning.
-
-    Relies on counts_by_check's insertion order matching each patient's own
-    alarm arrival order — true for every checks entry build_script ever
-    appends (one patient fully processed before the next starts, alarms
-    within a patient always in .start order; Python dicts preserve
-    insertion order).
-
-    Simplification versus the older POC's per-(cardiacNode,respiratoryNode)
-    -pair (or (deviceNode,processNode)-pair) dedup: tracks one boolean per
-    patient, not a set of pairs. Safe here because both check queries
-    already `limit 1` (build_script) — a genuine set of SIMULTANEOUSLY
-    open, DISTINCT pairs for one patient is not something this project's
-    current single-Referential-concept-per-condition domain (one shared
-    physiologicalProcess:CardiacContraction-style IRI per concept) can
-    actually produce; there is at most one possible pair open at a time."""
-    episodes: dict = {}
-    open_state: dict = {}
-    for key, count in counts_by_check.items():
-        if key[2] != kind:
-            continue
-        patient = key[0]
-        now_open = count > 0
-        if now_open and not open_state.get(patient, False):
-            episodes[patient] = episodes.get(patient, 0) + 1
-        open_state[patient] = now_open
-    return episodes
-
-
 def summarize_rule_timings(counts_by_check: dict, timings_by_check: dict, print_it: bool = True) -> dict:
     """Per-rule breakdown across a whole run: how many times each
-    on-demand check (cat1a/cat1b/cat2a/cat2b) or the combined standing-
-    rule read (impliesClinicalEvent, tagged "clinical") was evaluated,
+    on-demand check (cat1a/cat1b/cat2a/cat2b) was evaluated,
     how many of those evaluations actually matched ("hits"), total time
     RDFox itself reports spending on that check's queries, and average
     time per invocation vs. average time per hit — the latter is what
@@ -1692,23 +1652,31 @@ def run():
     in_scope = {p: evs for p, evs in groups.items() if p in EXPECTED}
 
     script_text, checks = build_script(kb, in_scope, scratch)
-    counts_by_check, timings_by_check = execute_script(script_text, checks, scratch, patients=in_scope)
+    trace: list = []
+    counts_by_check, timings_by_check = execute_script(script_text, checks, scratch, patients=in_scope,
+                                                        trace=trace)
     summarize_rule_timings(counts_by_check, timings_by_check)
+    alarms = EL.alarm_index(e for evs in in_scope.values() for e in evs)
+    records = EL.event_records(trace, in_scope)
+    firings = EL.firing_records(trace)
+    EL.write_event_log(records, alarms, scratch / "clinical_events.csv")
+    EL.write_firing_log(firings, alarms, scratch / "rule_firings.csv")
+    for name in ("clinical_events.csv", "rule_firings.csv"):
+        print(f"\n--- {name} ---")
+        print((scratch / name).read_text().rstrip())
+    print()
 
-    # Computed once across the whole run, not per patient — see
-    # count_cat3_episodes' own docstring on why it relies on
-    # counts_by_check's insertion order (patient-then-arrival-order), which
-    # a per-patient filtered slice would still preserve, but there is no
-    # reason to recompute it once per patient when one pass already answers
-    # every patient's episode count.
-    cat3a_episodes = count_cat3_episodes(counts_by_check, "cat3aCoincidence")
-    cat3b_episodes = count_cat3_episodes(counts_by_check, "cat3bCoincidence")
+    cat3a_episodes = EL.episodes_by_patient(records, CE.KIND_BY_RULE["cat3a"])
+    cat3b_episodes = EL.episodes_by_patient(records, CE.KIND_BY_RULE["cat3b"])
 
+    flagged = EL.flagged_alarms(firings)
+    silenced = EL.silenced_alarms(firings)
     total = passed = 0
     for patient in in_scope:
-        per_patient = {k: v for k, v in counts_by_check.items() if k[0] == patient}
-        n_flag = count_alarms_fired(per_patient.items(), "flaggedLikelyFalsePositive")
-        n_silence = count_alarms_fired(per_patient.items(), "silencedBy")
+        # Counted from the firing log, not the raw check counts: a cat1b
+        # flag can be withdrawn after its check fired.
+        n_flag = sum(1 for p, _a in flagged if p == patient)
+        n_silence = sum(1 for p, _a in silenced if p == patient)
         fired = (n_flag > 0) or (n_silence > 0)
         expected = EXPECTED[patient]
         total += 1
@@ -1734,7 +1702,40 @@ def run():
             passed += status3b == "PASS"
             print(f"[{status3b}] {patient} (cat3b): expected fire={expected3b}, got episodes={n_cat3b}")
 
-    print(f"\n{passed}/{total} patients matched expected outcome")
+    for patient, expected_events in EXPECTED_EVENTS.items():
+        got = {(r.kind, r.start.strftime("%H:%M:%S"), r.end.strftime("%H:%M:%S"), len(r.alarms))
+               for r in records if r.patient == patient}
+        total += 1
+        status = "PASS" if got == expected_events else "FAIL"
+        passed += status == "PASS"
+        print(f"[{status}] {patient} (event times): expected {sorted(expected_events)}, got {sorted(got)}")
+
+    for patient, expected_firings in EXPECTED_FIRINGS.items():
+        got = set()
+        for f in firings:
+            if f.patient == patient:
+                alarm_label, _ = EL._describe({f.alarm}, alarms)
+                cause_labels, _ = EL._describe(f.causes - {f.alarm}, alarms)
+                got.add((f.rule, alarm_label, cause_labels))
+        total += 1
+        status = "PASS" if expected_firings <= got else "FAIL"
+        passed += status == "PASS"
+        print(f"[{status}] {patient} (firing trace): expected {sorted(expected_firings)}, got {sorted(got)}")
+
+    for patient, forbidden in FORBIDDEN_FIRINGS.items():
+        got = set()
+        for f in firings:
+            if f.patient == patient:
+                alarm_label = EL._describe({f.alarm}, alarms)[0]
+                got |= {(f.rule, alarm_label),
+                        (f.rule, alarm_label, EL._describe(f.causes - {f.alarm}, alarms)[0])}
+        total += 1
+        status = "PASS" if not (forbidden & got) else "FAIL"
+        passed += status == "PASS"
+        print(f"[{status}] {patient} (forbidden firings): must not see {sorted(forbidden)}, "
+              f"saw {sorted(forbidden & got)}")
+
+    print(f"\n{passed}/{total} checks matched expected outcome")
 
 
 if __name__ == "__main__":

@@ -164,18 +164,51 @@ COLUMN_SCHEMES = {
 
 # ── Scheme binding derivation ─────────────────────────────────────────────────
 
-# Some columns share a vocabulary scheme with sibling columns but must attach
-# through a DIFFERENT property each (Device.OperationalState,
-# Sensor.OperationalState, and Component.OperationalState all draw values
-# from opstate:Scheme, but each attaches via its own single-domain
-# sub-property of mda:hasOperationState — see ontology.ttl). A scheme
+# Some columns share a vocabulary scheme with sibling columns, or with a
+# property that is never CSV-driven at all, and must name the property they
+# attach through (Device.OperationalState, Sensor.OperationalState and
+# Component.OperationalState all draw values from opstate:Scheme, each via
+# its own single-domain sub-property of mda:hasOperationState;
+# Signal.QualityState shares qualitystate:Scheme with the entailment-only
+# mda:hasTherapyDeliveryQuality — see ontology.ttl). A scheme
 # bound to more than one property is genuinely ambiguous from the ontology
 # alone, so those columns are listed here explicitly; every other column has
 # exactly one property per scheme and is resolved automatically below.
+# Vocabulary namespaces that no CSV column drives, and therefore do not
+# appear in COLUMN_SCHEMES above. They still need a prefix bound on every
+# graph this script serialises, or their concepts come out as bare absolute
+# IRIs — which is exactly what happened to signal-analysis: 29 concepts, 15
+# of them typing nodes in kg_generated.ttl, every one written out in full
+# while every other node kind in the same sensing pathway rendered as a
+# prefixed name. Registering the scheme in vocab_base.ttl fixed the
+# declarations; this fixes the serialisation.
+EXTRA_SCHEME_PREFIXES = {
+    "signalAnalysis": VOCAB + "signal-analysis/",
+}
+
+
+def bind_vocab_prefixes(g: Graph) -> None:
+    """Bind every vocabulary prefix this framework mints into, column-driven
+    or not. Use in place of iterating COLUMN_SCHEMES directly."""
+    for prefix, base_uri in COLUMN_SCHEMES.values():
+        g.bind(prefix, Namespace(base_uri))
+    for prefix, base_uri in EXTRA_SCHEME_PREFIXES.items():
+        g.bind(prefix, Namespace(base_uri))
+
+
 COLUMN_PROPERTY_OVERRIDE = {
     "Device.OperationalState":    MDA.hasDeviceOperationState,
     "Sensor.OperationalState":    MDA.hasSensorOperationState,
     "Component.OperationalState": MDA.hasComponentOperationState,
+    # qualitystate:Scheme became shared the moment
+    # mda:hasTherapyDeliveryQuality was bound to it — a quality state is a
+    # quality state, and the scheme was never specific to a Signal. Only
+    # this column is CSV-driven; hasTherapyDeliveryQuality is entailed by an
+    # axiom in inference.ttl and never read from a column, but the scheme is
+    # ambiguous from the ontology alone either way, so the column says which
+    # property it means. The guard below caught this on the first build
+    # after the binding was added.
+    "Signal.QualityState":        MDA.hasQualityState,
 }
 
 
@@ -317,8 +350,7 @@ def build_vocab_graph(missing: list, bindings: dict, base: Graph) -> Graph:
     g.bind("mda", MDA)
     g.bind("skos", SKOS)
     g.bind("rdfs", RDFS)
-    for prefix, base_uri in COLUMN_SCHEMES.values():
-        g.bind(prefix, Namespace(base_uri))
+    bind_vocab_prefixes(g)
 
     for notation, column in sorted(missing, key=lambda m: (m[1], m[0])):
         kind, _, cls, scheme = bindings[column]
@@ -363,10 +395,17 @@ def vocab_namespaces(base: Graph, onto: Graph) -> dict:
     """
     {namespace_uri: (scheme_iri, node_class_or_None)} for every SKOS scheme
     registered in vocab_base.ttl, derived from the scheme's own IRI rather
-    than hardcoded — so a namespace with no base registration (e.g.
-    signal-analysis:, deliberately: see mda:SignalAnalysis's comment on why
-    it has no vocabulary scheme of its own) is correctly never a target for
-    auto-stubbing. node_class is the class the scheme instantiates
+    than hardcoded — so a namespace with no base registration is never a
+    target for auto-stubbing.
+
+    That skip used to apply to signal-analysis:, on the reasoning that
+    mda:SignalAnalysis had no vocabulary scheme of its own. It does now:
+    the namespace held 29 concepts that typed nodes in the published graph
+    while being declared nowhere, which is the one thing a vocabulary must
+    not do. Registering the scheme in vocab_base.ttl is all it took to make
+    them stub like everything else — no change was needed here.
+
+    node_class is the class the scheme instantiates
     (mda:instantiatesClass) when it is a "node" scheme, so a stub generated
     here gets the same rdfs:subClassOf a CSV-driven one would; None for a
     "leaf" scheme.
@@ -1013,12 +1052,13 @@ def build_alarmtype_triples(row: pd.Series, kg: Graph, ref: Graph, index: dict,
         # but actively wrong: it makes metric:HeartRate itself satisfy
         # mda:approximates's rdfs:domain mda:Metric (prp-dom), so OWL-RL
         # treats the SHARED CONCEPT as a Metric individual in its own right —
-        # confirmed to let CODE/evaluation_poc's CardiacArrestCondition/
+        # confirmed to let the former CardiacArrestCondition/
         # RespiratoryArrestCondition axioms (FRAMEWORK/KNOWLEDGE_BASE/
-        # clinicalEvents.ttl) misclassify physiologicalProcess:
-        # CardiacContraction/PulmonaryVentilation as carrying
-        # mda:impliesClinicalEvent, not just the triggering alarm's own Metric
-        # particular. Same failure mode build_administers_map()'s docstring
+        # clinicalEvents.ttl, before the 2026-09 rework) misclassify
+        # physiologicalProcess:CardiacContraction/PulmonaryVentilation as
+        # carrying the since-removed mda:impliesClinicalEvent, not just the
+        # triggering alarm's own Metric particular. The general hazard —
+        # a shared concept satisfying a per-instance axiom — still applies. Same failure mode build_administers_map()'s docstring
         # above already documents and fixes for mda:administers/
         # hasOperationState/hasTherapyDeliveryQuality — never generalised to
         # mda:approximates/isPropertyOf until now.
@@ -1084,8 +1124,7 @@ def build_graphs(df: pd.DataFrame, index: dict, tree: dict, node_kind: dict,
         g.bind("alarmtype", ALARMTYPE)
         g.bind("mda", MDA)
         g.bind("skos", SKOS)
-        for prefix, base_uri in COLUMN_SCHEMES.values():
-            g.bind(prefix, Namespace(base_uri))
+        bind_vocab_prefixes(g)
 
     failed = []
     for i, row in df.iterrows():

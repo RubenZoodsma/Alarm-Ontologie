@@ -17,6 +17,7 @@
 @prefix functionalUnit: <https://w3id.org/mda/vocab/functional-unit/> .
 @prefix sensor:     <https://w3id.org/mda/vocab/sensor/> .
 @prefix signal:     <https://w3id.org/mda/vocab/signal/> .
+@prefix signalAnalysis: <https://w3id.org/mda/vocab/signal-analysis/> .
 @prefix metric:     <https://w3id.org/mda/vocab/metric/> .
 @prefix anatomicalPosition: <https://w3id.org/mda/vocab/anatomical-position/> .
 @prefix laterality: <https://w3id.org/mda/vocab/laterality/> .
@@ -33,6 +34,7 @@
 @prefix deviceType: <https://w3id.org/mda/vocab/device-type/> .
 @prefix manufacturer: <https://w3id.org/mda/vocab/manufacturer/> .
 @prefix alarmLabel: <https://w3id.org/mda/vocab/alarm-label/> .
+@prefix clinicalEvent: <https://w3id.org/mda/vocab/clinical-event/> .
 
 ##################################################################
 # Ontology for the medical device alarm knowledge
@@ -97,18 +99,18 @@ mda:hasStart a owl:DatatypeProperty ;
     dcterms:identifier  "hasStart" ;
     rdfs:label          "has start"@en,
                         "heeft start"@nl ;
-    rdfs:comment        "The start time of the alarm."@en,
-                        "Het starttijdstip van het alarm."@nl ;
-    rdfs:domain         mda:Alarm ;
+    rdfs:comment        "The start time of an alarm, or of a clinical event — for the latter, the moment its evidence criterion (clinicalEvents.ttl) first held."@en,
+                        "Het starttijdstip van een alarm, of van een klinische gebeurtenis — voor de laatste het moment waarop haar bewijscriterium (clinicalEvents.ttl) voor het eerst gold."@nl ;
+    rdfs:domain         [ owl:unionOf ( mda:Alarm mda:ClinicalEvent ) ] ;
     rdfs:range          xsd:dateTime .
 
 mda:hasEnd a owl:DatatypeProperty ;
     dcterms:identifier  "hasEnd" ;
     rdfs:label          "has end"@en,
                         "heeft einde"@nl ;
-    rdfs:comment        "The end time of the alarm."@en,
-                        "Het eindtijdstip van het alarm."@nl ;
-    rdfs:domain         mda:Alarm ;
+    rdfs:comment        "The end time of an alarm, or of a clinical event — for the latter, the moment its evidence criterion stopped holding, never the moment an application noticed. An ongoing clinical event has no end yet."@en,
+                        "Het eindtijdstip van een alarm, of van een klinische gebeurtenis — voor de laatste het moment waarop haar bewijscriterium ophield te gelden, nooit het moment waarop een toepassing dat opmerkte. Een lopende klinische gebeurtenis heeft nog geen einde."@nl ;
+    rdfs:domain         [ owl:unionOf ( mda:Alarm mda:ClinicalEvent ) ] ;
     rdfs:range          xsd:dateTime .
 
 mda:hasLabel a owl:DatatypeProperty ;
@@ -171,9 +173,9 @@ mda:concernsPatient a owl:ObjectProperty, owl:FunctionalProperty ;
     dcterms:identifier  "concernsPatient" ;
     rdfs:label          "concerns patient"@en,
                         "betreft patiënt"@nl ;
-    rdfs:comment        "Relates an alarm message to the patient it concerns — the shared, persistent merge anchor. Deliberately a dead end: it no longer continues on to mda:Device via mda:isMonitoredBy (see mda:triggeredBy's comment for why). Functional: one message concerns exactly one patient — it is minted fresh per alarm precisely so it never needs to concern more than one."@en,
-                        "Koppelt een alarmbericht aan de patiënt die het betreft — het gedeelde, persistente samenvoegankerpunt. Bewust een doodlopend pad: leidt niet langer via mda:isMonitoredBy naar mda:Device. Functioneel: één bericht betreft precies één patiënt."@nl ;
-    rdfs:domain         mda:AlarmMessage ;
+    rdfs:comment        "Relates an alarm message, or a clinical event, to the patient it concerns — the shared, persistent merge anchor. Deliberately a dead end: it does not continue on to mda:Device via mda:isMonitoredBy (see mda:triggeredBy's comment for why). Functional: one message or event concerns exactly one patient — both are minted fresh per occurrence precisely so they never need to concern more than one. On a clinical event this is what scopes the event to one patient; its evidence (mda:evidencedBy) never does that on its own."@en,
+                        "Koppelt een alarmbericht, of een klinische gebeurtenis, aan de patiënt die het betreft — het gedeelde, persistente samenvoegankerpunt. Bewust een doodlopend pad: leidt niet via mda:isMonitoredBy naar mda:Device. Functioneel: één bericht of gebeurtenis betreft precies één patiënt. Bij een klinische gebeurtenis is dit wat de gebeurtenis aan één patiënt bindt; het bewijs (mda:evidencedBy) doet dat nooit op zichzelf."@nl ;
+    rdfs:domain         [ owl:unionOf ( mda:AlarmMessage mda:ClinicalEvent ) ] ;
     rdfs:range          mda:Patient .
 
 mda:triggeredBy a owl:ObjectProperty, owl:FunctionalProperty ;
@@ -303,11 +305,26 @@ mda:hasOperationState a owl:ObjectProperty ;
     dcterms:identifier  "hasOperationState" ;
     rdfs:label          "has operation state"@en,
                         "heeft operatiestatus"@nl ;
-    rdfs:comment        "The operational state of a device, sensor, signal, component, or the therapeutic modality a device administers (the latter inferred from the administering device's own state, not asserted directly)."@en,
-                        "De operationele status van een apparaat, sensor, signaal, onderdeel, of de therapeutische modaliteit die een apparaat toedient (dit laatste afgeleid van de status van het toedienende apparaat, niet direct toegekend)."@nl ;
-    rdfs:domain         [ owl:unionOf ( mda:Device mda:FunctionalUnit mda:Sensor mda:Signal mda:SignalAnalysis mda:Component mda:TherapeuticModality ) ] ;
-    rdfs:range          skos:Concept ;
-    owl:propertyChainAxiom  ( [ owl:inverseOf mda:administers ] mda:hasOperationState ) .
+    rdfs:comment        "The operational state of a device, functional unit, sensor, component or metric — equipment and the data it yields. Deliberately NOT borne by a Signal or a SignalAnalysis: a signal's own account of itself is mda:hasQualityState, and an analysis that produced a metric is self-evidently running, so an operational state on either accumulated entailments nothing consumed. A signal's quality state instead entails its SENSOR is Enabled. Deliberately NOT borne by a TherapeuticModality either: a therapy is not equipment, and whether it is being delivered without compromise is mda:hasTherapyDeliveryQuality, its own property. See the operational-state ladder in FRAMEWORK/KNOWLEDGE_BASE/inference.ttl."@en,
+                        "De operationele status van een apparaat, functionele eenheid, sensor, onderdeel of metriek — apparatuur en de gegevens die zij oplevert. Bewust NIET gedragen door een Signal of een SignalAnalysis: de eigen verantwoording van een signaal is mda:hasQualityState, en een analyse die een metriek heeft opgeleverd draait vanzelfsprekend. De kwaliteitsstatus van een signaal impliceert in plaats daarvan dat de SENSOR Enabled is. Ook bewust NIET gedragen door een TherapeuticModality: een therapie is geen apparatuur, en of zij ongeschonden wordt toegediend is mda:hasTherapyDeliveryQuality, een eigen eigenschap."@nl ;
+    rdfs:domain         [ owl:unionOf ( mda:Device mda:FunctionalUnit mda:Sensor mda:Component mda:Metric ) ] ;
+    rdfs:range          skos:Concept .
+
+# A FOURTH CHAIN REMOVED — inverse(administers) o hasOperationState, which
+# handed the therapeutic modality whatever state the administering device
+# held, copied verbatim. It was the last propertyChainAxiom on this property
+# and it failed for the same reason the other three did: a chain copies the
+# value it finds and cannot be conditioned on it. So a Malfunction device
+# made its therapy Malfunction, and a Disconnected device made its therapy
+# Disconnected — 49 facts across the catalogue, describing a therapy in the
+# vocabulary of equipment. A ventilation therapy does not malfunction; the
+# ventilator does. What CAN be said about the therapy itself is whether it
+# is reaching the patient uncompromised, and that is
+# mda:hasTherapyDeliveryQuality, which is asserted by its own axiom over the
+# actual evidence (a circuit leak), not inherited from the box.
+#
+# Nothing consumed the removed facts: no .rq file and no code path reads an
+# operational state off an administers target.
 
 # THREE CHAINS REMOVED HERE in the 2026-09 curation round — producesSignal,
 # hasSensor and hasFunctionalUnit. They are replaced by the "Structural
@@ -468,7 +485,7 @@ mda:producesSignal a owl:ObjectProperty, owl:InverseFunctionalProperty ;
     dcterms:identifier  "producesSignal" ;
     rdfs:label          "produces signal"@en,
                         "produceert signaal"@nl ;
-    rdfs:comment        "Relates a sensor OR a signal-analysis step to the signal it produces — a sensor's raw signal, or an analysis step's derived/intermediate signal (e.g. augmented lead aVF, combined from other leads). Inverse-functional: a signal has at most one producer, whichever kind produced it. Its domain is a union, so it cannot itself anchor 2_READOUT/build_framework.py's CSV/tree derivation (ontology_tree.py's derive_class_tree only follows a named rdfs:domain, the same limitation documented at mda:hasOperationState below) — mda:sensorProducesSignal is the single-domain sub-property that does. A signal-analysis step's own derived-signal output (the aVF case) is only ever hand-authored in inference.ttl, never CSV-driven, so it uses this general property directly and needs no sub-property of its own."@en,
+    rdfs:comment        "Relates a sensor OR a signal-analysis step to the signal it produces — a sensor's raw signal, or an analysis step's derived/intermediate signal (e.g. augmented lead aVF, combined from other leads). Inverse-functional: a signal has at most one producer, whichever kind produced it. Its domain is a union; ontology_tree.py's derive_class_tree expands union domains, but leaves the Sensor member to mda:sensorProducesSignal, the single-domain sub-property that carries that edge — so the CSV/tree derivation in CODE/framework_build/build_framework.py attaches Signal under Sensor exactly once. A signal-analysis step's own derived-signal output (the aVF case) is only ever hand-authored in inference.ttl, never CSV-driven, so it uses this general property directly and needs no sub-property of its own."@en,
                         "Koppelt een sensor OF een signaalanalysestap aan het signaal dat het produceert — het ruwe signaal van een sensor, of het afgeleide/tussenliggende signaal van een analysestap (bijv. versterkte afleiding aVF, gecombineerd uit andere afleidingen). Invers-functioneel: een signaal heeft hoogstens één producent, ongeacht het soort."@nl ;
     rdfs:domain         [ owl:unionOf ( mda:Sensor mda:SignalAnalysis ) ] ;
     rdfs:range          mda:Signal .
@@ -478,7 +495,7 @@ mda:sensorProducesSignal a owl:ObjectProperty ;
     rdfs:subPropertyOf  mda:producesSignal ;
     rdfs:label          "sensor produces signal"@en,
                         "sensor produceert signaal"@nl ;
-    rdfs:comment        "The CSV/tree-facing case of mda:producesSignal: a sensor's own raw signal. A single-domain sub-property so 2_READOUT/build_framework.py's ontology-derived tree can attach Signal under Sensor unambiguously — see mda:producesSignal's comment. Every fact asserted through it still entails the general mda:producesSignal fact (and, transitively, mda:hasOperationState's propagation chain) via rdfs:subPropertyOf."@en,
+    rdfs:comment        "The CSV/tree-facing case of mda:producesSignal: a sensor's own raw signal. A single-domain sub-property that carries the Sensor -> Signal edge in the ontology-derived tree (ontology_tree.py leaves that member of mda:producesSignal's union domain to it) — see mda:producesSignal's comment. Every fact asserted through it still entails the general mda:producesSignal fact (and, transitively, mda:hasOperationState's propagation chain) via rdfs:subPropertyOf."@en,
                         "Het CSV/boom-gerichte geval van mda:producesSignal: het eigen ruwe signaal van een sensor. Een subeigenschap met één domein, zodat de door 2_READOUT/build_framework.py afgeleide boom Signal ondubbelzinnig onder Sensor kan hangen."@nl ;
     rdfs:domain         mda:Sensor ;
     rdfs:range          mda:Signal .
@@ -983,102 +1000,57 @@ mda:hasTherapyDeliveryQuality a owl:ObjectProperty ;
 #################################################################
 # Clinical Event
 #
-# A distinct branch from mda:PhysiologicalProcess: a process is ongoing
-# biological activity (Referential — one shared IRI per concept, reused
-# across every alarm that ever approximates it, per that section's own
-# comment above); a mda:ClinicalEvent is a discrete, acute clinical
-# judgement ABOUT the current state of one or more such processes,
-# individuated per occurrence. Never realised by retyping the shared
-# process concept itself via a class-level restriction — that would wrongly
-# assert the judgement for every alarm system-wide that ever mentions that
-# process, not just the one whose condition actually holds. See
-# FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl's header for the full
-# reasoning, including why the axioms living there cannot by themselves
-# drive the operational PoC engine (4_OPERATIONAL/op_knowledge.py's
-# situational export never carries rdf:type facts, and OWL-RL has no
-# mechanism to conditionally assert a new property edge to a named
-# individual) — that requires a separate, procedural SPARQL rule, not a
-# declarative axiom.
+# A discrete, acute clinical judgement about one patient, individuated per
+# occurrence. Three relations point OUTWARD from it and nothing points back:
+#
+#   ClinicalEvent --concernsPatient--> Patient    (whose event it is)
+#   ClinicalEvent --evidencedBy-->     evidence   (why it is believed)
+#   ClinicalEvent --hasStart/hasEnd--> time       (when it held)
+#
+# One direction only, on purpose. The former mda:impliesClinicalEvent ran
+# the other way (evidence -> event concept), which made the event and its
+# evidence refer to each other and, placed on a shared concept, leaked one
+# patient's event onto every alarm reaching that concept (see the REMOVED
+# note below).
+#
+# WHAT COUNTS AS EVIDENCE is stated in FRAMEWORK/KNOWLEDGE_BASE/
+# clinicalEvents.ttl, as an rdfs:subClassOf axiom on each event class
+# (e.g. clinicalEvent:CardiacArrest requires evidencedBy some HeartRate
+# metric with an absent rhythm). Those axioms describe a requirement; they
+# never create an event. OWL cannot mint an individual, so an application
+# (the RDFox POC) creates the event node, and implements the criterion.
 #################################################################
 
 mda:ClinicalEvent a owl:Class ;
     dcterms:identifier  "ClinicalEvent" ;
     rdfs:label          "Clinical Event"@en,
                         "Klinische Gebeurtenis"@nl ;
-    rdfs:comment        "A discrete, acute clinical interpretation derived from the current state of one or more physiological processes — e.g. a cardiac arrest inferred from an absent cardiac contraction rate — distinct from the ongoing physiological process(es) it is evidenced by."@en,
-                        "Een discrete, acute klinische interpretatie afgeleid van de huidige toestand van een of meer fysiologische processen — bijvoorbeeld een hartstilstand afgeleid van een afwezig hartcontractieritme — te onderscheiden van het/de onderliggende fysiologische proces(sen) waarop zij is gebaseerd."@nl .
+    rdfs:comment        "A discrete, acute clinical judgement about one patient — e.g. a cardiac arrest — individuated per occurrence. It concerns exactly one patient (mda:concernsPatient), is believed because of the evidence it points to (mda:evidencedBy), and holds from mda:hasStart until mda:hasEnd. Which evidence each kind of event requires is stated on the event class itself, in clinicalEvents.ttl. Its concrete kind is given by a concept from the clinical-event scheme, used as its rdf:type."@en,
+                        "Een afzonderlijk, acuut klinisch oordeel over één patiënt — bijv. een hartstilstand — per voorval geïndividualiseerd. Zij betreft precies één patiënt (mda:concernsPatient), wordt aangenomen op grond van het bewijs waarnaar zij verwijst (mda:evidencedBy), en geldt van mda:hasStart tot mda:hasEnd. Welk bewijs elke soort gebeurtenis vereist, staat op de gebeurtenisklasse zelf, in clinicalEvents.ttl. De concrete soort wordt gegeven door een concept uit het klinische-gebeurtenisschema, gebruikt als rdf:type."@nl .
 
 mda:evidencedBy a owl:ObjectProperty ;
     dcterms:identifier  "evidencedBy" ;
     rdfs:label          "evidenced by"@en,
                         "onderbouwd door"@nl ;
-    rdfs:comment        "Relates a clinical event to the node(s) whose state evidenced it — the audit trail for why the event was asserted, never omitted even when only one node is involved. Range is a union of mda:PhysiologicalProcess and mda:Device, not PhysiologicalProcess alone: widened for VentilationFailure (see clinicalEvents.ttl), whose evidence spans a physiological condition (reduced pulmonary function, a Process-anchored tag) AND a technical one (the ventilator's own fault operation state, a Device-level fact with no Process anchor of its own) — narrowing this to Process alone would force dropping the device from the audit trail, losing exactly the fact that makes it a ventilation failure rather than generic hypoventilation."@en,
-                        "Koppelt een klinische gebeurtenis aan het/de knooppunt(en) waarvan de toestand haar onderbouwde — het controlespoor voor waarom de gebeurtenis werd beweerd. Het bereik is een unie van mda:PhysiologicalProcess en mda:Device, niet alleen PhysiologicalProcess: verruimd voor VentilationFailure (zie clinicalEvents.ttl), waarvan het bewijs zowel een fysiologische conditie (verminderde longfunctie, een op Process gebaseerde markering) als een technische conditie (de foutstatus van de beademingsmachine zelf, een feit op Device-niveau zonder eigen Process-anker) omvat."@nl ;
+    rdfs:comment        "Relates a clinical event to a node whose state is evidence for it — the audit trail for why the event is believed, asserted for every supporting node, even when there is only one. The arrow runs from the event to its evidence only; nothing points back from evidence to event. Evidence is always a node minted for the alarm that reported it (a metric, a device) or another clinical event, never a shared vocabulary concept: a shared concept is reached by every patient's alarms and would say nothing about this one. The range covers the current criteria: a Metric (a single-alarm event such as cardiac arrest), a TherapeuticModality (the compromised ventilation therapy in ventilation failure) and a ClinicalEvent (a combined event points at its constituent events). Device stays in the range for criteria that rest on a device's own state; none does at present."@en,
+                        "Koppelt een klinische gebeurtenis aan een knooppunt waarvan de toestand bewijs ervoor is — het controlespoor voor waarom de gebeurtenis wordt aangenomen, vastgelegd voor elk ondersteunend knooppunt, ook als er maar één is. De pijl loopt alleen van de gebeurtenis naar haar bewijs; niets verwijst terug. Bewijs is altijd een knooppunt dat is aangemaakt voor het alarm dat het rapporteerde (een metriek, een apparaat) of een andere klinische gebeurtenis, nooit een gedeeld vocabulaireconcept. Het bereik dekt de huidige criteria: een Metric (een gebeurtenis uit één alarm, zoals een hartstilstand), een TherapeuticModality (de gecompromitteerde beademingstherapie bij beademingsfalen) en een ClinicalEvent (een samengestelde gebeurtenis verwijst naar haar samenstellende gebeurtenissen). Device blijft in het bereik voor criteria die op de eigen toestand van een apparaat rusten; geen enkel criterium doet dat momenteel."@nl ;
     rdfs:domain         mda:ClinicalEvent ;
-    rdfs:range          [ a owl:Class ; owl:unionOf ( mda:PhysiologicalProcess mda:Device ) ] .
+    rdfs:range          [ a owl:Class ; owl:unionOf ( mda:Metric mda:Device mda:TherapeuticModality mda:ClinicalEvent ) ] .
 
-# A second, lighter-weight route to the same vocabulary, alongside
-# mda:evidencedBy: a direct value-tag on the CONDITION-bearing node itself
-# (e.g. mda:Metric), following the exact shape mda:hasQualityState already
-# uses for its own reasoner-entailed values (see inference.ttl's Signal
-# quality axioms and clinicalEvents.ttl's Cardiac arrest axiom) — this is
-# what makes a single-alarm clinical-event condition operationally visible
-# to 4_OPERATIONAL/op_knowledge.py without minting a separate mda:ClinicalEvent
-# individual at all. mda:evidencedBy remains the richer route for whenever a
-# real ClinicalEvent individual IS constructed (e.g. a future cross-alarm
-# rule needing its own audit trail across more than one contributing
-# process) — the two are complementary, not redundant.
-mda:impliesClinicalEvent a owl:ObjectProperty ;
-    dcterms:identifier  "impliesClinicalEvent" ;
-    rdfs:label          "implies clinical event"@en,
-                        "impliceert klinische gebeurtenis"@nl ;
-    rdfs:comment        "Names the clinical-event concept that a process's current condition implies — an inference, not a possession: the process does not 'have' the event (a patient does, see mda:evidencedBy/mda:concernsPatient on the minted mda:ClinicalEvent individual for that claim); this property only records that the process's state is evidence pointing to it. Requires no separately-minted mda:ClinicalEvent individual on its own."@en,
-                        "Noemt het klinische-gebeurtenisconcept dat de huidige toestand van een proces impliceert — een gevolgtrekking, geen bezit: het proces 'heeft' de gebeurtenis niet (dat geldt voor een patiënt, zie mda:evidencedBy/mda:concernsPatient op het aangemaakte mda:ClinicalEvent-individu voor die bewering); deze eigenschap legt alleen vast dat de toestand van het proces daarvoor bewijs vormt. Vereist op zichzelf geen apart aangemaakt mda:ClinicalEvent-individu."@nl ;
-    rdfs:domain         mda:Metric ;
-    rdfs:range          skos:Concept .
+# mda:impliesClinicalEvent REMOVED in the 2026-09 curation round. It ran
+# from the evidence to the event concept (first from mda:Metric, briefly
+# from mda:PhysiologicalProcess), so a clinical event and its evidence
+# pointed at each other, and the event existed only as a tag on its
+# evidence — with no patient of its own. Placed on a shared process concept
+# it leaked: measured before the domain moved back to Metric, seventy-plus
+# archetypes inherited cardiac or respiratory arrest from one unrelated
+# alarm. The replacement keeps one direction only — mda:evidencedBy from a
+# minted mda:ClinicalEvent — and states each event's criterion on the event
+# class itself (clinicalEvents.ttl). Consumers that read the removed
+# property: CODE/framework_build/build_framework.py (updated), EVALUATION/
+# CQs/temporal/CQ11_combined_meaning_gap.rq (to be revisited with the
+# competency questions) and the RDFox POC (reworked to mint events).
 
-# DOMAIN IS mda:Metric — moved BACK from mda:PhysiologicalProcess in the
-# 2026-09 curation round. This section previously argued the opposite at
-# length; that argument is kept below, because it was not wrong so much as
-# scoped to one consumer, and the scoping is the whole lesson.
-#
-# The old argument: a standing tag on a Referential, shared-IRI concept
-# would leak across every alarm that reaches it, BUT that never bites
-# because the operational engine (CODE/evaluation_poc/core/op_knowledge.py's
-# Timeline.situation_at/background_at) builds a FRESH graph per (patient,
-# instant), so a tag on physiologicalProcess:CardiacContraction cannot
-# travel to another patient or another tick. It also conceded, explicitly,
-# that "the over-generalisation risk is real for a STATIC file reasoned once
-# as one shared graph (kg_generated.ttl, the vocabulary/ontology TBox)".
-#
-# That concession is the bug. Reasoning once over the whole catalogue is not
-# a hypothetical: it is exactly what CODE/evaluation_qa/archetype_report.py
-# does to build the published docs/graph page, and it is what anyone
-# resolving this ontology at w3id.org/mda and loading it will do. Measured
-# before the change: three tags existed
-# (CardiacContraction -> CardiacArrest, PulmonaryVentilation ->
-# RespiratoryArrest and -> ReducedPulmonaryFunction), and because those
-# concepts are shared, SEVENTY-PLUS archetypes inherited them. A
-# CARDIOHELP arterial-pressure warning read as implying cardiac arrest,
-# because arterial pressure is a property of cardiac contraction and one
-# unrelated asystole alarm elsewhere in the catalogue had tagged that
-# concept.
-#
-# An axiom that is only true when the graph is sliced a particular way is
-# not a property of the ontology, it is a property of one consumer. mda:
-# Metric is Stateful (see its nodeKind below): its node is minted per alarm,
-# so a tag there cannot reach any other alarm no matter how the graph is
-# assembled. The condition axioms in clinicalEvents.ttl are correspondingly
-# simpler — they no longer walk backwards through inverse isPropertyOf and
-# inverse approximates to reach a process, they just test the metric.
-#
-# What the old argument got right, and what is NOT lost: cat3a's coincidence
-# check stays device- and pathway-agnostic. It asks which clinical events
-# are implied within one patient's graph, and it never cared whether the
-# bearer was a process or a metric — a HeartRate reached through ECG and one
-# reached through pulse oximetry are still both simply metrics carrying the
-# tag. The operational layer's queries name the process node today and will
-# need updating; that is application-layer work, deliberately deferred.
 
 
 #################################################################
@@ -1228,19 +1200,32 @@ mda:Laterality         mda:nodeKind mda:Referential .
 mda:TherapeuticModality mda:nodeKind mda:Individuated .
 
 # Individuated, not Referential: each ClinicalEvent is a fresh,
-# per-occurrence node minted only when its triggering condition fires (see
-# clinicalEvents.ttl), never a shared concept reused across alarms the way
-# mda:PhysiologicalProcess itself is. This class is never walked by
+# per-occurrence node for one patient, minted by an application when the
+# event's evidence criterion (clinicalEvents.ttl) first holds, never a
+# shared concept reused across alarms the way mda:PhysiologicalProcess
+# itself is. This class is never walked by
 # build_framework.py's CSV-driven builder — no CSV column names a clinical
 # event directly — so this tag documents its intended runtime shape for
 # whatever DOES construct it, not a CSV binding.
 mda:ClinicalEvent mda:nodeKind mda:Individuated .
 
-# mda:SignalAnalysis deliberately has NO nodeKind entry, so it falls through
-# to "structural" the same way mda:AlarmMessage does (a per-alarm blank node
-# with no vocabulary scheme of its own) — there is no CSV column driving it
-# directly; its identity is entirely the inverse of analyzedBy (what it
-# consumes) and producesMetric/producesSignal (what it produces).
+# mda:SignalAnalysis USED to have no nodeKind entry, on the reasoning that
+# it fell through to "structural" the same way mda:AlarmMessage does — a
+# per-alarm blank node with no vocabulary scheme of its own. That stopped
+# being true. An AlarmMessage node really is anonymous; a SignalAnalysis
+# node is a blank node typed with a NAMED concept, and inference.ttl had
+# minted 29 of them (18 added by the twelve-lead work alone) while this
+# comment still described a scheme-less namespace. They were undeclared
+# everywhere: no label, no definition, no scheme, no supertype, and
+# unresolvable at their own published IRIs.
+#
+# Individuated, like every other node in the sensing pathway: the analysis
+# node is per-alarm, carrying this alarm's own derivation step, not a shared
+# instance. Still driven by no CSV column — its concepts come from
+# inference.ttl and are stubbed from there — which is exactly why the scheme
+# registration in vocab_base.ttl matters: without it the auto-stubber
+# skipped the namespace by design.
+mda:SignalAnalysis mda:nodeKind mda:Individuated .
 
 mda:hasPhase              mda:refinesUniversalIdentity   true .
 mda:hasAggregation        mda:refinesUniversalIdentity   true .
@@ -1266,6 +1251,12 @@ mda:hasSensorOperationState     mda:valuesFromScheme    opstate:Scheme .
 mda:hasComponentOperationState  mda:valuesFromScheme    opstate:Scheme .
 mda:hasMetricOperationState     mda:valuesFromScheme    opstate:Scheme .
 mda:hasQualityState     mda:valuesFromScheme    qualitystate:Scheme .
+# Same scheme as hasQualityState: a quality state is a quality state, and
+# the scheme was never specific to a Signal. Missing until the 2026-09
+# audit — this property was the only state-bearing property in the ontology
+# with no scheme binding at all, so nothing could tell a reader or a tool
+# where its values were supposed to come from.
+mda:hasTherapyDeliveryQuality    mda:valuesFromScheme    qualitystate:Scheme .
 mda:hasPhase            mda:valuesFromScheme    metricPhase:Scheme .
 mda:hasAggregation      mda:valuesFromScheme    metricAggregation:Scheme .
 mda:hasValueState       mda:valuesFromScheme    metricValueState:Scheme .
@@ -1278,6 +1269,7 @@ component:Scheme                mda:instantiatesClass   mda:Component .
 functionalUnit:Scheme           mda:instantiatesClass   mda:FunctionalUnit .
 sensor:Scheme                   mda:instantiatesClass   mda:Sensor .
 signal:Scheme                   mda:instantiatesClass   mda:Signal .
+signalAnalysis:Scheme           mda:instantiatesClass   mda:SignalAnalysis .
 metric:Scheme                   mda:instantiatesClass   mda:Metric .
 anatomicalPosition:Scheme       mda:instantiatesClass   mda:AnatomicalPosition .
 laterality:Scheme               mda:instantiatesClass   mda:Laterality .
@@ -1287,6 +1279,7 @@ organ:Scheme                    mda:instantiatesClass   mda:Organ .
 organSystem:Scheme              mda:instantiatesClass   mda:OrganSystem .
 patient:Scheme                  mda:instantiatesClass   mda:Patient .
 therapeuticModality:Scheme      mda:instantiatesClass   mda:TherapeuticModality .
+clinicalEvent:Scheme            mda:instantiatesClass   mda:ClinicalEvent .
 
 
 #################################################################
@@ -1332,25 +1325,19 @@ mda:organPartOfSystem  mda:situational true .
 mda:administers        mda:situational true .
 mda:targetsProcess     mda:situational true .
 
-# mda:evidencedBy is asserted directly by whatever constructs a
-# mda:ClinicalEvent (never derived by the reasoner from other situational
-# facts — see clinicalEvents.ttl), so this tag does not yet feed any live
-# extraction path. Kept for forward consistency: if a future consumer walks
-# the situational export FROM an already-asserted ClinicalEvent node
-# outward, this ensures evidencedBy is included rather than silently
-# excluded.
+# mda:evidencedBy is asserted directly by whatever mints a
+# mda:ClinicalEvent (never entailed — the axioms in clinicalEvents.ttl only
+# state a requirement). Tagged so that a consumer walking the situational
+# export outward from a ClinicalEvent node includes its evidence.
+#
+# NOT mda:persistsPostAlarm, and neither is anything else on a clinical
+# event: an event holds exactly as long as its evidence does. Unlike device
+# or signal state there is no physical reason for "cardiac arrest" to still
+# be believed a moment after the absent rhythm that evidenced it stops being
+# reported, and letting it linger would let a resolved event combine with an
+# unrelated new one into a false coincidence (cardiorespiratory arrest).
+# When the evidence is gone the event gets its mda:hasEnd.
 mda:evidencedBy        mda:situational true .
-
-# NOT mda:persistsPostAlarm: a clinical event has no validity beyond its
-# supporting alarm — unlike device/signal state, there is no physical
-# reason for "cardiac arrest" to still be true a moment after the
-# condition that asserted it (metric hasValueState Absent) stops being reported.
-# Tagging it persistsPostAlarm would let a resolved, minutes-old event
-# quietly combine with an unrelated new one into a false coincidence (see
-# clinicalEvents.ttl's Cardiorespiratory arrest rule) — situational is the
-# same interpretive, alarm-duration-only category mda:approximates/
-# mda:isPropertyOf already use, and is the correct one here.
-mda:impliesClinicalEvent   mda:situational true .
 
 
 #################################################################

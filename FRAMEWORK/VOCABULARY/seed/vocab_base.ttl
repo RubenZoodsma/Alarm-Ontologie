@@ -3,6 +3,7 @@
 @prefix functionalUnit: <https://w3id.org/mda/vocab/functional-unit/> .
 @prefix sensor:     <https://w3id.org/mda/vocab/sensor/> .
 @prefix signal:     <https://w3id.org/mda/vocab/signal/> .
+@prefix signalAnalysis: <https://w3id.org/mda/vocab/signal-analysis/> .
 @prefix alarmprio: <https://w3id.org/mda/vocab/alarm-priority/> .
 @prefix alarmcat:   <https://w3id.org/mda/vocab/alarm-category/> .
 @prefix opstate:    <https://w3id.org/mda/vocab/operation-state/> .
@@ -141,6 +142,43 @@ signal:Signal           a skos:Concept ;
     skos:definition         "A signal produced by a sensor."@en,
                             "Een signaal geproduceerd door een sensor."@nl ;
     skos:notation           "Signal" .
+
+############################################################
+# Signal Analysis scheme
+#
+# Registered in the 2026-09 curation round. Before it, this was the one
+# namespace the framework minted concepts into without declaring any of
+# them: 29 IRIs, 15 of them typing nodes in the published graph, none with
+# a label, a definition, a scheme or a supertype, and none resolvable.
+#
+# The reason they went undeclared was that a signal analysis is a vendor's
+# proprietary logic and the framework cannot say what is inside it. That is
+# true, and it is an argument about what the definition should SAY, not
+# about whether to declare. An identifier published in a graph and
+# resolving to nothing makes a promise it does not keep, which is worse for
+# findability than not minting one at all.
+#
+# What these concepts name is the ROLE — what the step consumes and what it
+# produces — never the algorithm. That distinction is what makes them
+# shareable: signalAnalysis:LeakAnalysis spans four manufacturers and
+# signalAnalysis:RespiratoryRateAnalysis spans four, because every one of
+# those devices computes the same quantity from the same signal, however
+# differently each does it inside. Four competency questions traverse this
+# step, cross-manufacturer equivalence among them, so leaving the pivot of
+# those comparisons undefined was the least defensible place in the
+# vocabulary to have a gap.
+############################################################
+
+signalAnalysis:Scheme     a skos:ConceptScheme ;
+    skos:prefLabel          "Signal Analysis"@en, "Signaalanalyse"@nl .
+
+signalAnalysis:SignalAnalysis   a skos:Concept ;
+    skos:inScheme           signalAnalysis:Scheme ;
+    skos:topConceptOf       signalAnalysis:Scheme ;
+    skos:prefLabel          "Signal Analysis"@en, "Signaalanalyse"@nl ;
+    skos:definition         "A derivation step that consumes one or more signals and produces a metric, or a further signal. Named by the role it plays in the sensing pathway — which quantity it derives, from which signal — never by how it derives it: the computation is the manufacturer's own and is deliberately out of scope here. Two devices whose analysis carries the same concept are claimed to derive the same quantity from the same kind of signal, not to implement the same algorithm."@en,
+                            "Een afleidingsstap die een of meer signalen verbruikt en een metriek oplevert, of een volgend signaal. Benoemd naar de rol in het meetpad — welke grootheid wordt afgeleid, uit welk signaal — nooit naar hoe dat gebeurt: de berekening is eigendom van de fabrikant en valt hier bewust buiten bereik. Twee apparaten waarvan de analyse hetzelfde concept draagt, leiden dezelfde grootheid af uit hetzelfde soort signaal, maar implementeren niet noodzakelijk hetzelfde algoritme."@nl ;
+    skos:notation           "SignalAnalysis" .
 
 ############################################################
 # Metric scheme
@@ -290,8 +328,8 @@ qualitystate:QualityState   a skos:Concept ;
     skos:inScheme           qualitystate:Scheme ;
     skos:topConceptOf       qualitystate:Scheme ;
     skos:prefLabel          "Quality State"@en, "Kwaliteitsstatus"@nl ;
-    skos:definition         "The quality state of a signal, indicating measurement reliability."@en,
-                            "De kwaliteitsstatus van een signaal, die de meetbetrouwbaarheid aangeeft."@nl ;
+    skos:definition         "Whether something is delivering what it should without compromise — a signal's measurement reliability (mda:hasQualityState), or a therapy actually reaching the patient (mda:hasTherapyDeliveryQuality). Not specific to a signal."@en,
+                            "Of iets zonder compromis levert wat het moet leveren — de meetbetrouwbaarheid van een signaal (mda:hasQualityState), of een therapie die de patiënt daadwerkelijk bereikt (mda:hasTherapyDeliveryQuality). Niet specifiek voor een signaal."@nl ;
     skos:notation           "QualityState" .
 
 

@@ -9,13 +9,15 @@
 @prefix manufacturer: <https://w3id.org/mda/vocab/manufacturer/> .
 @prefix mda: <https://w3id.org/mda/ontology#> .
 @prefix metric: <https://w3id.org/mda/vocab/metric/> .
-@prefix metricRate: <https://w3id.org/mda/vocab/metric-rate/> .
+@prefix metricRhythm: <https://w3id.org/mda/vocab/metric-rhythm/> .
+@prefix metricValueState: <https://w3id.org/mda/vocab/metric-value-state/> .
 @prefix opstate: <https://w3id.org/mda/vocab/operation-state/> .
 @prefix physiologicalProcess: <https://w3id.org/mda/vocab/physiological-process/> .
 @prefix physiologicalProperty: <https://w3id.org/mda/vocab/physiological-property/> .
 @prefix qualitystate: <https://w3id.org/mda/vocab/quality-state/> .
 @prefix sensor: <https://w3id.org/mda/vocab/sensor/> .
 @prefix signal: <https://w3id.org/mda/vocab/signal/> .
+@prefix signalAnalysis: <https://w3id.org/mda/vocab/signal-analysis/> .
 @prefix therapeuticModality: <https://w3id.org/mda/vocab/therapeutic-modality/> .
 
 alarmtype:CardiohelpPartBovenWaarschuwingsgrens_Unknown a mda:AlarmType ;
@@ -25,14 +27,14 @@ alarmtype:CardiohelpPartBovenWaarschuwingsgrens_Unknown a mda:AlarmType ;
     mda:hasMessage [ a mda:AlarmMessage ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:ExtracorporealMembraneOxygenator ;
-                    mda:administers [ a therapeuticModality:ExtraCorporeal_Membran_Oxygenation ] ;
+                    mda:administers [ a therapeuticModality:ExtraCorporealMembraneOxygenation ] ;
                     mda:hasDeviceType deviceType:CardioHelp ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:ABP_transducer ;
+                                    mda:sensorProducesSignal [ a signal:ABP_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -43,14 +45,14 @@ alarmtype:CardiohelpPvenOnderAlarmgrens_Unknown a mda:AlarmType ;
     mda:hasMessage [ a mda:AlarmMessage ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:ExtracorporealMembraneOxygenator ;
-                    mda:administers [ a therapeuticModality:ExtraCorporeal_Membran_Oxygenation ] ;
+                    mda:administers [ a therapeuticModality:ExtraCorporealMembraneOxygenation ] ;
                     mda:hasDeviceType deviceType:CardioHelp ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:VenousPressureTransducer ;
+                                    mda:sensorProducesSignal [ a signal:Pressure_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:VenousPressureAnalysis ;
                                                     mda:producesMetric [ a metric:VenousBloodPressure ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -61,15 +63,15 @@ alarmtype:CardiohelpPvenOnderWaarschuwingsgrens_Unknown a mda:AlarmType ;
     mda:hasMessage [ a mda:AlarmMessage ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:ExtracorporealMembraneOxygenator ;
-                    mda:administers [ a therapeuticModality:ExtraCorporeal_Membran_Oxygenation ;
+                    mda:administers [ a therapeuticModality:ExtraCorporealMembraneOxygenation ;
                             mda:targetsProcess physiologicalProcess:PulmonaryOxygenation ] ;
                     mda:hasDeviceType deviceType:CardioHelp ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:VenousPressureTransducer ;
+                                    mda:sensorProducesSignal [ a signal:Pressure_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:VenousPressureAnalysis ;
                                                     mda:producesMetric [ a metric:VenousBloodPressure ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -80,7 +82,7 @@ alarmtype:CardiohelpVerbindingVerbroken_Unknown a mda:AlarmType ;
     mda:hasMessage [ a mda:AlarmMessage ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:ExtracorporealMembraneOxygenator ;
-                    mda:administers [ a therapeuticModality:ExtraCorporeal_Membran_Oxygenation ;
+                    mda:administers [ a therapeuticModality:ExtraCorporealMembraneOxygenation ;
                             mda:targetsProcess physiologicalProcess:PulmonaryOxygenation ] ;
                     mda:hasComponent [ a component:ConnectionUnit ;
                             mda:hasComponentOperationState opstate:Disconnected ] ;
@@ -114,11 +116,11 @@ alarmtype:DatexohmedacomventilatorMvexpHigh_Hoog a mda:AlarmType ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:Datexohmedacom ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:VolumeAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationVolume_Minute ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:GEHealthcare ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -131,7 +133,8 @@ alarmtype:DatexohmedacomventilatorPatientDisconnected_Hoog a mda:AlarmType ;
             mda:triggeredBy [ a device:MechanicalVentilator ;
                     mda:administers [ a therapeuticModality:VentilationTherapy ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
-                    mda:hasDeviceOperationState opstate:Disconnected ;
+                    mda:hasComponent [ a component:AirwayCircuit ;
+                            mda:hasComponentOperationState opstate:Disconnected ] ;
                     mda:hasDeviceType deviceType:Datexohmedacom ;
                     mda:hasManufacturer manufacturer:GEHealthcare ] ] ;
     mda:hasPriority alarmprio:Hoog .
@@ -168,9 +171,9 @@ alarmtype:DatexohmedacomventilatorPpeakHigh_Hoog a mda:AlarmType ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_AirwayPressure ;
                             mda:hasSensor [ a sensor:AW_transducer ;
                                     mda:sensorProducesSignal [ a signal:AirwayPressure_waveform ;
-                                            mda:analyzedBy [ a <https://w3id.org/mda/vocab/signal-analysis/AirwayPressureAnalysis> ;
-                                                    mda:producesMetric [ a metric:AirwayPressure ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                            mda:analyzedBy [ a signalAnalysis:AirwayPressureAnalysis ;
+                                                    mda:producesMetric [ a metric:AirwayPressure_Peak ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:GEHealthcare ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -186,9 +189,9 @@ alarmtype:DatexohmedacomventilatorPpeakLow_Hoog a mda:AlarmType ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_AirwayPressure ;
                             mda:hasSensor [ a sensor:AW_transducer ;
                                     mda:sensorProducesSignal [ a signal:AirwayPressure_waveform ;
-                                            mda:analyzedBy [ a <https://w3id.org/mda/vocab/signal-analysis/AirwayPressureAnalysis> ;
-                                                    mda:producesMetric [ a metric:AirwayPressure ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                            mda:analyzedBy [ a signalAnalysis:AirwayPressureAnalysis ;
+                                                    mda:producesMetric [ a metric:AirwayPressure_Peak ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:GEHealthcare ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -203,11 +206,11 @@ alarmtype:DatexohmedacomventilatorRrHigh_Hoog a mda:AlarmType ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:Datexohmedacom ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:RespiratoryRateAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationRate ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:GEHealthcare ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -221,11 +224,11 @@ alarmtype:DatexohmedacomventilatorVtNotAchieved_Hoog a mda:AlarmType ;
                     mda:administers [ a therapeuticModality:VentilationTherapy ] ;
                     mda:hasDeviceType deviceType:Datexohmedacom ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:LeakAnalysis ;
                                                     mda:producesMetric [ a metric:VentilationCircuitLeak ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:GEHealthcare ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -240,11 +243,11 @@ alarmtype:DatexohmedacomventilatorVtexpHigh_Hoog a mda:AlarmType ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:Datexohmedacom ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:VolumeAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationVolume_Tidal ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:GEHealthcare ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -258,11 +261,11 @@ alarmtype:DatexohmedacomventilatorVtexpLow_Hoog a mda:AlarmType ;
                     mda:administers [ a therapeuticModality:VentilationTherapy ] ;
                     mda:hasDeviceType deviceType:Datexohmedacom ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:VolumeAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationVolume_Tidal ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:GEHealthcare ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -286,15 +289,15 @@ alarmtype:HulbusCpapHigh_Hoog a mda:AlarmType ;
     mda:hasMessage [ a mda:AlarmMessage ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:MechanicalVentilator ;
-                    mda:administers [ a therapeuticModality:VentilationTherapy ;
+                    mda:administers [ a therapeuticModality:CPAP ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:Hulbus ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_AirwayPressure ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
-                                                    mda:producesMetric [ a metric:CPAP ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                            mda:hasSensor [ a sensor:AW_transducer ;
+                                    mda:sensorProducesSignal [ a signal:AirwayPressure_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:AirwayPressureAnalysis ;
+                                                    mda:producesMetric [ a metric:AirwayPressure_EndExpiratory ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:LowensteinMedical ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -305,15 +308,15 @@ alarmtype:HulbusCpapLow_Hoog a mda:AlarmType ;
     mda:hasMessage [ a mda:AlarmMessage ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:MechanicalVentilator ;
-                    mda:administers [ a therapeuticModality:VentilationTherapy ;
+                    mda:administers [ a therapeuticModality:CPAP ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:Hulbus ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_AirwayPressure ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
-                                                    mda:producesMetric [ a metric:CPAP ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                            mda:hasSensor [ a sensor:AW_transducer ;
+                                    mda:sensorProducesSignal [ a signal:AirwayPressure_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:AirwayPressureAnalysis ;
+                                                    mda:producesMetric [ a metric:AirwayPressure_EndExpiratory ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:LowensteinMedical ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -327,27 +330,31 @@ alarmtype:HulbusLeakTooHigh_Hoog a mda:AlarmType ;
                     mda:administers [ a therapeuticModality:VentilationTherapy ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:Hulbus ;
-                    mda:hasFunctionalUnit [ a functionalUnit:FU_AirwayPressure ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                    mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:LeakAnalysis ;
                                                     mda:producesMetric [ a metric:VentilationCircuitLeak ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:LowensteinMedical ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
 alarmtype:HulbusPpeakTooLow_Hoog a mda:AlarmType ;
+    mda:hasCategory alarmcat:Technical ;
     mda:hasLabel "HULBUS - Ppeak too low"@en ;
     mda:hasLabelConcept <https://w3id.org/mda/vocab/alarm-label/HulbusPpeakTooLow> ;
     mda:hasMessage [ a mda:AlarmMessage ;
             mda:concernsPatient [ a mda:Patient ] ;
-            mda:triggeredBy [ a mda:Device ;
+            mda:triggeredBy [ a device:MechanicalVentilator ;
+                    mda:administers [ a therapeuticModality:VentilationTherapy ] ;
+                    mda:hasDeviceType deviceType:Hulbus ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_AirwayPressure ;
                             mda:hasSensor [ a sensor:AW_transducer ;
                                     mda:sensorProducesSignal [ a signal:AirwayPressure_waveform ;
-                                            mda:analyzedBy [ a <https://w3id.org/mda/vocab/signal-analysis/AirwayPressureAnalysis> ;
-                                                    mda:producesMetric [ a metric:AirwayPressure ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ] ] ;
+                                            mda:analyzedBy [ a signalAnalysis:AirwayPressureAnalysis ;
+                                                    mda:producesMetric [ a metric:AirwayPressure_Peak ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
+                    mda:hasManufacturer manufacturer:LowensteinMedical ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
 alarmtype:HulbusVteHigh_Hoog a mda:AlarmType ;
@@ -361,11 +368,11 @@ alarmtype:HulbusVteHigh_Hoog a mda:AlarmType ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:Hulbus ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:VolumeAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationVolume_Tidal ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:LowensteinMedical ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -379,11 +386,11 @@ alarmtype:MedibusAirTemperatureHigh_Medium a mda:AlarmType ;
                     mda:administers [ a therapeuticModality:ThermoRegulationTherapy ;
                             mda:targetsProcess physiologicalProcess:ThermoRegulation ] ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_Temperature ;
-                            mda:hasSensor [ a sensor:Temperature_sensor ;
-                                    mda:sensorProducesSignal [ a signal:Temp_signal ;
-                                            mda:analyzedBy [ a <https://w3id.org/mda/vocab/signal-analysis/TemperatureAnalysis> ;
+                            mda:hasSensor [ a sensor:AirTemperature_sensor ;
+                                    mda:sensorProducesSignal [ a signal:AirTemperature_signal ;
+                                            mda:analyzedBy [ a signalAnalysis:AirTemperatureAnalysis ;
                                                     mda:producesMetric [ a metric:AirTemperature ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -397,11 +404,11 @@ alarmtype:MedibusAirTemperatureLow_Medium a mda:AlarmType ;
                     mda:administers [ a therapeuticModality:ThermoRegulationTherapy ;
                             mda:targetsProcess physiologicalProcess:ThermoRegulation ] ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_Temperature ;
-                            mda:hasSensor [ a sensor:Temperature_sensor ;
-                                    mda:sensorProducesSignal [ a signal:Temp_signal ;
-                                            mda:analyzedBy [ a <https://w3id.org/mda/vocab/signal-analysis/TemperatureAnalysis> ;
+                            mda:hasSensor [ a sensor:AirTemperature_sensor ;
+                                    mda:sensorProducesSignal [ a signal:AirTemperature_signal ;
+                                            mda:analyzedBy [ a signalAnalysis:AirTemperatureAnalysis ;
                                                     mda:producesMetric [ a metric:AirTemperature ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -424,11 +431,11 @@ alarmtype:MedibusFrequentieHoog_Unknown a mda:AlarmType ;
             mda:triggeredBy [ a device:MechanicalVentilator ;
                     mda:administers [ a therapeuticModality:VentilationTherapy ] ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:RespiratoryRateAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationRate ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -444,9 +451,9 @@ alarmtype:MedibusHumidityLow_Laag a mda:AlarmType ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_Humidity ;
                             mda:hasSensor [ a sensor:Humidity_sensor ;
                                     mda:sensorProducesSignal [ a signal:Humidity_signal ;
-                                            mda:analyzedBy [ a <https://w3id.org/mda/vocab/signal-analysis/HumidityAnalysis> ;
+                                            mda:analyzedBy [ a signalAnalysis:HumidityAnalysis ;
                                                     mda:producesMetric [ a metric:Humidity ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Laag .
 
@@ -488,11 +495,11 @@ alarmtype:MedibusMvOndergrens_Unknown a mda:AlarmType ;
             mda:triggeredBy [ a device:MechanicalVentilator ;
                     mda:administers [ a therapeuticModality:VentilationTherapy ] ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:VolumeAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationVolume_Minute ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -533,11 +540,11 @@ alarmtype:MedibusSlagvolumeHoog_Unknown a mda:AlarmType ;
                     mda:administers [ a therapeuticModality:VentilationTherapy ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:VolumeAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationVolume_Tidal ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -591,11 +598,11 @@ alarmtype:MedibusVolumeNietConstant_Unknown a mda:AlarmType ;
                     mda:administers [ a therapeuticModality:VentilationTherapy ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:LeakAnalysis ;
                                                     mda:producesMetric [ a metric:VentilationCircuitLeak ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -654,7 +661,7 @@ alarmtype:MonitorEcgArtefact_Unknown a mda:AlarmType ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasDeviceType deviceType:Infinity ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_ElectroCardiography ;
-                            mda:hasSensor [ a mda:Sensor ;
+                            mda:hasSensor [ a sensor:ElectroCardioGraphy_sensor ;
                                     mda:sensorProducesSignal [ a signal:ECG_signal ;
                                             mda:hasQualityState qualitystate:Impaired ] ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
@@ -669,11 +676,11 @@ alarmtype:MonitorHogeArtmean_Unknown a mda:AlarmType ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasDeviceType deviceType:Infinity ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:ABP_transducer ;
+                                    mda:sensorProducesSignal [ a signal:ABP_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure_Mean ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -686,11 +693,11 @@ alarmtype:MonitorHogeHr_Unknown a mda:AlarmType ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasDeviceType deviceType:Infinity ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_ElectroCardiography ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:ElectroCardioGraphy_sensor ;
+                                    mda:sensorProducesSignal [ a signal:ECG_signal ;
+                                            mda:analyzedBy [ a signalAnalysis:HeartRateAnalysis ;
                                                     mda:producesMetric [ a metric:HeartRate ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -703,11 +710,11 @@ alarmtype:MonitorLageArtmean_Unknown a mda:AlarmType ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasDeviceType deviceType:Infinity ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:ABP_transducer ;
+                                    mda:sensorProducesSignal [ a signal:ABP_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure_Mean ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -720,11 +727,11 @@ alarmtype:MonitorLageHr_Unknown a mda:AlarmType ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasDeviceType deviceType:Infinity ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_ElectroCardiography ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:ElectroCardioGraphy_sensor ;
+                                    mda:sensorProducesSignal [ a signal:ECG_signal ;
+                                            mda:analyzedBy [ a signalAnalysis:HeartRateAnalysis ;
                                                     mda:producesMetric [ a metric:HeartRate ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -739,9 +746,9 @@ alarmtype:MonitorLageSpo2_Unknown a mda:AlarmType ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PulseOximetry ;
                             mda:hasSensor [ a sensor:PulseOximeter ;
                                     mda:sensorProducesSignal [ a signal:PPG_waveform ;
-                                            mda:analyzedBy [ a <https://w3id.org/mda/vocab/signal-analysis/SpO2Analysis> ;
+                                            mda:analyzedBy [ a signalAnalysis:SpO2Analysis ;
                                                     mda:producesMetric [ a metric:SpO2 ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -781,11 +788,11 @@ alarmtype:PhilipsmonitorAbpVerkleinen_Laag a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:ABP_transducer ;
+                                    mda:sensorProducesSignal [ a signal:ABP_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Laag .
 
@@ -797,11 +804,11 @@ alarmtype:PhilipsmonitorAbpmHoog_Medium a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:ABP_transducer ;
+                                    mda:sensorProducesSignal [ a signal:ABP_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure_Mean ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -813,11 +820,11 @@ alarmtype:PhilipsmonitorAbpmLaag_Medium a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:ABP_transducer ;
+                                    mda:sensorProducesSignal [ a signal:ABP_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure_Mean ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -829,11 +836,11 @@ alarmtype:PhilipsmonitorApneu_Hoog a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_ElectroCardiography ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:ElectroCardioGraphy_sensor ;
+                                    mda:sensorProducesSignal [ a signal:ECG_lead_Impedance ;
+                                            mda:analyzedBy [ a signalAnalysis:ImpedanceRespirationAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationRate ;
-                                                            mda:hasRate metricRate:Absent ] ] ] ] ] ;
+                                                            mda:hasRhythm metricRhythm:Absent ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -845,11 +852,11 @@ alarmtype:PhilipsmonitorAsystolie_Hoog a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_ElectroCardiography ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:ElectroCardioGraphy_sensor ;
+                                    mda:sensorProducesSignal [ a signal:ECG_signal ;
+                                            mda:analyzedBy [ a signalAnalysis:HeartRateAnalysis ;
                                                     mda:producesMetric [ a metric:HeartRate ;
-                                                            mda:hasRate metricRate:Absent ] ] ] ] ] ;
+                                                            mda:hasRhythm metricRhythm:Absent ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -861,7 +868,7 @@ alarmtype:PhilipsmonitorCo2CtrAdapterEr_Medium a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_Capnograph ;
-                            mda:hasSensor [ a sensor:CapnoSensor ;
+                            mda:hasSensor [ a sensor:Capnometer ;
                                     mda:hasSensorOperationState opstate:Malfunction ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
@@ -874,8 +881,8 @@ alarmtype:PhilipsmonitorCo2WzigSchaalL_Laag a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_Capnograph ;
-                            mda:hasSensor [ a sensor:CapnoSensor ;
-                                    mda:sensorProducesSignal [ a signal:CO2Signal ;
+                            mda:hasSensor [ a sensor:Capnometer ;
+                                    mda:sensorProducesSignal [ a signal:Capnogram_waveform ;
                                             mda:hasQualityState qualitystate:ScalingError ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Laag .
@@ -890,9 +897,9 @@ alarmtype:PhilipsmonitorDesaturatie_Hoog a mda:AlarmType ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PulseOximetry ;
                             mda:hasSensor [ a sensor:PulseOximeter ;
                                     mda:sensorProducesSignal [ a signal:PPG_waveform ;
-                                            mda:analyzedBy [ a <https://w3id.org/mda/vocab/signal-analysis/SpO2Analysis> ;
+                                            mda:analyzedBy [ a signalAnalysis:SpO2Analysis ;
                                                     mda:producesMetric [ a metric:SpO2 ;
-                                                            mda:hasRate metricRate:SeverelyDecreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:SeverelyDecreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -917,11 +924,11 @@ alarmtype:PhilipsmonitorExtrLageHartfreq_Hoog a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_ElectroCardiography ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:ElectroCardioGraphy_sensor ;
+                                    mda:sensorProducesSignal [ a signal:ECG_signal ;
+                                            mda:analyzedBy [ a signalAnalysis:HeartRateAnalysis ;
                                                     mda:producesMetric [ a metric:HeartRate ;
-                                                            mda:hasRate metricRate:SeverelyDecreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:SeverelyDecreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -933,11 +940,11 @@ alarmtype:PhilipsmonitorExtremeTachy_Hoog a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_ElectroCardiography ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:ElectroCardioGraphy_sensor ;
+                                    mda:sensorProducesSignal [ a signal:ECG_signal ;
+                                            mda:analyzedBy [ a signalAnalysis:HeartRateAnalysis ;
                                                     mda:producesMetric [ a metric:HeartRate ;
-                                                            mda:hasRate metricRate:SeverelyIncreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:SeverelyIncreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -949,27 +956,27 @@ alarmtype:PhilipsmonitorHfHoog_Medium a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_ElectroCardiography ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:ElectroCardioGraphy_sensor ;
+                                    mda:sensorProducesSignal [ a signal:ECG_signal ;
+                                            mda:analyzedBy [ a signalAnalysis:HeartRateAnalysis ;
                                                     mda:producesMetric [ a metric:HeartRate ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
 alarmtype:PhilipsmonitorLageAdemfreq_Medium a mda:AlarmType ;
-    mda:hasCategory alarmcat:Technical ;
+    mda:hasCategory alarmcat:Physiological ;
     mda:hasLabel "PHILIPSMONITOR - Lage ademfreq."@en ;
     mda:hasLabelConcept <https://w3id.org/mda/vocab/alarm-label/PhilipsmonitorLageAdemfreq> ;
     mda:hasMessage [ a mda:AlarmMessage ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_ElectroCardiography ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:ElectroCardioGraphy_sensor ;
+                                    mda:sensorProducesSignal [ a signal:ECG_lead_Impedance ;
+                                            mda:analyzedBy [ a signalAnalysis:ImpedanceRespirationAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationRate ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -981,11 +988,11 @@ alarmtype:PhilipsmonitorLageHartfreq_Medium a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_ElectroCardiography ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:ElectroCardioGraphy_sensor ;
+                                    mda:sensorProducesSignal [ a signal:ECG_signal ;
+                                            mda:analyzedBy [ a signalAnalysis:HeartRateAnalysis ;
                                                     mda:producesMetric [ a metric:HeartRate ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -998,7 +1005,6 @@ alarmtype:PhilipsmonitorNietTeLerenEcg_Medium a mda:AlarmType ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_ElectroCardiography ;
                             mda:hasSensor [ a sensor:ElectroCardioGraphy_sensor ;
-                                    mda:hasAnatomicalPosition anatomicalPosition:Thoracic ;
                                     mda:hasSensorOperationState opstate:Enabled ;
                                     mda:sensorProducesSignal [ a signal:ECG_signal ;
                                             mda:hasQualityState qualitystate:Impaired ] ] ] ;
@@ -1014,24 +1020,23 @@ alarmtype:PhilipsmonitorRespElektrLos_Medium a mda:AlarmType ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_ElectroCardiography ;
                             mda:hasSensor [ a sensor:ECG_lead_Resp ;
-                                    mda:hasAnatomicalPosition anatomicalPosition:Thoracic ;
                                     mda:hasSensorOperationState opstate:Disconnected ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
 alarmtype:PhilipsmonitorRfHoog_Medium a mda:AlarmType ;
-    mda:hasCategory alarmcat:Technical ;
+    mda:hasCategory alarmcat:Physiological ;
     mda:hasLabel "PHILIPSMONITOR - RF hoog"@en ;
     mda:hasLabelConcept <https://w3id.org/mda/vocab/alarm-label/PhilipsmonitorRfHoog> ;
     mda:hasMessage [ a mda:AlarmMessage ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_ElectroCardiography ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:ElectroCardioGraphy_sensor ;
+                                    mda:sensorProducesSignal [ a signal:ECG_lead_Impedance ;
+                                            mda:analyzedBy [ a signalAnalysis:ImpedanceRespirationAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationRate ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -1056,11 +1061,11 @@ alarmtype:PhilipsmonitorSpo2GeenPols_Medium a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PulseOximetry ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PulseOximeter ;
+                                    mda:sensorProducesSignal [ a signal:PPG_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:PulseAnalysis ;
                                                     mda:producesMetric [ a metric:PulseRate ;
-                                                            mda:hasRate metricRate:Absent ] ] ] ] ] ;
+                                                            mda:hasRhythm metricRhythm:Absent ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -1074,9 +1079,9 @@ alarmtype:PhilipsmonitorSpo2Hoog_Medium a mda:AlarmType ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PulseOximetry ;
                             mda:hasSensor [ a sensor:PulseOximeter ;
                                     mda:sensorProducesSignal [ a signal:PPG_waveform ;
-                                            mda:analyzedBy [ a <https://w3id.org/mda/vocab/signal-analysis/SpO2Analysis> ;
+                                            mda:analyzedBy [ a signalAnalysis:SpO2Analysis ;
                                                     mda:producesMetric [ a metric:SpO2 ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -1090,9 +1095,9 @@ alarmtype:PhilipsmonitorSpo2Laag_Medium a mda:AlarmType ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PulseOximetry ;
                             mda:hasSensor [ a sensor:PulseOximeter ;
                                     mda:sensorProducesSignal [ a signal:PPG_waveform ;
-                                            mda:analyzedBy [ a <https://w3id.org/mda/vocab/signal-analysis/SpO2Analysis> ;
+                                            mda:analyzedBy [ a signalAnalysis:SpO2Analysis ;
                                                     mda:producesMetric [ a metric:SpO2 ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -1106,9 +1111,9 @@ alarmtype:PhilipsmonitorSpo2LagePfi_Laag a mda:AlarmType ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PulseOximetry ;
                             mda:hasSensor [ a sensor:PulseOximeter ;
                                     mda:sensorProducesSignal [ a signal:PPG_waveform ;
-                                            mda:analyzedBy [ a <https://w3id.org/mda/vocab/signal-analysis/PulseFlowIndexAnalysis> ;
+                                            mda:analyzedBy [ a signalAnalysis:PulseFlowIndexAnalysis ;
                                                     mda:producesMetric [ a metric:PulseFlowIndex ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Laag .
 
@@ -1133,7 +1138,7 @@ alarmtype:PhilipsmonitorSpo2ZwakSignaal_Laag a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PulseOximetry ;
-                            mda:hasSensor [ a mda:Sensor ;
+                            mda:hasSensor [ a sensor:PulseOximeter ;
                                     mda:sensorProducesSignal [ a signal:PPG_waveform ;
                                             mda:hasQualityState qualitystate:Impaired ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
@@ -1163,11 +1168,11 @@ alarmtype:PhilipsmonitorTempHoog_Medium a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_Temperature ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PatientTemperature_sensor ;
+                                    mda:sensorProducesSignal [ a signal:PatientTemperature_signal ;
+                                            mda:analyzedBy [ a signalAnalysis:PatientTemperatureAnalysis ;
                                                     mda:producesMetric [ a metric:Temperature ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -1179,11 +1184,11 @@ alarmtype:PhilipsmonitorTempLaag_Medium a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_Temperature ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PatientTemperature_sensor ;
+                                    mda:sensorProducesSignal [ a signal:PatientTemperature_signal ;
+                                            mda:analyzedBy [ a signalAnalysis:PatientTemperatureAnalysis ;
                                                     mda:producesMetric [ a metric:Temperature ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -1210,11 +1215,11 @@ alarmtype:ServoiAdemfrequentieHoog_Unknown a mda:AlarmType ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:ServoI ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:RespiratoryRateAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationRate ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -1229,11 +1234,11 @@ alarmtype:ServoiAdemfrequentieLaag_Unknown a mda:AlarmType ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:ServoI ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:RespiratoryRateAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationRate ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -1248,11 +1253,11 @@ alarmtype:ServoiExpMinuutvolLaag_Unknown a mda:AlarmType ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:ServoI ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:VolumeAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationVolume_Minute ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -1266,12 +1271,12 @@ alarmtype:ServoiPawHoog_Unknown a mda:AlarmType ;
                     mda:administers [ a therapeuticModality:VentilationTherapy ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:ServoI ;
-                    mda:hasFunctionalUnit [ a mda:FunctionalUnit ;
+                    mda:hasFunctionalUnit [ a functionalUnit:FU_AirwayPressure ;
                             mda:hasSensor [ a sensor:AW_transducer ;
                                     mda:sensorProducesSignal [ a signal:AirwayPressure_waveform ;
-                                            mda:analyzedBy [ a <https://w3id.org/mda/vocab/signal-analysis/AirwayPressureAnalysis> ;
-                                                    mda:producesMetric [ a metric:AirwayPressure ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                            mda:analyzedBy [ a signalAnalysis:AirwayPressureAnalysis ;
+                                                    mda:producesMetric [ a metric:AirwayPressure_Peak ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -1301,11 +1306,11 @@ alarmtype:ServouAdemfrequentieHoog_Medium a mda:AlarmType ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:ServoU ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:RespiratoryRateAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationRate ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -1320,11 +1325,11 @@ alarmtype:ServouAdemfrequentieHoog_Unknown a mda:AlarmType ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:ServoU ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:RespiratoryRateAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationRate ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -1339,11 +1344,11 @@ alarmtype:ServouAdemfrequentieLaag_Unknown a mda:AlarmType ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:ServoU ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:RespiratoryRateAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationRate ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -1360,9 +1365,9 @@ alarmtype:ServouBeademingsdrukHoog_Hoog a mda:AlarmType ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_AirwayPressure ;
                             mda:hasSensor [ a sensor:AW_transducer ;
                                     mda:sensorProducesSignal [ a signal:AirwayPressure_waveform ;
-                                            mda:analyzedBy [ a <https://w3id.org/mda/vocab/signal-analysis/AirwayPressureAnalysis> ;
-                                                    mda:producesMetric [ a metric:AirwayPressure ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                            mda:analyzedBy [ a signalAnalysis:AirwayPressureAnalysis ;
+                                                    mda:producesMetric [ a metric:AirwayPressure_Peak ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -1379,9 +1384,9 @@ alarmtype:ServouBeademingsdrukHoog_Unknown a mda:AlarmType ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_AirwayPressure ;
                             mda:hasSensor [ a sensor:AW_transducer ;
                                     mda:sensorProducesSignal [ a signal:AirwayPressure_waveform ;
-                                            mda:analyzedBy [ a <https://w3id.org/mda/vocab/signal-analysis/AirwayPressureAnalysis> ;
-                                                    mda:producesMetric [ a metric:AirwayPressure ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                            mda:analyzedBy [ a signalAnalysis:AirwayPressureAnalysis ;
+                                                    mda:producesMetric [ a metric:AirwayPressure_Peak ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -1396,11 +1401,11 @@ alarmtype:ServouExpMinuutvolHoog_Medium a mda:AlarmType ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:ServoU ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:VolumeAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationVolume_Minute ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -1415,11 +1420,11 @@ alarmtype:ServouExpMinuutvolHoog_Unknown a mda:AlarmType ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:ServoU ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:VolumeAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationVolume_Minute ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -1434,11 +1439,11 @@ alarmtype:ServouExpMinuutvolLaag_Hoog a mda:AlarmType ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:ServoU ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:VolumeAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationVolume_Minute ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -1453,11 +1458,11 @@ alarmtype:ServouExpMinuutvolLaag_Unknown a mda:AlarmType ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:ServoU ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:VolumeAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationVolume_Minute ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Unknown .
 
@@ -1488,9 +1493,9 @@ alarmtype:ServouPeepLaag_Medium a mda:AlarmType ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_AirwayPressure ;
                             mda:hasSensor [ a sensor:AW_transducer ;
                                     mda:sensorProducesSignal [ a signal:AirwayPressure_waveform ;
-                                            mda:analyzedBy [ a <https://w3id.org/mda/vocab/signal-analysis/AirwayPressureAnalysis> ;
+                                            mda:analyzedBy [ a signalAnalysis:AirwayPressureAnalysis ;
                                                     mda:producesMetric [ a metric:AirwayPressure_EndExpiratory ;
-                                                            mda:hasRate metricRate:Decreased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -1504,12 +1509,12 @@ alarmtype:ServouTeVeelLekkage_Hoog a mda:AlarmType ;
                     mda:administers [ a therapeuticModality:VentilationTherapy ;
                             mda:targetsProcess physiologicalProcess:PulmonaryVentilation ] ;
                     mda:hasDeviceType deviceType:ServoU ;
-                    mda:hasFunctionalUnit [ a functionalUnit:FU_AirwayPressure ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                    mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:LeakAnalysis ;
                                                     mda:producesMetric [ a metric:VentilationCircuitLeak ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Getinge ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -1536,11 +1541,11 @@ alarmtype:TrilogyHogeAdemfrequentie_Hoog a mda:AlarmType ;
                     mda:administers [ a therapeuticModality:VentilationTherapy ] ;
                     mda:hasDeviceType deviceType:Trilogy ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PneumoTachograph ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                            mda:hasSensor [ a sensor:PneumoTachograph ;
+                                    mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:RespiratoryRateAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationRate ;
-                                                            mda:hasRate metricRate:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -1559,8 +1564,6 @@ alarmtype:TrilogyNetspanningAfwezig_Medium a mda:AlarmType ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
-metric:AirwayPressure_EndExpiratory mda:approximates physiologicalProperty:RespirationPressure .
-
 metric:Humidity mda:approximates physiologicalProperty:Humidity .
 
 metric:PulseFlowIndex mda:approximates physiologicalProperty:TissuePerfusion .
@@ -1571,13 +1574,15 @@ metric:ArterialBloodPressure mda:approximates physiologicalProperty:ArterialPres
 
 metric:VenousBloodPressure mda:approximates physiologicalProperty:VenousPressure .
 
+metric:AirwayPressure_EndExpiratory mda:approximates physiologicalProperty:RespirationPressure .
+
 metric:ArterialBloodPressure_Mean mda:approximates physiologicalProperty:ArterialPressure .
 
 metric:RespirationVolume_Tidal mda:approximates physiologicalProperty:RespirationVolume .
 
 metric:SpO2 mda:approximates physiologicalProperty:SaO2 .
 
-metric:AirwayPressure mda:approximates physiologicalProperty:RespirationPressure .
+metric:AirwayPressure_Peak mda:approximates physiologicalProperty:RespirationPressure .
 
 metric:HeartRate mda:approximates physiologicalProperty:ElectricalHeartRate .
 

@@ -1,62 +1,109 @@
 ####################################################################
 # cat1a_signal_quality.dlog — HAND-AUTHORED. NOT GENERATED.
 #
-# NOT LOADED AS A STANDING RULE — engine/replay_driver.py's build_script
-# no longer `import`s this file (see its own ONDEMAND_RULE_NAMES comment).
-# The join below is instead run as a one-shot `select` query, hand-
-# translated into engine/replay_driver.py's
-# ONDEMAND_QUERY_BODIES["cat1a"] (RDFox's bracket quad syntax used
-# throughout this file is rule-only — confirmed directly it errors inside
-# a plain `select` command). THIS FILE REMAINS THE CANONICAL DEFINITION
-# of the join/filter logic — replay_driver.py's copy must be kept in sync
-# BY HAND with any change made here, verified via the same cat1a_pos/
-# cat1a_neg regression fixtures that validate this file. Why on-demand,
-# not standing: `mda:flaggedLikelyFalsePositive` and `mda:hasQualityState`
-# (a `kb.last_wins_str`-tagged predicate this rule reads) each have
-# exactly one consumer — the per-alarm check at arrival — so there's no
-# reason to pay RDFox's standing incremental-maintenance cost for values
-# nothing else ever reads back. No validFrom/validUntil interval
-# filtering needed in the on-demand version either: Driver's physical
-# graph-drop mechanism (unchanged) already guarantees "currently in the
-# store" == "currently valid," per this project's own RDF-stream-
-# processing design (landmark/sliding-window discard, not append-only —
-# see the migration plan's §2).
+# NL rule (CAT1): "If a signal supporting a physiological alarm is of
+# insufficient quality, the alarm is flagged as likely false positive."
 #
-# One rule per file (split out of the former cat_rules.dlog) so
-# poc_entry.py can enable/disable each CAT rule independently. RDFox Datalog
-# port of CODE/evaluation_poc/reasoner/rules/cat1a_signal_quality.rq —
-# see that file and the migration plan (/Users/rzoodsm2/.claude/plans/
-# we-re-going-for-the-magical-candy.md) for full background.
+# Clause by clause:
+#   "a physiological alarm"    — the arriving alarm has category
+#                                alarmcat:Physiological. A technical alarm
+#                                (e.g. "SpO2 zwak signaal") reports the
+#                                quality problem; it is never itself flagged.
+#   "a signal supporting [it]" — the signal on the alarm's OWN sensing
+#                                pathway: its FunctionalUnit -> sensor ->
+#                                signal -> the analysis producing its metric.
+#                                Anchored at both ends on the alarm itself
+#                                (?fu from its message, ?analysis from its
+#                                metric), so a sibling signal on the same
+#                                sensor never counts — e.g. an ECG-signal
+#                                problem does not flag a respiration-rate
+#                                alarm derived from ECG_lead_Impedance.
+#   "insufficient quality"     — either (rule 1) any mda:hasQualityState
+#                                other than Good currently asserted on that
+#                                signal, or (rule 2) the sensor producing it
+#                                in a fault state: Disabled, Disconnected or
+#                                Malfunction — the signal is not being
+#                                acquired at all (e.g. "ECG alle leads los"
+#                                -> "Asystolie"). Rule 2 extends the NL
+#                                wording deliberately (agreed 2026-09-21);
+#                                the NL table should read "...is of
+#                                insufficient quality or not acquired...".
+#                                Both states are reported by some alarm on
+#                                the same pathway, in practice a technical
+#                                one. The quality-state scheme holds only
+#                                Impaired/ScalingError today; the Good
+#                                exclusion keeps rule 1 correct if a healthy
+#                                state is ever added. Warning is left out of
+#                                rule 2: no sensor alarm asserts it, and it
+#                                does not mean the signal is lost.
+#   "is"                       — currently: a quality state holds only
+#                                while the alarm reporting it is active
+#                                (transient graph), and every graph must be
+#                                valid at ?now (replay_driver's validity
+#                                filters).
 #
-# Every pattern carries its own independent graph term (`[?s,?p,?o] ?gN`,
-# RDFox's documented syntax, docs.oxfordsemantic.tech/7.6/reasoning.html
-# §10.4) — confirmed hasQualityState can legitimately come from a
-# DIFFERENT, coincidentally-active alarm sharing the same Signal
-# particular (Phase 0's own trace), so independent graph variables per
-# pattern are what make that cross-alarm case matchable at all.
+# Evaluated once, when the physiological alarm arrives (agreed
+# 2026-09-21): the flag informs whether the alarm is annunciated, so a
+# quality problem that starts later does not flag an alarm already active.
 #
-# mda:flaggedLikelyFalsePositive (domain mda:Alarm, range rdfs:Resource,
-# the only new predicate this file introduces) is scoped to ?g1 — the
-# ARRIVING alarm's own transient graph. Vestigial now that this rule isn't
-# materialized at all (see NOT LOADED note above), kept because the
-# on-demand SPARQL translation still needs to know which graph each
-# atom's content actually lives in.
+# KNOWN GAP (vocabulary, not this rule): "PHILIPSMONITOR - Resp elektr.los"
+# sits on sensor ECG_lead_Resp, but respiration-rate alarms are modelled on
+# ElectroCardioGraphy_sensor/ECG_lead_Impedance — so it never reaches any
+# alarm's pathway and never flags anything.
+#
+# GRAPHS. ?gT is the arriving alarm's transient graph (category, message,
+# triggeredBy and producesMetric are minted there together); ?gP is a
+# persistent graph holding its structural chain (FunctionalUnit, sensor,
+# signal, analysis — re-minted per alarm, so any copy carrying these exact
+# IRIs is the same pathway); ?gQ is wherever the quality state was
+# reported. Grouping the pathway into ?gT/?gP — instead of one free graph
+# variable per hop — is what stops hops from being borrowed from another
+# alarm's chain.
+#
+# NOT LOADED AS A STANDING RULE: the body below runs once, at the alarm's
+# arrival, as a `select` (the firing log) and an INSERT storing the flag in
+# the alarm's own transient graph (replay_driver.py's cat1_flag_insert) —
+# hand-translated into engine/replay_driver.py's
+# _ONDEMAND_BODY_TEMPLATES["cat1a"] (bracket quad syntax is rule-only in
+# RDFox). The stored flag keeps the alarm from counting as evidence for a
+# clinical event (clinical_events.py). Keep the two in sync by hand; the
+# cat1a_* fixtures check both.
 ####################################################################
 
 @prefix mda:              <https://w3id.org/mda/ontology#> .
+@prefix mdapoc:           <https://w3id.org/mda/poc#> .
+@prefix alarmcat:         <https://w3id.org/mda/vocab/alarm-category/> .
 @prefix qualitystate:     <https://w3id.org/mda/vocab/quality-state/> .
+@prefix opstate:          <https://w3id.org/mda/vocab/operation-state/> .
 
-[?alarm, mda:flaggedLikelyFalsePositive, ?signal] ?g1 :-
-    [?alarm, mda:hasMessage, ?msg] ?g1,
-    [?msg, mda:triggeredBy, ?device] ?g2,
-    [?device, mda:hasSensor, ?sensor] ?g3,
-    [?sensor, mda:sensorProducesSignal, ?signal] ?g4,
-    [?signal, mda:analyzedBy, ?analysis] ?g5,
-    [?analysis, mda:producesMetric, ?metric] ?g6,
-    [?signal, mda:hasQualityState, ?quality] ?g7,
+# Rule 1 — the signal on the alarm's own pathway has a quality problem.
+[?alarm, mdapoc:flaggedLikelyFalsePositive, ?signal] ?gT :-
+    [?alarm, mda:hasCategory, alarmcat:Physiological] ?gT,
+    [?alarm, mda:hasMessage, ?msg] ?gT,
+    [?msg, mda:triggeredBy, ?fu] ?gT,
+    [?analysis, mda:producesMetric, ?metric] ?gT,
+    [?fu, mda:hasSensor, ?sensor] ?gP,
+    [?sensor, mda:sensorProducesSignal, ?signal] ?gP,
+    [?signal, mda:analyzedBy, ?analysis] ?gP,
+    [?signal, mda:hasQualityState, ?quality] ?gQ,
     FILTER(?quality != qualitystate:Good) .
 
-# VALIDATION — executed against real RDFox: positive (bad-quality signal,
-# own alarm's transient graph; structural chain in the persistent graph)
-# → 1. negative (Good quality) → 0. Re-validated end-to-end via
-# engine/replay_driver.py's cat1a_pos/cat1a_neg fabricated cases.
+# Rule 2 — the sensor on the alarm's own pathway is not acquiring.
+[?alarm, mdapoc:flaggedLikelyFalsePositive, ?sensor] ?gT :-
+    [?alarm, mda:hasCategory, alarmcat:Physiological] ?gT,
+    [?alarm, mda:hasMessage, ?msg] ?gT,
+    [?msg, mda:triggeredBy, ?fu] ?gT,
+    [?analysis, mda:producesMetric, ?metric] ?gT,
+    [?fu, mda:hasSensor, ?sensor] ?gP,
+    [?sensor, mda:sensorProducesSignal, ?signal] ?gP,
+    [?signal, mda:analyzedBy, ?analysis] ?gP,
+    [?sensor, mda:hasSensorOperationState, ?sensorState] ?gQ,
+    FILTER(?sensorState IN (opstate:Disabled, opstate:Disconnected, opstate:Malfunction)) .
+
+# VALIDATION — engine/replay_driver.py run(), fixtures in
+# DATA/CAT_evaluation/events_data.csv: cat1a_pos (quality fault, then its
+# physiological alarm) and cat1a_sensor_pos (ECG leads off, then asystole)
+# flag; cat1a_neg (other device), cat1a_tech (technical alarm on a bad
+# signal), cat1a_sibling (respiration-rate alarm while the ECG signal is
+# impaired), cat1a_otherfu (SpO2 fault vs heart-rate alarm) and
+# cat1a_sensor_neg (SpO2 sensor off vs heart-rate alarm) do not.

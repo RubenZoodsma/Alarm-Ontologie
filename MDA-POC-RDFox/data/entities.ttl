@@ -19,6 +19,8 @@
 @prefix scaffold: <https://w3id.org/mda/scaffold/> .
 @prefix sensor: <https://w3id.org/mda/vocab/sensor/> .
 @prefix signal: <https://w3id.org/mda/vocab/signal/> .
+@prefix signal-analysis: <https://w3id.org/mda/vocab/signal-analysis/> .
+@prefix therapeutic-modality: <https://w3id.org/mda/vocab/therapeutic-modality/> .
 
 scaffold:Component_AirwayCircuit a component:AirwayCircuit ;
     rdfs:label "Airway Circuit (type catalogue entry)"@en .
@@ -38,11 +40,20 @@ scaffold:Component_PressureReleaseValve a component:PressureReleaseValve ;
 scaffold:Component_RadiantHeater a component:RadiantHeater ;
     rdfs:label "Radiant Heater (type catalogue entry)"@en .
 
+scaffold:Component_Settings a component:Settings ;
+    rdfs:label "Settings (type catalogue entry)"@en .
+
 scaffold:Device_CardiacMonitor a device:CardiacMonitor ;
     rdfs:label "Cardiac Monitor (type catalogue entry)"@en .
 
 scaffold:Device_CardiacMonitor_Hemosphere_Edwards a device:CardiacMonitor_Hemosphere_Edwards ;
     rdfs:label "Cardiac Monitor_Hemosphere_Edwards (type catalogue entry)"@en .
+
+scaffold:Device_Dialysator a device:Dialysator ;
+    rdfs:label "Dialysator (type catalogue entry)"@en .
+
+scaffold:Device_Dialysator_Baxter a device:Dialysator_Baxter ;
+    rdfs:label "Dialysator_Baxter (type catalogue entry)"@en .
 
 scaffold:Device_ExtracorporealMembraneOxygenator a device:ExtracorporealMembraneOxygenator ;
     rdfs:label "Extracorporeal Membrane Oxygenator (type catalogue entry)"@en .
@@ -95,6 +106,9 @@ scaffold:Device_Thermoregulator_Criticool_BelmontMedicalTechnologies a device:Th
 scaffold:FunctionalUnit_FU_AirwayPressure a functional-unit:FU_AirwayPressure ;
     rdfs:label "FU_Airway Pressure (type catalogue entry)"@en .
 
+scaffold:FunctionalUnit_FU_Capnograph a functional-unit:FU_Capnograph ;
+    rdfs:label "FU_Capnograph (type catalogue entry)"@en .
+
 scaffold:FunctionalUnit_FU_ElectroCardiography a functional-unit:FU_ElectroCardiography ;
     rdfs:label "FU_Electro Cardiography (type catalogue entry)"@en .
 
@@ -119,6 +133,12 @@ scaffold:Sensor_ABP_transducer a sensor:ABP_transducer ;
 scaffold:Sensor_AW_transducer a sensor:AW_transducer ;
     rdfs:label "AW_transducer (type catalogue entry)"@en .
 
+scaffold:Sensor_AirTemperature_sensor a sensor:AirTemperature_sensor ;
+    rdfs:label "Air Temperature_sensor (type catalogue entry)"@en .
+
+scaffold:Sensor_Capnometer a sensor:Capnometer ;
+    rdfs:label "Capnometer (type catalogue entry)"@en .
+
 scaffold:Sensor_ECG_lead_Resp a sensor:ECG_lead_Resp ;
     rdfs:label "ECG_lead_Resp (type catalogue entry)"@en .
 
@@ -128,26 +148,77 @@ scaffold:Sensor_ElectroCardioGraphy_sensor a sensor:ElectroCardioGraphy_sensor ;
 scaffold:Sensor_Humidity_sensor a sensor:Humidity_sensor ;
     rdfs:label "Humidity_sensor (type catalogue entry)"@en .
 
+scaffold:Sensor_PatientTemperature_sensor a sensor:PatientTemperature_sensor ;
+    rdfs:label "Patient Temperature_sensor (type catalogue entry)"@en .
+
 scaffold:Sensor_PneumoTachograph a sensor:PneumoTachograph ;
     rdfs:label "Pneumo Tachograph (type catalogue entry)"@en .
 
 scaffold:Sensor_PulseOximeter a sensor:PulseOximeter ;
     rdfs:label "Pulse Oximeter (type catalogue entry)"@en .
 
-scaffold:Sensor_Temperature_sensor a sensor:Temperature_sensor ;
-    rdfs:label "Temperature_sensor (type catalogue entry)"@en .
-
 scaffold:Sensor_VenousPressureTransducer a sensor:VenousPressureTransducer ;
     rdfs:label "Venous Pressure Transducer (type catalogue entry)"@en .
 
+scaffold:SignalAnalysis_AirTemperatureAnalysis a signal-analysis:AirTemperatureAnalysis ;
+    rdfs:label "Air Temperature Analysis (type catalogue entry)"@en .
+
+scaffold:SignalAnalysis_AirwayPressureAnalysis a signal-analysis:AirwayPressureAnalysis ;
+    rdfs:label "Airway Pressure Analysis (type catalogue entry)"@en .
+
+scaffold:SignalAnalysis_ArterialPressureAnalysis a signal-analysis:ArterialPressureAnalysis ;
+    rdfs:label "Arterial Pressure Analysis (type catalogue entry)"@en .
+
+scaffold:SignalAnalysis_HeartRateAnalysis a signal-analysis:HeartRateAnalysis ;
+    rdfs:label "Heart Rate Analysis (type catalogue entry)"@en .
+
+scaffold:SignalAnalysis_HumidityAnalysis a signal-analysis:HumidityAnalysis ;
+    rdfs:label "Humidity Analysis (type catalogue entry)"@en .
+
+scaffold:SignalAnalysis_ImpedanceRespirationAnalysis a signal-analysis:ImpedanceRespirationAnalysis ;
+    rdfs:label "Impedance Respiration Analysis (type catalogue entry)"@en .
+
+scaffold:SignalAnalysis_LeakAnalysis a signal-analysis:LeakAnalysis ;
+    rdfs:label "Leak Analysis (type catalogue entry)"@en .
+
+scaffold:SignalAnalysis_PatientTemperatureAnalysis a signal-analysis:PatientTemperatureAnalysis ;
+    rdfs:label "Patient Temperature Analysis (type catalogue entry)"@en .
+
+scaffold:SignalAnalysis_PulseAnalysis a signal-analysis:PulseAnalysis ;
+    rdfs:label "Pulse Analysis (type catalogue entry)"@en .
+
+scaffold:SignalAnalysis_PulseFlowIndexAnalysis a signal-analysis:PulseFlowIndexAnalysis ;
+    rdfs:label "Pulse Flow Index Analysis (type catalogue entry)"@en .
+
+scaffold:SignalAnalysis_RespiratoryRateAnalysis a signal-analysis:RespiratoryRateAnalysis ;
+    rdfs:label "Respiratory Rate Analysis (type catalogue entry)"@en .
+
+scaffold:SignalAnalysis_SpO2Analysis a signal-analysis:SpO2Analysis ;
+    rdfs:label "Sp O2Analysis (type catalogue entry)"@en .
+
+scaffold:SignalAnalysis_VenousPressureAnalysis a signal-analysis:VenousPressureAnalysis ;
+    rdfs:label "Venous Pressure Analysis (type catalogue entry)"@en .
+
+scaffold:SignalAnalysis_VolumeAnalysis a signal-analysis:VolumeAnalysis ;
+    rdfs:label "Volume Analysis (type catalogue entry)"@en .
+
 scaffold:Signal_ABP_waveform a signal:ABP_waveform ;
     rdfs:label "ABP_waveform (type catalogue entry)"@en .
+
+scaffold:Signal_AirTemperature_signal a signal:AirTemperature_signal ;
+    rdfs:label "Air Temperature_signal (type catalogue entry)"@en .
 
 scaffold:Signal_AirwayFlow_waveform a signal:AirwayFlow_waveform ;
     rdfs:label "Airway Flow_waveform (type catalogue entry)"@en .
 
 scaffold:Signal_AirwayPressure_waveform a signal:AirwayPressure_waveform ;
     rdfs:label "Airway Pressure_waveform (type catalogue entry)"@en .
+
+scaffold:Signal_Capnogram_waveform a signal:Capnogram_waveform ;
+    rdfs:label "Capnogram_waveform (type catalogue entry)"@en .
+
+scaffold:Signal_ECG_lead_Impedance a signal:ECG_lead_Impedance ;
+    rdfs:label "ECG_lead_Impedance (type catalogue entry)"@en .
 
 scaffold:Signal_ECG_signal a signal:ECG_signal ;
     rdfs:label "ECG_signal (type catalogue entry)"@en .
@@ -158,9 +229,24 @@ scaffold:Signal_Humidity_signal a signal:Humidity_signal ;
 scaffold:Signal_PPG_waveform a signal:PPG_waveform ;
     rdfs:label "PPG_waveform (type catalogue entry)"@en .
 
+scaffold:Signal_PatientTemperature_signal a signal:PatientTemperature_signal ;
+    rdfs:label "Patient Temperature_signal (type catalogue entry)"@en .
+
 scaffold:Signal_Pressure_waveform a signal:Pressure_waveform ;
     rdfs:label "Pressure_waveform (type catalogue entry)"@en .
 
-scaffold:Signal_Temp_signal a signal:Temp_signal ;
-    rdfs:label "Temp_signal (type catalogue entry)"@en .
+scaffold:TherapeuticModality_CPAP a therapeutic-modality:CPAP ;
+    rdfs:label "CPAP (type catalogue entry)"@en .
+
+scaffold:TherapeuticModality_ExtraCorporealMembraneOxygenation a therapeutic-modality:ExtraCorporealMembraneOxygenation ;
+    rdfs:label "Extra Corporeal Membrane Oxygenation (type catalogue entry)"@en .
+
+scaffold:TherapeuticModality_RenalReplacementTherapy a therapeutic-modality:RenalReplacementTherapy ;
+    rdfs:label "Renal Replacement Therapy (type catalogue entry)"@en .
+
+scaffold:TherapeuticModality_ThermoRegulationTherapy a therapeutic-modality:ThermoRegulationTherapy ;
+    rdfs:label "Thermo Regulation Therapy (type catalogue entry)"@en .
+
+scaffold:TherapeuticModality_VentilationTherapy a therapeutic-modality:VentilationTherapy ;
+    rdfs:label "Ventilation Therapy (type catalogue entry)"@en .
 

@@ -53,19 +53,15 @@ Python-side reasoning needed. `reason()`, `clinical_predicates()`,
 `KB.reasoning_static_closed` are gone from this module entirely — `owlrl`
 is not a dependency of this module at all. (mda:administers/
 targetsProcess, the OTHER mda:situational-tagged predicates the deleted
-clinical_context() also derived, were confirmed unreferenced by every
-current .dlog rule, and confirmed NOT producible by ground_chain either —
-mda:TherapeuticModality has no concept entry in data/entities.ttl's
-scaffold, so ground_chain's own legitimacy guard skips it. Pre-existing,
-harmless gap, not something this change regresses — revisit only if a
-future rule needs one of these.)
+clinical_context() also derived, are unreferenced by every current rule.
+Since the 2026-09 data sync, data/entities.ttl DOES list the therapeutic
+modality concepts, so ground_chain now mints administers/targetsProcess
+from the catalogue like any other edge — nothing reads them yet.)
 
 FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl is NOT copied into data/ or
-parsed here either — checked directly: it carries no mda:nodeKind,
-mda:refinesParticularIdentity/UniversalIdentity, mda:instantiatesClass, or
-leaf-property domain/range declarations, so nothing EXTRACTION/MINTING
-reads would be missing without it. Its OWL restriction axioms are what
-representation/clinical_rules.dlog already ports to Datalog.
+parsed here either: it only states each clinical event's evidence
+criterion, nothing EXTRACTION/MINTING reads. Those criteria are implemented
+by engine/clinical_events.py (hand translations, kept in sync by hand).
 
 Paths below point at MDA-POC-RDFox/data/ — physical copies of the
 FRAMEWORK/DATA files this pipeline needs (per the project's own
@@ -101,6 +97,10 @@ ENTITIES  = DATA_DIR / "entities.ttl"
 # ── Namespaces ────────────────────────────────────────────────────────────
 
 MDA      = Namespace("https://w3id.org/mda/ontology#")
+# POC-only terms (data/mdapoc.ttl): the POC's decisions and bookkeeping
+# (silencing, false-positive flags, graph validity) and orderings not yet
+# adopted by the framework — deliberately outside the mda: ontology.
+MDAPOC   = Namespace("https://w3id.org/mda/poc#")
 ENTITY   = Namespace("https://w3id.org/mda/entity/")
 SCAFFOLD = Namespace("https://w3id.org/mda/scaffold/")
 INST     = Namespace("https://w3id.org/mda/instance/")
@@ -357,12 +357,26 @@ def particular_iri(kb: KB, arch: "Archetype", patient_id: str, device_id: str, c
     return ENTITY[f"{_local(cls)}_{_clean(patient_id)}_{_clean(device_id)}_" + "_".join(reversed(suffixes))]
 
 
-def alarm_iri(patient_id: str, device_id: str, start: datetime) -> URIRef:
-    return INST[f"Alarm_{_clean(patient_id)}_{_clean(device_id)}_{start.strftime('%Y%m%dT%H%M%S')}"]
+def alarm_key(ev) -> str:
+    """One alarm occurrence: patient, device, start, end and ALARM_ID (the
+    event's own unique identifier — for the corpus, its row number in the
+    locked source data; see replay_driver.Event). Patient + device + start
+    alone collided for 45.5% of the corpus: alarms raised in the same
+    second on one monitor got one IRI, hence one pair of named graphs, and
+    the first to end dropped the others' content. Everything an alarm
+    reports lives in graphs named after this key, so no other alarm's
+    arrival or end can touch it."""
+    return "_".join([_clean(ev.patient), _clean(ev.device_id),
+                     ev.start.strftime("%Y%m%dT%H%M%S"), ev.end.strftime("%Y%m%dT%H%M%S"),
+                     _clean(ev.alarm_id)])
 
 
-def message_iri(patient_id: str, device_id: str, start: datetime) -> URIRef:
-    return INST[f"Msg_{_clean(patient_id)}_{_clean(device_id)}_{start.strftime('%Y%m%dT%H%M%S')}"]
+def alarm_iri(ev) -> URIRef:
+    return INST[f"Alarm_{alarm_key(ev)}"]
+
+
+def message_iri(ev) -> URIRef:
+    return INST[f"Msg_{alarm_key(ev)}"]
 
 
 def ground_chain(kb: KB, arch: "Archetype", patient_id: str, device_id: str,
@@ -421,9 +435,10 @@ def background_for_key(kb: KB, patient_id: str, label: str, device_id: str, iden
     # other leaf property it's tagged mda:persistsPostAlarm true
     # (ontology.ttl) — a device fault must still be visible for the
     # 15-minute post-alarm window, not just while its own alarm is active.
-    # Grounded here (persistent bucket), not in condition_for_event, so it
-    # follows Device's own background-graph lifecycle instead of the
-    # alarm-duration-only condition graph every other leaf property uses.
+    # Grounded here (persistent bucket) so it follows Device's own
+    # background-graph lifecycle. condition_for_event grounds it AGAIN in
+    # the transient graph, for consumers that need the fault while its
+    # alarm is active (see that function).
     ground_leaf_properties(g, kb, arch, MDA.Device, dev)
     return g
 
@@ -434,8 +449,8 @@ def alarm_message(kb: KB, ev, identity: dict = None) -> Graph:
     if type_iri is None:
         return g
     arch = archetype_structure(kb, type_iri)
-    a = alarm_iri(ev.patient, ev.device_id, ev.start)
-    msg = message_iri(ev.patient, ev.device_id, ev.start)
+    a = alarm_iri(ev)
+    msg = message_iri(ev)
     patient = patient_iri(ev.patient)
 
     g.add((a, RDF.type, MDA.Alarm))
@@ -461,9 +476,15 @@ def condition_for_event(kb: KB, patient_id: str, label: str, device_id: str,
     arch = archetype_structure(kb, type_iri)
     _, condition, _ = ground_chain(kb, arch, patient_id, device_id, identity)
     # Device's own leaf property (hasDeviceOperationState) is grounded in
-    # background_for_key instead — see that function's own comment. Every
-    # OTHER leaf property (Metric/Signal/Sensor's, via ground_chain's walk)
-    # still lands here, unaffected.
+    # background_for_key for its post-alarm persistence — and ALSO here,
+    # so the transient graph holds everything this alarm reports while it
+    # is active. CAT3b (clinical_events.py, VentilationFailure) needs a
+    # ventilator malfunction only while its alarm is active: read from the
+    # persistent graph alone, a fault carried over 15 minutes joined the
+    # next ventilator's alarms after a ventilator swap. Every OTHER leaf
+    # property (Metric/Signal/Sensor/Component's, via ground_chain's walk)
+    # lands here only.
+    ground_leaf_properties(condition, kb, arch, MDA.Device, device_iri(patient_id, device_id))
     return condition
 
 
@@ -583,7 +604,7 @@ def add_triggered_by(g: Graph, events: list, kb: KB, identity: dict) -> None:
         if type_iri is None:
             continue
         arch = archetype_structure(kb, type_iri)
-        msg = message_iri(e.patient, e.device_id, e.start)
+        msg = message_iri(e)
         fu = particular_iri(kb, arch, e.patient, e.device_id, MDA.FunctionalUnit, identity)
         target = fu if fu is not None else device_iri(e.patient, e.device_id)
         g.add((msg, MDA.triggeredBy, target))

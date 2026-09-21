@@ -4,7 +4,7 @@ subset of patients and a configurable subset of rules.
 
 This is the general-purpose "run the POC" entry point — distinct from
 engine/replay_driver.py's own run(), which is a FIXED regression test
-against the 8 fabricated CAT1/CAT2 patients in DATA/CAT_evaluation/
+against the 46 fabricated CAT1–CAT3 patients in DATA/CAT_evaluation/
 events_data.csv, checked against a hand-authored expected-outcome table.
 Real patients (the default dataset here) have no such ground truth, so
 this script reports what fired instead of pass/fail.
@@ -66,6 +66,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "engine"))
+import clinical_events as CE
+import event_log as EL
 import mint as M
 import replay_driver as R
 
@@ -73,8 +75,8 @@ RDATA_EXPORT_SCRIPT = ROOT / "data" / "tools" / "export_rdata.R"
 
 SETTINGS = {
     # Which events file to replay. Three shapes work here:
-    #   - the small real-corpus excerpt (default): DATA/POC_EVENTS/events_data.csv
-    #   - the fabricated, known-outcome CAT1/CAT2 pairs:
+    #   - the small real-corpus excerpt: DATA/POC_EVENTS/events_data.csv
+    #   - the fabricated, known-outcome CAT1–CAT3 fixtures:
     #     ROOT.parent / "DATA/CAT_evaluation/events_data.csv"
     #   - the FULL 14M-alarm corpus: DATA/POC_EVENTS/DATA_LOCKED.rData
     #     (converted+cached to CSV automatically the first time — see
@@ -83,7 +85,7 @@ SETTINGS = {
     "dataset": ROOT.parent / "DATA" / "POC_EVENTS" / "DATA_LOCKED.csv",
     ### trial dataset - small excerpt of the real-world corpus, 41 alarms over 8 patients
     # "dataset": ROOT.parent / "DATA" / "POC_EVENTS" / "events_data.csv",
-    ### fabricated dataset - 8 known-outcome patients, 2 CAT1 and 6 CAT2, for regression testing
+    ### fabricated dataset - 46 known-outcome patients (CAT1–CAT3), for regression testing
     # "dataset": ROOT.parent / "DATA/CAT_evaluation" / "events_data.csv",
 
     # "all" (or None) replays every patient in the dataset. An int (e.g.
@@ -108,17 +110,14 @@ SETTINGS = {
     "cat1b": True,
     "cat2a": True,
     "cat2b": True,
-    # cat3a/cat3b (cardiorespiratory arrest / ventilation failure): now
-    # covered by permanent regression fixtures (cat3a_pos/cat3a_neg/cat3c,
-    # cat3b_pos/cat3b_neg/cat3d/cat3e in DATA/CAT_evaluation/
-    # events_data.csv — see EXPECTED_CAT3A/EXPECTED_CAT3B in
-    # engine/replay_driver.py), all passing. Each needs its own dependency
-    # also enabled (cat3a: cardiac_arrest+respiratory_arrest; cat3b:
-    # reduced_pulmonary_function — build_script raises a clear error
-    # otherwise), already satisfied above. STILL carries a KNOWN
-    # cross-patient imprecision, only safe under batch_size=1 (see
-    # build_script's own cat3a_active/cat3b_active comments) — re-check
-    # that reasoning before raising batch_size above 1 with these on.
+    # cardiac_arrest/respiratory_arrest/reduced_pulmonary_function and
+    # cat3a (cardiorespiratory arrest)/cat3b (ventilation failure) maintain
+    # clinical events per patient (engine/clinical_events.py). A combined
+    # rule needs its constituents enabled too (cat3a: cardiac_arrest +
+    # respiratory_arrest; cat3b: reduced_pulmonary_function) — build_script
+    # raises a clear error otherwise. Every event is scoped to one patient,
+    # so any batch_size is safe. Covered by the regression fixtures in
+    # DATA/CAT_evaluation/events_data.csv (engine/replay_driver.py run()).
     "cat3a": True,
     "cat3b": True,
 },
@@ -130,6 +129,12 @@ SETTINGS = {
     # run_batched's own docstring). Worth setting once n_patients is
     # "all" against the full 14M-alarm corpus's 3299 patients.
     "batch_size": 1,
+
+    # Where the logs are written: one row per clinical event (start, end,
+    # supporting alarms), and one row per CAT1/CAT2 firing (arriving alarm,
+    # causing alarms). See engine/event_log.py.
+    "event_log": ROOT / "_scratch" / "clinical_events.csv",
+    "firing_log": ROOT / "_scratch" / "rule_firings.csv",
 }
 
 
@@ -172,21 +177,20 @@ def choose_patient_ids(all_ids: list, n, seed: int) -> list:
     return rng.sample(all_ids, n)
 
 
-def report(patients: dict, rule_names: list, counts_by_check: dict) -> None:
-    any_clinical = bool(R.CLINICAL_RULE_NAMES & set(rule_names))
-    cat3a_active = "cat3a" in rule_names
-    cat3b_active = "cat3b" in rule_names
-    cat3a_episodes = R.count_cat3_episodes(counts_by_check, "cat3aCoincidence") if cat3a_active else {}
-    cat3b_episodes = R.count_cat3_episodes(counts_by_check, "cat3bCoincidence") if cat3b_active else {}
-    total_flagged = total_silenced = total_clinical = total_managed = total_alarms = 0
-    total_cat3a = total_cat3b = 0
+def report(patients: dict, rule_names: list, firings: list, records: list) -> None:
+    event_kinds = [r.kind for r in CE.enabled_event_rules(rule_names)]
+    episodes = {kind: EL.episodes_by_patient(records, kind) for kind in event_kinds}
+    total_flagged = total_silenced = total_managed = total_alarms = 0
+    total_events = {kind: 0 for kind in event_kinds}
+    # Counted from the firing log, not the raw check counts: a cat1b flag
+    # can be withdrawn after its check fired (event_log.flagged_alarms).
+    flagged = EL.flagged_alarms(firings)
+    silenced = EL.silenced_alarms(firings)
     for patient in sorted(patients):
-        per_patient = {k: v for k, v in counts_by_check.items() if k[0] == patient}
-        n_flag = R.count_alarms_fired(per_patient.items(), "flaggedLikelyFalsePositive")
-        n_silence = R.count_alarms_fired(per_patient.items(), "silencedBy")
-        n_clinical = sum(v for k, v in per_patient.items() if k[2] == "impliesClinicalEvent")
-        n_cat3a = cat3a_episodes.get(patient, 0)
-        n_cat3b = cat3b_episodes.get(patient, 0)
+        fired_flag = {a for p, a in flagged if p == patient}
+        fired_silence = {a for p, a in silenced if p == patient}
+        n_flag = len(fired_flag)
+        n_silence = len(fired_silence)
         # cat1+cat2 combined: an alarm counts once here even if BOTH
         # flaggedLikelyFalsePositive and silencedBy fired for it — a
         # straight n_flag+n_silence sum would double-count that alarm,
@@ -195,35 +199,24 @@ def report(patients: dict, rule_names: list, counts_by_check: dict) -> None:
         # (unsupported-label-dropped) event list run() passes in here, so
         # this denominator is the same "fair %" basis run()'s own coverage
         # line uses — not the raw pre-filter alarm count.
-        fired_flag = {(k[0], k[1]) for k, v in per_patient.items()
-                      if k[2] == "flaggedLikelyFalsePositive" and v > 0}
-        fired_silence = {(k[0], k[1]) for k, v in per_patient.items()
-                          if k[2] == "silencedBy" and v > 0}
         n_managed = len(fired_flag | fired_silence)
         n_alarms = len(patients[patient])
         pct_managed = 100.0 * n_managed / n_alarms if n_alarms else 0.0
         total_flagged += n_flag
         total_silenced += n_silence
-        total_clinical += n_clinical
         total_managed += n_managed
         total_alarms += n_alarms
-        total_cat3a += n_cat3a
-        total_cat3b += n_cat3b
         parts = [f"flaggedLikelyFalsePositive={n_flag}", f"silencedBy={n_silence}"]
-        if any_clinical:
-            parts.append(f"impliesClinicalEvent={n_clinical}")
-        if cat3a_active:
-            parts.append(f"cat3a(cardiorespiratoryArrest)={n_cat3a}")
-        if cat3b_active:
-            parts.append(f"cat3b(ventilationFailure)={n_cat3b}")
+        for kind in event_kinds:
+            n = episodes[kind].get(patient, 0)
+            total_events[kind] += n
+            parts.append(f"{kind}={n}")
         parts.append(f"cat1+cat2 hit rate={n_managed}/{n_alarms} ({pct_managed:.1f}%)")
         print(f"  {patient}: {', '.join(parts)}")
     total_pct = 100.0 * total_managed / total_alarms if total_alarms else 0.0
     print(f"\nTotals across {len(patients)} patient(s): "
           f"flaggedLikelyFalsePositive={total_flagged}, silencedBy={total_silenced}"
-          + (f", impliesClinicalEvent={total_clinical}" if any_clinical else "")
-          + (f", cat3a(cardiorespiratoryArrest)={total_cat3a}" if cat3a_active else "")
-          + (f", cat3b(ventilationFailure)={total_cat3b}" if cat3b_active else "")
+          + "".join(f", {kind}={n}" for kind, n in total_events.items())
           + f", cat1+cat2 hit rate={total_managed}/{total_alarms} ({total_pct:.1f}%)")
 
 
@@ -301,11 +294,19 @@ def run():
 
     print(f"[{time.monotonic() - t_start:7.1f}s] processing {len(groups)} patient(s), "
           f"batch_size={SETTINGS['batch_size'] or 'unbounded'}...")
+    trace: list = []
     counts_by_check, timings_by_check = R.run_batched(kb, groups, scratch, batch_size=SETTINGS["batch_size"],
-                                                        enabled_rules=rule_names)
+                                                        enabled_rules=rule_names, trace=trace)
+    alarms = EL.alarm_index(events)
+    records = EL.event_records(trace, groups)
+    EL.write_event_log(records, alarms, SETTINGS["event_log"])
+    firings = EL.firing_records(trace)
+    EL.write_firing_log(firings, alarms, SETTINGS["firing_log"])
 
     print()
-    report(groups, rule_names, counts_by_check)
+    report(groups, rule_names, firings, records)
+    print(f"Clinical-event log: {len(records)} event(s) -> {SETTINGS['event_log']}")
+    print(f"Rule-firing log -> {SETTINGS['firing_log']}")
     R.summarize_rule_timings(counts_by_check, timings_by_check)
     print(f"\nTotal wall-clock time: {time.monotonic() - t_start:.1f}s")
 

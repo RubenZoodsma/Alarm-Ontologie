@@ -17,12 +17,45 @@ rdfs:domain / rdfs:range pairs.
 import re
 
 from rdflib import Graph, URIRef
+from rdflib.collection import Collection
 from rdflib.namespace import RDF, RDFS, OWL, SKOS
 
 
 def local(iri) -> str:
     """Local name of an IRI, for messages and tree printing."""
     return re.split(r"[#/]", str(iri))[-1]
+
+
+def domain_classes(onto: Graph, prop: URIRef) -> list:
+    """
+    Named classes in `prop`'s rdfs:domain, expanding an owl:unionOf blank
+    node into its members. A union domain says the property may start from
+    any of those classes, so each member anchors its own edge.
+
+    A union member that is also the named domain of one of `prop`'s own
+    rdfs:subPropertyOf children is left to that sub-property: the ontology
+    already names the single-domain property that carries the edge from that
+    class (mda:sensorProducesSignal for mda:producesSignal's Sensor member),
+    and emitting both would make the same child reachable twice.
+
+    Ranges are NOT expanded: a union range would give one edge several
+    possible children, which is exactly the ambiguity the tree refuses to
+    guess at. Only mda:evidencedBy has one today, and its domain
+    (mda:ClinicalEvent) is not reachable from mda:Alarm anyway.
+    """
+    out = []
+    for dom in onto.objects(prop, RDFS.domain):
+        if isinstance(dom, URIRef):
+            out.append(dom)
+            continue
+        union = onto.value(dom, OWL.unionOf)
+        if union is None:
+            continue
+        carried = {d for sub in onto.subjects(RDFS.subPropertyOf, prop)
+                   for d in onto.objects(sub, RDFS.domain) if isinstance(d, URIRef)}
+        out.extend(m for m in Collection(onto, union)
+                   if isinstance(m, URIRef) and m not in carried)
+    return out
 
 
 def derive_class_tree(onto: Graph, root: URIRef) -> dict:
@@ -37,9 +70,7 @@ def derive_class_tree(onto: Graph, root: URIRef) -> dict:
     """
     edges: dict = {}
     for prop in onto.subjects(RDF.type, OWL.ObjectProperty):
-        for dom in onto.objects(prop, RDFS.domain):
-            if not isinstance(dom, URIRef):
-                continue  # union/blank domains cannot anchor a tree edge
+        for dom in domain_classes(onto, prop):
             for rng in onto.objects(prop, RDFS.range):
                 if not isinstance(rng, URIRef) or rng == SKOS.Concept:
                     continue  # concept-valued properties are leaves, not edges
@@ -130,9 +161,7 @@ def properties_reachable(onto: Graph, root: URIRef) -> set:
     """
     edges: dict = {}
     for prop in onto.subjects(RDF.type, OWL.ObjectProperty):
-        for dom in onto.objects(prop, RDFS.domain):
-            if not isinstance(dom, URIRef):
-                continue
+        for dom in domain_classes(onto, prop):
             for rng in onto.objects(prop, RDFS.range):
                 if not isinstance(rng, URIRef) or rng == SKOS.Concept:
                     continue

@@ -76,8 +76,8 @@ clinicalEvent:CardioRespiratoryArrest a skos:Concept ;
     skos:broader            clinicalEvent:ClinicalEvent ;
     rdfs:subClassOf         mda:ClinicalEvent ;
     skos:prefLabel          "Cardiorespiratory Arrest"@en, "Cardiorespiratoire Arrest"@nl ;
-    skos:definition         "Combined cessation of effective cardiac contraction and breathing, evidenced by the coincidence of a cardiac arrest and a respiratory arrest within the same patient's post-alarm validity window."@en,
-                            "Gecombineerd stoppen van effectieve hartcontractie en ademhaling, onderbouwd door het samenvallen van een hartstilstand en een ademstilstand binnen hetzelfde post-alarm geldigheidsvenster van de patiënt."@nl ;
+    skos:definition         "Combined cessation of effective cardiac contraction and breathing, evidenced by a cardiac arrest and a respiratory arrest of the same patient present at the same time."@en,
+                            "Gecombineerd stoppen van effectieve hartcontractie en ademhaling, onderbouwd door een hartstilstand en een ademstilstand van dezelfde patiënt die tegelijkertijd aanwezig zijn."@nl ;
     skos:notation           "CardioRespiratoryArrest" .
 
 clinicalEvent:ReducedPulmonaryFunction a skos:Concept ;
@@ -85,8 +85,8 @@ clinicalEvent:ReducedPulmonaryFunction a skos:Concept ;
     skos:broader            clinicalEvent:ClinicalEvent ;
     rdfs:subClassOf         mda:ClinicalEvent ;
     skos:prefLabel          "Reduced Pulmonary Function"@en, "Verminderde Longfunctie"@nl ;
-    skos:definition         "Inadequate gas exchange due to insufficient ventilation, evidenced by a decreased minute ventilation volume — a building-block condition for clinicalEvent:VentilationFailure, not raised as a standalone finding."@en,
-                            "Onvoldoende gasuitwisseling door ontoereikende ventilatie, onderbouwd door een verlaagd ademminuutvolume — een bouwsteenconditie voor clinicalEvent:VentilationFailure, niet als zelfstandige bevinding gerapporteerd."@nl ;
+    skos:definition         "Inadequate gas exchange due to insufficient ventilation, evidenced by a decreased minute ventilation volume. A clinical event in its own right, and also evidence for clinicalEvent:VentilationFailure."@en,
+                            "Onvoldoende gasuitwisseling door ontoereikende ventilatie, onderbouwd door een verlaagd ademminuutvolume. Een zelfstandige klinische gebeurtenis, en tevens bewijs voor clinicalEvent:VentilationFailure."@nl ;
     skos:notation           "ReducedPulmonaryFunction" .
 
 clinicalEvent:VentilationFailure a skos:Concept ;
@@ -94,6 +94,6 @@ clinicalEvent:VentilationFailure a skos:Concept ;
     skos:broader            clinicalEvent:ClinicalEvent ;
     rdfs:subClassOf         mda:ClinicalEvent ;
     skos:prefLabel          "Ventilation Failure"@en, "Beademingsfalen"@nl ;
-    skos:definition         "Failure of mechanical ventilation with critical clinical consequences, evidenced by the coincidence of a mechanical ventilation alarm and reduced pulmonary function."@en,
-                            "Falen van mechanische beademing met kritieke klinische gevolgen, onderbouwd door het samenvallen van een mechanische-beademingsalarm en verminderde longfunctie."@nl ;
+    skos:definition         "Failure of mechanical ventilation with critical clinical consequences, evidenced by reduced pulmonary function while the patient's mechanical ventilation therapy is compromised (e.g. a circuit leak, a disconnected patient circuit or a malfunctioning ventilator), both at the same time."@en,
+                            "Falen van mechanische beademing met kritieke klinische gevolgen, onderbouwd door verminderde longfunctie terwijl de beademingstherapie van de patiënt gecompromitteerd is (bijv. een lek in het circuit, een losgekoppeld patiëntcircuit of een defecte beademingsmachine), beide tegelijkertijd."@nl ;
     skos:notation           "VentilationFailure" .

@@ -427,28 +427,18 @@ signalAnalysis:VenousPressureAnalysis mda:producesMetric metric:VenousBloodPress
 functionalUnit:FU_AirwayPressure mda:hasSensor sensor:AW_transducer .
 
 sensor:AW_transducer mda:sensorProducesSignal signal:AirwayPressure_waveform .
-signal:AirwayPressure_waveform mda:analyzedBy signalAnalysis:AirwayPressureAnalysis,
-                                              signalAnalysis:CPAPAnalysis .
+signal:AirwayPressure_waveform mda:analyzedBy signalAnalysis:AirwayPressureAnalysis .
 signalAnalysis:AirwayPressureAnalysis mda:producesMetric metric:AirwayPressure .
 
-# CPAPAnalysis added in the 2026-09 curation round, from Nena's HULBUS -
-# CPAP high / CPAP low comments ("sensor is leeg: moet deze niet AW
-# transducer zijn?"). She is right: continuous positive airway pressure is
-# read off the same airway-pressure transducer and the same waveform as
-# peak pressure — it is a second analysis of one signal, which is the
-# fan-out shape this section's header already describes for
-# FU_PulseOximetry. Before this, (FU_AirwayPressure, CPAP) had no recipe,
-# so both alarms fell through to a generic mda:Sensor/mda:Signal node.
-#
-# SETTLED: metric:CPAP stays its own metric, and is deliberately NOT collapsed
-# into metric:AirwayPressure at a baseline phase. It is physically the same
-# baseline airway pressure that SERVOU - PEEP laag annotates as
-# metric:AirwayPressure + metricPhase:EndExpiratory, but the two arise under
-# different ventilation modes (spontaneous vs mandatory) and the annotator
-# call is that the mode distinction is clinically real. The consequence to be
-# aware of: HULBUS and SERVOU baseline-pressure alarms are therefore NOT
-# cross-manufacturer equivalent under CQ7, by choice rather than by oversight.
-signalAnalysis:CPAPAnalysis mda:producesMetric metric:CPAP .
+# HULBUS - CPAP high / CPAP low (2026-09-21, replaces the earlier SETTLED
+# decision to keep metric:CPAP as its own metric). The measured quantity is
+# the baseline airway pressure — AirwayPressure at phase EndExpiratory, the
+# same metric as SERVOU - PEEP laag — read off this same waveform by
+# AirwayPressureAnalysis. CPAP is the ventilation mode, which the alarm label
+# collapses into the metric name; it is annotated as the therapy instead
+# (therapeuticModality:CPAP, below). The annotator's point that the mode
+# distinction is clinically real is kept, now on the therapy rather than on
+# the metric. See CURATION_LOG.md, decision 38.
 
 ## Trace: Ventilation volume sensing pathway
 functionalUnit:FU_PneumoTachograph mda:hasSensor sensor:PneumoTachograph .
@@ -670,16 +660,17 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
 # existence, not a specific rate value.
 #
 # Deliberately ONE axiom, not one per node kind (Sensor/FunctionalUnit/
-# Device): mda:hasOperationState's own owl:propertyChainAxiom (ontology.ttl)
-# already propagates a sub-property state upward through hasSensor and
-# hasFunctionalUnit, so asserting Enabled on the Sensor alone entails the
-# generic mda:hasOperationState Enabled on its owning FunctionalUnit and
-# Device for free — confirmed with an isolated reasoner test before writing
-# this (a minimal Device->FunctionalUnit->Sensor->Signal->Analysis->Metric
-# ABox plus this axiom correctly derived hasOperationState Enabled on all
-# three levels, not just the Sensor). A second axiom targeting
-# hasDeviceOperationState directly would only duplicate what the existing
-# chain already does.
+# Device): asserting Enabled on the Sensor alone is enough, because the
+# ladder's own FunctionalUnit and Device rungs below carry it the rest of
+# the way up. A second axiom targeting hasDeviceOperationState directly
+# would only duplicate them.
+#
+# CORRECTED: this paragraph used to credit mda:hasOperationState's
+# owl:propertyChainAxiom over hasSensor and hasFunctionalUnit for that lift.
+# Those two chains were removed when the ladder replaced them, and the last
+# chain on the property (inverse-administers) went with the therapeutic
+# modality decision, so the property now carries none at all. The behaviour
+# described was right and is unchanged; the mechanism named for it was not.
 #
 # Scope check performed before writing: no archetype in the current corpus
 # has BOTH a Metric AND an explicit Sensor/Component/Device operational
@@ -765,21 +756,46 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
 # inert twice over.
 ####################################################################
 
-# THE LADDER RUNS THE WHOLE SENSING PATHWAY, one hop per rung:
+# THE LADDER DOES NOT RUN EVERY NODE — only the ones an operational state
+# means something about. Revised after an audit found the entailment
+# accumulating on nodes that gain nothing from it:
 #
 #   Metric          -- opstate:Monitored, from the Metric monitoring axiom
 #                      below, whenever the metric carries any of its four
 #                      characteristics (value state, phase, aggregation,
-#                      rhythm). This is the bottom of the ladder and the
-#                      only rung not written here.
-#   SignalAnalysis  -- its metric reports something, so the analysis ran
-#   Signal          -- its analysis reports something, so the signal flowed
-#   Sensor          -- its signal reports something, so the sensor produced
+#                      rhythm). Written there, not here.
+#   Signal          -- NO operational state. A signal carries
+#                      mda:hasQualityState, which is its own account of
+#                      whether it is usable; an "Enabled" on top of that
+#                      said nothing the quality state did not already say
+#                      better.
+#   SignalAnalysis  -- NO operational state, same reasoning: an analysis
+#                      that produced a metric is self-evidently running,
+#                      and nothing queries the fact.
+#   Sensor          -- Enabled, from the baseline axiom above (its pathway
+#                      reaches a Metric) OR from the quality rung below
+#                      (its signal was assessed at all).
 #   FunctionalUnit  -- its sensor reports something
 #   Device          -- its functional unit reports something
 #
-# Each rung looks exactly one hop down and asserts on itself, so the chain
-# composes without any rung needing to know the pathway's depth.
+# That removed 122 entailed facts, 61 on Signal and 61 on SignalAnalysis,
+# none of which any query or axiom consumed.
+#
+# THE QUALITY RUNG REPLACES THE SIGNAL RUNG, and is not merely its
+# equivalent. The old Signal -> Sensor rung tested the signal's own
+# OPERATIONAL state, which only ever existed because the two rungs below it
+# manufactured one; with those gone it would be permanently inert. Testing
+# the signal's QUALITY state instead reaches a case the old ladder never
+# did: a signal that was produced and assessed but yielded no metric.
+# Before this, PHILIPSMONITOR - CO2 wzig schaal l, PHILIPSMONITOR - SpO2
+# zwak signaal and Monitor - ECG artefact each had a signal with a quality
+# state and NOTHING operational anywhere in the archetype — not on the
+# sensor, not on the functional unit, not on the device — because the
+# baseline axiom only fires on a pathway that reaches a Metric and those
+# three reach none. A judged signal is proof the sensor produced it.
+#
+# Each remaining rung looks exactly one hop down and asserts on itself, so
+# the chain composes without any rung needing to know the pathway's depth.
 #
 # VALUE: opstate:Enabled at every rung above Metric, deliberately NOT
 # opstate:Active. Active is already in use for a genuinely different sense —
@@ -793,40 +809,22 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
 #
 # RELATIONSHIP TO THE SENSOR BASELINE AXIOM ABOVE: that axiom tests the
 # whole pathway in one shot (sensor -> signal -> analysis -> some Metric)
-# and asserts Enabled on the sensor, skipping the two middle rungs — which
-# is exactly why Signal and SignalAnalysis were the only nodes in a
-# metric-bearing archetype with no operational state at all before this
-# ladder existed (confirmed against MEDIBUS - MV ondergrens and
-# PHILIPSMONITOR - SpO2 laag). Both are kept. They currently fire on the
-# same archetypes, since every metric-bearing corpus row carries at least
-# one metric characteristic and therefore always reaches Monitored — but
-# they are not redundant in principle: the baseline still covers a metric
-# with no characteristic, and the ladder still covers a signal given a state
-# by some route other than its own metric.
+# and asserts Enabled on the sensor. It is now the ONLY route to a sensor
+# state for a metric-bearing archetype, which is why removing the Signal
+# and SignalAnalysis rungs costs nothing: everything they used to feed, the
+# baseline already establishes one hop higher. The quality rung below
+# covers the disjoint case the baseline cannot reach, a pathway with no
+# metric at its end.
 
-# SignalAnalysis whose Metric reports any state  ->  the analysis is Enabled
-[ a owl:Class ; owl:intersectionOf ( mda:SignalAnalysis
-    [ a owl:Restriction ; owl:onProperty mda:producesMetric ;
-      owl:someValuesFrom
-        [ a owl:Restriction ; owl:onProperty mda:hasOperationState ;
-          owl:someValuesFrom owl:Thing ] ] )
-] rdfs:subClassOf
-  [ a owl:Restriction ; owl:onProperty mda:hasOperationState ; owl:hasValue opstate:Enabled ] .
-
-# Signal whose SignalAnalysis reports any state  ->  the signal is Enabled
-[ a owl:Class ; owl:intersectionOf ( mda:Signal
-    [ a owl:Restriction ; owl:onProperty mda:analyzedBy ;
-      owl:someValuesFrom
-        [ a owl:Restriction ; owl:onProperty mda:hasOperationState ;
-          owl:someValuesFrom owl:Thing ] ] )
-] rdfs:subClassOf
-  [ a owl:Restriction ; owl:onProperty mda:hasOperationState ; owl:hasValue opstate:Enabled ] .
-
-# Signal reporting any state  ->  its Sensor is Enabled
+# Signal carrying a QUALITY state  ->  its Sensor is Enabled.
+# The signal was produced and judged, so the sensor that produced it was
+# working. Replaces the former Signal-operational-state rung; see the
+# "QUALITY RUNG" note in this section's header for why the swap reaches
+# strictly more than the rung it replaces.
 [ a owl:Class ; owl:intersectionOf ( mda:Sensor
     [ a owl:Restriction ; owl:onProperty mda:sensorProducesSignal ;
       owl:someValuesFrom
-        [ a owl:Restriction ; owl:onProperty mda:hasOperationState ;
+        [ a owl:Restriction ; owl:onProperty mda:hasQualityState ;
           owl:someValuesFrom owl:Thing ] ] )
 ] rdfs:subClassOf
   [ a owl:Restriction ; owl:onProperty mda:hasSensorOperationState ; owl:hasValue opstate:Enabled ] .
@@ -977,6 +975,40 @@ opstate:Monitored a skos:Concept ;
 ] rdfs:subClassOf
   [ a owl:Restriction ; owl:onProperty mda:hasTherapyDeliveryQuality ; owl:hasValue qualitystate:Impaired ] .
 
+# Two further ways VENTILATION therapy is compromised (added 2026-09-21,
+# with the CAT3b review — clinicalEvent:VentilationFailure's criterion
+# reads the result). Scoped to therapeuticModality:VentilationTherapy, not
+# every modality: that is the claim reviewed; whether e.g. a malfunctioning
+# infusion pump likewise impairs its infusion is left open.
+#
+#   - The ventilator itself malfunctions ("MEDIBUS - Ventilator storing").
+#     Deliberately NOT device-level Disconnected: the CriticalComponent rule
+#     above derives that from a lost data link or mains power, neither of
+#     which stops the ventilation.
+#   - The patient circuit is disconnected (component:AirwayCircuit —
+#     "SERVOU - Patiëntcircuit los", "DATEXOHMEDACOMVENTILATOR - Patient
+#     Disconnected"): the machine runs, the patient is not ventilated.
+[ a owl:Class ; owl:intersectionOf ( therapeuticModality:VentilationTherapy
+    [ a owl:Restriction ; owl:onProperty [ owl:inverseOf mda:administers ] ;
+      owl:someValuesFrom
+        [ a owl:Class ; owl:intersectionOf ( mda:Device
+            [ a owl:Restriction ; owl:onProperty mda:hasDeviceOperationState ;
+              owl:hasValue opstate:Malfunction ] ) ] ] )
+] rdfs:subClassOf
+  [ a owl:Restriction ; owl:onProperty mda:hasTherapyDeliveryQuality ; owl:hasValue qualitystate:Impaired ] .
+
+[ a owl:Class ; owl:intersectionOf ( therapeuticModality:VentilationTherapy
+    [ a owl:Restriction ; owl:onProperty [ owl:inverseOf mda:administers ] ;
+      owl:someValuesFrom
+        [ a owl:Class ; owl:intersectionOf ( mda:Device
+            [ a owl:Restriction ; owl:onProperty mda:hasComponent ;
+              owl:someValuesFrom
+                [ a owl:Class ; owl:intersectionOf ( component:AirwayCircuit
+                    [ a owl:Restriction ; owl:onProperty mda:hasComponentOperationState ;
+                      owl:hasValue opstate:Disconnected ] ) ] ] ) ] ] )
+] rdfs:subClassOf
+  [ a owl:Restriction ; owl:onProperty mda:hasTherapyDeliveryQuality ; owl:hasValue qualitystate:Impaired ] .
+
 
 ####################################################################
 # Clinical axioms
@@ -1053,14 +1085,10 @@ metric:RespirationVolume rdfs:subClassOf
 # rename: a circuit/mask-integrity fact, not a patient physiological
 # measurement.
 
-# AirwayPressure_EndExpiratory needs no bridge of its own for the same
-# reason — inherits this via generated rdfs:subClassOf metric:AirwayPressure.
+# AirwayPressure_EndExpiratory (PEEP, CPAP) and AirwayPressure_Peak (Ppeak,
+# Paw high — decision 39) need no bridge of their own for the same reason —
+# they inherit this via generated rdfs:subClassOf metric:AirwayPressure.
 metric:AirwayPressure rdfs:subClassOf
-    [ a owl:Restriction ; owl:onProperty mda:approximates ;
-      owl:hasValue physiologicalProperty:RespirationPressure ] .
-
-# CPAP is a delivered airway pressure, same property as AirwayPressure.
-metric:CPAP rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:RespirationPressure ] .
 
@@ -1130,6 +1158,13 @@ metric:Humidity rdfs:subClassOf
 therapeuticModality:VentilationTherapy rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:targetsProcess ;
       owl:hasValue physiologicalProcess:PulmonaryVentilation ] .
+
+# CPAP is a mode of ventilation therapy (decision 38): as a subclass it
+# inherits VentilationTherapy's targetsProcess above and the therapy-
+# delivery-quality axioms scoped to VentilationTherapy (leak, malfunction,
+# disconnected circuit). Consumers that match rdf:type without reasoning
+# (MDA-POC-RDFox) must follow rdfs:subClassOf* to see it.
+therapeuticModality:CPAP rdfs:subClassOf therapeuticModality:VentilationTherapy .
 
 therapeuticModality:ThermoRegulationTherapy rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:targetsProcess ;

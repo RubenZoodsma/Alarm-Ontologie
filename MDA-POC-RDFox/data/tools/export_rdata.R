@@ -1,6 +1,7 @@
 # export_rdata.R — convert the full 14M-alarm corpus (DATA/POC_EVENTS/
 # DATA_LOCKED.rData) into this project's own patientID;label;device_id;
-# start;end CSV shape, optionally sampling to N patients along the way.
+# start;end;alarm_id CSV shape, optionally sampling to N patients along
+# the way.
 #
 # WHY THIS IS AN R SCRIPT, NOT PYTHON: the .rData file is a full saved R
 # WORKSPACE (60+ objects — functions, other analysis data.frames, etc.),
@@ -35,6 +36,18 @@
 #                 patient-scoped IRIs) but doesn't distinguish two
 #                 different physical units of the same model at two
 #                 different beds. The pair does.
+#   row number -> alarm_id. The source has no identifier of its own (21
+#                 columns, none unique), and patient + device + start
+#                 second collided for 45.5% of rows, merging distinct
+#                 alarms into one. The row's position in the locked `data`
+#                 frame (its rowname, 1..n) is the definitive ALARM_ID:
+#                 stable for as long as DATA_LOCKED.rData is. Assigned
+#                 BEFORE any sampling, so a sample keeps the full corpus's
+#                 IDs. It also keeps apart the 78,613 rows that are exact
+#                 duplicates of another row in all 21 source columns
+#                 (39,254 groups, mostly "SDM ..." technical messages; see
+#                 the 2026-09-21 analysis) — whether those are one alarm or
+#                 two is a data-source question, not decided here.
 #   alarm_start/alarm_eind -> start/end. `format()` below deliberately
 #                 does NOT pass an explicit tz= override: confirmed
 #                 directly (attr(d$alarm_start, "tzone") == "" and
@@ -73,6 +86,7 @@ events <- data.frame(
   device_id = paste(d$bed_naam, d$device_naam, sep = "_"),
   start     = format(d$alarm_start, "%Y-%m-%dT%H:%M:%S"),
   end       = format(d$alarm_eind, "%Y-%m-%dT%H:%M:%S"),
+  alarm_id  = seq_len(nrow(d)),
   stringsAsFactors = FALSE
 )
 

@@ -44,7 +44,7 @@ def build_check_query(alarm: str, tgraph: str, pgraph: str, patient_iri: str) ->
         f"GRAPH ?g6 {{ ?analysis <{M.MDA}producesMetric> ?metric }} "
         f"GRAPH ?g7 {{ ?metric <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> "
         f"<https://w3id.org/mda/vocab/metric/HeartRate> }} "
-        f"GRAPH ?g8 {{ ?metric <{M.MDA}hasRate> <https://w3id.org/mda/vocab/metric-rate/Absent> }} "
+        f"GRAPH ?g8 {{ ?metric <{M.MDA}hasRhythm> <https://w3id.org/mda/vocab/metric-rhythm/Absent> }} "
         f"GRAPH ?g9 {{ ?patient <{M.MDA}isMonitoredBy> ?ibpDevice }} "
         f"GRAPH ?g10 {{ ?ibpDevice <{M.MDA}hasFunctionalUnit> ?ibpFunctionalUnit }} "
         f"GRAPH ?g11 {{ ?ibpFunctionalUnit <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> "

@@ -1,71 +1,107 @@
 ####################################################################
 # cat2b_metric_sensor.dlog — HAND-AUTHORED. NOT GENERATED.
 #
-# NOT LOADED AS A STANDING RULE — see cat2a_process_priority.dlog's own
-# header for the full reasoning (same rationale, same fix, applied to both
-# files together). The join below is instead run as a one-shot
-# `select ... limit 1` query, hand-translated into
-# engine/replay_driver.py's ONDEMAND_QUERY_BODIES["cat2b"]. THIS FILE
-# REMAINS THE CANONICAL DEFINITION of the join/filter logic —
-# replay_driver.py's copy must be kept in sync BY HAND with any change
-# made here, verified via the same cat2b_pos/cat2b_neg regression
-# fixtures that validate this file.
+# NL rule (CAT2, "simultaneous alarms likely carrying overlapping or
+# redundant information"): "If an alarm conveys the same metric via a
+# different sensor, an incoming alarm conveying that metric from another
+# sensor can be silenced."
 #
-# One rule per file (split out of the former cat_rules.dlog) so
-# poc_entry.py can enable/disable each CAT rule independently. RDFox Datalog
-# port of CODE/evaluation_poc/reasoner/rules/cat2b_metric_sensor.rq, plus
-# the same arrival-order fix as cat2a_process_priority.dlog (confirmed
-# independently needed here too — CAT2b has no priority comparison to
-# accidentally mask the symmetry the way an unequal-rank CAT2a fixture
-# can) — see the migration plan for full background.
+# Clause by clause (decisions agreed 2026-09-21):
+#   "an incoming alarm"        — a PHYSIOLOGICAL alarm, at its arrival.
+#   "an alarm" (active)        — a physiological alarm of the same patient
+#                                whose transient graph is valid now, other
+#                                than the incoming one.
+#   "the same metric"          — the same metric type, exactly (heart rate
+#                                is not pulse rate, systolic ABP is not MAP;
+#                                related metrics are CAT2a's business).
+#   "via a different sensor"   — a different functional unit, or a
+#                                different sensor type. Not the sensor IRI:
+#                                sensor refinements (anatomical position)
+#                                come only from technical alarms ("Storing
+#                                in SpO2", "ART buiten bereik laag", "ART
+#                                statische druk") and split ONE physical
+#                                sensor into two identities depending on
+#                                arrival order. No physiological alarm
+#                                carries a refinement, so two same-type
+#                                sensors on one functional unit (e.g. pre-
+#                                and post-ductal SpO2) cannot be told apart
+#                                in this catalogue anyway.
+#   "overlapping or redundant" — (from the category header, as CAT2a) the
+#                                incoming alarm deviates in the SAME
+#                                direction and is NOT MORE SEVERE
+#                                (metric_state_order.ttl): two sensors that
+#                                disagree (SpO2 low vs high) or an escalation
+#                                (low SpO2 -> desaturation) is information.
+#                                No priority condition — the NL rule has
+#                                none. The NL rule should read "...via a
+#                                different sensor, deviating in the same
+#                                direction and not more severely, ...".
+#   "can be silenced"          — for as long as an alarm that justified it
+#                                at arrival is still active, shared with
+#                                CAT2a: one silence per alarm, lifted when
+#                                the last alarm justifying it under EITHER
+#                                rule ends (replay_driver.py's
+#                                cat2_silence_insert / cat2_lift; logged as
+#                                cat2_lifted).
 #
-# mda:silencedBy has exactly one consumer (the per-alarm check in
-# build_script) — see cat2a_process_priority.dlog's header for why that's
-# what makes this rule no longer worth loading as standing/materialized at
-# all. The ?g1/?g7 etc. graph terms below are vestigial from a since-moot
-# intermediate fix, kept because the on-demand SPARQL translation still
-# needs to know which graph each atom's content actually lives in.
+# REPORTED STATE. As CAT2a: the metric state is matched inside each alarm's
+# own graph, which relies on no alarm editing another's graph.
 #
-# SAME-PATIENT CONSTRAINT — REQUIRED, NOT OPTIONAL, ONCE PATIENTS SHARE
-# ONE DSTORE. See cat2a_process_priority.dlog's header for the full
-# explanation — the identical bug, for the identical reason: ?metricType
-# is a STANDING, CONCEPT-level node (e.g. metric:HeartRate), legitimately
-# shared across every patient with that metric type, so without an
-# explicit same-patient constraint this rule derives silencedBy ACROSS
-# different patients the instant they share one dstore.
+# GRAPHS. ?gT/?gA: the incoming/active alarm's transient graph. ?gP/?gAP: a
+# persistent copy of its sensor chain, anchored on its own analysis, so the
+# sensor is the one that produced its metric.
+#
+# NOT LOADED AS A STANDING RULE. It runs as a one-shot `select` (and the
+# silence INSERT) at each alarm's arrival, hand-translated into
+# engine/replay_driver.py's _ONDEMAND_BODY_TEMPLATES["cat2b"]. It replaces
+# the standing sensor count (shadow/cat2b_sensor_count_aggregate.dlog, no
+# longer loaded): the redundancy test compares direction and severity of
+# ONE active alarm at once, which a per-key count cannot express. Keep the
+# two in sync by hand; the cat2b_* fixtures check both.
 ####################################################################
 
 @prefix mda:              <https://w3id.org/mda/ontology#> .
+@prefix mdapoc:           <https://w3id.org/mda/poc#> .
 @prefix alarmcat:         <https://w3id.org/mda/vocab/alarm-category/> .
 
-[?alarm, mda:silencedBy, ?active] ?g1 :-
-    [?alarm, mda:hasCategory, alarmcat:Physiological] ?g1,
-    [?alarm, mda:hasMessage, ?msg] ?g1,
-    [?msg, mda:concernsPatient, ?patient] ?g1,
-    [?msg, mda:triggeredBy, ?device] ?g2,
-    [?device, mda:hasSensor, ?sensorIn] ?g3,
-    [?sensorIn, mda:sensorProducesSignal, ?signalIn] ?g4,
-    [?signalIn, mda:analyzedBy, ?analysisIn] ?g5,
-    [?analysisIn, mda:producesMetric, ?metricIn] ?g6,
-    [?metricIn, rdf:type, ?metricType] ?g6,
-    [?alarm, mda:hasStart, ?alarmStart] ?g1,
-
-    [?active, mda:hasCategory, alarmcat:Physiological] ?g7,
-    [?active, mda:hasMessage, ?activeMsg] ?g7,
-    [?activeMsg, mda:concernsPatient, ?patient] ?g7,
-    [?activeMsg, mda:triggeredBy, ?activeDevice] ?g8,
-    [?activeDevice, mda:hasSensor, ?sensorActive] ?g9,
-    [?sensorActive, mda:sensorProducesSignal, ?signalActive] ?g10,
-    [?signalActive, mda:analyzedBy, ?analysisActive] ?g11,
-    [?analysisActive, mda:producesMetric, ?metricActive] ?g12,
-    [?metricActive, rdf:type, ?metricType] ?g12,
-    [?active, mda:hasStart, ?activeStart] ?g7,
-
+[?alarm, mdapoc:silencedBy, ?active] ?gT :-
+    # the incoming alarm (its own graphs)
+    [?alarm, mda:hasCategory, alarmcat:Physiological] ?gT,
+    [?alarm, mda:hasMessage, ?msg] ?gT,
+    [?msg, mda:concernsPatient, ?patient] ?gT,
+    [?msg, mda:triggeredBy, ?fu] ?gT,
+    [?analysis, mda:producesMetric, ?metric] ?gT,
+    [?metric, rdf:type, ?metricType] ?gT,
+    [?metric, ?stateProp, ?state] ?gT,
+    FILTER(?stateProp IN (mda:hasValueState, mda:hasRhythm)),
+    [?fu, mda:hasSensor, ?sensor] ?gP,
+    [?sensor, mda:sensorProducesSignal, ?signal] ?gP,
+    [?signal, mda:analyzedBy, ?analysis] ?gP,
+    [?sensor, rdf:type, ?sensorType] ?gP,
+    [?state, mdapoc:deviationDirection, ?direction],
+    [?state, mdapoc:deviationSeverity, ?severity],
+    # an active alarm of the same patient, same metric type (its own graphs)
+    [?active, mda:hasCategory, alarmcat:Physiological] ?gA,
+    [?active, mda:hasMessage, ?activeMsg] ?gA,
+    [?activeMsg, mda:concernsPatient, ?patient] ?gA,
+    [?activeMsg, mda:triggeredBy, ?activeFu] ?gA,
+    [?activeAnalysis, mda:producesMetric, ?activeMetric] ?gA,
+    [?activeMetric, rdf:type, ?metricType] ?gA,
+    [?activeMetric, ?activeStateProp, ?activeState] ?gA,
+    FILTER(?activeStateProp IN (mda:hasValueState, mda:hasRhythm)),
+    [?activeFu, mda:hasSensor, ?activeSensor] ?gAP,
+    [?activeSensor, mda:sensorProducesSignal, ?activeSignal] ?gAP,
+    [?activeSignal, mda:analyzedBy, ?activeAnalysis] ?gAP,
+    [?activeSensor, rdf:type, ?activeSensorType] ?gAP,
+    [?activeState, mdapoc:deviationDirection, ?direction],
+    [?activeState, mdapoc:deviationSeverity, ?activeSeverity],
     FILTER(?active != ?alarm),
-    FILTER(?sensorActive != ?sensorIn),
-    FILTER(?activeStart < ?alarmStart) .
+    FILTER(?activeSeverity >= ?severity),
+    # a different sensor: another functional unit, or another sensor type
+    FILTER(?activeFu != ?fu || ?activeSensorType != ?sensorType) .
 
-# VALIDATION — executed against real RDFox: positive (different sensors,
-# same metric type) → 1 (only after the arrival-order fix). negative
-# (same sensor) → 0. Re-validated end-to-end via engine/replay_driver.py's
-# cat2b_pos/cat2b_neg fabricated cases.
+# VALIDATION — engine/replay_driver.py run(), fixtures in
+# DATA/CAT_evaluation/events_data.csv: cat2b_pos (low SpO2 on two monitors)
+# silences; cat2b_neg, cat2b_opposite and cat2b_escalation do not;
+# cat2b_same_sensor never fires CAT2b (forbidden firing); cat2b_lift and
+# cat3f are silenced and lifted when the justifying alarm ends.

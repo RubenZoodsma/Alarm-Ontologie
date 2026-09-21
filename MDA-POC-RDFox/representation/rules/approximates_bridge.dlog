@@ -21,15 +21,9 @@
 #
 # mda:administers/mda:targetsProcess (the other two mda:situational-
 # tagged predicates the old clinical_context() also derived) are NOT
-# ported here: confirmed directly that no currently-loaded .dlog rule
-# references either, and that mda:administers is NOT actually producible
-# by mint.py's ground_chain anyway (mda:TherapeuticModality has no
-# concept entry in data/entities.ttl's scaffold, so ground_chain's own
-# legitimacy guard skips it — administers triples in kg_generated.ttl
-# are baked in at KG-build time by build_framework.py, a separate,
-# already-completed step this pipeline doesn't reproduce). Pre-existing,
-# harmless gap — not a regression this file introduces. Revisit only if
-# a future rule genuinely needs one of these.
+# ported here: no current rule references either. (Since the 2026-09
+# data sync mint.py does ground administers/targetsProcess from the
+# catalogue — see its module docstring — but nothing consumes them.)
 #
 # GRAPH SCOPING: ?g is bound on BOTH sides of every rule below, not left
 # ungraphed. The metric's rdf:type triple lives in the alarm's own
@@ -38,11 +32,10 @@
 # transient_triples — is where it lands, not the persistent graph).
 # Binding ?g this way ties the derived approximates fact to that SAME
 # graph's lifecycle, so it disappears the instant the metric's own value
-# does — exactly what every consuming rule already assumes (cat2a_
-# process_priority.dlog, cardiac_arrest.dlog, respiratory_arrest.dlog,
-# reduced_pulmonary_function.dlog all reference
-# `[?metric, mda:approximates, ?property] ?gN` as a graphed pattern
-# already). No changes needed to any of those files.
+# does — exactly what its consumer assumes (cat2a_process_priority.dlog
+# and its aggregate rewrite reference `[?metric, mda:approximates,
+# ?property] ?gN` as a graphed pattern). The clinical-event rules no
+# longer use approximates at all (engine/clinical_events.py).
 #
 # Loaded UNCONDITIONALLY (like FRAMEWORK_FILES, not gated by
 # poc_entry.py's enabled_rules) — this is prerequisite infrastructure,
@@ -122,8 +115,12 @@
 [?m, mda:approximates, physiologicalProperty:RespirationPressure] ?g :-
     [?m, rdf:type, metric:AirwayPressure_EndExpiratory] ?g .
 
+# AirwayPressure_Peak (2026-09-21, decision 39): the Ppeak / Paw-high
+# alarms, previously plain AirwayPressure. The former metric:CPAP rule is
+# gone with that metric (decision 38: CPAP alarms are
+# AirwayPressure_EndExpiratory, covered above).
 [?m, mda:approximates, physiologicalProperty:RespirationPressure] ?g :-
-    [?m, rdf:type, metric:CPAP] ?g .
+    [?m, rdf:type, metric:AirwayPressure_Peak] ?g .
 
 [?m, mda:approximates, physiologicalProperty:Temperature] ?g :-
     [?m, rdf:type, metric:AirTemperature] ?g .

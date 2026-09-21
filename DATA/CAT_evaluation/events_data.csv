@@ -3,8 +3,8 @@ cat1a_pos;PHILIPSMONITOR - Storing in SpO2;cat1apos_PhilipsMonitor_00;2026-01-01
 cat1a_pos;PHILIPSMONITOR - SpO2 laag;cat1apos_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
 cat1a_neg;PHILIPSMONITOR - Storing in SpO2;cat1aneg_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
 cat1a_neg;PHILIPSMONITOR - SpO2 laag;cat1aneg_PhilipsMonitor_01;2026-01-01T08:00:30;2026-01-01T08:01:00
-cat2a_pos;PHILIPSMONITOR - HF hoog;cat2apos_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
-cat2a_pos;PHILIPSMONITOR - Lage hartfreq.;cat2apos_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat2a_opposite;PHILIPSMONITOR - HF hoog;cat2aopposite_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat2a_opposite;PHILIPSMONITOR - Lage hartfreq.;cat2aopposite_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
 cat2a_neg;PHILIPSMONITOR - HF hoog;cat2aneg_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
 cat2a_neg;SERVOU - Ademfrequentie laag;cat2aneg_ServoU_00;2026-01-01T08:00:30;2026-01-01T08:01:00
 cat2b_pos;Monitor - Lage SpO2;cat2bpos_DraegerMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
@@ -29,3 +29,79 @@ cat3d;MEDIBUS - MV ondergrens;cat3d_Medibus_00;2026-01-01T08:00:00;2026-01-01T08
 cat3d;MEDIBUS - Ventilator storing;cat3d_Medibus_00;2026-01-01T08:00:30;2026-01-01T08:01:30
 cat3e;MEDIBUS - Ventilator storing;cat3e_Medibus_00;2026-01-01T08:00:00;2026-01-01T08:00:20
 cat3e;MEDIBUS - MV ondergrens;cat3e_Medibus_00;2026-01-01T08:10:00;2026-01-01T08:10:30
+cat3f;PHILIPSMONITOR - Asystolie;cat3f_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:01:00
+cat3f;PHILIPSMONITOR - Asystolie;cat3f_PhilipsMonitor_01;2026-01-01T08:00:30;2026-01-01T08:02:00
+cat1a_tech;PHILIPSMONITOR - SpO2 laag;cat1atech_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat1a_tech;PHILIPSMONITOR - SpO2 zwak signaal;cat1atech_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat1a_sibling;PHILIPSMONITOR - Lage hartfreq.;cat1asibling_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat1a_sibling;PHILIPSMONITOR - Niet te leren ECG;cat1asibling_PhilipsMonitor_00;2026-01-01T08:00:10;2026-01-01T08:03:00
+cat1a_sibling;PHILIPSMONITOR - Lage ademfreq.;cat1asibling_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat1a_otherfu;PHILIPSMONITOR - Storing in SpO2;cat1aotherfu_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat1a_otherfu;PHILIPSMONITOR - Lage hartfreq.;cat1aotherfu_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat1a_sensor_pos;PHILIPSMONITOR - ECG alle leads los;cat1asensorpos_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat1a_sensor_pos;PHILIPSMONITOR - Asystolie;cat1asensorpos_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:00:50
+cat1a_sensor_neg;PHILIPSMONITOR - SpO2-sensor los;cat1asensorneg_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat1a_sensor_neg;PHILIPSMONITOR - Lage hartfreq.;cat1asensorneg_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat1b_borrow;PHILIPSMONITOR - ABP verkleinen;cat1bborrow_PhilipsMonitor_00;2026-01-01T07:50:00;2026-01-01T07:50:20
+cat1b_borrow;PHILIPSMONITOR - Asystolie;cat1bborrow_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat1b_borrow;PHILIPSMONITOR - Lage hartfreq.;cat1bborrow_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat1b_ecmo;CARDIOHELP - pArt boven waarschuwingsgrens;cat1becmo_CardioHelp_00;2026-01-01T07:55:00;2026-01-01T07:55:20
+cat1b_ecmo;PHILIPSMONITOR - Asystolie;cat1becmo_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:00:20
+cat1b_other_monitor;Monitor - Lage ARTmean;cat1bothermon_DraegerMonitor_00;2026-01-01T07:55:00;2026-01-01T07:55:20
+cat1b_other_monitor;PHILIPSMONITOR - Asystolie;cat1bothermon_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:00:20
+cat1b_withdraw;PHILIPSMONITOR - ABP verkleinen;cat1bwithdraw_PhilipsMonitor_00;2026-01-01T07:55:00;2026-01-01T07:55:20
+cat1b_withdraw;PHILIPSMONITOR - Asystolie;cat1bwithdraw_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat1b_withdraw;PHILIPSMONITOR - ABPm laag;cat1bwithdraw_PhilipsMonitor_00;2026-01-01T08:00:08;2026-01-01T08:02:00
+cat2a_pos;PHILIPSMONITOR - Extr. lage hartfreq.;cat2apos_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat2a_pos;PHILIPSMONITOR - Lage hartfreq.;cat2apos_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat2a_escalation;PHILIPSMONITOR - Extr. lage hartfreq.;cat2aescalation_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat2a_escalation;PHILIPSMONITOR - Asystolie;cat2aescalation_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat2a_reversal;PHILIPSMONITOR - Extreme Tachy;cat2areversal_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat2a_reversal;PHILIPSMONITOR - Asystolie;cat2areversal_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat2a_hr_map;PHILIPSMONITOR - Lage hartfreq.;cat2ahrmap_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat2a_hr_map;PHILIPSMONITOR - ABPm laag;cat2ahrmap_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat2a_technical;PHILIPSMONITOR - Asystolie;cat2atechnical_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat2a_technical;PHILIPSMONITOR - SpO2 geen pols;cat2atechnical_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat2a_unknown;PHILIPSMONITOR - Lage ademfreq.;cat2aunknown_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat2a_unknown;SERVOU - Exp. minuutvol. laag;cat2aunknown_ServoU_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat2a_gate;PHILIPSMONITOR - ABPm laag;cat2agate_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat2a_gate;PHILIPSMONITOR - ABPm laag;cat2agate_PhilipsMonitor_01;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat2a_lift;PHILIPSMONITOR - Extr. lage hartfreq.;cat2alift_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:00:40
+cat2a_lift;PHILIPSMONITOR - Lage hartfreq.;cat2alift_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:10:00
+cat2a_lift_last;PHILIPSMONITOR - Extr. lage hartfreq.;cat2aliftlast_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:00:40
+cat2a_lift_last;PHILIPSMONITOR - Asystolie;cat2aliftlast_PhilipsMonitor_00;2026-01-01T08:00:15;2026-01-01T08:02:00
+cat2a_lift_last;PHILIPSMONITOR - Lage hartfreq.;cat2aliftlast_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:10:00
+identity_collision;PHILIPSMONITOR - ABPm laag;idcollision_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:05:00
+identity_collision;PHILIPSMONITOR - SpO2 laag;idcollision_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:00:20
+identity_collision;PHILIPSMONITOR - ABPm laag;idcollision_PhilipsMonitor_01;2026-01-01T08:01:00;2026-01-01T08:01:30
+cat2b_opposite;Monitor - Lage SpO2;cat2bopposite_DraegerMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat2b_opposite;PHILIPSMONITOR - SpO2 hoog;cat2bopposite_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat2b_escalation;Monitor - Lage SpO2;cat2bescalation_DraegerMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat2b_escalation;PHILIPSMONITOR - Desaturatie;cat2bescalation_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat2b_same_sensor;PHILIPSMONITOR - SpO2 laag;cat2bsamesensor_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:05:00
+cat2b_same_sensor;PHILIPSMONITOR - Storing in SpO2;cat2bsamesensor_PhilipsMonitor_00;2026-01-01T08:00:10;2026-01-01T08:03:00
+cat2b_same_sensor;PHILIPSMONITOR - SpO2 laag;cat2bsamesensor_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat2b_lift;Monitor - Lage SpO2;cat2blift_DraegerMonitor_00;2026-01-01T08:00:00;2026-01-01T08:00:40
+cat2b_lift;PHILIPSMONITOR - SpO2 laag;cat2blift_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:10:00
+cat3a_flagged;PHILIPSMONITOR - Niet te leren ECG;cat3aflagged_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat3a_flagged;PHILIPSMONITOR - Asystolie;cat3aflagged_PhilipsMonitor_00;2026-01-01T08:00:10;2026-01-01T08:01:00
+cat3a_flagged;PHILIPSMONITOR - Apneu;cat3aflagged_PhilipsMonitor_00;2026-01-01T08:00:20;2026-01-01T08:01:10
+cat3a_withdraw;PHILIPSMONITOR - ABP verkleinen;cat3awithdraw_PhilipsMonitor_00;2026-01-01T07:55:00;2026-01-01T07:55:20
+cat3a_withdraw;PHILIPSMONITOR - Asystolie;cat3awithdraw_PhilipsMonitor_00;2026-01-01T08:00:00;2026-01-01T08:01:00
+cat3a_withdraw;PHILIPSMONITOR - Apneu;cat3awithdraw_PhilipsMonitor_00;2026-01-01T08:00:05;2026-01-01T08:01:30
+cat3a_withdraw;PHILIPSMONITOR - ABPm laag;cat3awithdraw_PhilipsMonitor_00;2026-01-01T08:00:20;2026-01-01T08:01:00
+cat3b_leak;SERVOU - Te veel lekkage;cat3bleak_ServoU_00;2026-01-01T08:00:00;2026-01-01T08:01:00
+cat3b_leak;SERVOU - Exp. minuutvol. laag;cat3bleak_ServoU_00;2026-01-01T08:00:20;2026-01-01T08:01:30
+cat3b_circuit;SERVOU - Patiëntcircuit los;cat3bcircuit_ServoU_00;2026-01-01T08:00:00;2026-01-01T08:01:00
+cat3b_circuit;SERVOU - Exp. minuutvol. laag;cat3bcircuit_ServoU_00;2026-01-01T08:00:10;2026-01-01T08:00:40
+cat3b_disconnect;DATEXOHMEDACOMVENTILATOR - Patient Disconnected;cat3bdisconnect_CarescapeR860_00;2026-01-01T08:00:00;2026-01-01T08:01:00
+cat3b_disconnect;SERVOU - Exp. minuutvol. laag;cat3bdisconnect_ServoU_00;2026-01-01T08:00:30;2026-01-01T08:01:30
+cat3b_swap;DATEXOHMEDACOMVENTILATOR - Patient Disconnected;cat3bswap_CarescapeR860_00;2026-01-01T08:00:00;2026-01-01T08:00:20
+cat3b_swap;SERVOU - Exp. minuutvol. laag;cat3bswap_ServoU_00;2026-01-01T08:05:00;2026-01-01T08:05:30
+cat3b_datalink;MEDIBUS - Verbinding verbroken;cat3bdatalink_Medibus_00;2026-01-01T08:00:00;2026-01-01T08:01:00
+cat3b_datalink;MEDIBUS - MV ondergrens;cat3bdatalink_Medibus_00;2026-01-01T08:00:30;2026-01-01T08:01:30
+cat3b_cpap;HULBUS - CPAP low;cat3bcpap_Hulbus_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat3b_cpap;HULBUS - Leak too high;cat3bcpap_Hulbus_00;2026-01-01T08:00:10;2026-01-01T08:01:00
+cat3b_cpap;SERVOU - Exp. minuutvol. laag;cat3bcpap_ServoU_00;2026-01-01T08:00:20;2026-01-01T08:01:30
+cat2a_peak;DATEXOHMEDACOMVENTILATOR - VTexp High;cat2apeak_CarescapeR860_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat2a_peak;DATEXOHMEDACOMVENTILATOR - Ppeak High;cat2apeak_CarescapeR860_00;2026-01-01T08:00:30;2026-01-01T08:01:00
