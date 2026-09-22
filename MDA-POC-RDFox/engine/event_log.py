@@ -10,8 +10,8 @@ Never written back into the store.
 Alarms are written as labels (for reading) and ids (the local name of the
 alarm IRI, for rebuilding: validation/log_rebuild_check.py).
 
-Input: the trace blocks execution.read_results collects, as
-(tag, check_key, rows):
+Written live, per stream element (LiveLog), from the trace blocks of that
+element's output, as (tag, check_key, rows):
   "ended"                     event, kind, start, end
   "support"                   event, support (an alarm graph, or a
                               constituent event)
@@ -100,39 +100,6 @@ class EventRecord:
     alarms: set = field(default_factory=set)
 
 
-def event_records(blocks: list, patients=()) -> list:
-    """One EventRecord per ended clinical event, with every alarm that
-    supported it — directly, or through a constituent event."""
-    original = {M._clean(p): p for p in patients}
-    supports: dict = {}
-    for tag, _key, rows in blocks:
-        if tag == "support":
-            for ev, support in rows:
-                supports.setdefault(ev, set()).add(support)
-
-    def alarms_behind(ev, seen=()):
-        found = set()
-        for s in supports.get(ev, ()):
-            if s.startswith(M.EVENT_BASE):
-                if s not in seen:
-                    found |= alarms_behind(s, seen + (ev,))
-            else:
-                found.add(alarm_of(s))
-        return found
-
-    records = {}
-    for tag, _key, rows in blocks:
-        if tag != "ended":
-            continue
-        for ev, kind, start, end in rows:
-            kind_local = kind.rsplit("/", 1)[-1]
-            cleaned = ev[len(M.EVENT_BASE) + len(kind_local) + 1:].rsplit("_", 1)[0]
-            records[ev] = EventRecord(ev, kind_local, original.get(cleaned, cleaned),
-                                      datetime.fromisoformat(start), datetime.fromisoformat(end),
-                                      alarms_behind(ev))
-    return sorted(records.values(), key=lambda r: (r.patient, r.start, r.kind))
-
-
 @dataclass
 class FiringRecord:
     """One firing: a check that matched, a withdrawal or a lift."""
@@ -148,28 +115,6 @@ WITHDRAW_TAG = "withdraw "
 WITHDRAWN_RULE = "cat1b_withdrawn"
 LIFT_TAG = "lift "
 LIFTED_RULE = "cat2_lifted"
-
-
-def firing_records(blocks: list) -> list:
-    """One FiringRecord per matching check, per withdrawn cat1b flag
-    (WITHDRAWN_RULE) and per lifted CAT2 silence (LIFTED_RULE)."""
-    records = []
-    for tag, key, rows in blocks:
-        for prefix, kind, rule in ((WITHDRAW_TAG, "flagWithdrawn", WITHDRAWN_RULE),
-                                   (LIFT_TAG, "silenceLifted", LIFTED_RULE)):
-            if tag.startswith(prefix):
-                patient, when = tag[len(prefix):].rsplit(" ", 1)
-                for subject, cause in rows:
-                    records.append(FiringRecord(patient, datetime.fromisoformat(when),
-                                                kind, rule, subject, {cause}))
-                break
-        else:
-            if tag != "check" or not rows:
-                continue
-            patient, time, kind, rule = key[0], key[1], key[2], key[3]
-            causes = {alarm_of(w) for _a, w in rows if w}
-            records.append(FiringRecord(patient, time, kind, rule, rows[0][0], causes))
-    return records
 
 
 def flagged_alarms(firings: list) -> set:
@@ -192,25 +137,108 @@ def episodes_by_patient(records: list, kind: str) -> Counter:
     return Counter(r.patient for r in records if r.kind == kind)
 
 
-def write_event_log(records: list, alarms: dict, path: Path) -> None:
-    """clinical_events.csv."""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f, delimiter=";")
-        w.writerow(["patient", "kind", "start", "end", "supported_by", "alarm_ids"])
-        for r in records:
-            labels, ids = _describe(r.alarms, alarms)
-            w.writerow([r.patient, r.kind, r.start.isoformat(), r.end.isoformat(), labels, ids])
+EVENT_LOG_HEADER = ["patient", "kind", "start", "end", "supported_by", "alarm_ids"]
+FIRING_LOG_HEADER = ["patient", "time", "rule", "alarm", "caused_by", "alarm_ids"]
 
 
-def write_firing_log(records: list, alarms: dict, path: Path) -> None:
-    """rule_firings.csv."""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f, delimiter=";")
-        w.writerow(["patient", "time", "rule", "alarm", "caused_by", "alarm_ids"])
-        for r in records:
-            alarm_label, alarm_id = _describe({r.alarm}, alarms)
-            labels, ids = _describe(r.causes - {r.alarm}, alarms)
-            w.writerow([r.patient, r.time.isoformat(), r.rule, alarm_label, labels,
-                        " ".join(filter(None, [alarm_id, ids]))])
+class LiveLog:
+    """Both logs, kept up to date per stream element: add() takes the trace
+    blocks of one element's output (execution.read_blocks). A firing is
+    recorded at its check; a clinical event when it ends, with every alarm
+    that supported it, directly or through a constituent event. The only
+    state kept is what supports the events still active. With paths, rows
+    are written as they happen.
+
+    `patients`: the patient ids (event IRIs carry them cleaned).
+    `alarms`: {alarm IRI: Event} (alarm_index), to write labels and ids."""
+
+    def __init__(self, patients, alarms: dict, event_path: Path | None = None,
+                 firing_path: Path | None = None):
+        self._original = {M._clean(p): p for p in patients}
+        self._alarms = alarms
+        self._supports: dict = {}   # active event -> its supports so far
+        self.records: list = []     # EventRecord, in the order events end
+        self.firings: list = []     # FiringRecord, in the order they fire
+        self._event_file, self._event_csv = self._open(event_path, EVENT_LOG_HEADER)
+        self._firing_file, self._firing_csv = self._open(firing_path, FIRING_LOG_HEADER)
+
+    @staticmethod
+    def _open(path: Path | None, header: list) -> tuple:
+        if path is None:
+            return None, None
+        path.parent.mkdir(parents=True, exist_ok=True)
+        f = path.open("w", newline="", encoding="utf-8")
+        writer = csv.writer(f, delimiter=";")
+        writer.writerow(header)
+        return f, writer
+
+    def add(self, blocks: list) -> None:
+        for tag, key, rows in blocks:
+            if tag == "support":
+                for ev, support in rows:
+                    self._supports.setdefault(ev, set()).add(support)
+            elif tag == "ended":
+                # Resolve every ended event first: a combined event ends in
+                # the same step as its constituent, and reads its supports.
+                ended = [self._event_record(*row) for row in rows]
+                for record in ended:
+                    self._supports.pop(record.event, None)
+                    self._add_event(record)
+            else:
+                for firing in self._firing_records(tag, key, rows):
+                    self._add_firing(firing)
+        for f in (self._event_file, self._firing_file):
+            if f is not None:
+                f.flush()
+
+    def _alarms_behind(self, ev: str, seen: tuple = ()) -> set:
+        found = set()
+        for s in self._supports.get(ev, ()):
+            if s.startswith(M.EVENT_BASE):
+                if s not in seen:
+                    found |= self._alarms_behind(s, seen + (ev,))
+            else:
+                found.add(alarm_of(s))
+        return found
+
+    def _event_record(self, ev: str, kind: str, start: str, end: str) -> EventRecord:
+        kind_local = kind.rsplit("/", 1)[-1]
+        cleaned = ev[len(M.EVENT_BASE) + len(kind_local) + 1:].rsplit("_", 2)[0]  # drop start, number
+        return EventRecord(ev, kind_local, self._original.get(cleaned, cleaned),
+                           datetime.fromisoformat(start), datetime.fromisoformat(end),
+                           self._alarms_behind(ev))
+
+    @staticmethod
+    def _firing_records(tag: str, key, rows: list) -> list:
+        """A matching check, a withdrawn cat1b flag (WITHDRAWN_RULE) or a
+        lifted CAT2 silence (LIFTED_RULE), as FiringRecords."""
+        for prefix, kind, rule in ((WITHDRAW_TAG, "flagWithdrawn", WITHDRAWN_RULE),
+                                   (LIFT_TAG, "silenceLifted", LIFTED_RULE)):
+            if tag.startswith(prefix):
+                patient, when = tag[len(prefix):].rsplit(" ", 1)
+                return [FiringRecord(patient, datetime.fromisoformat(when), kind, rule, subject, {cause})
+                        for subject, cause in rows]
+        if tag != "check" or not rows:
+            return []
+        patient, time, kind, rule = key[0], key[1], key[2], key[3]
+        causes = {alarm_of(w) for _a, w in rows if w}
+        return [FiringRecord(patient, time, kind, rule, rows[0][0], causes)]
+
+    def _add_event(self, r: EventRecord) -> None:
+        self.records.append(r)
+        if self._event_csv is not None:
+            labels, ids = _describe(r.alarms, self._alarms)
+            self._event_csv.writerow([r.patient, r.kind, r.start.isoformat(), r.end.isoformat(), labels, ids])
+
+    def _add_firing(self, r: FiringRecord) -> None:
+        self.firings.append(r)
+        if self._firing_csv is not None:
+            alarm_label, alarm_id = _describe({r.alarm}, self._alarms)
+            labels, ids = _describe(r.causes - {r.alarm}, self._alarms)
+            self._firing_csv.writerow([r.patient, r.time.isoformat(), r.rule, alarm_label, labels,
+                                       " ".join(filter(None, [alarm_id, ids]))])
+
+    def close(self) -> None:
+        for f in (self._event_file, self._firing_file):
+            if f is not None:
+                f.close()

@@ -120,7 +120,8 @@ def silence_lift(ended_alarm: str, when: datetime) -> tuple:
 
 def evaluate_commands(kinds: set, rules: list, patient_id: str, now: datetime, invocation: int) -> list:
     """RDFox script lines that bring this patient's events of `kinds` up to
-    date at logical time `now`, timed per rule as `invocation`. Empty when
+    date at logical time `now`. `invocation` numbers this evaluation: it
+    times each rule and goes into the IRI of any event it starts. Empty when
     no kind is relevant."""
     ordered = [r.kind for r in rules if r.kind in kinds]
     if not ordered:
@@ -138,7 +139,7 @@ def evaluate_commands(kinds: set, rules: list, patient_id: str, now: datetime, i
     lines.append(compose("episode_remove", values(patient=patient)))
     for kind in ordered:
         rule = RULE_BY_KIND[kind]
-        event = M.event_iri(kind, patient_id, now)
+        event = M.event_iri(kind, patient_id, now, invocation)
         start = values(patient=patient, now=dt(now), kind=iri(CLINICAL_EVENT + kind),
                        event=iri(event), eventGraph=iri(f"{event}#event"))
         lines += timed(rule.name, invocation,

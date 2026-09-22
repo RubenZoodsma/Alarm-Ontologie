@@ -27,8 +27,9 @@ from pathlib import Path
 import mint as M
 from actions import (check, dt, evaluate_commands, flag_insert, flag_withdraw, iri, silence_bindings,
                      silence_insert, silence_lift, values)
-from event_log import trace_block
-from execution import FRAMEWORK_FILES, SCRIPT_PREAMBLE, RDFoxSession, _progress_bar, read_results, timed
+from event_log import LiveLog, trace_block
+from execution import (FRAMEWORK_FILES, SCRIPT_PREAMBLE, RDFoxSession, RuleStats, _progress_bar, read_blocks,
+                       timed)
 from rules import (RULES, _alarm_functional_unit,
                    _alarm_metric_types, enabled_event_rules, kinds_supported_by_metric, relevant_kinds)
 from stream import AlarmArrival, AlarmEnd, replay_stream
@@ -38,13 +39,14 @@ from windows import WindowOperator
 class Processor:
     """Turns stream elements into RDFox commands (`lines`, taken by
     take_lines) and records the CAT1/CAT2 checks it emitted (`checks`,
-    matched to their results by execution.read_results)."""
+    removed once LiveRun has read their results)."""
 
     def __init__(self, kb, scratch_dir: Path, rule_names):
         self.kb = kb
         self.scratch = scratch_dir
         self.lines: list = []
-        self.checks: list = []
+        self.checks: dict = {}                    # check number -> key, until its result is read
+        self._check_numbers = itertools.count()
         self._file_counter = itertools.count(1)
         self._invocations = itertools.count(1)   # numbers the timing groups
         self._windows: dict = {}       # patient -> WindowOperator
@@ -135,10 +137,11 @@ class Processor:
             if name == "cat1b" and "HeartRate" not in _alarm_metric_types(kb, e):
                 continue
             bindings = values(alarm=iri(alarm), now=now)
+            number = next(self._check_numbers)
             self.lines += timed(name, invocation,
-                                [*trace_block(f"check {len(self.checks)}", check(name, bindings)),
+                                [*trace_block(f"check {number}", check(name, bindings)),
                                  flag_insert(name, alarm, pending["tgraph"], now)])
-            self.checks.append((patient, e.start, "flaggedLikelyFalsePositive", name, ei))
+            self.checks[number] = (patient, e.start, "flaggedLikelyFalsePositive", name, ei)
         # An alarm on an IBP pathway may withdraw a cat1b flag; the asystole
         # then becomes evidence at this moment.
         withdraw_kinds = frozenset()
@@ -150,11 +153,12 @@ class Processor:
 
         prio = pending["incoming_prio"]
         for name in self.silence_rules:
+            number = next(self._check_numbers)
             self.lines += timed(name, invocation,
-                                [*trace_block(f"check {len(self.checks)}",
+                                [*trace_block(f"check {number}",
                                               check(name, silence_bindings(name, alarm, now, prio))),
                                  silence_insert(name, alarm, pending["tgraph"], now, prio)])
-            self.checks.append((patient, e.start, "silencedBy", name, ei))
+            self.checks[number] = (patient, e.start, "silencedBy", name, ei)
 
         self.lines += WindowOperator.complete(pending)
         # This arrival (or a cat1b withdrawal) may start or extend an event.
@@ -183,43 +187,74 @@ def script_header(dstore: str) -> list:
             + [f"import {f}" for f in FRAMEWORK_FILES] + SCRIPT_PREAMBLE)
 
 
-def execute(proc: Processor, session: RDFoxSession, where: str) -> bool:
-    """Send the processor's pending commands and wait until RDFox has run
-    them. Reports an RDFox error with `where` it happened. False once the
-    session has stopped."""
-    session.send(proc.take_lines())
-    received = session.sync()
-    for i, line in enumerate(received):
-        if line.startswith("An error occurred"):
-            print(f"\n  RDFox error at {where}: {' '.join(received[i:i + 2])}")
-    return session.stopped is None
+class LiveRun:
+    """A live run: one Processor and one RDFox session. Each stream element
+    is minted, executed by RDFox, and its results added to `log` and
+    `stats`, before the next element is taken. Raises if RDFox cannot load
+    the framework."""
+
+    def __init__(self, kb, scratch_dir: Path, rule_names, log: LiveLog, stats: RuleStats,
+                 timeout: float = 600, dstore: str = "poc", audit_log: bool = False):
+        self.proc = Processor(kb, scratch_dir, rule_names)
+        self.session = RDFoxSession(scratch_dir, timeout, audit_log)
+        self.log, self.stats = log, stats
+        self.errors = 0
+        self.proc.lines += script_header(dstore)
+        if not self.execute("loading the framework") or self.errors:
+            self.session.close()
+            raise RuntimeError(f"RDFox could not load the framework ({self.session.stopped or 'errors above'})")
+
+    def execute(self, where: str) -> bool:
+        """Send the pending commands, wait until RDFox has run them, and read
+        their results. An RDFox error is reported with `where` it happened.
+        False once the session has stopped."""
+        self.session.send(self.proc.take_lines())
+        self._read(self.session.sync(), where)
+        return self.session.stopped is None
+
+    def _read(self, lines: list, where: str) -> None:
+        for i, line in enumerate(lines):
+            if line.startswith("An error occurred") or "cannot be resolved to a file" in line:
+                self.errors += 1
+                print(f"\n  RDFox error at {where}: {' '.join(lines[i:i + 2])}")
+        self.stats.add(lines)
+        self.log.add(read_blocks(lines, self.proc.checks))
+
+    def stream(self, elements: list, on_arrival=None) -> bool:
+        """Feed `elements` unit by unit, each executed before the next.
+        `on_arrival()`: a progress callback. False once the session has
+        stopped."""
+        for unit in stream_units(elements):
+            self.proc.feed(unit)
+            if not self.execute(f"{unit[0].patient} {unit[0].time.isoformat()}"):
+                return False
+            if on_arrival is not None and isinstance(unit[0], AlarmArrival):
+                on_arrival()
+        return True
+
+    def close(self) -> bool:
+        """Quit RDFox. True if the run completed without RDFox errors."""
+        self._read(self.session.close(), "the end of the run")
+        complete = self.session.stopped is None
+        if complete and self.proc.checks:
+            print(f"  WARNING: {len(self.proc.checks)} check(s) without a result — results are incomplete.")
+            complete = False
+        if self.errors:
+            print(f"  WARNING: {self.errors} RDFox error(s) during the run (reported above).")
+        return complete and not self.errors
 
 
-def stream_through(proc: Processor, session: RDFoxSession, elements: list, on_arrival=None) -> bool:
-    """Feed `elements` unit by unit, each executed by RDFox before the next.
-    `on_arrival()`: a progress callback. False once the session has stopped."""
-    for unit in stream_units(elements):
-        proc.feed(unit)
-        if not execute(proc, session, f"{unit[0].patient} {unit[0].time.isoformat()}"):
-            return False
-        if on_arrival is not None and isinstance(unit[0], AlarmArrival):
-            on_arrival()
-    return True
-
-
-def run_live(kb, patients: dict, scratch_dir: Path, enabled_rules=None, progress: bool = True,
-             trace: list | None = None, timeout: float = 600, dstore: str = "poc") -> list:
+def run_live(kb, patients: dict, scratch_dir: Path, log: LiveLog, stats: RuleStats, enabled_rules=None,
+             progress: bool = True, timeout: float = 600, dstore: str = "poc",
+             audit_log: bool = False) -> bool:
     """Replay each patient's stream, one patient after another, through ONE
-    RDFox process and store, live: every element is executed before the
-    next is minted. `enabled_rules`: rules.RULES names, or None for all.
-    `timeout`: seconds RDFox may take for one element. Returns the
-    invocations (execution.parse_invocations); `trace` is extended with the
-    trace blocks."""
+    RDFox process and store, live (LiveRun); results go to `log` and
+    `stats` as they happen. `enabled_rules`: rules.RULES names, or None for
+    all. `timeout`: seconds RDFox may take for one element. `audit_log`:
+    write replay.rdfox (execution.RDFoxSession). True if the run completed
+    without RDFox errors."""
     rule_names = list(RULES) if enabled_rules is None else list(enabled_rules)
-    proc = Processor(kb, scratch_dir, rule_names)
-    session = RDFoxSession(scratch_dir, timeout)
-    session.send(script_header(dstore))
-    session.sync()
+    run = LiveRun(kb, scratch_dir, rule_names, log, stats, timeout, dstore, audit_log)
     t0 = time.monotonic()
 
     for pi, (patient, events) in enumerate(patients.items(), start=1):
@@ -232,31 +267,31 @@ def run_live(kb, patients: dict, scratch_dir: Path, enabled_rules=None, progress
                 print(f"\r  patient {pi}/{len(patients)} ({patient}) {_progress_bar(k, n_events)} "
                       f"{k}/{n_events} alarms [{time.monotonic() - t0:7.1f}s]", end="", flush=True)
 
-        ok = stream_through(proc, session, replay_stream(events), on_arrival=report)
+        ok = run.stream(replay_stream(events), on_arrival=report)
         if ok:
-            proc.close_windows()  # the patient's remaining windows
-            ok = execute(proc, session, f"{patient}, closing its windows")
+            run.proc.close_windows()  # the patient's remaining windows
+            ok = run.execute(f"{patient}, closing its windows")
         if progress:
             print()
         if not ok:
-            print(f"  *** RDFox {session.stopped} during patient {patient}: the run stops here; "
-                  f"results below are partial. ***")
+            print(f"  *** RDFox {run.session.stopped} during patient {patient}: the run stops here; "
+                  f"results are partial. ***")
             break
 
-    out_lines = session.close()
-    return read_results(out_lines, proc.checks, trace, complete=session.stopped is None)
+    return run.close()
 
 
-def run_batched(kb, patients: dict, scratch_root: Path, batch_size: "int | None" = None,
-                 enabled_rules=None, progress: bool = True, trace: list | None = None,
-                 timeout: float = 600) -> list:
+def run_batched(kb, patients: dict, scratch_root: Path, log: LiveLog, stats: RuleStats,
+                batch_size: "int | None" = None, enabled_rules=None, progress: bool = True,
+                timeout: float = 600, audit_log: bool = False) -> bool:
     """Run `patients` in batches of `batch_size` (None: one batch), each its
-    own live run (run_live) and RDFox process. Returns every batch's
-    invocations."""
+    own live run (run_live) and RDFox process, sharing `log` and `stats`.
+    A batch that stops is reported and the next batch still runs. True if
+    every batch completed without RDFox errors."""
     items = list(patients.items())
     size = batch_size if batch_size else len(items)
-    invocations: list = []
     num_batches = -(-len(items) // size) if items else 0  # ceil div
+    complete = True
     for bi in range(0, len(items), size):
         batch = dict(items[bi:bi + size])
         batch_num = bi // size + 1
@@ -266,6 +301,6 @@ def run_batched(kb, patients: dict, scratch_root: Path, batch_size: "int | None"
         if batch_scratch.exists():
             shutil.rmtree(batch_scratch)
         batch_scratch.mkdir(parents=True)
-        invocations += run_live(kb, batch, batch_scratch, enabled_rules=enabled_rules,
-                                progress=progress, trace=trace, timeout=timeout)
-    return invocations
+        complete &= run_live(kb, batch, batch_scratch, log, stats, enabled_rules=enabled_rules,
+                             progress=progress, timeout=timeout, audit_log=audit_log)
+    return complete

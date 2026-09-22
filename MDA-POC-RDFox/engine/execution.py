@@ -2,19 +2,20 @@
 execution.py — runs a generated script in RDFox and reads the results back.
 
 RDFox runs as one sandbox process per run (RDFoxSession), fed each stream
-element's commands in lockstep; results come back as trace blocks
-(event_log.trace_block). Each rule invocation is wrapped in
+element's commands in lockstep. Each element's output is read as it
+arrives: its trace blocks (read_blocks, for event_log.LiveLog) and its
+timing groups (RuleStats); nothing of it is kept. Each rule invocation is wrapped in
 a timing group (timed): the RDFox time of all its statements, and whether
 any of its selects answered, give the performance table.
 """
 
 from __future__ import annotations
 
-import math
 import queue
 import subprocess
 import threading
 import time
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -83,17 +84,17 @@ class RDFoxSession:
     """One RDFox process for a whole run, fed in lockstep: send() a stream
     element's commands, sync() until RDFox has executed them, then the next.
 
-    Everything sent is logged to `log` (replay.rdfox), each imported TriG
-    file's content under it as `#` comments; the file itself is deleted once
-    RDFox has imported it. A sync that exceeds `timeout` seconds kills RDFox;
-    `stopped` then says why, and the output so far can still be read."""
+    With `audit_log`, everything sent is logged to replay.rdfox, each
+    imported TriG file's content under it as `#` comments (large: ~17 KB per
+    alarm). Imported TriG files are deleted once RDFox has imported them. A sync that exceeds `timeout` seconds kills RDFox;
+    `stopped` then says why (also when RDFox exits), and nothing more is
+    sent."""
 
-    def __init__(self, scratch: Path, timeout: float):
+    def __init__(self, scratch: Path, timeout: float, audit_log: bool = False):
         self.scratch = scratch
         self.timeout = timeout
-        self.out_lines: list = []
         self.stopped: str | None = None
-        self._log = (scratch / "replay.rdfox").open("w", encoding="utf-8")
+        self._log = (scratch / "replay.rdfox").open("w", encoding="utf-8") if audit_log else None
         self._imported: list = []
         self._syncs = 0
         self._process = subprocess.Popen(
@@ -112,15 +113,22 @@ class RDFoxSession:
         self._q.put(None)
 
     def send(self, lines: list) -> None:
-        for line in lines:
-            self._process.stdin.write(line + "\n")
-            self._log.write(line + "\n")
-            if line.startswith("import "):
-                path = Path(line[len("import "):])
-                if path.parent == self.scratch:
-                    self._log.writelines(f"# {t}\n" for t in path.read_text().splitlines())
-                    self._imported.append(path)
-        self._process.stdin.flush()
+        if self.stopped is not None:
+            return
+        try:
+            for line in lines:
+                self._process.stdin.write(line + "\n")
+                if self._log is not None:
+                    self._log.write(line + "\n")
+                if line.startswith("import "):
+                    path = Path(line[len("import "):])
+                    if path.parent == self.scratch:
+                        if self._log is not None:
+                            self._log.writelines(f"# {t}\n" for t in path.read_text().splitlines())
+                        self._imported.append(path)
+            self._process.stdin.flush()
+        except BrokenPipeError:
+            self.stopped = "RDFox exited"
 
     def sync(self) -> list:
         """Wait until RDFox has executed everything sent; return its output
@@ -128,6 +136,8 @@ class RDFoxSession:
         self._syncs += 1
         marker = f"SYNC {self._syncs}"
         self.send([f"echo {marker}"])
+        if self.stopped is not None:
+            return []
         received, deadline = [], time.monotonic() + self.timeout
         while True:
             remaining = deadline - time.monotonic()
@@ -145,7 +155,6 @@ class RDFoxSession:
             if line == marker:
                 break
             received.append(line)
-        self.out_lines += received
         if self.stopped is None:
             for path in self._imported:
                 path.unlink()
@@ -153,36 +162,49 @@ class RDFoxSession:
         return received
 
     def close(self) -> list:
-        """Quit RDFox; return all its output."""
+        """Quit RDFox; return its output since the last sync."""
+        received = []
         if self.stopped is None:
             self.send(["quit"])
-            self._process.stdin.close()
+            try:
+                self._process.stdin.close()
+            except BrokenPipeError:
+                pass
             while (line := self._q.get()) is not None:
-                self.out_lines.append(line)
+                received.append(line)
         self._process.wait()
-        self._log.close()
-        return self.out_lines
+        if self._log is not None:
+            self._log.close()
+        return received
 
 
-def read_results(out_lines: list, checks: list, trace: list | None = None,
-                 complete: bool = True) -> list:
-    """Parse a run's output: extend `trace` with every trace block as (tag,
-    check_key or None, rows) — input for event_log — and return the
-    invocations (parse_invocations)."""
-    collected, n_checks = [], 0
-    for tag, rows, _seconds in EL.parse_trace_blocks(out_lines):
+def read_blocks(lines: list, checks: dict) -> list:
+    """The trace blocks in `lines`, as (tag, check_key or None, rows) — input
+    for event_log.LiveLog. A check block takes (and removes) its key from
+    `checks`."""
+    blocks = []
+    for tag, rows, _seconds in EL.parse_trace_blocks(lines):
         if tag.startswith("check "):
-            collected.append(("check", checks[int(tag.split(" ", 1)[1])], rows))
-            n_checks += 1
+            blocks.append(("check", checks.pop(int(tag.split(" ", 1)[1])), rows))
         else:
-            collected.append((tag, None, rows))
+            blocks.append((tag, None, rows))
+    return blocks
 
-    if n_checks != len(checks) and complete:
-        print(f"  WARNING: {n_checks} check result(s) for {len(checks)} check(s) — "
-              f"some check blocks are missing; results below are incomplete.")
-    if trace is not None:
-        trace.extend(collected)
-    return parse_invocations(out_lines)
+
+class RuleStats:
+    """Per rule, over a whole run: invocations, hits, and how many took each
+    number of milliseconds (RDFox's 1 ms resolution, so percentiles are
+    exact) — kept as counts, not per invocation."""
+
+    def __init__(self):
+        self.rules: dict = {}   # rule -> {"hits": int, "ms": Counter(ms -> invocations)}
+
+    def add(self, lines: list) -> None:
+        """The invocations in one element's output (parse_invocations)."""
+        for inv in parse_invocations(lines):
+            stats = self.rules.setdefault(inv.rule, {"hits": 0, "ms": Counter()})
+            stats["hits"] += inv.hit
+            stats["ms"][round(1000 * inv.seconds)] += 1
 
 
 # Table order and what a hit means, per action.
@@ -205,28 +227,29 @@ def _table_order() -> list:
     return order
 
 
-def _percentile(sorted_values: list, q: float) -> float:
-    """Nearest-rank percentile of an ascending list."""
-    return sorted_values[max(0, math.ceil(q * len(sorted_values)) - 1)]
+def _percentile(ms: Counter, q: float) -> int:
+    """Nearest-rank percentile of the counted millisecond values."""
+    rank, seen = max(1, -(-q * sum(ms.values()) // 1)), 0
+    for value in sorted(ms):
+        seen += ms[value]
+        if seen >= rank:
+            return value
+    return 0
 
 
-def summarize_invocations(invocations: list) -> None:
+def summarize_invocations(stats: RuleStats) -> None:
     """Print per rule: invocations, hits, hit rate, and RDFox time per
     invocation (total, mean, p95, max)."""
-    by_rule: dict = {}
-    for inv in invocations:
-        by_rule.setdefault(inv.rule, []).append(inv)
     print("\nRule performance (RDFox statement time, 1 ms resolution; an invocation "
           "is every statement of one rule at one moment):")
     print(f"  {'rule':<28} {'invocations':>11} {'hits':>7} {'hit rate':>9} {'total s':>9} "
           f"{'mean ms':>8} {'p95 ms':>7} {'max ms':>7}")
-    for rule in [r for r in _table_order() if r in by_rule] + sorted(set(by_rule) - set(_table_order())):
-        invs = by_rule[rule]
-        ms = sorted(1000 * i.seconds for i in invs)
-        hits = sum(i.hit for i in invs)
-        print(f"  {rule:<28} {len(invs):>11} {hits:>7} {100 * hits / len(invs):>8.1f}% "
-              f"{sum(ms) / 1000:>9.3f} {sum(ms) / len(ms):>8.2f} {_percentile(ms, 0.95):>7.0f} "
-              f"{ms[-1]:>7.0f}")
+    order = _table_order()
+    for rule in [r for r in order if r in stats.rules] + sorted(set(stats.rules) - set(order)):
+        ms, hits = stats.rules[rule]["ms"], stats.rules[rule]["hits"]
+        n, total_ms = sum(ms.values()), sum(value * k for value, k in ms.items())
+        print(f"  {rule:<28} {n:>11} {hits:>7} {100 * hits / n:>8.1f}% {total_ms / 1000:>9.3f} "
+              f"{total_ms / n:>8.2f} {_percentile(ms, 0.95):>7} {max(ms):>7}")
     print("  hit —")
     for who, what in HIT_MEANING:
         print(f"    {who + ':':<28} {what}")

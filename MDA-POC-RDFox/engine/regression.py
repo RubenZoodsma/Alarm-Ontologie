@@ -22,10 +22,15 @@ import rules as RU
 import event_log as EL
 import mint as M
 import stream as S
-from execution import summarize_invocations
+from execution import RuleStats, summarize_invocations
 from paths import ACTIONS_DIR, ENGINE_DIR, RULES_DIR
 from processor import Processor, run_live
 from stream import DATASET, group_by_patient, load_events
+
+SETTINGS = {
+    # Write every command sent to RDFox to _scratch/replay.rdfox (debugging).
+    "audit_logging": False,
+}
 
 # CAT1/CAT2 fabricated patients: expected flaggedLikelyFalsePositive/
 # silencedBy outcome. The CAT3 patients below are included here too
@@ -358,14 +363,15 @@ def run():
     groups = group_by_patient(events)
     in_scope = {p: evs for p, evs in groups.items() if p in EXPECTED}
 
-    trace: list = []
-    invocations = run_live(kb, in_scope, scratch, trace=trace)
-    summarize_invocations(invocations)
     alarms = EL.alarm_index(e for evs in in_scope.values() for e in evs)
-    records = EL.event_records(trace, in_scope)
-    firings = EL.firing_records(trace)
-    EL.write_event_log(records, alarms, scratch / "clinical_events.csv")
-    EL.write_firing_log(firings, alarms, scratch / "rule_firings.csv")
+    log = EL.LiveLog(in_scope, alarms, scratch / "clinical_events.csv", scratch / "rule_firings.csv")
+    stats = RuleStats()
+    complete = run_live(kb, in_scope, scratch, log, stats, audit_log=SETTINGS["audit_logging"])
+    log.close()
+    if not complete:
+        print("*** INCOMPLETE RUN: RDFox stopped or reported errors (see above). ***")
+    summarize_invocations(stats)
+    records, firings = log.records, log.firings
     for name in ("clinical_events.csv", "rule_firings.csv"):
         print(f"\n--- {name} ---")
         print((scratch / name).read_text().rstrip())
