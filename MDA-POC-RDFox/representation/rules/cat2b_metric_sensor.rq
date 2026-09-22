@@ -28,8 +28,8 @@
 #                                in this catalogue anyway.
 #   "overlapping or redundant" — (from the category header, as CAT2a) the
 #                                incoming alarm deviates in the SAME
-#                                direction and is NOT MORE SEVERE
-#                                (metric_state_order.ttl): two sensors that
+#                                direction and is NOT MORE SEVERE (the
+#                                value-state hierarchy, as CAT2a): two sensors that
 #                                disagree (SpO2 low vs high) or an escalation
 #                                (low SpO2 -> desaturation) is information.
 #                                No priority condition — the NL rule has
@@ -62,9 +62,9 @@
 ####################################################################
 
 PREFIX mda:      <https://w3id.org/mda/ontology#>
-PREFIX mdapoc:   <https://w3id.org/mda/poc#>
 PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX alarmcat: <https://w3id.org/mda/vocab/alarm-category/>
+PREFIX skos:     <http://www.w3.org/2004/02/skos/core#>
 
 # the incoming alarm (its own graphs)
 GRAPH ?gT { ?alarm mda:hasCategory alarmcat:Physiological .
@@ -75,7 +75,6 @@ GRAPH ?gT { ?alarm mda:hasCategory alarmcat:Physiological .
 VALUES ?stateProp { mda:hasValueState mda:hasRhythm }
 GRAPH ?gP { ?fu mda:hasSensor ?sensor . ?sensor mda:sensorProducesSignal ?signal .
             ?signal mda:analyzedBy ?analysis . ?sensor rdf:type ?sensorType . }
-?state mdapoc:deviationDirection ?direction . ?state mdapoc:deviationSeverity ?severity .
 
 # an active alarm of the same patient, same metric type (its own graphs)
 GRAPH ?gA { ?active mda:hasCategory alarmcat:Physiological .
@@ -88,10 +87,10 @@ GRAPH ?gAP { ?activeFu mda:hasSensor ?activeSensor .
              ?activeSensor mda:sensorProducesSignal ?activeSignal .
              ?activeSignal mda:analyzedBy ?activeAnalysis .
              ?activeSensor rdf:type ?activeSensorType . }
-?activeState mdapoc:deviationDirection ?direction . ?activeState mdapoc:deviationSeverity ?activeSeverity .
+# the same direction, not more severe
+?activeState (skos:broader|skos:broadMatch)* ?state .
 
 FILTER(?active != ?alarm)
-FILTER(?activeSeverity >= ?severity)
 # a different sensor: another functional unit, or another sensor type
 FILTER(?activeFu != ?fu || ?activeSensorType != ?sensorType)
 BIND(?gA AS ?witness)

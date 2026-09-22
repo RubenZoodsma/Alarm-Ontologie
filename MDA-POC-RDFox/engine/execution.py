@@ -24,12 +24,9 @@ FRAMEWORK_FILES = [
     DATA_DIR / "clinicalEvent_vocab.ttl",
     DATA_DIR / "inference.ttl",
     DATA_DIR / "priority_rank.ttl",
-    # mdapoc: — the POC's own terms (graph validity, silencing, false-
-    # positive flags, metric-state order), outside the mda: ontology.
+    # mdapoc: — the POC's own terms (silencing, false-positive flags),
+    # outside the mda: ontology.
     DATA_DIR / "mdapoc.ttl",
-    # Direction/severity of each metric state (mdapoc:) — CAT2's
-    # redundancy test.
-    DATA_DIR / "metric_state_order.ttl",
 ]
 
 # Set once at the top of every script: every select prints its answers as

@@ -361,8 +361,16 @@ def build_vocab_graph(missing: list, bindings: dict, base: Graph) -> Graph:
 
         g.add((c_iri, RDF.type, SKOS.Concept))
         g.add((c_iri, SKOS.inScheme, scheme))
-        if top is not None:
-            g.add((c_iri, SKOS.broader, top))
+        # The seed may place a generated concept in its scheme's hierarchy
+        # (skos:broader) or link it to another scheme (skos:broadMatch)
+        # without defining it — see vocab_base.ttl's Metric Value State
+        # section. Without a seed broader, the concept sits under the
+        # scheme's top concept.
+        seed_broader = set(base.objects(c_iri, SKOS.broader))
+        for parent in seed_broader or ({top} if top is not None else set()):
+            g.add((c_iri, SKOS.broader, parent))
+        for match in base.objects(c_iri, SKOS.broadMatch):
+            g.add((c_iri, SKOS.broadMatch, match))
         if kind == "node":
             g.add((c_iri, RDFS.subClassOf, cls))
         g.add((c_iri, SKOS.prefLabel, Literal(label, lang="en")))

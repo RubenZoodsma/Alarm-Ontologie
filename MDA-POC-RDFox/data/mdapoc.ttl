@@ -14,11 +14,9 @@
 #     mdapoc:flaggedLikelyFalsePositive): true only under this rule set and
 #     its timing policy (checked at arrival, lifted/withdrawn later); another
 #     alarm-management system on the same framework may decide otherwise.
-#   - Orderings not yet adopted by the framework (mdapoc:deviationDirection,
-#     mdapoc:deviationSeverity): framework candidates, deferred — see
-#     FRAMEWORK/PLAN_alarm_management_module.md.
 # Modelling the decisions as framework content (reified decision nodes, on
-# the mda:ClinicalEvent pattern) is also deferred to that plan.
+# the mda:ClinicalEvent pattern) is deferred — see
+# FRAMEWORK/PLAN_alarm_management_module.md.
 ####################################################################
 
 @prefix mdapoc:  <https://w3id.org/mda/poc#> .
@@ -47,18 +45,3 @@ mdapoc:silencedBy a owl:ObjectProperty ;
     rdfs:comment        "The subject alarm is silenced because the object alarm, active when the subject arrived, carries overlapping or redundant information (CAT2a, CAT2b). One link per justifying alarm; the silence lasts while at least one link remains."@en ;
     rdfs:domain         mda:Alarm ;
     rdfs:range          mda:Alarm .
-
-####################################################################
-# Metric-state order — values in metric_state_order.ttl. Framework
-# candidates (the counterpart of mda:priorityRank), deferred.
-####################################################################
-
-mdapoc:deviationDirection a owl:AnnotationProperty ;
-    dcterms:identifier  "deviationDirection" ;
-    rdfs:label          "deviation direction"@en, "afwijkingsrichting"@nl ;
-    rdfs:comment        "The direction in which a metric-state concept deviates from normal: \"low\" or \"high\"."@en .
-
-mdapoc:deviationSeverity a owl:AnnotationProperty ;
-    dcterms:identifier  "deviationSeverity" ;
-    rdfs:label          "deviation severity"@en, "ernst van de afwijking"@nl ;
-    rdfs:comment        "How far a metric-state concept deviates from normal, comparable only within one direction; higher is further from normal."@en .

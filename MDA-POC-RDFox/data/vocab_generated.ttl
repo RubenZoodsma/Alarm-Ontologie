@@ -969,6 +969,7 @@ functionalUnit:FU_Temperature a skos:Concept ;
         "FU_Temperature"@nl .
 
 metricRhythm:Absent a skos:Concept ;
+    skos:broadMatch metricValueState:SeverelyDecreased ;
     skos:broader metricRhythm:Rhythm ;
     skos:definition "Absent"@en,
         "Absent"@nl ;
@@ -977,35 +978,8 @@ metricRhythm:Absent a skos:Concept ;
     skos:prefLabel "Absent"@en,
         "Absent"@nl .
 
-metricValueState:Decreased a skos:Concept ;
-    skos:broader metricValueState:ValueState ;
-    skos:definition "Decreased"@en,
-        "Decreased"@nl ;
-    skos:inScheme metricValueState:Scheme ;
-    skos:notation "Decreased" ;
-    skos:prefLabel "Decreased"@en,
-        "Decreased"@nl .
-
-metricValueState:Increased a skos:Concept ;
-    skos:broader metricValueState:ValueState ;
-    skos:definition "Increased"@en,
-        "Increased"@nl ;
-    skos:inScheme metricValueState:Scheme ;
-    skos:notation "Increased" ;
-    skos:prefLabel "Increased"@en,
-        "Increased"@nl .
-
-metricValueState:SeverelyDecreased a skos:Concept ;
-    skos:broader metricValueState:ValueState ;
-    skos:definition "Severely Decreased"@en,
-        "Severely Decreased"@nl ;
-    skos:inScheme metricValueState:Scheme ;
-    skos:notation "SeverelyDecreased" ;
-    skos:prefLabel "Severely Decreased"@en,
-        "Severely Decreased"@nl .
-
 metricValueState:SeverelyIncreased a skos:Concept ;
-    skos:broader metricValueState:ValueState ;
+    skos:broader metricValueState:Increased ;
     skos:definition "Severely Increased"@en,
         "Severely Increased"@nl ;
     skos:inScheme metricValueState:Scheme ;
@@ -2403,6 +2377,33 @@ therapeuticModality:VentilationTherapy a skos:Concept ;
     skos:notation "VentilationTherapy" ;
     skos:prefLabel "Ventilation Therapy"@en,
         "Ventilation Therapy"@nl .
+
+metricValueState:Decreased a skos:Concept ;
+    skos:broader metricValueState:ValueState ;
+    skos:definition "Decreased"@en,
+        "Decreased"@nl ;
+    skos:inScheme metricValueState:Scheme ;
+    skos:notation "Decreased" ;
+    skos:prefLabel "Decreased"@en,
+        "Decreased"@nl .
+
+metricValueState:Increased a skos:Concept ;
+    skos:broader metricValueState:ValueState ;
+    skos:definition "Increased"@en,
+        "Increased"@nl ;
+    skos:inScheme metricValueState:Scheme ;
+    skos:notation "Increased" ;
+    skos:prefLabel "Increased"@en,
+        "Increased"@nl .
+
+metricValueState:SeverelyDecreased a skos:Concept ;
+    skos:broader metricValueState:Decreased ;
+    skos:definition "Severely Decreased"@en,
+        "Severely Decreased"@nl ;
+    skos:inScheme metricValueState:Scheme ;
+    skos:notation "SeverelyDecreased" ;
+    skos:prefLabel "Severely Decreased"@en,
+        "Severely Decreased"@nl .
 
 deviceType:CardioHelp a skos:Concept ;
     skos:broader deviceType:DeviceType ;

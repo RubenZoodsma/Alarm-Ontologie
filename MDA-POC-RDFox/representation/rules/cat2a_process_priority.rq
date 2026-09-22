@@ -37,8 +37,11 @@
 #                                match each other (heart rate vs pulse rate).
 #   "overlapping or redundant" — (from the category header) the incoming
 #                                alarm deviates in the SAME direction as the
-#                                active one and is NOT MORE SEVERE
-#                                (metric_state_order.ttl): a reversal
+#                                active one and is NOT MORE SEVERE: the
+#                                active state is the incoming one or narrower
+#                                in the value-state hierarchy (vocabulary:
+#                                skos:broader, and skos:broadMatch from the
+#                                rhythm Absent to SeverelyDecreased). A reversal
 #                                (tachycardia -> asystole) or an escalation
 #                                (severe bradycardia -> asystole) is new
 #                                information. The NL rule should read "...the
@@ -52,7 +55,7 @@
 #                                them ends while the incoming alarm is still
 #                                active (cat2_lift.rq).
 #
-# REPORTED STATE. Direction and severity come from the metric state
+# REPORTED STATE. The compared states are the metric states
 # (hasValueState or hasRhythm) matched INSIDE each alarm's own graph: the
 # metric node is shared by every alarm on that pathway and can carry
 # several states at once, but the copy in an alarm's own graph is the state
@@ -61,8 +64,8 @@
 # GRAPHS. ?gT is the incoming alarm's transient graph, ?gA an active
 # alarm's; everything each alarm contributes is matched inside its own
 # graph, so no hop is borrowed from another alarm. Priority rank, the
-# approximates axioms, process membership and state order are static facts
-# in the default graph.
+# approximates axioms, process membership and the value-state hierarchy
+# are static facts in the default graph.
 #
 # CONTRACT. Bound on entry: ?alarm (the incoming alarm), ?now, ?incomingPrio
 # (its priority: its own hasPriority triple is inserted only after its
@@ -79,12 +82,12 @@
 ####################################################################
 
 PREFIX mda:       <https://w3id.org/mda/ontology#>
-PREFIX mdapoc:    <https://w3id.org/mda/poc#>
 PREFIX alarmcat:  <https://w3id.org/mda/vocab/alarm-category/>
 PREFIX alarmprio: <https://w3id.org/mda/vocab/alarm-priority/>
 PREFIX rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl:       <http://www.w3.org/2002/07/owl#>
+PREFIX skos:      <http://www.w3.org/2004/02/skos/core#>
 
 # the incoming alarm (its own graph)
 GRAPH ?gT { ?alarm mda:hasCategory alarmcat:Physiological .
@@ -95,7 +98,6 @@ VALUES ?stateProp { mda:hasValueState mda:hasRhythm }
 ?metricType rdfs:subClassOf* ?r . ?r owl:onProperty mda:approximates ; owl:hasValue ?property .
 ?property mda:isPropertyOf ?process .
 ?incomingPrio mda:priorityRank ?incomingRank .
-?state mdapoc:deviationDirection ?direction . ?state mdapoc:deviationSeverity ?severity .
 
 # an active alarm of the same patient (its own graph)
 GRAPH ?gA { ?active mda:hasCategory alarmcat:Physiological .
@@ -108,13 +110,13 @@ VALUES ?activeStateProp { mda:hasValueState mda:hasRhythm }
 ?activeMetricType rdfs:subClassOf* ?activeR . ?activeR owl:onProperty mda:approximates ; owl:hasValue ?activeProperty .
 ?activeProperty mda:isPropertyOf ?process .
 ?activePrio mda:priorityRank ?activeRank .
-?activeState mdapoc:deviationDirection ?direction . ?activeState mdapoc:deviationSeverity ?activeSeverity .
+# the same direction, not more severe
+?activeState (skos:broader|skos:broadMatch)* ?state .
 
 FILTER(?active != ?alarm)
 FILTER(?incomingPrio != alarmprio:Unknown)
 FILTER(?activePrio != alarmprio:Unknown)
 FILTER(?activeRank >= ?incomingRank)
-FILTER(?activeSeverity >= ?severity)
 # a property of more than one process matches only itself
 FILTER(?property = ?activeProperty || (
   NOT EXISTS { ?property mda:isPropertyOf ?otherProcess . FILTER(?otherProcess != ?process) } &&

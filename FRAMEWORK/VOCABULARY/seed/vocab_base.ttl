@@ -458,6 +458,17 @@ metricValueState:ValueState       a skos:Concept ;
                             "Waar de waarde van een metriek zich bevindt ten opzichte van de ingestelde alarmgrenzen van het apparaat, zoals verhoogd, verlaagd, sterk verlaagd of afwezig."@nl ;
     skos:notation           "ValueState" .
 
+# The hierarchy of the value states. The concepts themselves are generated
+# from the annotated CSV (build_framework.py); these triples only place them:
+# a severe deviation is a narrower case of the deviation in its direction, so
+# "the same direction and not more severe" is `?active skos:broader* ?incoming`
+# (an active SeverelyDecreased covers an incoming Decreased, not the other way
+# round; the two directions share no ancestor below ValueState).
+metricValueState:Decreased          skos:broader  metricValueState:ValueState .
+metricValueState:SeverelyDecreased  skos:broader  metricValueState:Decreased .
+metricValueState:Increased          skos:broader  metricValueState:ValueState .
+metricValueState:SeverelyIncreased  skos:broader  metricValueState:Increased .
+
 
 ############################################################
 # Metric Rhythm scheme
@@ -473,6 +484,12 @@ metricRhythm:Rhythm               a skos:Concept ;
     skos:definition         "How a metric's value fluctuates across successive cycles over time, such as irregular or atrial fibrillation."@en,
                             "Hoe de waarde van een metriek over opeenvolgende cycli in de tijd fluctueert, zoals onregelmatig of atriumfibrilleren."@nl ;
     skos:notation           "Rhythm" .
+
+# An absent rhythm (asystole, apnoea) is the extreme low of the metric's
+# value: linked across schemes, so it sits below SeverelyDecreased in the
+# value-state hierarchy without leaving the rhythm scheme. The concept is
+# generated from the annotated CSV; this triple only links it.
+metricRhythm:Absent  skos:broadMatch  metricValueState:SeverelyDecreased .
 
 
 ############################################################
