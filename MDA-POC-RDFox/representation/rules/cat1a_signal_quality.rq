@@ -1,0 +1,95 @@
+####################################################################
+# cat1a_signal_quality.rq — CAT1a condition. HAND-AUTHORED.
+#
+# NL rule (CAT1): "If a signal supporting a physiological alarm is of
+# insufficient quality, the alarm is flagged as likely false positive."
+#
+# Clause by clause:
+#   "a physiological alarm"    — the arriving alarm has category
+#                                alarmcat:Physiological. A technical alarm
+#                                (e.g. "SpO2 zwak signaal") reports the
+#                                quality problem; it is never itself flagged.
+#   "a signal supporting [it]" — the signal on the alarm's OWN sensing
+#                                pathway: its FunctionalUnit -> sensor ->
+#                                signal -> the analysis producing its metric.
+#                                Anchored at both ends on the alarm itself
+#                                (?fu from its message, ?analysis from its
+#                                metric), so a sibling signal on the same
+#                                sensor never counts — e.g. an ECG-signal
+#                                problem does not flag a respiration-rate
+#                                alarm derived from ECG_lead_Impedance.
+#   "insufficient quality"     — either any mda:hasQualityState other than
+#                                Good currently asserted on that signal, or
+#                                the sensor producing it in a fault state:
+#                                Disabled, Disconnected or Malfunction — the
+#                                signal is not being acquired at all (e.g.
+#                                "ECG alle leads los" -> "Asystolie"). The
+#                                second branch extends the NL wording
+#                                deliberately (agreed 2026-09-21); the NL
+#                                table should read "...is of insufficient
+#                                quality or not acquired...". Both states are
+#                                reported by some alarm on the same pathway,
+#                                in practice a technical one. The quality-
+#                                state scheme holds only Impaired/
+#                                ScalingError today; the Good exclusion keeps
+#                                the first branch correct if a healthy state
+#                                is ever added. Warning is left out of the
+#                                second branch: no sensor alarm asserts it,
+#                                and it does not mean the signal is lost.
+#   "is"                       — currently: a quality state holds only
+#                                while the alarm reporting it is active.
+#
+# Evaluated once, when the physiological alarm arrives (agreed
+# 2026-09-21): the flag informs whether the alarm is annunciated, so a
+# quality problem that starts later does not flag an alarm already active.
+#
+# KNOWN GAP (vocabulary, not this rule): "PHILIPSMONITOR - Resp elektr.los"
+# sits on sensor ECG_lead_Resp, but respiration-rate alarms are modelled on
+# ElectroCardioGraphy_sensor/ECG_lead_Impedance — so it never reaches any
+# alarm's pathway and never flags anything.
+#
+# GRAPHS. ?gT is the arriving alarm's transient graph (category, message,
+# triggeredBy and producesMetric are minted there together); ?gP is a
+# persistent graph holding its structural chain (FunctionalUnit, sensor,
+# signal, analysis — re-minted per alarm, so any copy carrying these exact
+# IRIs is the same pathway); ?gQ is wherever the quality state was
+# reported. Grouping the pathway into ?gT/?gP — instead of one free graph
+# variable per hop — is what stops hops from being borrowed from another
+# alarm's chain.
+#
+# CONTRACT. Bound on entry: ?alarm (the arriving alarm), ?now.
+# Binds: ?evidence (the signal or sensor the verdict rests on) and ?witness
+# (the graph that reported it, hence the causing alarm).
+# Used by actions/check.rq (the firing log) and actions/flag_insert.rq
+# (the stored flag, which keeps the alarm from counting as evidence for a
+# clinical event).
+#
+# VALIDATION — engine/regression.py: cat1a_pos (quality fault, then its
+# physiological alarm) and cat1a_sensor_pos (ECG leads off, then asystole)
+# flag; cat1a_neg (other device), cat1a_tech (technical alarm on a bad
+# signal), cat1a_sibling (respiration-rate alarm while the ECG signal is
+# impaired), cat1a_otherfu (SpO2 fault vs heart-rate alarm) and
+# cat1a_sensor_neg (SpO2 sensor off vs heart-rate alarm) do not.
+####################################################################
+
+PREFIX mda:          <https://w3id.org/mda/ontology#>
+PREFIX mdapoc:       <https://w3id.org/mda/poc#>
+PREFIX alarmcat:     <https://w3id.org/mda/vocab/alarm-category/>
+PREFIX qualitystate: <https://w3id.org/mda/vocab/quality-state/>
+PREFIX opstate:      <https://w3id.org/mda/vocab/operation-state/>
+
+GRAPH ?gT { ?alarm mda:hasCategory alarmcat:Physiological .
+            ?alarm mda:hasMessage ?msg . ?msg mda:triggeredBy ?fu .
+            ?analysis mda:producesMetric ?metric . }
+GRAPH ?gP { ?fu mda:hasSensor ?sensor . ?sensor mda:sensorProducesSignal ?signal .
+            ?signal mda:analyzedBy ?analysis . }
+{
+  GRAPH ?gQ { ?signal mda:hasQualityState ?quality }
+  FILTER(?quality != qualitystate:Good)
+  BIND(?signal AS ?evidence)
+} UNION {
+  GRAPH ?gQ { ?sensor mda:hasSensorOperationState ?sensorState }
+  VALUES ?sensorState { opstate:Disabled opstate:Disconnected opstate:Malfunction }
+  BIND(?sensor AS ?evidence)
+}
+BIND(?gQ AS ?witness)

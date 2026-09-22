@@ -1,0 +1,21 @@
+# episode_start.rq — START: with no event of ?kind for ?patient in the
+# store and the criterion holding, create the event ?event in its own named
+# graph ?eventGraph (its unit of removal), with hasStart = ?now.
+# Slots: {{BINDINGS}} ?patient ?now ?kind ?event ?eventGraph; {{CONDITION}}
+# the kind's rule.
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+INSERT { GRAPH ?eventGraph {
+  ?event rdf:type mda:ClinicalEvent .
+  ?event rdf:type ?kind .
+  ?event mda:concernsPatient ?patient .
+  ?event mda:hasStart ?now .
+  ?event mda:evidencedBy ?evidence .
+} }
+WHERE {
+  {{BINDINGS}}
+  FILTER NOT EXISTS { GRAPH ?anyGraph { ?open rdf:type ?kind . ?open mda:concernsPatient ?patient . } }
+  {{CONDITION}}
+}

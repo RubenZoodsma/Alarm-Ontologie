@@ -1,0 +1,9 @@
+# flag_withdraw_delete.rq — remove the CAT1b flags an arriving alarm
+# withdraws.
+# Slots: {{BINDINGS}} ?new; {{CONDITION}} rules/cat1b_withdraw.rq (binds
+# ?gFlag ?flagged ?fu).
+
+PREFIX mdapoc: <https://w3id.org/mda/poc#>
+
+DELETE { GRAPH ?gFlag { ?flagged mdapoc:flaggedLikelyFalsePositive ?fu } }
+WHERE { {{BINDINGS}} {{CONDITION}} }

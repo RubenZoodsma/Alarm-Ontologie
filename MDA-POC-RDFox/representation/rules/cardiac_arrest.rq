@@ -1,0 +1,32 @@
+####################################################################
+# cardiac_arrest.rq — clinical event CardiacArrest. HAND-AUTHORED.
+#
+# Criterion (FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl):
+#   evidencedBy some (metric:HeartRate and hasRhythm value Absent)
+# — a heart-rate metric with an absent rhythm (asystole), reported by an
+# alarm of this patient that is still active and not CAT1-flagged. An
+# alarm CAT1 flagged as likely false positive supports no clinical event
+# (agreed 2026-09-21): a condition must not rest on an alarm the POC itself
+# believes to be false. A withdrawn CAT1b flag lets the asystole count from
+# the withdrawal on.
+#
+# Everything is matched in ONE alarm's transient graph: its message (hence
+# its patient), its metric and state, and any CAT1 flag on it are inserted
+# there together, so a metric found in that graph is that alarm's metric,
+# reporting that state.
+#
+# CONTRACT. Bound on entry: ?patient, ?now. Binds: ?evidence (the metric),
+# ?support (the alarm's graph). Used by the episode actions
+# (actions/episode_*.rq), which maintain one event per episode.
+####################################################################
+
+PREFIX mda:    <https://w3id.org/mda/ontology#>
+PREFIX mdapoc: <https://w3id.org/mda/poc#>
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX metric: <https://w3id.org/mda/vocab/metric/>
+PREFIX rhythm: <https://w3id.org/mda/vocab/metric-rhythm/>
+
+GRAPH ?gEv { ?evAlarm mda:hasMessage ?evMsg . ?evMsg mda:concernsPatient ?patient .
+             ?evidence rdf:type metric:HeartRate . ?evidence mda:hasRhythm rhythm:Absent . }
+FILTER NOT EXISTS { GRAPH ?gEv { ?evAlarm mdapoc:flaggedLikelyFalsePositive ?why } }
+BIND(?gEv AS ?support)

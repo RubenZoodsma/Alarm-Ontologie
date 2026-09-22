@@ -361,8 +361,16 @@ def build_vocab_graph(missing: list, bindings: dict, base: Graph) -> Graph:
 
         g.add((c_iri, RDF.type, SKOS.Concept))
         g.add((c_iri, SKOS.inScheme, scheme))
-        if top is not None:
-            g.add((c_iri, SKOS.broader, top))
+        # The seed may place a generated concept in its scheme's hierarchy
+        # (skos:broader) or link it to another scheme (skos:broadMatch)
+        # without defining it — see vocab_base.ttl's Metric Value State
+        # section. Without a seed broader, the concept sits under the
+        # scheme's top concept.
+        seed_broader = set(base.objects(c_iri, SKOS.broader))
+        for parent in seed_broader or ({top} if top is not None else set()):
+            g.add((c_iri, SKOS.broader, parent))
+        for match in base.objects(c_iri, SKOS.broadMatch):
+            g.add((c_iri, SKOS.broadMatch, match))
         if kind == "node":
             g.add((c_iri, RDFS.subClassOf, cls))
         g.add((c_iri, SKOS.prefLabel, Literal(label, lang="en")))
@@ -640,6 +648,63 @@ KIND_OF = {
     MDA.Referential:  "referential",
     MDA.Stateful:     "stateful",
 }
+
+
+def check_approximates_axioms(kg: Graph, inference: Graph, vocab: Graph) -> None:
+    """
+    Two sources state which physiological property a metric approximates,
+    deliberately kept apart: the annotated CSV, per alarm (the archetype's
+    "[ a metric:X ; mda:approximates P ]" in kg_generated.ttl, built here),
+    and inference.ttl's hand-authored clinical axioms, per metric concept
+    ("metric:X rdfs:subClassOf [owl:onProperty mda:approximates ;
+    owl:hasValue P]", inherited by subclasses). Nothing else keeps them in
+    step, so this checks every annotated edge against the axiom for its
+    metric's type:
+
+      - an axiom giving a DIFFERENT property: the build stops (one of the
+        two sources is wrong; which one is a clinical decision);
+      - no axiom for the metric at all: warning (the annotation is kept,
+        but a consumer that reads the axioms, such as the POC's CAT2a, does
+        not see it);
+      - an annotated property on a metric without a type: warning.
+    """
+    tbox = inference + vocab
+
+    def axiom_properties(concept, seen=()):
+        found = set()
+        for sup in tbox.objects(concept, RDFS.subClassOf):
+            if (sup, OWL.onProperty, MDA.approximates) in tbox:
+                found |= set(tbox.objects(sup, OWL.hasValue))
+            elif isinstance(sup, URIRef) and sup not in seen:
+                found |= axiom_properties(sup, seen + (concept,))
+        return found
+
+    conflicts, unbridged, untyped = set(), set(), 0
+    for metric, prop in kg.subject_objects(MDA.approximates):
+        types = [t for t in kg.objects(metric, RDF.type) if isinstance(t, URIRef)]
+        if not types:
+            untyped += 1
+            continue
+        for t in types:
+            axioms = axiom_properties(t)
+            if not axioms:
+                unbridged.add((_local(t), _local(prop)))
+            elif axioms != {prop}:
+                conflicts.add((_local(t), _local(prop), ", ".join(sorted(_local(a) for a in axioms))))
+
+    for metric, prop in sorted(unbridged):
+        print(f"[WARN]   approximates: metric:{metric} is annotated as approximating "
+              f"{prop}, but inference.ttl has no approximates axiom for it")
+    if untyped:
+        print(f"[WARN]   approximates: {untyped} archetype(s) annotate a physiological "
+              f"property on a metric without a metric type")
+    if conflicts:
+        raise ValueError(
+            "The annotated CSV and inference.ttl disagree on what a metric approximates:\n"
+            + "\n".join(f"  metric:{m}: annotated {p}, inference.ttl {a}" for m, p, a in sorted(conflicts))
+            + "\nFix the annotation or the axiom (FRAMEWORK/KNOWLEDGE_BASE/inference.ttl).")
+    print(f"[check]  approximates: annotated edges agree with inference.ttl "
+          f"({len(unbridged)} metric(s) without an axiom)")
 
 
 def alarmtype_iri(label: str, priority: str) -> URIRef:
@@ -1062,10 +1127,21 @@ def build_alarmtype_triples(row: pd.Series, kg: Graph, ref: Graph, index: dict,
         # above already documents and fixes for mda:administers/
         # hasOperationState/hasTherapyDeliveryQuality — never generalised to
         # mda:approximates/isPropertyOf until now.
+        #
+        # Routing the edge to kg was not enough: a stateful node's outgoing
+        # anchor (out[cls]) is its CONCEPT, so the edge still had the shared
+        # concept as its subject ("metric:SpO2 mda:approximates ..." in
+        # kg_generated.ttl). It now leaves from the archetype's own node
+        # (nodes[cls], the per-alarm blank node): "[ a metric:SpO2 ;
+        # mda:approximates physiologicalProperty:SaO2 ]", like every other
+        # edge in an archetype. check_approximates_axioms() then checks it
+        # against inference.ttl.
         parent_stateful = node_kind.get(parent_cls) == "stateful"
-        target = kg if parent_stateful else (
-            ref if (_is_shared(parent_out) and _is_shared(child_in)) else kg)
-        target.add((parent_out, prop, child_in))
+        if parent_stateful:
+            kg.add((nodes[parent_cls], prop, child_in))
+        else:
+            target = ref if (_is_shared(parent_out) and _is_shared(child_in)) else kg
+            target.add((parent_out, prop, child_in))
 
         # Marker co-types stamped by the connecting property (mda:targetType),
         # e.g. the message root (a Patient) is also typed mda:AlarmMessage.
@@ -1247,6 +1323,7 @@ def main() -> None:
                                    sensor_of_signal, administers_map, inference)
     for t in ref_out:                     # merge the deduplicated universal graph
         vocab_out.add(t)
+    check_approximates_axioms(kg_out, inference, vocab_out)
 
     VOCAB_OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     KG_OUT_PATH.parent.mkdir(parents=True, exist_ok=True)

@@ -3,13 +3,13 @@ poc_entry.py — run the MDA-POC-RDFox window operator over a configurable
 subset of patients and a configurable subset of rules.
 
 This is the general-purpose "run the POC" entry point — distinct from
-engine/replay_driver.py's own run(), which is a FIXED regression test
+engine/regression.py, which is a FIXED regression test
 against the 46 fabricated CAT1–CAT3 patients in DATA/CAT_evaluation/
 events_data.csv, checked against a hand-authored expected-outcome table.
 Real patients (the default dataset here) have no such ground truth, so
 this script reports what fired instead of pass/fail.
 
-Reuses engine/replay_driver.py and engine/mint.py as-is — no rule or
+Reuses the engine modules (engine/processor.py, engine/mint.py, ...) as-is — no rule or
 grounding logic is duplicated here; this file is orchestration only
 (dataset/patient/rule selection, execution, reporting).
 
@@ -66,10 +66,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "engine"))
-import clinical_events as CE
 import event_log as EL
 import mint as M
-import replay_driver as R
+import execution as X
+import processor as P
+import rules as RU
+import stream as S
 
 RDATA_EXPORT_SCRIPT = ROOT / "data" / "tools" / "export_rdata.R"
 
@@ -93,15 +95,15 @@ SETTINGS = {
     # the entire set — the point of this setting against the full
     # 14M-alarm corpus: try a handful of patients cheaply instead of
     # paying for all 3299.
-    "n_patients": 50,
+    "n_patients": 5,
 
     # Fixes WHICH patients get sampled when n_patients is a number, so a
     # run is reproducible. Change it to get a different random subset.
     "seed": 42,
 
-    # One switch per rule (engine/replay_driver.RULE_FILES' entries) —
+    # One switch per rule (engine/rules.RULES' entries) —
     # flip any of these to False to exclude that rule from the run.
-    #"enabled_rules": {name: True for name in R.RULE_FILES},
+    #"enabled_rules": {name: True for name in RU.RULES},
     "enabled_rules": {
     "cardiac_arrest": True,
     "respiratory_arrest": True,
@@ -112,12 +114,12 @@ SETTINGS = {
     "cat2b": True,
     # cardiac_arrest/respiratory_arrest/reduced_pulmonary_function and
     # cat3a (cardiorespiratory arrest)/cat3b (ventilation failure) maintain
-    # clinical events per patient (engine/clinical_events.py). A combined
+    # clinical events per patient (engine/actions.py, episodes). A combined
     # rule needs its constituents enabled too (cat3a: cardiac_arrest +
     # respiratory_arrest; cat3b: reduced_pulmonary_function) — build_script
     # raises a clear error otherwise. Every event is scoped to one patient,
     # so any batch_size is safe. Covered by the regression fixtures in
-    # DATA/CAT_evaluation/events_data.csv (engine/replay_driver.py run()).
+    # DATA/CAT_evaluation/events_data.csv (engine/regression.py).
     "cat3a": True,
     "cat3b": True,
 },
@@ -125,7 +127,7 @@ SETTINGS = {
     # fine at this dataset's scale. An int (e.g. 200) processes patients
     # in bounded-size batches instead, each its own RDFox run — bounds
     # memory/disk for a run large enough that holding everyone in one
-    # script/dstore stops being practical (see engine/replay_driver.
+    # script/dstore stops being practical (see engine/processor.
     # run_batched's own docstring). Worth setting once n_patients is
     # "all" against the full 14M-alarm corpus's 3299 patients.
     "batch_size": 1,
@@ -178,7 +180,7 @@ def choose_patient_ids(all_ids: list, n, seed: int) -> list:
 
 
 def report(patients: dict, rule_names: list, firings: list, records: list) -> None:
-    event_kinds = [r.kind for r in CE.enabled_event_rules(rule_names)]
+    event_kinds = [r.kind for r in RU.enabled_event_rules(rule_names)]
     episodes = {kind: EL.episodes_by_patient(records, kind) for kind in event_kinds}
     total_flagged = total_silenced = total_managed = total_alarms = 0
     total_events = {kind: 0 for kind in event_kinds}
@@ -223,12 +225,12 @@ def report(patients: dict, rule_names: list, firings: list, records: list) -> No
 def run():
     t_start = time.monotonic()
 
-    unknown = set(SETTINGS["enabled_rules"]) - set(R.RULE_FILES)
+    unknown = set(SETTINGS["enabled_rules"]) - set(RU.RULES)
     if unknown:
         raise ValueError(f"Unknown rule name(s) in SETTINGS['enabled_rules']: {sorted(unknown)} "
-                          f"— valid names are {sorted(R.RULE_FILES)}")
+                          f"— valid names are {sorted(RU.RULES)}")
     rule_names = sorted(name for name, on in SETTINGS["enabled_rules"].items() if on)
-    print(f"Rules enabled ({len(rule_names)}/{len(R.RULE_FILES)}): "
+    print(f"Rules enabled ({len(rule_names)}/{len(RU.RULES)}): "
           f"{', '.join(rule_names) or '(none)'}")
 
     t = time.monotonic()
@@ -239,14 +241,14 @@ def run():
     dataset = resolve_dataset(SETTINGS["dataset"])
 
     t = time.monotonic()
-    all_ids = R.scan_patient_ids(dataset)
+    all_ids = S.scan_patient_ids(dataset)
     print(f"[{time.monotonic() - t_start:7.1f}s] scanned {len(all_ids)} patient ID(s) "
           f"in {dataset.name} ({time.monotonic() - t:.1f}s)")
 
     chosen_ids = choose_patient_ids(all_ids, SETTINGS["n_patients"], SETTINGS["seed"])
     t = time.monotonic()
-    events = R.load_events_for_patients(dataset, set(chosen_ids))
-    groups = R.group_by_patient(events)
+    events = S.load_events_for_patients(dataset, set(chosen_ids))
+    groups = S.group_by_patient(events)
     print(f"[{time.monotonic() - t_start:7.1f}s] loaded {len(events)} alarm(s) for "
           f"{len(groups)} patient(s) ({time.monotonic() - t:.1f}s)")
     print(f"-- Patients: {len(groups)}/{len(all_ids)} ")
@@ -285,7 +287,7 @@ def run():
     # report still reflects the full, unfiltered picture.
     if unresolved_counts:
         events = [e for e in events if e.label in kb.type_index]
-        groups = R.group_by_patient(events)
+        groups = S.group_by_patient(events)
 
     scratch = ROOT / "_scratch"
     if scratch.exists():
@@ -295,7 +297,7 @@ def run():
     print(f"[{time.monotonic() - t_start:7.1f}s] processing {len(groups)} patient(s), "
           f"batch_size={SETTINGS['batch_size'] or 'unbounded'}...")
     trace: list = []
-    counts_by_check, timings_by_check = R.run_batched(kb, groups, scratch, batch_size=SETTINGS["batch_size"],
+    counts_by_check, timings_by_check = P.run_batched(kb, groups, scratch, batch_size=SETTINGS["batch_size"],
                                                         enabled_rules=rule_names, trace=trace)
     alarms = EL.alarm_index(events)
     records = EL.event_records(trace, groups)
@@ -307,7 +309,7 @@ def run():
     report(groups, rule_names, firings, records)
     print(f"Clinical-event log: {len(records)} event(s) -> {SETTINGS['event_log']}")
     print(f"Rule-firing log -> {SETTINGS['firing_log']}")
-    R.summarize_rule_timings(counts_by_check, timings_by_check)
+    X.summarize_rule_timings(counts_by_check, timings_by_check)
     print(f"\nTotal wall-clock time: {time.monotonic() - t_start:.1f}s")
 
 

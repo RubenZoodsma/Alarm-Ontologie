@@ -1,0 +1,30 @@
+####################################################################
+# cat1b_withdraw.rq — CAT1b withdrawal condition. HAND-AUTHORED.
+#
+# A CAT1b flag ("asystole while an arterial line is present without alarms
+# on its pathway") is withdrawn when an alarm on that same IBP pathway
+# arrives while the flagged asystole is still active (agreed 2026-09-21):
+# in a genuine asystole the pressure alarm naturally follows the ECG alarm
+# by seconds, so the flag set at onset must not stand. The withdrawn
+# asystole becomes evidence for a clinical event from this moment on.
+#
+# A CAT1a flag rests on a signal or sensor, never on a functional unit, so a
+# withdrawal never touches it. A stored flag lives in the flagged alarm's
+# own transient graph, so only flags of alarms still active are found.
+#
+# CONTRACT. Bound on entry: ?new (the arriving alarm, on an IBP functional
+# unit). Binds: ?flagged (the flagged alarm), ?fu, ?gFlag (the graph
+# holding the flag).
+# Used by actions/flag_withdraw_select.rq (logged as cat1b_withdrawn) and
+# actions/flag_withdraw_delete.rq.
+#
+# VALIDATION — engine/regression.py: cat1b_withdraw and cat3a_withdraw
+# (withdrawn), cat1b_borrow (forbidden firing: no withdrawal of the
+# asystole there).
+####################################################################
+
+PREFIX mda:    <https://w3id.org/mda/ontology#>
+PREFIX mdapoc: <https://w3id.org/mda/poc#>
+
+GRAPH ?gNew { ?new mda:hasMessage ?newMsg . ?newMsg mda:triggeredBy ?fu . }
+GRAPH ?gFlag { ?flagged mdapoc:flaggedLikelyFalsePositive ?fu }

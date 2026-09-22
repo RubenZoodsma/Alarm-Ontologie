@@ -1,0 +1,10 @@
+# silence_insert.rq — store a CAT2 silence in the silenced alarm's own
+# transient graph (?tgraph): one silencedBy link per active alarm that
+# justifies it, so the silence can be lifted when the last of them ends.
+# Slots: {{BINDINGS}} ?alarm ?now ?tgraph [?incomingPrio]; {{CONDITION}} a
+# CAT2 rule.
+
+PREFIX mdapoc: <https://w3id.org/mda/poc#>
+
+INSERT { GRAPH ?tgraph { ?alarm mdapoc:silencedBy ?active } }
+WHERE { {{BINDINGS}} {{CONDITION}} }

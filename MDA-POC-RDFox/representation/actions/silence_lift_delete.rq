@@ -1,0 +1,8 @@
+# silence_lift_delete.rq — when an alarm ends: remove every silencedBy link
+# to it.
+# Slots: {{BINDINGS}} ?ended.
+
+PREFIX mdapoc: <https://w3id.org/mda/poc#>
+
+DELETE { GRAPH ?gS { ?silenced mdapoc:silencedBy ?ended } }
+WHERE { {{BINDINGS}} GRAPH ?gS { ?silenced mdapoc:silencedBy ?ended } }

@@ -1,0 +1,14 @@
+# episode_ended_log.rq — for the event log: the events of ?patient that
+# ended in this step, with start and end, just before they are removed.
+# ?kind is projected here (the concrete kind), not bound.
+# Slots: {{BINDINGS}} ?patient.
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+select ?ev ?kind ?start ?end where {
+  {{BINDINGS}}
+  GRAPH ?eg { ?ev mda:concernsPatient ?patient . ?ev mda:hasEnd ?end .
+              ?ev mda:hasStart ?start . ?ev rdf:type ?kind .
+              FILTER(?kind != mda:ClinicalEvent) }
+}

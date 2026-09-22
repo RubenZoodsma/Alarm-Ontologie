@@ -1,0 +1,14 @@
+# episode_support.rq — for the event log: each active event of ?kind for
+# ?patient with what currently supports it (an alarm's graph, or a
+# constituent event).
+# Slots: {{BINDINGS}} ?patient ?now ?kind; {{CONDITION}} the kind's rule.
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+select distinct ?ev ?support where {
+  {{BINDINGS}}
+  GRAPH ?eg { ?ev rdf:type ?kind . ?ev mda:concernsPatient ?patient .
+              FILTER NOT EXISTS { ?ev mda:hasEnd ?ev_end } }
+  {{CONDITION}}
+}

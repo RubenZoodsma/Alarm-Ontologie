@@ -1,0 +1,14 @@
+# episode_extend.rq — EXTEND: an active event of ?kind for ?patient records
+# every piece of evidence currently supporting it.
+# Slots: {{BINDINGS}} ?patient ?now ?kind; {{CONDITION}} the kind's rule.
+
+PREFIX mda: <https://w3id.org/mda/ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+INSERT { GRAPH ?eg { ?ev mda:evidencedBy ?evidence } }
+WHERE {
+  {{BINDINGS}}
+  GRAPH ?eg { ?ev rdf:type ?kind . ?ev mda:concernsPatient ?patient .
+              FILTER NOT EXISTS { ?ev mda:hasEnd ?ev_end } }
+  {{CONDITION}}
+}

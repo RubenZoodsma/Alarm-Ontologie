@@ -42,13 +42,10 @@ every call, ~2.8-4s measured) that the RDFox migration was undertaken to
 eliminate in the first place. At the project's 14M-alarm target that's
 over a decade of serial compute.
 
-CORRECTED AGAIN: mda:approximates' restriction axioms are all simple,
-enumerable, one-hop type-to-value mappings (14 of them, inference.ttl
-lines 520-614) — not a general reasoning problem requiring OWL-RL at
-all. They're ported instead as plain RDFox Datalog rules,
-representation/rules/approximates_bridge.dlog, loaded once like any
-other rule file — RDFox derives them natively and incrementally, no
-Python-side reasoning needed. `reason()`, `clinical_predicates()`,
+CORRECTED AGAIN: no reasoning is needed for it at all. The one rule that
+follows mda:approximates (cat2a_process_priority.rq) reads inference.ttl's
+class-level restriction directly, through rdfs:subClassOf* (engine/rules.py
+docstring: NO MATERIALISATION). `reason()`, `clinical_predicates()`,
 `clinical_context()`, `_extract_clinical()`, `owlrl`, and
 `KB.reasoning_static_closed` are gone from this module entirely — `owlrl`
 is not a dependency of this module at all. (mda:administers/
@@ -61,7 +58,7 @@ from the catalogue like any other edge — nothing reads them yet.)
 FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl is NOT copied into data/ or
 parsed here either: it only states each clinical event's evidence
 criterion, nothing EXTRACTION/MINTING reads. Those criteria are implemented
-by engine/clinical_events.py (hand translations, kept in sync by hand).
+by the episode rules in representation/rules/ (hand translations, kept in sync by hand).
 
 Paths below point at MDA-POC-RDFox/data/ — physical copies of the
 FRAMEWORK/DATA files this pipeline needs (per the project's own
@@ -129,7 +126,7 @@ class KB:
     last_wins: set            # every leaf/condition property, any class (see leaf_properties)
     last_wins_str: set = field(default_factory=set)  # last_wins, as "<iri>" strings —
                                                        # populated by load_kb(), consulted by
-                                                       # engine/replay_driver.py to match its
+                                                       # engine/processor.py to match its
                                                        # own hand-formatted "s p o ." triple text
     archetype_cache: dict = field(default_factory=dict)  # type_iri -> Archetype, memoised
     refining_props_cache: dict = field(default_factory=dict)  # cls -> refining_properties(kb, cls)
@@ -358,17 +355,17 @@ def particular_iri(kb: KB, arch: "Archetype", patient_id: str, device_id: str, c
 
 
 def alarm_key(ev) -> str:
-    """One alarm occurrence: patient, device, start, end and ALARM_ID (the
+    """One alarm occurrence: patient, device, start and ALARM_ID (the
     event's own unique identifier — for the corpus, its row number in the
-    locked source data; see replay_driver.Event). Patient + device + start
+    locked source data; see stream.Event). Patient + device + start
     alone collided for 45.5% of the corpus: alarms raised in the same
     second on one monitor got one IRI, hence one pair of named graphs, and
     the first to end dropped the others' content. Everything an alarm
     reports lives in graphs named after this key, so no other alarm's
-    arrival or end can touch it."""
+    arrival or end can touch it. The end is NOT part of the key: it is not
+    known when the alarm arrives (stream.AlarmArrival)."""
     return "_".join([_clean(ev.patient), _clean(ev.device_id),
-                     ev.start.strftime("%Y%m%dT%H%M%S"), ev.end.strftime("%Y%m%dT%H%M%S"),
-                     _clean(ev.alarm_id)])
+                     ev.start.strftime("%Y%m%dT%H%M%S"), _clean(ev.alarm_id)])
 
 
 def alarm_iri(ev) -> URIRef:
@@ -377,6 +374,14 @@ def alarm_iri(ev) -> URIRef:
 
 def message_iri(ev) -> URIRef:
     return INST[f"Msg_{alarm_key(ev)}"]
+
+
+# One clinical event (actions.py's episodes): its kind, patient and start.
+EVENT_BASE = str(INST) + "ClinicalEvent_"
+
+
+def event_iri(kind: str, patient_id: str, start) -> str:
+    return f"{EVENT_BASE}{kind}_{_clean(patient_id)}_{start.strftime('%Y%m%dT%H%M%S')}"
 
 
 def ground_chain(kb: KB, arch: "Archetype", patient_id: str, device_id: str,
@@ -457,7 +462,6 @@ def alarm_message(kb: KB, ev, identity: dict = None) -> Graph:
     g.add((a, MDA.isOfType, type_iri))
     g.add((a, MDA.hasLabel, Literal(ev.label, lang="en")))
     g.add((a, MDA.hasStart, Literal(ev.start.isoformat(), datatype=XSD.dateTime)))
-    g.add((a, MDA.hasEnd, Literal(ev.end.isoformat(), datatype=XSD.dateTime)))
     ground_leaf_properties(g, kb, arch, MDA.Alarm, a)
     g.add((a, MDA.hasMessage, msg))
     g.add((msg, RDF.type, MDA.AlarmMessage))
@@ -478,7 +482,7 @@ def condition_for_event(kb: KB, patient_id: str, label: str, device_id: str,
     # Device's own leaf property (hasDeviceOperationState) is grounded in
     # background_for_key for its post-alarm persistence — and ALSO here,
     # so the transient graph holds everything this alarm reports while it
-    # is active. CAT3b (clinical_events.py, VentilationFailure) needs a
+    # is active. CAT3b (rules/cat3b_ventilation_failure.rq) needs a
     # ventilator malfunction only while its alarm is active: read from the
     # persistent graph alone, a fault carried over 15 minutes joined the
     # next ventilator's alarms after a ventilator swap. Every OTHER leaf
@@ -497,9 +501,9 @@ def condition_for_event(kb: KB, patient_id: str, label: str, device_id: str,
 #     STANDING, concept-level fact (alarmprio:Hoog priorityRank 3, not
 #     per-alarm) — load ONCE into the default graph, like isPropertyOf.
 #     data/archetypes.py's mistake (now deleted) was re-minting this INTO
-#     every alarm's own transient graph, which is also why
-#     representation/cat_rules.dlog's CAT2a rule needs its priorityRank
-#     patterns reverted to ungraphed (see that file).
+#     every alarm's own transient graph; CAT2a
+#     (representation/rules/cat2a_process_priority.rq) reads priorityRank
+#     ungraphed, from the default graph.
 #   - mda:triggeredBy (AlarmMessage -> FunctionalUnit, falling back to
 #     Device) is not part of op_knowledge.py's alarm_message() output at
 #     all — op_knowledge.py only asserts triggeredByStructure. Every
@@ -507,7 +511,7 @@ def condition_for_event(kb: KB, patient_id: str, label: str, device_id: str,
 #
 # load_priority_rank() (assess.py's third small enrichment) is NOT ported
 # here — dead code, confirmed unused: priority_rank.ttl is loaded directly
-# by replay_driver.py's FRAMEWORK_FILES instead.
+# by execution.py's FRAMEWORK_FILES instead.
 
 def resolve_identity(kb: KB, events: list) -> dict:
     """

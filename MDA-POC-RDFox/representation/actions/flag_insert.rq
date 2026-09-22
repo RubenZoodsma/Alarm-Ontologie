@@ -1,0 +1,10 @@
+# flag_insert.rq — store a CAT1 flag in the flagged alarm's own transient
+# graph (?tgraph), so it ends with the alarm. The flag names the node the
+# verdict rests on (?evidence). A flagged alarm is no evidence for any
+# clinical event.
+# Slots: {{BINDINGS}} ?alarm ?now ?tgraph; {{CONDITION}} a CAT1 rule.
+
+PREFIX mdapoc: <https://w3id.org/mda/poc#>
+
+INSERT { GRAPH ?tgraph { ?alarm mdapoc:flaggedLikelyFalsePositive ?evidence } }
+WHERE { {{BINDINGS}} {{CONDITION}} }

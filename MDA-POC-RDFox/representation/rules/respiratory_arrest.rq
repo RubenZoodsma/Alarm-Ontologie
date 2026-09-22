@@ -1,0 +1,25 @@
+####################################################################
+# respiratory_arrest.rq — clinical event RespiratoryArrest. HAND-AUTHORED.
+#
+# Criterion (FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl):
+#   evidencedBy some (metric:RespirationRate and hasRhythm value Absent)
+# — a respiration-rate metric with an absent rhythm (apnoea), reported by an
+# alarm of this patient that is still active and not CAT1-flagged. Today
+# created by one alarm ("PHILIPSMONITOR - Apneu"); any source meeting the
+# criterion (e.g. a ventilator apnoea alarm, once annotated) creates the
+# same condition. See cardiac_arrest.rq for the single-graph matching.
+#
+# CONTRACT. Bound on entry: ?patient, ?now. Binds: ?evidence (the metric),
+# ?support (the alarm's graph). Used by the episode actions.
+####################################################################
+
+PREFIX mda:    <https://w3id.org/mda/ontology#>
+PREFIX mdapoc: <https://w3id.org/mda/poc#>
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX metric: <https://w3id.org/mda/vocab/metric/>
+PREFIX rhythm: <https://w3id.org/mda/vocab/metric-rhythm/>
+
+GRAPH ?gEv { ?evAlarm mda:hasMessage ?evMsg . ?evMsg mda:concernsPatient ?patient .
+             ?evidence rdf:type metric:RespirationRate . ?evidence mda:hasRhythm rhythm:Absent . }
+FILTER NOT EXISTS { GRAPH ?gEv { ?evAlarm mdapoc:flaggedLikelyFalsePositive ?why } }
+BIND(?gEv AS ?support)

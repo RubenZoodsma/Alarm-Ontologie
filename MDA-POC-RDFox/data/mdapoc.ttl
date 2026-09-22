@@ -3,7 +3,9 @@
 #
 # The MDA-POC's own vocabulary: terms the POC needs that are NOT part of
 # the framework ontology (FRAMEWORK/ONTOLOGY/ontology.ttl, mda:). Formerly
-# graph_metadata.ttl (validity terms only, then in the mda: namespace).
+# graph_metadata.ttl (validity terms only, then in the mda: namespace;
+# removed 2026-09-21 with the arrive/end stream model: a graph is valid
+# exactly while it is in the store).
 #
 # WHAT GOES HERE (decided 2026-09-21). The framework holds claims about the
 # world — patient, devices, signals, the meaning of vocabulary concepts —
@@ -12,13 +14,9 @@
 #     mdapoc:flaggedLikelyFalsePositive): true only under this rule set and
 #     its timing policy (checked at arrival, lifted/withdrawn later); another
 #     alarm-management system on the same framework may decide otherwise.
-#   - Processing bookkeeping (mdapoc:validFrom, mdapoc:validUntil): the
-#     stream window over named graphs.
-#   - Orderings not yet adopted by the framework (mdapoc:deviationDirection,
-#     mdapoc:deviationSeverity): framework candidates, deferred — see
-#     FRAMEWORK/PLAN_alarm_management_module.md.
 # Modelling the decisions as framework content (reified decision nodes, on
-# the mda:ClinicalEvent pattern) is also deferred to that plan.
+# the mda:ClinicalEvent pattern) is deferred — see
+# FRAMEWORK/PLAN_alarm_management_module.md.
 ####################################################################
 
 @prefix mdapoc:  <https://w3id.org/mda/poc#> .
@@ -27,26 +25,6 @@
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
-
-####################################################################
-# Graph validity — bookkeeping on a named-graph IRI, never inside a GRAPH
-# block, so it survives the graph's own content drop. Queries decide
-# validity with FILTER(?now <= ?until), not by graph presence.
-####################################################################
-
-mdapoc:validFrom a owl:DatatypeProperty ;
-    dcterms:identifier  "validFrom" ;
-    rdfs:label          "valid from"@en, "geldig vanaf"@nl ;
-    rdfs:comment        "The instant from which the content of the named graph identified by the subject is valid."@en,
-                        "Het tijdstip vanaf wanneer de inhoud van de door het subject geïdentificeerde named graph geldig is."@nl ;
-    rdfs:range          xsd:dateTime .
-
-mdapoc:validUntil a owl:DatatypeProperty ;
-    dcterms:identifier  "validUntil" ;
-    rdfs:label          "valid until"@en, "geldig tot"@nl ;
-    rdfs:comment        "The instant until which the content of the named graph identified by the subject is valid. The graph itself may still be physically present after this instant — queries must check this value, not graph presence, to determine validity."@en,
-                        "Het tijdstip tot wanneer de inhoud van de door het subject geïdentificeerde named graph geldig is. De graph zelf kan na dit tijdstip nog fysiek aanwezig zijn — queries moeten deze waarde controleren, niet de aanwezigheid van de graph, om geldigheid te bepalen."@nl ;
-    rdfs:range          xsd:dateTime .
 
 ####################################################################
 # Alarm-management decisions (CAT1, CAT2). Stored in the decided-on alarm's
@@ -67,18 +45,3 @@ mdapoc:silencedBy a owl:ObjectProperty ;
     rdfs:comment        "The subject alarm is silenced because the object alarm, active when the subject arrived, carries overlapping or redundant information (CAT2a, CAT2b). One link per justifying alarm; the silence lasts while at least one link remains."@en ;
     rdfs:domain         mda:Alarm ;
     rdfs:range          mda:Alarm .
-
-####################################################################
-# Metric-state order — values in metric_state_order.ttl. Framework
-# candidates (the counterpart of mda:priorityRank), deferred.
-####################################################################
-
-mdapoc:deviationDirection a owl:AnnotationProperty ;
-    dcterms:identifier  "deviationDirection" ;
-    rdfs:label          "deviation direction"@en, "afwijkingsrichting"@nl ;
-    rdfs:comment        "The direction in which a metric-state concept deviates from normal: \"low\" or \"high\"."@en .
-
-mdapoc:deviationSeverity a owl:AnnotationProperty ;
-    dcterms:identifier  "deviationSeverity" ;
-    rdfs:label          "deviation severity"@en, "ernst van de afwijking"@nl ;
-    rdfs:comment        "How far a metric-state concept deviates from normal, comparable only within one direction; higher is further from normal."@en .

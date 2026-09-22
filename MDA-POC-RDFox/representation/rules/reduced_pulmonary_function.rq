@@ -1,0 +1,26 @@
+####################################################################
+# reduced_pulmonary_function.rq — clinical event ReducedPulmonaryFunction.
+# HAND-AUTHORED.
+#
+# Criterion (FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl):
+#   evidencedBy some (metric:RespirationVolume_Minute and hasValueState
+#   value Decreased)
+# — a low minute volume, reported by an alarm of this patient that is still
+# active and not CAT1-flagged. See cardiac_arrest.rq for the single-graph
+# matching.
+#
+# CONTRACT. Bound on entry: ?patient, ?now. Binds: ?evidence (the metric),
+# ?support (the alarm's graph). Used by the episode actions.
+####################################################################
+
+PREFIX mda:        <https://w3id.org/mda/ontology#>
+PREFIX mdapoc:     <https://w3id.org/mda/poc#>
+PREFIX rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX metric:     <https://w3id.org/mda/vocab/metric/>
+PREFIX valuestate: <https://w3id.org/mda/vocab/metric-value-state/>
+
+GRAPH ?gEv { ?evAlarm mda:hasMessage ?evMsg . ?evMsg mda:concernsPatient ?patient .
+             ?evidence rdf:type metric:RespirationVolume_Minute .
+             ?evidence mda:hasValueState valuestate:Decreased . }
+FILTER NOT EXISTS { GRAPH ?gEv { ?evAlarm mdapoc:flaggedLikelyFalsePositive ?why } }
+BIND(?gEv AS ?support)

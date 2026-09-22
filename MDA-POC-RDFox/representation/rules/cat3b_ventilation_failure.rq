@@ -1,0 +1,77 @@
+####################################################################
+# cat3b_ventilation_failure.rq — CAT3b, clinical event VentilationFailure.
+# HAND-AUTHORED.
+#
+# Criterion (FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl, where the clause-
+# by-clause account of the departure from the NL table is kept):
+#   evidencedBy some ReducedPulmonaryFunction, and evidencedBy some
+#   (therapeuticModality:VentilationTherapy and hasTherapyDeliveryQuality
+#   value Impaired)
+# — this patient's ventilation therapy compromised by an alarm that is
+# ACTIVE now, while reduced pulmonary function holds. Requires the rule
+# reduced_pulmonary_function.
+#
+# A DELIBERATE DEPARTURE from the NL rule table (decided 2026-09-21), in
+# short: "mechanical ventilation alarm" -> the ventilation therapy is
+# compromised (a circuit leak, a malfunctioning ventilator, a disconnected
+# patient circuit); "reduced function of pulmonary processes" ->
+# ReducedPulmonaryFunction (low minute volume); "within 180 s" -> at the
+# same time; any ventilator of the patient.
+#
+# hasTherapyDeliveryQuality is not materialised in RDFox: the three
+# inference.ttl axioms that entail it are inlined as the UNION's branches.
+# Each branch anchors on a device-scoped node reported by the active alarm
+# (?gV: the leak's analysis, the device, the component), so the therapy
+# found is that alarm's device's therapy. Structure (the analysis chain,
+# hasComponent, administers) comes from a persistent graph; any copy in the
+# store carries the same IRIs. A mode of ventilation therapy
+# (therapeuticModality:CPAP) counts as ventilation therapy: RDFox does not
+# reason over rdfs:subClassOf here, so the therapy's type is walked up the
+# hierarchy (inference.ttl, default graph) explicitly.
+#
+# CONTRACT. Bound on entry: ?patient, ?now. Binds: ?evidence and ?support
+# (the ReducedPulmonaryFunction event, and the therapy with the graph of
+# the alarm compromising it). Used by the episode actions.
+#
+# VALIDATION — engine/regression.py: cat3b_pos, cat3d (order swapped),
+# cat3b_leak, cat3b_circuit, cat3b_disconnect (another ventilator) and
+# cat3b_cpap fire; cat3b_neg, cat3e (fault over before the low minute
+# volume), cat3b_swap and cat3b_datalink do not.
+####################################################################
+
+PREFIX mda:                 <https://w3id.org/mda/ontology#>
+PREFIX mdapoc:              <https://w3id.org/mda/poc#>
+PREFIX rdf:                 <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:                <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX metric:              <https://w3id.org/mda/vocab/metric/>
+PREFIX valuestate:          <https://w3id.org/mda/vocab/metric-value-state/>
+PREFIX opstate:             <https://w3id.org/mda/vocab/operation-state/>
+PREFIX component:           <https://w3id.org/mda/vocab/component/>
+PREFIX therapeuticModality: <https://w3id.org/mda/vocab/therapeutic-modality/>
+PREFIX clinicalEvent:       <https://w3id.org/mda/vocab/clinical-event/>
+
+# a current reduced pulmonary function of this patient
+GRAPH ?gRpf { ?rpf rdf:type clinicalEvent:ReducedPulmonaryFunction . ?rpf mda:concernsPatient ?patient .
+              FILTER NOT EXISTS { ?rpf mda:hasEnd ?rpf_end } }
+# an active alarm of this patient compromising a ventilation therapy
+GRAPH ?gV { ?vAlarm mda:hasMessage ?vMsg . ?vMsg mda:concernsPatient ?patient . }
+{
+  # a circuit leak
+  GRAPH ?gV { ?leakAnalysis mda:producesMetric ?leak .
+              ?leak rdf:type metric:VentilationCircuitLeak .
+              ?leak mda:hasValueState valuestate:Increased . }
+  GRAPH ?gVS { ?vDev mda:hasFunctionalUnit ?vFu . ?vFu mda:hasSensor ?vSensor .
+               ?vSensor mda:sensorProducesSignal ?vSignal . ?vSignal mda:analyzedBy ?leakAnalysis . }
+} UNION {
+  # a malfunctioning ventilator
+  GRAPH ?gV { ?vDev mda:hasDeviceOperationState opstate:Malfunction . }
+} UNION {
+  # a disconnected patient circuit
+  GRAPH ?gV { ?vComp mda:hasComponentOperationState opstate:Disconnected . }
+  GRAPH ?gVS { ?vDev mda:hasComponent ?vComp . ?vComp rdf:type component:AirwayCircuit . }
+}
+GRAPH ?gVT { ?vDev mda:administers ?therapy . ?therapy rdf:type ?therapyType . }
+?therapyType rdfs:subClassOf* therapeuticModality:VentilationTherapy .
+VALUES ?which { 1 2 }
+BIND(IF(?which = 1, ?rpf, ?therapy) AS ?evidence)
+BIND(IF(?which = 1, ?rpf, ?gV) AS ?support)
