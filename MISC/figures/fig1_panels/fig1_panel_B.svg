@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="54mm" height="42.8mm" viewBox="0 0 580 460" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs><pattern id="hatch-B" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#3264AE" stroke-width="2.6"/></pattern><marker id="arr-B" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#9AA3B5"/></marker></defs>
+  <text x="0.0" y="18.0" font-size="19.4" font-weight="700" fill="#3264AE" text-anchor="start" letter-spacing="1.2">ALARMS + CONTEXT</text>
+  <text x="0.0" y="50.5" font-size="21.2" font-weight="400" fill="#1F2A44" text-anchor="start">HR extr. low</text>
+  <rect x="172.0" y="32.0" width="406.0" height="26.0" rx="4" fill="#E7EBF2" stroke="none" stroke-width="2"/>
+  <rect x="187.6" y="34.0" width="374.8" height="22.0" rx="3" fill="#1F2A44" stroke="none" stroke-width="2"/>
+  <text x="195.6" y="50.0" font-size="19.4" font-weight="400" fill="#FFFFFF" text-anchor="start">high priority</text>
+  <text x="0.0" y="86.5" font-size="21.2" font-weight="400" fill="#1F2A44" text-anchor="start">HR low</text>
+  <rect x="172.0" y="68.0" width="406.0" height="26.0" rx="4" fill="#E7EBF2" stroke="none" stroke-width="2"/>
+  <rect x="281.3" y="70.0" width="93.7" height="22.0" rx="3" fill="#E2EBF8" stroke="#3264AE" stroke-width="2"/>
+  <rect x="281.3" y="70.0" width="93.7" height="22.0" rx="3" fill="url(#hatch-B)" stroke="none" stroke-width="2"/>
+  <text x="383.0" y="86.5" font-size="19.4" font-weight="700" fill="#3264AE" text-anchor="start">medium · silenced</text>
+  <line x1="187.6" y1="100.0" x2="187.6" y2="106.0" stroke="#9AA3B5" stroke-width="1.6"/>
+  <text x="187.6" y="122.0" font-size="19.4" font-weight="400" fill="#5B6478" text-anchor="middle">0</text>
+  <line x1="281.3" y1="100.0" x2="281.3" y2="106.0" stroke="#9AA3B5" stroke-width="1.6"/>
+  <text x="281.3" y="122.0" font-size="19.4" font-weight="400" fill="#5B6478" text-anchor="middle">30</text>
+  <line x1="375.0" y1="100.0" x2="375.0" y2="106.0" stroke="#9AA3B5" stroke-width="1.6"/>
+  <text x="375.0" y="122.0" font-size="19.4" font-weight="400" fill="#5B6478" text-anchor="middle">60</text>
+  <line x1="468.7" y1="100.0" x2="468.7" y2="106.0" stroke="#9AA3B5" stroke-width="1.6"/>
+  <text x="468.7" y="122.0" font-size="19.4" font-weight="400" fill="#5B6478" text-anchor="middle">90</text>
+  <line x1="562.4" y1="100.0" x2="562.4" y2="106.0" stroke="#9AA3B5" stroke-width="1.6"/>
+  <text x="568.4" y="122.0" font-size="19.4" font-weight="400" fill="#5B6478" text-anchor="end">120 s</text>
+  <path d="M280 138 L290 146 L300 138" fill="none" stroke="#9AA3B5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="0.0" y="174.0" font-size="19.4" font-weight="700" fill="#3264AE" text-anchor="start" letter-spacing="1.2">INFERRED INTERPRETATION</text>
+  <rect x="0.0" y="192.0" width="150.0" height="36.0" rx="18.0" fill="#1F2A44" stroke="none" stroke-width="2"/>
+  <text x="75.0" y="217.5" font-size="21.2" font-weight="500" fill="#FFFFFF" text-anchor="middle">HR extr. low</text>
+  <rect x="0.0" y="262.0" width="150.0" height="36.0" rx="18.0" fill="#1F2A44" stroke="none" stroke-width="2"/>
+  <text x="75.0" y="287.5" font-size="21.2" font-weight="500" fill="#FFFFFF" text-anchor="middle">HR low</text>
+  <line x1="150.0" y1="210.0" x2="250.0" y2="243.0" stroke="#9AA3B5" stroke-width="2.2" marker-end="url(#arr-B)"/>
+  <line x1="150.0" y1="280.0" x2="250.0" y2="255.0" stroke="#9AA3B5" stroke-width="2.2" marker-end="url(#arr-B)"/>
+  <text x="196.0" y="214.0" font-size="21.2" font-weight="700" fill="#1F2A44" text-anchor="middle">↓↓</text>
+  <text x="196.0" y="292.0" font-size="21.2" font-weight="700" fill="#1F2A44" text-anchor="middle">↓</text>
+  <rect x="254.0" y="231.0" width="118.0" height="36.0" rx="7" fill="#FFFFFF" stroke="#9AA3B5" stroke-width="2"/>
+  <text x="313.0" y="256.5" font-size="21.2" font-weight="400" fill="#1F2A44" text-anchor="middle">heart rate</text>
+  <line x1="372.0" y1="249.0" x2="404.0" y2="249.0" stroke="#9AA3B5" stroke-width="2.2" marker-end="url(#arr-B)"/>
+  <text x="491.0" y="212.0" font-size="19.4" font-weight="400" fill="#5B6478" text-anchor="middle">process</text>
+  <rect x="406.0" y="219.0" width="172.0" height="60.0" rx="7" fill="#FFFFFF" stroke="#3264AE" stroke-width="2"/>
+  <text x="492.0" y="244.0" font-size="21.2" font-weight="700" fill="#3264AE" text-anchor="middle">cardiac</text>
+  <text x="492.0" y="269.0" font-size="21.2" font-weight="700" fill="#3264AE" text-anchor="middle">contraction</text>
+  <path d="M2 312 l5 5 l10 -11" fill="none" stroke="#3264AE" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="24.0" y="318.0" font-size="20.0" font-weight="400" fill="#1F2A44" text-anchor="start">same process</text>
+  <path d="M302 312 l5 5 l10 -11" fill="none" stroke="#3264AE" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="324.0" y="318.0" font-size="20.0" font-weight="400" fill="#1F2A44" text-anchor="start">same direction</text>
+  <path d="M2 336 l5 5 l10 -11" fill="none" stroke="#3264AE" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="24.0" y="342.0" font-size="20.0" font-weight="400" fill="#1F2A44" text-anchor="start">not more severe</text>
+  <path d="M302 336 l5 5 l10 -11" fill="none" stroke="#3264AE" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="324.0" y="342.0" font-size="20.0" font-weight="400" fill="#1F2A44" text-anchor="start">priority ≤ active</text>
+  <path d="M280 356 L290 364 L300 356" fill="none" stroke="#9AA3B5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="0.0" y="384.0" width="580.0" height="72.0" rx="12" fill="#E2EBF8" stroke="#3264AE" stroke-width="2"/>
+  <circle cx="42" cy="420" r="25" fill="#3264AE"/>
+  <g transform="translate(42,421)"><path d="M-10 7 L-10 -1 C-10 -9 -5 -13 0 -13 C5 -13 10 -9 10 -1 L10 7 L13 10 L-13 10 Z M-3.5 13 A3.5 3.5 0 0 0 3.5 13 Z" transform="translate(6,-5) scale(.8)" fill="none" stroke="#FFFFFF" stroke-width="2.4" opacity=".75"/><path d="M-10 7 L-10 -1 C-10 -9 -5 -13 0 -13 C5 -13 10 -9 10 -1 L10 7 L13 10 L-13 10 Z M-3.5 13 A3.5 3.5 0 0 0 3.5 13 Z" transform="translate(-3,2) scale(.9)" fill="#FFFFFF"/></g>
+  <text x="84.0" y="415.0" font-size="24" font-weight="700" fill="#1F2A44" text-anchor="start">Redundant: consolidate</text>
+  <text x="84.0" y="441.0" font-size="20.0" font-weight="400" fill="#5B6478" text-anchor="start">silence HR low while HR extr. low lasts</text>
+  <text x="568.0" y="415.0" font-size="19.4" font-weight="700" fill="#3264AE" text-anchor="end">CAT2a</text>
+</svg>

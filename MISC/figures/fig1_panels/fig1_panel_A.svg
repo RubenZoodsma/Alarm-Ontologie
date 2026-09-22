@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="54mm" height="42.8mm" viewBox="0 0 580 460" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs><pattern id="hatch-A" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#C8413A" stroke-width="2.6"/></pattern><marker id="arr-A" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#9AA3B5"/></marker></defs>
+  <text x="0.0" y="18.0" font-size="19.4" font-weight="700" fill="#C8413A" text-anchor="start" letter-spacing="1.2">ALARMS + CONTEXT</text>
+  <text x="0.0" y="50.5" font-size="21.2" font-weight="400" fill="#1F2A44" text-anchor="start">ECG leads off</text>
+  <rect x="172.0" y="32.0" width="406.0" height="26.0" rx="4" fill="#E7EBF2" stroke="none" stroke-width="2"/>
+  <rect x="187.6" y="34.0" width="374.8" height="22.0" rx="3" fill="#D9962B" stroke="none" stroke-width="2"/>
+  <text x="195.6" y="50.0" font-size="19.4" font-weight="400" fill="#FFFFFF" text-anchor="start">technical</text>
+  <text x="0.0" y="86.5" font-size="21.2" font-weight="400" fill="#1F2A44" text-anchor="start">Asystole</text>
+  <rect x="172.0" y="68.0" width="406.0" height="26.0" rx="4" fill="#E7EBF2" stroke="none" stroke-width="2"/>
+  <rect x="281.3" y="70.0" width="62.5" height="22.0" rx="3" fill="#FBE4E2" stroke="#C8413A" stroke-width="2"/>
+  <rect x="281.3" y="70.0" width="62.5" height="22.0" rx="3" fill="url(#hatch-A)" stroke="none" stroke-width="2"/>
+  <text x="351.8" y="86.5" font-size="19.4" font-weight="700" fill="#C8413A" text-anchor="start">flagged</text>
+  <line x1="187.6" y1="100.0" x2="187.6" y2="106.0" stroke="#9AA3B5" stroke-width="1.6"/>
+  <text x="187.6" y="122.0" font-size="19.4" font-weight="400" fill="#5B6478" text-anchor="middle">0</text>
+  <line x1="281.3" y1="100.0" x2="281.3" y2="106.0" stroke="#9AA3B5" stroke-width="1.6"/>
+  <text x="281.3" y="122.0" font-size="19.4" font-weight="400" fill="#5B6478" text-anchor="middle">30</text>
+  <line x1="375.0" y1="100.0" x2="375.0" y2="106.0" stroke="#9AA3B5" stroke-width="1.6"/>
+  <text x="375.0" y="122.0" font-size="19.4" font-weight="400" fill="#5B6478" text-anchor="middle">60</text>
+  <line x1="468.7" y1="100.0" x2="468.7" y2="106.0" stroke="#9AA3B5" stroke-width="1.6"/>
+  <text x="468.7" y="122.0" font-size="19.4" font-weight="400" fill="#5B6478" text-anchor="middle">90</text>
+  <line x1="562.4" y1="100.0" x2="562.4" y2="106.0" stroke="#9AA3B5" stroke-width="1.6"/>
+  <text x="568.4" y="122.0" font-size="19.4" font-weight="400" fill="#5B6478" text-anchor="end">120 s</text>
+  <path d="M280 138 L290 146 L300 138" fill="none" stroke="#9AA3B5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="0.0" y="174.0" font-size="19.4" font-weight="700" fill="#C8413A" text-anchor="start" letter-spacing="1.2">INFERRED INTERPRETATION</text>
+  <line x1="136.0" y1="204.0" x2="578.0" y2="204.0" stroke="#5B6478" stroke-width="1.6"/>
+  <line x1="136.0" y1="204.0" x2="136.0" y2="212.0" stroke="#5B6478" stroke-width="1.6"/>
+  <line x1="578.0" y1="204.0" x2="578.0" y2="212.0" stroke="#5B6478" stroke-width="1.6"/>
+  <text x="357.0" y="197.0" font-size="19.4" font-weight="400" fill="#5B6478" text-anchor="middle">its own sensing pathway</text>
+  <rect x="0.0" y="216.0" width="110.0" height="36.0" rx="18.0" fill="#1F2A44" stroke="none" stroke-width="2"/>
+  <text x="55.0" y="241.5" font-size="21.2" font-weight="500" fill="#FFFFFF" text-anchor="middle">Asystole</text>
+  <line x1="110.0" y1="234.0" x2="136.0" y2="234.0" stroke="#9AA3B5" stroke-width="2.2"/>
+  <rect x="136.0" y="216.0" width="124.0" height="36.0" rx="7" fill="#FFFFFF" stroke="#9AA3B5" stroke-width="2"/>
+  <text x="198.0" y="241.5" font-size="21.2" font-weight="400" fill="#1F2A44" text-anchor="middle">HR: absent</text>
+  <line x1="260.0" y1="234.0" x2="282.0" y2="234.0" stroke="#9AA3B5" stroke-width="2.2"/>
+  <rect x="282.0" y="216.0" width="128.0" height="36.0" rx="7" fill="#FFFFFF" stroke="#9AA3B5" stroke-width="2"/>
+  <text x="346.0" y="241.5" font-size="21.2" font-weight="400" fill="#1F2A44" text-anchor="middle">ECG signal</text>
+  <line x1="410.0" y1="234.0" x2="432.0" y2="234.0" stroke="#9AA3B5" stroke-width="2.2"/>
+  <rect x="432.0" y="216.0" width="146.0" height="36.0" rx="7" fill="#FFFFFF" stroke="#C8413A" stroke-width="2"/>
+  <text x="505.0" y="241.5" font-size="21.2" font-weight="700" fill="#C8413A" text-anchor="middle">electrodes</text>
+  <rect x="432.0" y="290.0" width="146.0" height="36.0" rx="18.0" fill="#D9962B" stroke="none" stroke-width="2"/>
+  <text x="505.0" y="315.5" font-size="21.2" font-weight="500" fill="#FFFFFF" text-anchor="middle">Leads off</text>
+  <line x1="505.0" y1="290.0" x2="505.0" y2="256.0" stroke="#9AA3B5" stroke-width="2.2" marker-end="url(#arr-A)"/>
+  <text x="497.0" y="279.0" font-size="19.4" font-weight="600" fill="#C8413A" text-anchor="end">reports: disconnected</text>
+  <text x="0.0" y="312.0" font-size="21.2" font-weight="700" fill="#1F2A44" text-anchor="start">Signal behind the asystole</text>
+  <text x="0.0" y="336.0" font-size="21.2" font-weight="700" fill="#1F2A44" text-anchor="start">is not being acquired</text>
+  <path d="M280 350 L290 358 L300 350" fill="none" stroke="#9AA3B5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="0.0" y="384.0" width="580.0" height="72.0" rx="12" fill="#FBE4E2" stroke="#C8413A" stroke-width="2"/>
+  <circle cx="42" cy="420" r="25" fill="#C8413A"/>
+  <g transform="translate(42,421)"><path d="M-10 7 L-10 -1 C-10 -9 -5 -13 0 -13 C5 -13 10 -9 10 -1 L10 7 L13 10 L-13 10 Z M-3.5 13 A3.5 3.5 0 0 0 3.5 13 Z" fill="#FFFFFF"/><line x1="-15" y1="-15" x2="15" y2="15" stroke="#C8413A" stroke-width="7"/><line x1="-15" y1="-15" x2="15" y2="15" stroke="#FFFFFF" stroke-width="3"/></g>
+  <text x="84.0" y="415.0" font-size="24" font-weight="700" fill="#1F2A44" text-anchor="start">Likely false positive</text>
+  <text x="84.0" y="441.0" font-size="20.0" font-weight="400" fill="#5B6478" text-anchor="start">flag and suppress the asystole</text>
+  <text x="568.0" y="415.0" font-size="19.4" font-weight="700" fill="#C8413A" text-anchor="end">CAT1a</text>
+</svg>
