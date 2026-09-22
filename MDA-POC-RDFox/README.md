@@ -20,7 +20,7 @@ The engine follows the RDF stream processing model of RSP-QL. Each module in `en
 
 ## Order at one instant
 
-At time t: landmark windows closing at or before t, then all `AlarmEnd`s at t (transient graphs dropped, then CAT2 lifts, then one episode update), then each `AlarmArrival` at t. An alarm's end never precedes its own arrival: a zero-length alarm ends right after arriving. Nothing about an alarm's end is in the store before its `AlarmEnd` arrives; `regression.py` checks this structurally.
+At time t: landmark windows closing at or before t, then all `AlarmEnd`s at t (transient graphs dropped, then CAT2 lifts, then one episode update), then each `AlarmArrival` at t. An alarm's end never precedes its own arrival: a zero-length alarm ends right after arriving. Nothing about an alarm's end is in the store before its `AlarmEnd` arrives. The script is generated before RDFox runs it, but each alarm's commands depend only on the stream up to that alarm: `regression.py` checks this by prefix invariance — at every instant t of every fixture patient, the script so far equals the script of a run that knows only the stream up to t.
 
 ## Rules and actions
 
@@ -41,7 +41,7 @@ Both scripts are configured through a `SETTINGS` dict at the top of the file; th
   cd engine && python3 regression.py
   ```
   Ends with `N/91 checks matched expected outcome` and writes both logs to `engine/_scratch/`.
-- **Real-corpus run**: `python3 poc_main.py`. Choose the dataset, number of patients, seed, rules and batch size in `SETTINGS`. Logs go to `_scratch/`.
+- **Real-corpus run**: `python3 poc_main.py`. Choose the dataset, number of patients, seed, rules and batch size in `SETTINGS`. Logs go to `_scratch/`. Ends with a per-rule table: invocations, hits, hit rate and RDFox time per invocation (1 ms resolution).
 
 Validation scripts in `validation/`:
 - `log_rebuild_check.py`: every logged row comes out again when only the alarms the logs name for it are replayed through the engine; the criterion is the rule file itself (run `regression.py` or `poc_main.py` first).

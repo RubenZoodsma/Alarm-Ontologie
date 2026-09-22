@@ -2,19 +2,23 @@
 execution.py — runs a generated script in RDFox and reads the results back.
 
 RDFox runs as a sandbox process fed the script on stdin; results come back
-as trace blocks (event_log.trace_block).
+as trace blocks (event_log.trace_block). Each rule invocation is wrapped in
+a timing group (timed): the RDFox time of all its statements, and whether
+any of its selects answered, give the performance table.
 """
 
 from __future__ import annotations
 
+import math
 import queue
 import subprocess
 import threading
 import time
+from dataclasses import dataclass
 from pathlib import Path
 
 import event_log as EL
-from rules import PREFIX_COMMANDS
+from rules import PREFIX_COMMANDS, RULES
 from paths import DATA_DIR, LICENSE, RDFOX_BIN
 
 FRAMEWORK_FILES = [
@@ -34,6 +38,41 @@ SCRIPT_PREAMBLE = (["set query.answer-format text/tab-separated-values", "set ou
                    + PREFIX_COMMANDS)
 
 
+TIME_BEGIN = "TIME_BEGIN"
+TIME_END = "TIME_END"
+
+
+def timed(rule: str, invocation: int, lines: list) -> list:
+    """`lines` as one timing group of `rule`. Groups with the same rule and
+    invocation number add up to one invocation."""
+    return [f"echo {TIME_BEGIN} {rule} {invocation}", *lines, f"echo {TIME_END}"]
+
+
+@dataclass
+class Invocation:
+    rule: str
+    seconds: float   # RDFox statement time, summed; 1 ms resolution
+    hit: bool        # some select in it answered
+
+
+def parse_invocations(out_lines: list) -> list:
+    """Every invocation in RDFox's output, from its timing groups."""
+    found: dict = {}
+    current = None
+    for line in out_lines:
+        if line.startswith(TIME_BEGIN + " "):
+            _, rule, number = line.split(" ")
+            current = found.setdefault((rule, number), Invocation(rule, 0.0, False))
+        elif line == TIME_END:
+            current = None
+        elif current is not None:
+            if line.startswith("Total statement evaluation time"):
+                current.seconds += float(line.split(":", 1)[1].strip().split()[0])
+            elif line.startswith("<") or line.startswith('"'):
+                current.hit = True
+    return list(found.values())
+
+
 def _progress_bar(done: int, total: int, width: int = 30) -> str:
     filled = width if total <= 0 else min(width, int(width * done / total))
     return "[" + "#" * filled + "-" * (width - filled) + "]"
@@ -50,8 +89,7 @@ def _reader_thread(pipe, q: queue.Queue) -> None:
 def execute_script(script_text: str, checks: list, scratch: Path, timeout: int = 600,
                     progress: bool = True, patients: dict | None = None,
                     trace: list | None = None) -> tuple:
-    """Run `script_text` in RDFox. Returns ({check_key: answer_count},
-    {check_key: seconds}) for `checks`, the time as RDFox reports it.
+    """Run `script_text` in RDFox. Returns its invocations (parse_invocations).
 
     `progress`: a live per-patient bar, driven by the PATIENT_START /
     ALARM_DONE echo lines build_script emits (RDFox flushes per line).
@@ -132,18 +170,11 @@ def execute_script(script_text: str, checks: list, scratch: Path, timeout: int =
     else:
         print(f"  [{time.monotonic() - t0:7.1f}s] RDFox execution finished "
               f"({len(checks)} check(s) run)")
-    output = "\n".join(out_lines)
-
-    # A check's count is its trace block's number of rows.
-    blocks = EL.parse_trace_blocks(out_lines)
-    counts_by_check, timings_by_check = {}, {}
-    collected = []
-    for tag, rows, seconds in blocks:
+    collected, n_checks = [], 0
+    for tag, rows, _seconds in EL.parse_trace_blocks(out_lines):
         if tag.startswith("check "):
-            key = checks[int(tag.split(" ", 1)[1])]
-            counts_by_check[key] = len(rows)
-            timings_by_check[key] = seconds
-            collected.append(("check", key, rows))
+            collected.append(("check", checks[int(tag.split(" ", 1)[1])], rows))
+            n_checks += 1
         else:
             collected.append((tag, None, rows))
 
@@ -155,35 +186,56 @@ def execute_script(script_text: str, checks: list, scratch: Path, timeout: int =
         for l in error_lines:
             print(" ", l)
 
-    if len(counts_by_check) != len(checks) and not timed_out:
-        print(f"  WARNING: {len(counts_by_check)} check result(s) for {len(checks)} check(s) — "
-              f"some check blocks are missing; counts below are incomplete.")
+    if n_checks != len(checks) and not timed_out:
+        print(f"  WARNING: {n_checks} check result(s) for {len(checks)} check(s) — "
+              f"some check blocks are missing; results below are incomplete.")
     if trace is not None:
         trace.extend(collected)
-    return counts_by_check, timings_by_check
+    return parse_invocations(out_lines)
 
 
-def summarize_rule_timings(counts_by_check: dict, timings_by_check: dict) -> None:
-    """Print per CAT1/CAT2 rule: invocations, hits, total time, and average
-    time per call and per hit."""
-    groups: dict = {}
-    for key, t in timings_by_check.items():
-        kind, name = key[2], key[3]
-        g = groups.setdefault((kind, name), {"invocations": 0, "hits": 0, "total_s": 0.0, "hit_s": 0.0})
-        g["invocations"] += 1
-        if t is not None:
-            g["total_s"] += t
-        n = counts_by_check.get(key, 0)
-        if n and n > 0:
-            g["hits"] += 1
-            if t is not None:
-                g["hit_s"] += t
+# Table order and what a hit means, per action.
+_EXTRA_RULES = {"cat1b": "cat1b_withdraw", "cat2b": "cat2_lift"}
+HIT_MEANING = [
+    ("CAT1, CAT2", "the check matched: a flag or silence is stored"),
+    ("cat1b_withdraw, cat2_lift", "a flag was withdrawn, a silence lifted"),
+    ("clinical events", "the criterion held: the event started or went on"),
+]
 
-    print("\nPer-rule timing summary:")
-    print(f"  {'rule':<28} {'invocations':>12} {'hits':>8} {'total_s':>10} "
-          f"{'avg_s/call':>12} {'avg_s/hit':>10}")
-    for (kind, name), g in sorted(groups.items()):
-        avg_call = g["total_s"] / g["invocations"] if g["invocations"] else 0.0
-        avg_hit = g["hit_s"] / g["hits"] if g["hits"] else 0.0
-        print(f"  {kind + '/' + name:<28} {g['invocations']:>12} {g['hits']:>8} "
-              f"{g['total_s']:>10.3f} {avg_call:>12.5f} {avg_hit:>10.5f}")
+
+def _table_order() -> list:
+    order = []
+    for action in ("flag", "silence", "episode"):
+        for r in RULES.values():
+            if r.action == action:
+                order.append(r.name)
+                if r.name in _EXTRA_RULES:
+                    order.append(_EXTRA_RULES[r.name])
+    return order
+
+
+def _percentile(sorted_values: list, q: float) -> float:
+    """Nearest-rank percentile of an ascending list."""
+    return sorted_values[max(0, math.ceil(q * len(sorted_values)) - 1)]
+
+
+def summarize_invocations(invocations: list) -> None:
+    """Print per rule: invocations, hits, hit rate, and RDFox time per
+    invocation (total, mean, p95, max)."""
+    by_rule: dict = {}
+    for inv in invocations:
+        by_rule.setdefault(inv.rule, []).append(inv)
+    print("\nRule performance (RDFox statement time, 1 ms resolution; an invocation "
+          "is every statement of one rule at one moment):")
+    print(f"  {'rule':<28} {'invocations':>11} {'hits':>7} {'hit rate':>9} {'total s':>9} "
+          f"{'mean ms':>8} {'p95 ms':>7} {'max ms':>7}")
+    for rule in [r for r in _table_order() if r in by_rule] + sorted(set(by_rule) - set(_table_order())):
+        invs = by_rule[rule]
+        ms = sorted(1000 * i.seconds for i in invs)
+        hits = sum(i.hit for i in invs)
+        print(f"  {rule:<28} {len(invs):>11} {hits:>7} {100 * hits / len(invs):>8.1f}% "
+              f"{sum(ms) / 1000:>9.3f} {sum(ms) / len(ms):>8.2f} {_percentile(ms, 0.95):>7.0f} "
+              f"{ms[-1]:>7.0f}")
+    print("  hit —")
+    for who, what in HIT_MEANING:
+        print(f"    {who + ':':<28} {what}")

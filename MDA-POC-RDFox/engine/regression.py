@@ -3,23 +3,28 @@ regression.py — every rule against the fabricated, known-outcome patients
 in DATA/CAT_evaluation/events_data.csv (see that folder's README.md).
 
 Checks per patient: flagged/silenced or not, CAT3a/CAT3b episodes, exact
-event times, expected and forbidden firings; plus two structural checks
-(no lookahead, no rule logic in Python). Writes both logs to _scratch/.
+event times, expected and forbidden firings; plus no lookahead (prefix
+invariance, no RDFox needed) and no rule logic in Python. Writes both logs
+to _scratch/.
 
   cd MDA-POC-RDFox/engine && python3 regression.py
 """
 
 from __future__ import annotations
 
+import dataclasses
 import re
 import shutil
+from datetime import datetime
+from pathlib import Path
 
 import rules as RU
 import event_log as EL
 import mint as M
-from execution import execute_script, summarize_rule_timings
-from paths import ENGINE_DIR
-from processor import build_script
+import stream as S
+from execution import execute_script, summarize_invocations
+from paths import ACTIONS_DIR, ENGINE_DIR, RULES_DIR
+from processor import Processor, build_script
 from stream import DATASET, group_by_patient, load_events
 
 # CAT1/CAT2 fabricated patients: expected flaggedLikelyFalsePositive/
@@ -272,25 +277,70 @@ def rule_logic_outside_rule_files() -> list:
     return hits
 
 
-def lookahead_possible() -> list:
-    """Ways an alarm's future could reach the store at its arrival: an end
-    on the arrival element, an end read by the modules that handle
-    arrivals, or validity metadata in a rule or action file. Empty when the
-    stream model rules lookahead out by construction."""
-    import dataclasses
-    import stream as S
-    from paths import ACTIONS_DIR, RULES_DIR
+def lookahead_by_construction() -> list:
+    """Structural guards: an arrival carries no end, and no rule or action
+    file uses validity metadata."""
     problems = []
     if "end" in {f.name for f in dataclasses.fields(S.AlarmArrival)}:
         problems.append("stream.AlarmArrival has an end field")
-    for name in ("mint.py", "windows.py", "processor.py", "actions.py", "rules.py"):
-        for i, line in enumerate((ENGINE_DIR / name).read_text().splitlines(), start=1):
-            if re.search(r"\.end\b", line.split("#", 1)[0]):
-                problems.append(f"{name}:{i}: reads .end: {line.strip()[:80]}")
     for folder in (RULES_DIR, ACTIONS_DIR):
         for path in sorted(folder.glob("*.rq")):
             if "validUntil" in path.read_text():
                 problems.append(f"{path.name}: validUntil")
+    return problems
+
+
+UNKNOWN_END = datetime.max
+
+
+def _instants(elements: list) -> list:
+    """Stream elements grouped by instant, in order: [(t, [element, ...])]."""
+    grouped: list = []
+    for element in elements:
+        if grouped and grouped[-1][0] == element.time:
+            grouped[-1][1].append(element)
+        else:
+            grouped.append((element.time, [element]))
+    return grouped
+
+
+def _normalised(lines: list) -> list:
+    """Script lines with each TriG import replaced by the file's content,
+    so two runs compare on what they mint, not on file paths."""
+    return [Path(line[len("import "):]).read_text() if line.startswith("import ") else line
+            for line in lines]
+
+
+def script_depends_on_future(kb, groups: dict, scratch: Path) -> list:
+    """Prefix invariance. For every patient and every instant t, the script
+    emitted up to t by a run over the whole stream must equal the script of
+    a run that knows only the stream up to t: arrivals after t removed,
+    ends after t unknown. Any difference means something after t leaked
+    into what the engine did at or before t. The whole script covers the
+    minted triples, every rule invocation and every window drop; RDFox
+    executes it deterministically, so the store and every decision up to t
+    are identical too."""
+    rule_names = list(RU.RULES)
+    problems = []
+    for patient, events in groups.items():
+        base = scratch / "lookahead" / M._clean(patient)
+        (base / "full").mkdir(parents=True)
+        full = Processor(kb, base / "full", rule_names)
+        boundaries = []
+        for t, elements in _instants(S.replay_stream(events)):
+            full.feed(elements)
+            boundaries.append((t, len(full.lines)))
+        full_script = _normalised(full.lines)
+
+        for n, (t, emitted) in enumerate(boundaries):
+            known = [e if e.end <= t else dataclasses.replace(e, end=UNKNOWN_END)
+                     for e in events if e.start <= t]
+            (base / f"cut{n}").mkdir()
+            cut = Processor(kb, base / f"cut{n}", rule_names)
+            cut.feed([element for element in S.replay_stream(known) if element.time <= t])
+            if _normalised(cut.lines) != full_script[:emitted]:
+                problems.append(f"{patient}: the script up to {t.isoformat()} depends on the stream after it")
+                break
     return problems
 
 
@@ -309,9 +359,8 @@ def run():
 
     script_text, checks = build_script(kb, in_scope, scratch)
     trace: list = []
-    counts_by_check, timings_by_check = execute_script(script_text, checks, scratch, patients=in_scope,
-                                                        trace=trace)
-    summarize_rule_timings(counts_by_check, timings_by_check)
+    invocations = execute_script(script_text, checks, scratch, patients=in_scope, trace=trace)
+    summarize_invocations(invocations)
     alarms = EL.alarm_index(e for evs in in_scope.values() for e in evs)
     records = EL.event_records(trace, in_scope)
     firings = EL.firing_records(trace)
@@ -391,10 +440,11 @@ def run():
         print(f"[{status}] {patient} (forbidden firings): must not see {sorted(forbidden)}, "
               f"saw {sorted(forbidden & got)}")
 
-    problems = lookahead_possible()
+    problems = lookahead_by_construction() + script_depends_on_future(kb, in_scope, scratch)
     total += 1
     passed += not problems
-    print(f"[{'FAIL' if problems else 'PASS'}] no lookahead: an alarm's end cannot reach the store at arrival"
+    print(f"[{'FAIL' if problems else 'PASS'}] no lookahead: at every instant, the script so far is "
+          f"independent of the stream after it"
           + "".join(f"\n    {p}" for p in problems))
 
     hits = rule_logic_outside_rule_files()

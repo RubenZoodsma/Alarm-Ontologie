@@ -205,8 +205,8 @@ def run():
     print(f"[{time.monotonic() - t_start:7.1f}s] processing {len(groups)} patient(s), "
           f"batch_size={SETTINGS['batch_size'] or 'unbounded'}...")
     trace: list = []
-    counts_by_check, timings_by_check = P.run_batched(kb, groups, scratch, batch_size=SETTINGS["batch_size"],
-                                                        enabled_rules=rule_names, trace=trace)
+    invocations = P.run_batched(kb, groups, scratch, batch_size=SETTINGS["batch_size"],
+                                enabled_rules=rule_names, trace=trace)
     alarms = EL.alarm_index(events)
     records = EL.event_records(trace, groups)
     EL.write_event_log(records, alarms, SETTINGS["event_log"])
@@ -217,7 +217,7 @@ def run():
     report(groups, rule_names, firings, records)
     print(f"Clinical-event log: {len(records)} event(s) -> {SETTINGS['event_log']}")
     print(f"Rule-firing log -> {SETTINGS['firing_log']}")
-    X.summarize_rule_timings(counts_by_check, timings_by_check)
+    X.summarize_invocations(invocations)
     print(f"\nTotal wall-clock time: {time.monotonic() - t_start:.1f}s")
 
 

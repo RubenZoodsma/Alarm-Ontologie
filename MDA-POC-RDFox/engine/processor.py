@@ -27,7 +27,7 @@ import mint as M
 from actions import (check, dt, evaluate_commands, flag_insert, flag_withdraw, iri, silence_bindings,
                      silence_insert, silence_lift, values)
 from event_log import trace_block
-from execution import FRAMEWORK_FILES, SCRIPT_PREAMBLE, _progress_bar, execute_script
+from execution import FRAMEWORK_FILES, SCRIPT_PREAMBLE, _progress_bar, execute_script, timed
 from rules import (RULES, _alarm_functional_unit,
                    _alarm_metric_types, enabled_event_rules, kinds_supported_by_metric, relevant_kinds)
 from stream import AlarmArrival, AlarmEnd, replay_stream
@@ -45,6 +45,7 @@ class Processor:
         self.lines: list = []
         self.checks: list = []
         self._file_counter = itertools.count(1)
+        self._invocations = itertools.count(1)   # numbers the timing groups
         self._windows: dict = {}       # patient -> WindowOperator
         self._arrived: dict = {}       # patient -> number of arrivals so far
         # Which rules are enabled, grouped by what their result does.
@@ -95,7 +96,7 @@ class Processor:
             for alarm in alarms:
                 self.lines += WindowOperator.expire(alarm)
             kinds = frozenset().union(*(a.kinds for a in alarms))
-            self.lines += evaluate_commands(kinds, self.event_rules, patient, due)
+            self.lines += evaluate_commands(kinds, self.event_rules, patient, due, next(self._invocations))
 
     def on_ends(self, patient: str, when, ends: list) -> None:
         """Step 2 of the module docstring, for one patient at `when`."""
@@ -108,10 +109,10 @@ class Processor:
         if self.silence_rules:
             for alarm in ended:
                 select, delete = silence_lift(alarm.alarm, when)
-                self.lines += trace_block(f"lift {patient} {when.isoformat()}", select)
-                self.lines.append(delete)
+                self.lines += timed("cat2_lift", next(self._invocations),
+                                    [*trace_block(f"lift {patient} {when.isoformat()}", select), delete])
         kinds = frozenset().union(*(a.kinds for a in ended))
-        self.lines += evaluate_commands(kinds, self.event_rules, patient, when)
+        self.lines += evaluate_commands(kinds, self.event_rules, patient, when, next(self._invocations))
 
     def on_arrival(self, e: AlarmArrival) -> None:
         """Step 3 of the module docstring."""
@@ -133,34 +134,38 @@ class Processor:
         # on its own, and RDFox planned a cat2a/cat2b UNION ~30x slower.
         alarm = pending["alarm"]
         now = dt(e.start)
+        invocation = next(self._invocations)
+        # Check, then store the flag: clinical events ignore flagged alarms.
+        # cat1b is gated on heart-rate alarms (its condition needs one).
         for name in self.flag_rules:
-            self.lines += trace_block(f"check {len(self.checks)}", check(name, values(alarm=iri(alarm), now=now)))
+            if name == "cat1b" and "HeartRate" not in _alarm_metric_types(kb, e):
+                continue
+            bindings = values(alarm=iri(alarm), now=now)
+            self.lines += timed(name, invocation,
+                                [*trace_block(f"check {len(self.checks)}", check(name, bindings)),
+                                 flag_insert(name, alarm, pending["tgraph"], now)])
             self.checks.append((patient, e.start, "flaggedLikelyFalsePositive", name, ei))
-        # Store the flags: clinical events ignore flagged alarms. cat1b is
-        # gated on heart-rate alarms; an IBP alarm may withdraw a cat1b flag.
+        # An alarm on an IBP pathway may withdraw a cat1b flag; the asystole
+        # then becomes evidence at this moment.
         withdraw_kinds = frozenset()
-        if "cat1a" in self.flag_rules:
-            self.lines.append(flag_insert("cat1a", alarm, pending["tgraph"], now))
-        if "cat1b" in self.flag_rules:
-            if "HeartRate" in _alarm_metric_types(kb, e):
-                self.lines.append(flag_insert("cat1b", alarm, pending["tgraph"], now))
-            if _alarm_functional_unit(kb, e) == "FU_InvasiveBloodPressure":
-                select, delete = flag_withdraw(alarm)
-                self.lines += trace_block(f"withdraw {patient} {e.start.isoformat()}", select)
-                self.lines.append(delete)
-                # A withdrawn asystole becomes evidence at this moment.
-                withdraw_kinds = kinds_supported_by_metric("HeartRate", self.event_rules)
+        if "cat1b" in self.flag_rules and _alarm_functional_unit(kb, e) == "FU_InvasiveBloodPressure":
+            select, delete = flag_withdraw(alarm)
+            self.lines += timed("cat1b_withdraw", invocation,
+                                [*trace_block(f"withdraw {patient} {e.start.isoformat()}", select), delete])
+            withdraw_kinds = kinds_supported_by_metric("HeartRate", self.event_rules)
 
         prio = pending["incoming_prio"]
         for name in self.silence_rules:
-            self.lines += trace_block(f"check {len(self.checks)}",
-                                      check(name, silence_bindings(name, alarm, now, prio)))
-            self.lines.append(silence_insert(name, alarm, pending["tgraph"], now, prio))
+            self.lines += timed(name, invocation,
+                                [*trace_block(f"check {len(self.checks)}",
+                                              check(name, silence_bindings(name, alarm, now, prio))),
+                                 silence_insert(name, alarm, pending["tgraph"], now, prio)])
             self.checks.append((patient, e.start, "silencedBy", name, ei))
 
         self.lines += WindowOperator.complete(pending)
         # This arrival (or a cat1b withdrawal) may start or extend an event.
-        self.lines += evaluate_commands(event_kinds | withdraw_kinds, self.event_rules, patient, e.start)
+        self.lines += evaluate_commands(event_kinds | withdraw_kinds, self.event_rules, patient, e.start,
+                                        invocation)
         self.lines.append(f"echo ALARM_DONE:{patient}")
 
 
@@ -212,12 +217,11 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
 def run_batched(kb, patients: dict, scratch_root: Path, batch_size: "int | None" = None,
                  enabled_rules=None, progress: bool = True, trace: list | None = None) -> tuple:
     """Run `patients` in batches of `batch_size` (None: one batch), each
-    its own script and RDFox process, bounding memory and disk. Returns the
-    merged ({check_key: answer_count}, {check_key: seconds})."""
+    its own script and RDFox process, bounding memory and disk. Returns
+    every batch's invocations (execution.parse_invocations)."""
     items = list(patients.items())
     size = batch_size if batch_size else len(items)
-    counts_by_check: dict = {}
-    timings_by_check: dict = {}
+    invocations: list = []
     num_batches = -(-len(items) // size) if items else 0  # ceil div
     for bi in range(0, len(items), size):
         batch = dict(items[bi:bi + size])
@@ -235,9 +239,6 @@ def run_batched(kb, patients: dict, scratch_root: Path, batch_size: "int | None"
         # on one device makes the CAT1 checks slow.
         total_alarms = sum(len(events) for events in batch.values())
         timeout = max(1500, total_alarms // 100)
-        batch_counts, batch_timings = execute_script(script_text, checks, batch_scratch,
-                                                      timeout=timeout, patients=batch,
-                                                      trace=trace)
-        counts_by_check.update(batch_counts)
-        timings_by_check.update(batch_timings)
-    return counts_by_check, timings_by_check
+        invocations += execute_script(script_text, checks, batch_scratch, timeout=timeout,
+                                      patients=batch, trace=trace)
+    return invocations
