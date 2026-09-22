@@ -262,12 +262,14 @@ def message_iri(ev) -> URIRef:
     return INST[f"Msg_{alarm_key(ev)}"]
 
 
-# A clinical event (actions.py's episodes): its kind, patient and start.
+# A clinical event (actions.py's episodes): its kind, patient, start, and
+# the number of the evaluation that started it — two events of one kind can
+# start in the same second (one ending, the next starting), and must differ.
 EVENT_BASE = str(INST) + "ClinicalEvent_"
 
 
-def event_iri(kind: str, patient_id: str, start) -> str:
-    return f"{EVENT_BASE}{kind}_{_clean(patient_id)}_{start.strftime('%Y%m%dT%H%M%S')}"
+def event_iri(kind: str, patient_id: str, start, number: int) -> str:
+    return f"{EVENT_BASE}{kind}_{_clean(patient_id)}_{start.strftime('%Y%m%dT%H%M%S')}_{number}"
 
 
 def ground_chain(kb: KB, arch: "Archetype", patient_id: str, device_id: str,

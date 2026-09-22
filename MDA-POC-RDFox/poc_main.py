@@ -62,6 +62,13 @@ SETTINGS = {
     # Patients per RDFox run; None: all in one run.
     "batch_size": 1,
 
+    # Seconds RDFox may take for one stream element before the run stops.
+    "element_timeout_s": 600,
+
+    # Write every command sent to RDFox, with each alarm's triples, to
+    # replay.rdfox per batch. Large (~17 KB per alarm); for debugging only.
+    "audit_logging": False,
+
     # The two logs (engine/event_log.py).
     "event_log": ROOT / "_scratch" / "clinical_events.csv",
     "firing_log": ROOT / "_scratch" / "rule_firings.csv",
@@ -204,21 +211,23 @@ def run():
 
     print(f"[{time.monotonic() - t_start:7.1f}s] processing {len(groups)} patient(s), "
           f"batch_size={SETTINGS['batch_size'] or 'unbounded'}...")
-    trace: list = []
-    counts_by_check, timings_by_check = P.run_batched(kb, groups, scratch, batch_size=SETTINGS["batch_size"],
-                                                        enabled_rules=rule_names, trace=trace)
-    alarms = EL.alarm_index(events)
-    records = EL.event_records(trace, groups)
-    EL.write_event_log(records, alarms, SETTINGS["event_log"])
-    firings = EL.firing_records(trace)
-    EL.write_firing_log(firings, alarms, SETTINGS["firing_log"])
+    # Both logs are written as the run goes (engine/event_log.LiveLog).
+    log = EL.LiveLog(groups, EL.alarm_index(events), SETTINGS["event_log"], SETTINGS["firing_log"])
+    stats = X.RuleStats()
+    complete = P.run_batched(kb, groups, scratch, log, stats, batch_size=SETTINGS["batch_size"],
+                             enabled_rules=rule_names, timeout=SETTINGS["element_timeout_s"],
+                             audit_log=SETTINGS["audit_logging"])
+    log.close()
+    records, firings = log.records, log.firings
 
     print()
     report(groups, rule_names, firings, records)
     print(f"Clinical-event log: {len(records)} event(s) -> {SETTINGS['event_log']}")
     print(f"Rule-firing log -> {SETTINGS['firing_log']}")
-    X.summarize_rule_timings(counts_by_check, timings_by_check)
+    X.summarize_invocations(stats)
     print(f"\nTotal wall-clock time: {time.monotonic() - t_start:.1f}s")
+    if not complete:
+        print("*** INCOMPLETE RUN: RDFox stopped or reported errors (see above); results are partial. ***")
 
 
 if __name__ == "__main__":

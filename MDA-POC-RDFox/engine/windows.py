@@ -29,9 +29,10 @@ def graph_iri(alarm: str, suffix: str) -> str:
 
 
 def graph_triples(g) -> list:
-    """rdflib Graph -> N-Triples lines (rdflib does the escaping)."""
+    """rdflib Graph -> N-Triples lines (rdflib does the escaping), sorted so
+    every run sends the same commands."""
     text = g.serialize(format="nt")
-    return [line.strip() for line in text.splitlines() if line.strip()]
+    return sorted(line.strip() for line in text.splitlines() if line.strip())
 
 
 def subject_predicate(triple: str) -> tuple:

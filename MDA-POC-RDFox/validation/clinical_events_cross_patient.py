@@ -67,13 +67,14 @@ EXPECTED = {
 }
 
 
-def build_interleaved_script(kb, scratch: Path, rule_names) -> str:
+def run_interleaved(kb, scratch: Path, rule_names, log) -> None:
     """One stream of all patients' alarms, interleaved in time, through the
-    engine's own processor into ONE store — as a live feed would arrive."""
-    proc = P.Processor(kb, scratch, rule_names)
-    proc.feed(S.replay_stream(EVENTS))
-    proc.close_windows()
-    return "\n".join(P.script_header("xp") + proc.lines + ["quit"])
+    engine's own processor into ONE store, live — as a feed would arrive."""
+    run = P.LiveRun(kb, scratch, rule_names, log, X.RuleStats(), dstore="xp")
+    if run.stream(S.replay_stream(EVENTS)):
+        run.proc.close_windows()
+        run.execute("closing the windows")
+    run.close()
 
 
 def main() -> int:
@@ -84,11 +85,10 @@ def main() -> int:
     scratch.mkdir(parents=True)
 
     kb = M.load_kb()
-    script = build_interleaved_script(kb, scratch, SETTINGS["enabled_rules"])
-    trace: list = []
-    X.execute_script(script, [], scratch, progress=False, trace=trace)
-    records = EL.event_records(trace, {e.patient for e in EVENTS})
     alarms = EL.alarm_index(EVENTS)
+    log = EL.LiveLog({e.patient for e in EVENTS}, alarms)
+    run_interleaved(kb, scratch, SETTINGS["enabled_rules"], log)
+    records = log.records
     got = {(r.patient, r.kind, r.start, r.end, len(r.alarms)) for r in records}
     # Every alarm IRI carries its patient's cleaned id, so a supporting
     # alarm from another patient is visible.

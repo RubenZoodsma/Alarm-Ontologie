@@ -26,8 +26,8 @@ sys.path.insert(0, str(ROOT / "engine"))
 import event_log as EL  # noqa: E402
 import mint as M  # noqa: E402
 import stream as S  # noqa: E402
-from execution import execute_script  # noqa: E402
-from processor import build_script  # noqa: E402
+from execution import RuleStats  # noqa: E402
+from processor import run_live  # noqa: E402
 
 SETTINGS = {
     # The fixture regression: S.DATASET with ROOT / "engine" / "_scratch".
@@ -98,15 +98,14 @@ def main() -> int:
     if scratch.exists():
         shutil.rmtree(scratch)
     scratch.mkdir(parents=True)
-    trace: list = []
-    script_text, checks = build_script(M.load_kb(), patients, scratch, progress=False)
-    execute_script(script_text, checks, scratch, progress=False, patients=patients, trace=trace)
+    log = EL.LiveLog(patients, {})
+    run_live(M.load_kb(), patients, scratch, log, RuleStats(), progress=False)
 
     events = {}
-    for rec in EL.event_records(trace, patients):
+    for rec in log.records:
         events.setdefault(rec.patient, set()).add((rec.kind, rec.start, rec.end))
     firings = {}
-    for f in EL.firing_records(trace):
+    for f in log.firings:
         causes = tuple(sorted(alarm_id(a) for a in f.causes - {f.alarm}))
         firings.setdefault(f.patient, set()).add((f.time, f.rule, alarm_id(f.alarm), causes))
 

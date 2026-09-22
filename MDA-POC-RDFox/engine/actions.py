@@ -39,6 +39,7 @@ from datetime import datetime
 
 import mint as M
 from event_log import trace_block
+from execution import timed
 from rules import ALARMPRIO, CAT1B_WITHDRAW, CAT2_LIFT, RULE_BY_KIND, RULES, compose
 
 XSD_DATETIME = "<http://www.w3.org/2001/XMLSchema#dateTime>"
@@ -117,9 +118,11 @@ def silence_lift(ended_alarm: str, when: datetime) -> tuple:
 # Episodes: clinical events and CAT3
 # --------------------------------------------------------------------
 
-def evaluate_commands(kinds: set, rules: list, patient_id: str, now: datetime) -> list:
+def evaluate_commands(kinds: set, rules: list, patient_id: str, now: datetime, invocation: int) -> list:
     """RDFox script lines that bring this patient's events of `kinds` up to
-    date at logical time `now`. Empty when no kind is relevant."""
+    date at logical time `now`. `invocation` numbers this evaluation: it
+    times each rule and goes into the IRI of any event it starts. Empty when
+    no kind is relevant."""
     ordered = [r.kind for r in rules if r.kind in kinds]
     if not ordered:
         return []
@@ -130,15 +133,17 @@ def evaluate_commands(kinds: set, rules: list, patient_id: str, now: datetime) -
 
     lines = [f"# clinical events: {', '.join(ordered)} @ {now.isoformat()}"]
     for kind in ordered:
-        lines.append(compose("episode_end", state(kind), RULE_BY_KIND[kind].condition))
+        rule = RULE_BY_KIND[kind]
+        lines += timed(rule.name, invocation, [compose("episode_end", state(kind), rule.condition)])
     lines += trace_block("ended", compose("episode_ended_log", values(patient=patient)))
     lines.append(compose("episode_remove", values(patient=patient)))
     for kind in ordered:
-        condition = RULE_BY_KIND[kind].condition
-        event = M.event_iri(kind, patient_id, now)
+        rule = RULE_BY_KIND[kind]
+        event = M.event_iri(kind, patient_id, now, invocation)
         start = values(patient=patient, now=dt(now), kind=iri(CLINICAL_EVENT + kind),
                        event=iri(event), eventGraph=iri(f"{event}#event"))
-        lines.append(compose("episode_extend", state(kind), condition))
-        lines.append(compose("episode_start", start, condition))
-        lines += trace_block("support", compose("episode_support", state(kind), condition))
+        lines += timed(rule.name, invocation,
+                       [compose("episode_extend", state(kind), rule.condition),
+                        compose("episode_start", start, rule.condition),
+                        *trace_block("support", compose("episode_support", state(kind), rule.condition))])
     return lines
