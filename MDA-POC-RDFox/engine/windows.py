@@ -28,13 +28,11 @@ from __future__ import annotations
 
 import itertools
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 
 import mint as M
 from stream import AlarmArrival, AlarmEnd
-
-WINDOW = timedelta(minutes=15)  # ontology.ttl's postAlarmValidityDuration
 
 
 def graph_iri(alarm: str, suffix: str) -> str:
@@ -136,7 +134,7 @@ class WindowOperator:
                                                 frozenset(kinds))
         commands = [f"# arrive (phase1): {arrival.label} @ {arrival.device_id} {arrival.start.isoformat()}",
                     f"import {path}"]
-        pending = {"alarm": alarm, "tgraph": tgraph, "pgraph": pgraph, "patient": str(patient),
+        pending = {"alarm": alarm, "tgraph": tgraph,
                    "priority_triple": priority_triple, "incoming_prio": incoming_prio}
         return commands, pending
 
@@ -154,7 +152,7 @@ class WindowOperator:
         """(commands, OpenAlarm): drop the alarm's transient graph — only its
         own content — and start its persistent graph's landmark window."""
         alarm = self.open.pop(end.alarm_id)
-        self.expiries.append((end.time + WINDOW, next(self._seq), alarm))
+        self.expiries.append((end.time + self.kb.window, next(self._seq), alarm))
         commands = [f"# end: {alarm.label} @ {alarm.device_id} {end.time.isoformat()}",
                     f"DELETE WHERE {{ GRAPH {alarm.tgraph} {{ ?s ?p ?o }} }}"]
         return commands, alarm

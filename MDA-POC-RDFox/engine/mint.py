@@ -70,9 +70,8 @@ from __future__ import annotations
 
 import re
 import sys
-from collections import defaultdict
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import timedelta
 from pathlib import Path
 
 from rdflib import Graph, URIRef, Literal, Namespace
@@ -94,12 +93,7 @@ ENTITIES  = DATA_DIR / "entities.ttl"
 # ── Namespaces ────────────────────────────────────────────────────────────
 
 MDA      = Namespace("https://w3id.org/mda/ontology#")
-# POC-only terms (data/mdapoc.ttl): the POC's decisions and bookkeeping
-# (silencing, false-positive flags, graph validity) and orderings not yet
-# adopted by the framework — deliberately outside the mda: ontology.
-MDAPOC   = Namespace("https://w3id.org/mda/poc#")
 ENTITY   = Namespace("https://w3id.org/mda/entity/")
-SCAFFOLD = Namespace("https://w3id.org/mda/scaffold/")
 INST     = Namespace("https://w3id.org/mda/instance/")
 
 
@@ -121,13 +115,7 @@ class KB:
     scaffold_concepts: set    # concepts declared in the scaffold type catalogue
     window: timedelta         # post-alarm validity (PostAlarmValidScheme)
     tree: dict                # class nesting derived from the ontology
-    concept_class: dict       # vocabulary concept → the class it instantiates
     node_kind: dict           # class → "individuated"|"referential"|"stateful", from mda:nodeKind
-    last_wins: set            # every leaf/condition property, any class (see leaf_properties)
-    last_wins_str: set = field(default_factory=set)  # last_wins, as "<iri>" strings —
-                                                       # populated by load_kb(), consulted by
-                                                       # engine/processor.py to match its
-                                                       # own hand-formatted "s p o ." triple text
     archetype_cache: dict = field(default_factory=dict)  # type_iri -> Archetype, memoised
     refining_props_cache: dict = field(default_factory=dict)  # cls -> refining_properties(kb, cls)
     leaf_props_cache: dict = field(default_factory=dict)       # cls -> leaf_properties(kb, cls)
@@ -143,21 +131,6 @@ NODE_KIND_OF = {
 def node_kinds(g: Graph) -> dict:
     return {cls: NODE_KIND_OF[kind] for cls, kind in g.subject_objects(MDA.nodeKind)
             if kind in NODE_KIND_OF}
-
-
-def concept_classes(g: Graph) -> dict:
-    mapping = {}
-    for scheme, cls in g.subject_objects(MDA.instantiatesClass):
-        for concept in g.subjects(SKOS.inScheme, scheme):
-            if (concept, SKOS.topConceptOf, scheme) in g:
-                continue
-            mapping[concept] = cls
-    return mapping
-
-
-def nodes_of_class(kb: KB, g: Graph, cls: URIRef) -> set:
-    nodes = {t for triple in g for t in (triple[0], triple[2])}
-    return {n for n in nodes if kb.concept_class.get(n) == cls}
 
 
 def load_kb() -> KB:
@@ -185,20 +158,17 @@ def load_kb() -> KB:
         if "/vocab/" in str(t)
     }
 
-    dur = next(static.objects(MDA.PostAlarmValidScheme, MDA.postAlarmValidityDuration),
-               Literal("PT0S"))
-    kb = KB(static, catalogue, type_index, scaffold_concepts,
-            parse_duration(str(dur)), tree, concept_classes(static), node_kinds(static),
-            last_wins=set())
-    kb.last_wins = condition_properties(kb)
-    kb.last_wins_str = {f"<{p}>" for p in kb.last_wins}
-    return kb
+    dur = static.value(MDA.PostAlarmValidScheme, MDA.postAlarmValidityDuration)
+    if dur is None:
+        raise ValueError("ontology states no mda:postAlarmValidityDuration on mda:PostAlarmValidScheme")
+    return KB(static, catalogue, type_index, scaffold_concepts,
+              parse_duration(str(dur)), tree, node_kinds(static))
 
 
 def parse_duration(s: str) -> timedelta:
-    m = re.match(r"PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?", str(s))
-    if not m:
-        return timedelta(0)
+    m = re.fullmatch(r"PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?", str(s))
+    if not m or not any(m.groups()):
+        raise ValueError(f"unsupported xsd:duration {s!r} (expected PTnHnMnS)")
     h, mi, se = (int(x) if x else 0 for x in m.groups())
     return timedelta(hours=h, minutes=mi, seconds=se)
 
@@ -281,11 +251,6 @@ def leaf_properties(kb: KB, cls: URIRef) -> list:
     return kb.leaf_props_cache[cls]
 
 
-def condition_properties(kb: KB) -> set:
-    domains = {d for d in kb.reasoning_static.objects(None, RDFS.domain) if isinstance(d, URIRef)}
-    return {p for cls in domains for p in leaf_properties(kb, cls)}
-
-
 def ground_leaf_properties(g: Graph, kb: KB, arch, cls: URIRef, node) -> None:
     if node is None:
         return
@@ -293,35 +258,6 @@ def ground_leaf_properties(g: Graph, kb: KB, arch, cls: URIRef, node) -> None:
         value = arch.value(cls, prop)
         if value is not None:
             g.add((node, prop, value))
-
-
-def resolve_particular_identities(kb: KB, cls: URIRef, events: list) -> tuple:
-    refiners = refining_properties(kb, cls)
-    by_key = defaultdict(list)
-    for ev in events:
-        type_iri = kb.type_index.get(ev.label)
-        if type_iri is None:
-            continue
-        arch = archetype_structure(kb, type_iri)
-        concept = arch.concept(cls)
-        if concept is None:
-            continue
-        refinements = {p: v for p in refiners if (v := arch.value(cls, p)) is not None}
-        by_key[(ev.patient, ev.device_id, concept)].append(refinements)
-
-    resolved, conflicts = {}, []
-    for key, dicts in by_key.items():
-        values_by_prop = defaultdict(set)
-        for d in dicts:
-            for p, v in d.items():
-                values_by_prop[p].add(v)
-        conflicting = {p: vs for p, vs in values_by_prop.items() if len(vs) > 1}
-        if conflicting:
-            for p, vs in sorted(conflicting.items(), key=lambda kv: str(kv[0])):
-                conflicts.append((*key, p, vs))
-        else:
-            resolved[key] = {p: next(iter(vs)) for p, vs in values_by_prop.items()}
-    return resolved, conflicts
 
 
 def _refined_suffix(concept: URIRef, refinements: dict) -> str:
@@ -512,23 +448,6 @@ def condition_for_event(kb: KB, patient_id: str, label: str, device_id: str,
 # load_priority_rank() (assess.py's third small enrichment) is NOT ported
 # here — dead code, confirmed unused: priority_rank.ttl is loaded directly
 # by execution.py's FRAMEWORK_FILES instead.
-
-def resolve_identity(kb: KB, events: list) -> dict:
-    """
-    `events` must be exactly this patient's events-so-far (start <= the
-    arriving alarm's own start) — never the full future history, or a
-    later alarm's refinement could resolve an earlier alarm's identity
-    before that later alarm has occurred (assess.py's own documented
-    reason for calling this once per arriving alarm, not once per patient).
-    """
-    individuated = [cls for cls, kind in kb.node_kind.items()
-                    if kind == "individuated" and cls not in (MDA.Device, MDA.Patient)]
-    identity = {}
-    for cls in sorted(individuated, key=str):
-        resolved, _ = resolve_particular_identities(kb, cls, events)
-        identity[cls] = resolved
-    return identity
-
 
 @dataclass
 class IdentityTracker:

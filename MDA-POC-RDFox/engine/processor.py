@@ -45,15 +45,14 @@ class Processor:
     CAT1/CAT2 checks it emitted (`checks`, matched to their results by
     execution.execute_script)."""
 
-    def __init__(self, kb, scratch_dir: Path, rule_names, verify_identity: bool = False):
+    def __init__(self, kb, scratch_dir: Path, rule_names):
         self.kb = kb
         self.scratch = scratch_dir
         self.lines: list = []
         self.checks: list = []
-        self.verify_identity = verify_identity
         self._file_counter = itertools.count(1)
         self._windows: dict = {}       # patient -> WindowOperator
-        self._arrived: dict = {}       # patient -> [AlarmArrival] so far
+        self._arrived: dict = {}       # patient -> number of arrivals so far
         # Which rules are enabled, grouped by what their result does.
         self.flag_rules = [n for n in ("cat1a", "cat1b") if n in rule_names]
         self.silence_rules = [n for n in ("cat2a", "cat2b") if n in rule_names]
@@ -64,7 +63,7 @@ class Processor:
     def window(self, patient: str) -> WindowOperator:
         if patient not in self._windows:
             self._windows[patient] = WindowOperator(self.kb, self.scratch, self._file_counter)
-            self._arrived[patient] = []
+            self._arrived[patient] = 0
         return self._windows[patient]
 
     # ----------------------------------------------------------------
@@ -122,17 +121,11 @@ class Processor:
     def on_arrival(self, e: AlarmArrival) -> None:
         kb, patient = self.kb, e.patient
         window = self.window(patient)
-        arrived = self._arrived[patient]
-        arrived.append(e)
-        ei = len(arrived)  # this alarm's per-patient sequence number
+        self._arrived[patient] += 1
+        ei = self._arrived[patient]  # this alarm's per-patient sequence number
 
         M.update_identity(kb, e, window.identity_tracker)
         identity = window.identity_tracker.identity
-        if self.verify_identity:
-            batch_identity = M.resolve_identity(kb, arrived)
-            assert identity == batch_identity, (
-                f"incremental identity tracker diverged from resolve_identity's batch "
-                f"computation for {patient} at {e.label}@{e.start}")
 
         event_kinds = (frozenset(relevant_kinds(kb, e.label, _alarm_metric_types(kb, e), self.event_rules))
                        if self.event_rules else frozenset())
@@ -193,8 +186,7 @@ def script_header(dstore: str) -> list:
 
 
 def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
-                  progress: bool = True, verify_identity: bool = False,
-                  dstore: str = "poc") -> tuple:
+                  progress: bool = True, dstore: str = "poc") -> tuple:
     """(script text, checks) for replaying each patient's alarms, one
     patient after another, in ONE dstore.
 
@@ -207,14 +199,9 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
 
     `progress`: a per-patient header line, then an in-place progress bar
     (a real patient can carry tens of thousands of alarms; one real-corpus
-    patient had 25,793).
-
-    `verify_identity`: development-only — also run the batch
-    M.resolve_identity over the alarms arrived so far and assert it matches
-    the incremental tracker. Doubles identity-resolution cost; only turn on
-    to re-confirm the equivalence after touching either implementation."""
+    patient had 25,793)."""
     rule_names = list(RULES) if enabled_rules is None else list(enabled_rules)
-    proc = Processor(kb, scratch_dir, rule_names, verify_identity)
+    proc = Processor(kb, scratch_dir, rule_names)
     lines = script_header(dstore)
     t0 = time.monotonic()
     num_patients = len(patients)

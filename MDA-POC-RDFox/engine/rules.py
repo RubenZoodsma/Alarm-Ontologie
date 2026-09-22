@@ -198,7 +198,6 @@ def _alarm_functional_unit(kb, event) -> str | None:
     return str(concept).rsplit("/", 1)[-1] if concept is not None else None
 
 
-
 def _alarm_metric_types(kb, event) -> set:
     """Every distinct Metric-kind concept name (e.g. {"ArterialBloodPressure_Mean"})
     M.ground_chain would mint for this alarm's own archetype — used only to

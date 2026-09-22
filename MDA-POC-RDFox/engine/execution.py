@@ -16,7 +16,7 @@ from pathlib import Path
 
 import event_log as EL
 from rules import PREFIX_COMMANDS
-from paths import DATA_DIR, LICENSE, RDFOX_BIN, RULES_DIR
+from paths import DATA_DIR, LICENSE, RDFOX_BIN
 
 FRAMEWORK_FILES = [
     DATA_DIR / "ontology.ttl",
@@ -64,8 +64,7 @@ def execute_script(script_text: str, checks: list, scratch: Path, timeout: int =
     by summarize_rule_timings for per-rule trigger-count/duration
     analysis.
 
-    Shared by run() (the fixed regression test below) and poc_entry.py
-    (the general-purpose runner) so the RDFox invocation/output-parsing
+    Shared by regression.py, poc_entry.py and the validation scripts so the RDFox invocation/output-parsing
     logic — both non-obvious, see the comments inline — lives in exactly
     one place.
 
@@ -89,12 +88,6 @@ def execute_script(script_text: str, checks: list, scratch: Path, timeout: int =
 
     `patients`: the same {patient: events} dict build_script was called
     with, used only to size the progress bar (alarm count per patient).
-    Optional and derived from `checks` when omitted — but `checks` is
-    empty whenever every rule is disabled (a real, useful diagnostic
-    run — see poc_entry.py's SETTINGS['enabled_rules']), which previously
-    collapsed the progress bar to "patient N/0 ... /0 alarms" since it
-    had nothing to size itself from. Pass `patients` to keep the bar
-    correct in that case.
 
     `trace`: if given, extended with every trace block printed during the
     run, as (tag, check_key or None, rows) — the input of event_log's
@@ -104,14 +97,7 @@ def execute_script(script_text: str, checks: list, scratch: Path, timeout: int =
     script_path = scratch / "replay.rdfox"
     script_path.write_text(script_text)
 
-    if patients is not None:
-        total_per_patient = {p: len(evs) for p, evs in patients.items()}
-    else:
-        total_per_patient = {}
-        for check in checks:
-            patient, ts = check[0], check[1]
-            total_per_patient.setdefault(patient, set()).add(ts)
-        total_per_patient = {p: len(s) for p, s in total_per_patient.items()}
+    total_per_patient = {p: len(evs) for p, evs in (patients or {}).items()}
     num_patients = len(total_per_patient)
 
     # RDFox's CLI has no "run this script file" positional argument — any
@@ -229,7 +215,7 @@ def execute_script(script_text: str, checks: list, scratch: Path, timeout: int =
     return counts_by_check, timings_by_check
 
 
-def summarize_rule_timings(counts_by_check: dict, timings_by_check: dict, print_it: bool = True) -> dict:
+def summarize_rule_timings(counts_by_check: dict, timings_by_check: dict) -> None:
     """Per-rule breakdown across a whole run: how many times each
     on-demand check (cat1a/cat1b/cat2a/cat2b) was evaluated,
     how many of those evaluations actually matched ("hits"), total time
@@ -256,13 +242,11 @@ def summarize_rule_timings(counts_by_check: dict, timings_by_check: dict, print_
             if t is not None:
                 g["hit_s"] += t
 
-    if print_it:
-        print("\nPer-rule timing summary:")
-        print(f"  {'rule':<28} {'invocations':>12} {'hits':>8} {'total_s':>10} "
-              f"{'avg_s/call':>12} {'avg_s/hit':>10}")
-        for (kind, name), g in sorted(groups.items()):
-            avg_call = g["total_s"] / g["invocations"] if g["invocations"] else 0.0
-            avg_hit = g["hit_s"] / g["hits"] if g["hits"] else 0.0
-            print(f"  {kind + '/' + name:<28} {g['invocations']:>12} {g['hits']:>8} "
-                  f"{g['total_s']:>10.3f} {avg_call:>12.5f} {avg_hit:>10.5f}")
-    return groups
+    print("\nPer-rule timing summary:")
+    print(f"  {'rule':<28} {'invocations':>12} {'hits':>8} {'total_s':>10} "
+          f"{'avg_s/call':>12} {'avg_s/hit':>10}")
+    for (kind, name), g in sorted(groups.items()):
+        avg_call = g["total_s"] / g["invocations"] if g["invocations"] else 0.0
+        avg_hit = g["hit_s"] / g["hits"] if g["hits"] else 0.0
+        print(f"  {kind + '/' + name:<28} {g['invocations']:>12} {g['hits']:>8} "
+              f"{g['total_s']:>10.3f} {avg_call:>12.5f} {avg_hit:>10.5f}")
