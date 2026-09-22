@@ -10,7 +10,7 @@ The engine follows the RDF stream processing model of RSP-QL. Each module in `en
 |---|---|---|
 | `stream.py` | Stream | Replays an alarm corpus as a stream of separate `AlarmArrival` (no end) and `AlarmEnd` elements, in time order |
 | `mint.py` | Stream items | Turns an alarm into RDF using the MDA framework (its alarm-type blueprint), minting patient-scoped entities |
-| `windows.py` | Window operators | Keeps each alarm's knowledge in the store while it is valid: a transient graph (until its end arrives) and a persistent graph (a landmark window, until 15 min after its end). A graph is valid exactly while it is in the store |
+| `windows.py` | Window operators | Keeps each alarm's knowledge in the store while it is valid: a transient graph (until its end arrives) and a persistent graph (until the ontology's post-alarm window after its end). A graph is valid exactly while it is in the store |
 | `rules.py` | R2R: what holds | The registry of the nine rules, the loader for their `.rq` files, and cheap gates that skip checks that cannot match |
 | `actions.py` | R2R: what happens | What a rule's result does: CAT1 stores a flag (withdrawable), CAT2 stores a silence (lifted when its last justification ends), clinical events and CAT3 are episodes with a start and an end |
 | `processor.py` | Query processor | Per stream element: close due windows, handle ends (drop, lift silences, update episodes), handle arrivals (insert, evaluate rules, apply their actions). Works on one patient's stream or several interleaved |
@@ -40,11 +40,11 @@ Both scripts are configured through a `SETTINGS` dict at the top of the file; th
   ```
   cd engine && python3 regression.py
   ```
-  Ends with `N/89 checks matched expected outcome` and writes both logs to `engine/_scratch/`.
-- **Real-corpus run**: `python3 poc_entry.py`. Choose the dataset, number of patients, seed, rules and batch size in `SETTINGS`. Logs go to `_scratch/`.
+  Ends with `N/91 checks matched expected outcome` and writes both logs to `engine/_scratch/`.
+- **Real-corpus run**: `python3 poc_main.py`. Choose the dataset, number of patients, seed, rules and batch size in `SETTINGS`. Logs go to `_scratch/`.
 
 Validation scripts in `validation/`:
-- `log_rebuild_check.py`: every logged row comes out again when only the alarms the logs name for it are replayed through the engine; the criterion is the rule file itself (run `regression.py` or `poc_entry.py` first).
+- `log_rebuild_check.py`: every logged row comes out again when only the alarms the logs name for it are replayed through the engine; the criterion is the rule file itself (run `regression.py` or `poc_main.py` first).
 - `clinical_events_cross_patient.py`: five patients interleaved in one stream and one store produce no cross-patient events.
 - `compare_logs.py`: two runs log the same firings and events (alarms matched by ALARM_ID).
 

@@ -1,69 +1,24 @@
-# export_rdata.R — convert the full 14M-alarm corpus (DATA/POC_EVENTS/
-# DATA_LOCKED.rData) into this project's own patientID;label;device_id;
-# start;end;alarm_id CSV shape, optionally sampling to N patients along
-# the way.
+# export_rdata.R — convert the full corpus (DATA/POC_EVENTS/DATA_LOCKED.rData)
+# to the POC's CSV shape: patientID;label;device_id;start;end;alarm_id,
+# optionally sampling N patients.
 #
-# WHY THIS IS AN R SCRIPT, NOT PYTHON: the .rData file is a full saved R
-# WORKSPACE (60+ objects — functions, other analysis data.frames, etc.),
-# not a single clean data.frame, and its strings are not valid UTF-8
-# (confirmed directly: reading it with Python's pyreadr — the standard
-# pure-Python .rData reader — fails with `UnicodeDecodeError` on real
-# label text; the pure-Python `rdata` package fails even earlier, on the
-# workspace's embedded compiled-function bytecode, before reaching any
-# data at all). R has no such problem reading its own native format and
-# encoding, so conversion happens once here rather than fighting either
-# Python library's limitations.
+# R, not Python: the file is a whole R workspace with non-UTF-8 strings,
+# which the Python readers (pyreadr, rdata) fail on.
 #
-# The 13.8M-row `data` object's own columns don't match this project's
-# CSV shape directly:
-#   patientID  -> patient (as character; kept as the raw hospital ID)
-#   conditie   -> label. TRIMMED: confirmed directly that ~4.18M of
-#                 13.8M rows (~30%) carry stray leading/trailing
-#                 whitespace (e.g. "PHILIPSMONITOR - Asystolie " with a
-#                 trailing space) that would otherwise silently fail
-#                 exact-string lookup against kg_generated.ttl's
-#                 catalogue (mint.py's kb.type_index) for no reason
-#                 related to whether the label is actually known.
-#   bed_naam + device_naam -> device_id. Neither column alone is a safe
-#                 device-instance identifier: bed_naam (only 49 distinct
-#                 beds) is reused across many different physical devices
-#                 AT the same bed (a monitor and a ventilator share one
-#                 bed) — using it alone would make mint.py's ground_chain
-#                 assert two different device TYPES onto one Device IRI.
-#                 device_naam alone (10 distinct) is reused across many
-#                 different beds/patients over time, which is fine on its
-#                 own (see mint.py's own MINTING-section header on
-#                 patient-scoped IRIs) but doesn't distinguish two
-#                 different physical units of the same model at two
-#                 different beds. The pair does.
-#   row number -> alarm_id. The source has no identifier of its own (21
-#                 columns, none unique), and patient + device + start
-#                 second collided for 45.5% of rows, merging distinct
-#                 alarms into one. The row's position in the locked `data`
-#                 frame (its rowname, 1..n) is the definitive ALARM_ID:
-#                 stable for as long as DATA_LOCKED.rData is. Assigned
-#                 BEFORE any sampling, so a sample keeps the full corpus's
-#                 IDs. It also keeps apart the 78,613 rows that are exact
-#                 duplicates of another row in all 21 source columns
-#                 (39,254 groups, mostly "SDM ..." technical messages; see
-#                 the 2026-09-21 analysis) — whether those are one alarm or
-#                 two is a data-source question, not decided here.
-#   alarm_start/alarm_eind -> start/end. `format()` below deliberately
-#                 does NOT pass an explicit tz= override: confirmed
-#                 directly (attr(d$alarm_start, "tzone") == "" and
-#                 Sys.timezone() == "Europe/Amsterdam" on the machine
-#                 this was authored on) that the timestamps already carry
-#                 no explicit zone and this session's own local zone
-#                 already matches the hospital's — printing in session-
-#                 local time is correct here, not an oversight.
+# Column mapping from the `data` object:
+#   patientID              -> patientID
+#   conditie               -> label, TRIMMED (~30% carry stray whitespace
+#                             that would miss the catalogue lookup)
+#   bed_naam + device_naam -> device_id; neither alone identifies a device
+#                             (a bed holds several devices; a device name
+#                             recurs across beds)
+#   row number             -> alarm_id: the source has no identifier, and
+#                             patient + device + start collide for 45.5% of
+#                             rows. Assigned before sampling.
+#   alarm_start/alarm_eind -> start/end, in local time (the timestamps
+#                             carry no zone; Europe/Amsterdam)
 #
-# 505 distinct `conditie` values exist in the real data; kg_generated.
-# ttl's catalogue currently knows 89 AlarmType labels. Rows whose label
-# isn't in the catalogue are NOT dropped here — mint.py's own functions
-# already handle an unresolved label by minting nothing for it
-# (background_for_key/condition_for_event/alarm_message all return empty
-# graphs), and poc_entry.py already warns about exactly this. Filtering
-# here would hide real corpus coverage gaps instead of surfacing them.
+# Unknown labels are kept: poc_main.py reports them as coverage gaps.
 #
 # Usage: Rscript export_rdata.R <input.rData> <output.csv> <n_patients: 'all' or an integer> <seed>
 

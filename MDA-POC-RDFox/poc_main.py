@@ -1,57 +1,12 @@
 """
-poc_entry.py — run the MDA-POC-RDFox window operator over a configurable
-subset of patients and a configurable subset of rules.
+poc_main.py — run the POC on a chosen dataset, patient sample and rule set,
+and report what fired (real patients have no ground truth; for pass/fail
+see engine/regression.py). Configure through SETTINGS.
 
-This is the general-purpose "run the POC" entry point — distinct from
-engine/regression.py, which is a FIXED regression test
-against the 46 fabricated CAT1–CAT3 patients in DATA/CAT_evaluation/
-events_data.csv, checked against a hand-authored expected-outcome table.
-Real patients (the default dataset here) have no such ground truth, so
-this script reports what fired instead of pass/fail.
-
-Reuses the engine modules (engine/processor.py, engine/mint.py, ...) as-is — no rule or
-grounding logic is duplicated here; this file is orchestration only
-(dataset/patient/rule selection, execution, reporting).
-
-No command-line arguments — edit SETTINGS below and run the file directly
-(e.g. VS Code's Run Python File), the same way the rest of this project's
-one-off scripts work.
-
-LOADING THE FULL 14M-ALARM CORPUS (.rData)
---------------------------------------------------------------------
-SETTINGS['dataset'] can point at DATA/POC_EVENTS/DATA_LOCKED.rData
-directly — the real, full corpus (13.8M rows, 3299 patients), not the
-41-alarm/8-patient events_data.csv excerpt. That file is a full saved R
-workspace (60+ objects), not a plain data.frame, and its label text isn't
-valid UTF-8 — confirmed directly that both pure-Python .rData readers
-(pyreadr, rdata) fail on it (a UnicodeDecodeError on real label text, and
-a bytecode-parsing error, respectively) — so conversion happens once via
-a small R script (data/tools/export_rdata.R) instead of fighting either
-library's limitations. That script's own header documents the exact
-column mapping (patientID/conditie/bed_naam+device_naam/alarm_start/
-alarm_eind -> patient/label/device_id/start/end) and the real, confirmed
-data-quality issue it corrects (~30% of labels carry stray whitespace
-that would otherwise silently fail exact-string lookup against
-kg_generated.ttl's catalogue).
-
-Converting the full file costs ~70s (dominated by R deserializing the
-whole 200MB workspace — confirmed the sampling step itself is not what's
-slow, so there's nothing to gain by re-running R per sample size) and is
-cached: resolve_dataset() only re-runs the R script when the cached CSV
-is missing or older than the .rData source. Needs R installed
-(`brew install r`) and `Rscript` on PATH; nothing else here depends on R.
-
-Even reading the cached ~1.2GB/13.8M-row CSV in full just to keep 5
-patients out of 3299 would cost ~58s for no reason (measured directly:
-building every Event/parsing every date dominates that cost, not file
-I/O — a patientID-only scan alone takes ~15s). So patient selection
-happens BEFORE any Event is built: scan_patient_ids() reads just the
-patientID column, the sample is chosen from that, and
-load_events_for_patients() then only constructs Events for the chosen
-patients' own rows. This runs unconditionally (not just for the .rData
-path) — it costs nothing extra on the small fabricated/POC_EVENTS CSVs
-and means N-patient selection cost scales with N, not with corpus size,
-for any dataset this script is pointed at.
+The full corpus (DATA_LOCKED.rData, an R workspace) is converted once to
+CSV by data/tools/export_rdata.R and cached. Patients are sampled from a
+patientID-only scan before any event is built, so cost scales with the
+sample, not the corpus.
 """
 
 from __future__ import annotations
@@ -76,13 +31,7 @@ import stream as S
 RDATA_EXPORT_SCRIPT = ROOT / "data" / "tools" / "export_rdata.R"
 
 SETTINGS = {
-    # Which events file to replay. Three shapes work here:
-    #   - the small real-corpus excerpt: DATA/POC_EVENTS/events_data.csv
-    #   - the fabricated, known-outcome CAT1–CAT3 fixtures:
-    #     ROOT.parent / "DATA/CAT_evaluation/events_data.csv"
-    #   - the FULL 14M-alarm corpus: DATA/POC_EVENTS/DATA_LOCKED.rData
-    #     (converted+cached to CSV automatically the first time — see
-    #     this module's own docstring).
+    # The events file (.csv, or .rData: converted and cached).
     ### locked dataset - real-world corpus of 14m alarms over 3299 patients
     "dataset": ROOT.parent / "DATA" / "POC_EVENTS" / "DATA_LOCKED.csv",
     ### trial dataset - small excerpt of the real-world corpus, 41 alarms over 8 patients
@@ -90,20 +39,15 @@ SETTINGS = {
     ### fabricated dataset - 46 known-outcome patients (CAT1–CAT3), for regression testing
     # "dataset": ROOT.parent / "DATA/CAT_evaluation" / "events_data.csv",
 
-    # "all" (or None) replays every patient in the dataset. An int (e.g.
-    # 5 or 10) instead randomly samples that many patients rather than
-    # the entire set — the point of this setting against the full
-    # 14M-alarm corpus: try a handful of patients cheaply instead of
-    # paying for all 3299.
+    # "all" (or None), or a number of randomly sampled patients.
     "n_patients": 5,
 
-    # Fixes WHICH patients get sampled when n_patients is a number, so a
-    # run is reproducible. Change it to get a different random subset.
+    # Seed of the patient sample.
     "seed": 42,
 
-    # One switch per rule (engine/rules.RULES' entries) —
-    # flip any of these to False to exclude that rule from the run.
-    #"enabled_rules": {name: True for name in RU.RULES},
+    # One switch per rule (engine/rules.RULES). A combined rule needs its
+    # constituents: cat3a needs cardiac_arrest + respiratory_arrest, cat3b
+    # needs reduced_pulmonary_function.
     "enabled_rules": {
     "cardiac_arrest": True,
     "respiratory_arrest": True,
@@ -112,40 +56,21 @@ SETTINGS = {
     "cat1b": True,
     "cat2a": True,
     "cat2b": True,
-    # cardiac_arrest/respiratory_arrest/reduced_pulmonary_function and
-    # cat3a (cardiorespiratory arrest)/cat3b (ventilation failure) maintain
-    # clinical events per patient (engine/actions.py, episodes). A combined
-    # rule needs its constituents enabled too (cat3a: cardiac_arrest +
-    # respiratory_arrest; cat3b: reduced_pulmonary_function) — build_script
-    # raises a clear error otherwise. Every event is scoped to one patient,
-    # so any batch_size is safe. Covered by the regression fixtures in
-    # DATA/CAT_evaluation/events_data.csv (engine/regression.py).
     "cat3a": True,
     "cat3b": True,
 },
-    # None processes every selected patient in a single batch/dstore —
-    # fine at this dataset's scale. An int (e.g. 200) processes patients
-    # in bounded-size batches instead, each its own RDFox run — bounds
-    # memory/disk for a run large enough that holding everyone in one
-    # script/dstore stops being practical (see engine/processor.
-    # run_batched's own docstring). Worth setting once n_patients is
-    # "all" against the full 14M-alarm corpus's 3299 patients.
+    # Patients per RDFox run; None: all in one run.
     "batch_size": 1,
 
-    # Where the logs are written: one row per clinical event (start, end,
-    # supporting alarms), and one row per CAT1/CAT2 firing (arriving alarm,
-    # causing alarms). See engine/event_log.py.
+    # The two logs (engine/event_log.py).
     "event_log": ROOT / "_scratch" / "clinical_events.csv",
     "firing_log": ROOT / "_scratch" / "rule_firings.csv",
 }
 
 
 def resolve_dataset(path: Path) -> Path:
-    """If `path` is an .rData file, convert it to this project's own CSV
-    shape via data/tools/export_rdata.R and return the (cached) CSV path
-    instead. Otherwise return `path` unchanged. See this module's own
-    docstring for why conversion is a separate R step and why it's
-    cached rather than re-run per sample."""
+    """`path`, or for an .rData file its CSV conversion (cached; redone
+    when older than the source)."""
     if path.suffix.lower() not in (".rdata",):
         return path
 
@@ -173,6 +98,7 @@ def resolve_dataset(path: Path) -> Path:
 
 
 def choose_patient_ids(all_ids: list, n, seed: int) -> list:
+    """All ids, or a seeded random sample of `n`."""
     if n is None or n == "all" or n >= len(all_ids):
         return all_ids
     rng = random.Random(seed)
@@ -180,12 +106,13 @@ def choose_patient_ids(all_ids: list, n, seed: int) -> list:
 
 
 def report(patients: dict, rule_names: list, firings: list, records: list) -> None:
+    """Per patient and in total: flagged, silenced, episodes per kind, and
+    the share of alarms CAT1 or CAT2 managed."""
     event_kinds = [r.kind for r in RU.enabled_event_rules(rule_names)]
     episodes = {kind: EL.episodes_by_patient(records, kind) for kind in event_kinds}
     total_flagged = total_silenced = total_managed = total_alarms = 0
     total_events = {kind: 0 for kind in event_kinds}
-    # Counted from the firing log, not the raw check counts: a cat1b flag
-    # can be withdrawn after its check fired (event_log.flagged_alarms).
+    # From the firing log, so withdrawn flags and lifted silences don't count.
     flagged = EL.flagged_alarms(firings)
     silenced = EL.silenced_alarms(firings)
     for patient in sorted(patients):
@@ -193,14 +120,7 @@ def report(patients: dict, rule_names: list, firings: list, records: list) -> No
         fired_silence = {a for p, a in silenced if p == patient}
         n_flag = len(fired_flag)
         n_silence = len(fired_silence)
-        # cat1+cat2 combined: an alarm counts once here even if BOTH
-        # flaggedLikelyFalsePositive and silencedBy fired for it — a
-        # straight n_flag+n_silence sum would double-count that alarm,
-        # overstating how many DISTINCT alarms the framework actually
-        # managed. `patients[patient]` is already the post-coverage-filter
-        # (unsupported-label-dropped) event list run() passes in here, so
-        # this denominator is the same "fair %" basis run()'s own coverage
-        # line uses — not the raw pre-filter alarm count.
+        # Distinct alarms flagged or silenced, over the alarms with a known label.
         n_managed = len(fired_flag | fired_silence)
         n_alarms = len(patients[patient])
         pct_managed = 100.0 * n_managed / n_alarms if n_alarms else 0.0
@@ -223,6 +143,7 @@ def report(patients: dict, rule_names: list, firings: list, records: list) -> No
 
 
 def run():
+    """Load, sample, replay, write both logs, report."""
     t_start = time.monotonic()
 
     unknown = set(SETTINGS["enabled_rules"]) - set(RU.RULES)
@@ -253,12 +174,7 @@ def run():
           f"{len(groups)} patient(s) ({time.monotonic() - t:.1f}s)")
     print(f"-- Patients: {len(groups)}/{len(all_ids)} ")
 
-    # Coverage is ALARM-COUNT weighted, not label-count weighted: a
-    # handful of rare unresolved labels covering a tiny fraction of
-    # actual alarm volume is a very different situation from a common
-    # label going unresolved, and only the alarm-weighted number answers
-    # "how much of what actually happened does the framework account
-    # for" — the question that actually matters for this POC's results.
+    # Coverage: the share of alarms whose label the catalogue knows.
     label_counts = Counter(e.label for e in events)
     unresolved_counts = Counter({label: n for label, n in label_counts.items()
                                   if label not in kb.type_index})
@@ -276,15 +192,7 @@ def run():
         if len(unresolved_counts) > len(top):
             print(f"  ... and {len(unresolved_counts) - len(top)} more distinct label(s)")
 
-    # Drop unresolved-label alarms BEFORE minting — mint.py's own
-    # alarm_message/condition_for_event/background_for_key already return
-    # an empty Graph() for these (kb.type_index has no entry for the
-    # label), so they contribute zero triples either way. Without this
-    # filter they still cost a real RDFox `import`, two scheduled
-    # DELETE WHERE drops, and 2-3 guaranteed-zero `select` checks each —
-    # pure overhead in the generated script for content that was never
-    # going to be there. Computed after the coverage report above so that
-    # report still reflects the full, unfiltered picture.
+    # Unknown labels mint nothing; drop them before they cost RDFox commands.
     if unresolved_counts:
         events = [e for e in events if e.label in kb.type_index]
         groups = S.group_by_patient(events)

@@ -1,14 +1,9 @@
 """
 compare_logs.py — do two runs log the same firings and clinical events?
 
-Compares rule_firings.csv and clinical_events.csv of a reference run and a
-current run, row by row, as sets. Alarms are compared by their ALARM_ID
-(the last part of the alarm id in the `alarm_ids` column), not by IRI: the
-alarm IRI changed when the end time was dropped from it (mint.alarm_key),
-while the alarm it names did not.
-
-Prints the rows only one side has, and exits non-zero when there are any.
-No command-line arguments — edit SETTINGS and run the file directly.
+Compares both logs of a reference run and a current run as sets of rows,
+alarms matched by ALARM_ID. Prints the rows only one side has; non-zero
+exit when there are any. Configure through SETTINGS.
 """
 from __future__ import annotations
 
@@ -44,6 +39,7 @@ def event_rows(path: Path) -> set:
 
 
 def compare(name: str, read) -> int:
+    """Print the differences in one log; return their number."""
     ref = read(SETTINGS["reference"] / name)
     cur = read(SETTINGS["current"] / name)
     only_ref, only_cur = sorted(ref - cur), sorted(cur - ref)

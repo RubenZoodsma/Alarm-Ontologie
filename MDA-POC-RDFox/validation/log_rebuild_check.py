@@ -1,37 +1,16 @@
 """
-log_rebuild_check.py — the logs name enough to rebuild the evidence.
+log_rebuild_check.py — every log row can be rebuilt from the alarms it names.
 
-For every row of clinical_events.csv and rule_firings.csv, take ONLY the
-alarms the logs name for it (its `alarm_ids`, and their CAT1 history —
-below), replay them on their own through the engine — the same processor, rule files and actions as a real run —
-and check that the row comes out again:
+Each row of clinical_events.csv and rule_firings.csv is replayed through the
+engine with only its named alarms (plus, recursively, the alarms of CAT1
+rows on them up to its time: a flag and its withdrawal decide when an alarm
+counts). The row must come out again — same event kind, start and end, or
+same rule, alarm, time and causes. Each row is its own replay patient, so
+rows cannot lend each other evidence.
 
-  clinical event   an event of the same kind, with the same start and end
-  firing           the same rule on the same alarm at the same time, with
-                   the same causing alarms (this includes cat1b_withdrawn
-                   and cat2_lifted rows)
-
-The criterion is therefore the rule itself (representation/rules/*.rq),
-not a second copy of it here.
-
-A row's own alarms are extended with what the logs say about them: every
-CAT1 row (cat1a, cat1b, cat1b_withdrawn) on one of those alarms, up to the
-row's time, adds its alarms too, recursively. A CAT1 flag decides whether
-an alarm counts as evidence, and its withdrawal decides from when — so an
-event whose start was set by a withdrawal needs the flag's cause and the
-withdrawal's cause, which the logs name in the firing rows of that alarm,
-not in the event row. Each row is replayed as its own patient
-("<patient>_rb<row>"), so rows cannot lend each other evidence; all rows
-share one RDFox run.
-
-What passing means: the named alarms are SUFFICIENT for the result. It
-does not show that no other alarm contributed, and for a rule on absence
-(cat1b: no other alarm on the pathway) a smaller set of alarms can only
-make the absence easier to meet.
-
-Run engine/regression.py (or poc_entry.py) first; point SETTINGS at the
-events file it replayed and the folder holding its logs. No command-line
-arguments — edit SETTINGS and run the file.
+Passing shows the named alarms are sufficient, not that nothing else
+contributed. Run regression.py or poc_main.py first and point SETTINGS at
+its events file and logs.
 """
 from __future__ import annotations
 
@@ -52,7 +31,7 @@ from processor import build_script  # noqa: E402
 
 SETTINGS = {
     # The fixture regression: S.DATASET with ROOT / "engine" / "_scratch".
-    # A poc_entry.py run: its dataset with ROOT / "_scratch".
+    # A poc_main.py run: its dataset with ROOT / "_scratch".
     "events": S.DATASET,
     "logs": ROOT / "engine" / "_scratch",
     "scratch": ROOT / "_scratch_rebuild",
@@ -60,11 +39,12 @@ SETTINGS = {
 
 
 def alarm_id(iri_or_id: str) -> str:
-    """The ALARM_ID at the end of an alarm IRI or of a logged alarm id."""
+    """The ALARM_ID at the end of an alarm IRI or logged id."""
     return str(iri_or_id).rsplit("_", 1)[-1]
 
 
 def read_rows(name: str) -> list:
+    """The rows of a log file."""
     with (SETTINGS["logs"] / name).open(encoding="utf-8") as f:
         return list(csv.DictReader(f, delimiter=";"))
 
@@ -90,6 +70,7 @@ def with_cat1_history(patient: str, ids: list, until: datetime, firing_rows: lis
 
 
 def main() -> int:
+    """Replay every row, print PASS/FAIL per row; non-zero on any failure."""
     events_rows = read_rows("clinical_events.csv")
     firing_rows = read_rows("rule_firings.csv")
     rows = [("event", r) for r in events_rows] + [("firing", r) for r in firing_rows]

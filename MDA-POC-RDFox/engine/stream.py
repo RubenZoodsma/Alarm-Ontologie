@@ -1,21 +1,13 @@
 """
-stream.py — the stream source (RSP-QL: the input stream).
+stream.py — the input stream (RSP-QL).
 
 Reads an alarm corpus (`;`-separated: patientID;label;device_id;start;end
-[;alarm_id]) into Event records, and replays them as the stream the
-engine consumes: separate AlarmArrival and AlarmEnd elements, in time
-order. Time is LOGICAL, not wall-clock.
+[;alarm_id]) and replays it as AlarmArrival and AlarmEnd elements in
+logical time, as a live feed would deliver them. An arrival carries no end.
 
-An AlarmArrival carries no end: nothing downstream can know when an alarm
-will end before its AlarmEnd arrives, exactly as with a live feed. A live
-source would emit the same two element types as they happen.
-
-ORDER AT ONE INSTANT t (replay_stream). All AlarmEnds at t come before the
-AlarmArrivals at t: an alarm that ended at t is no longer active for one
-arriving at t. An alarm's end never precedes its own arrival: a zero-length
-alarm (end == start; 32,391 in the corpus) ends right after its own
-arrival, before any later arrival at t; an end before the start (6 in the
-corpus) is treated as zero-length. Arrivals at t keep their input order.
+Order at one instant t: all ends at t, then the arrivals at t in input
+order. A zero-length alarm (or one ending before it starts) ends right
+after its own arrival.
 """
 
 from __future__ import annotations
@@ -37,11 +29,8 @@ class Event:
     device_id: str
     start: datetime
     end: datetime
-    # ALARM_ID: this alarm occurrence's own unique identifier, part of its
-    # IRI (mint.alarm_key). Taken from the file's `alarm_id` column when
-    # present (the corpus: the row number in the locked source data, see
-    # data/tools/export_rdata.R), otherwise the 1-based data-row number in
-    # the file being read — unique and stable for as long as that file is.
+    # ALARM_ID, part of the alarm IRI: the file's `alarm_id` column (the
+    # corpus: its row in the locked source), else the 1-based row number.
     alarm_id: str
 
 
@@ -55,6 +44,7 @@ def _alarm_ids(header: list, rows: list) -> list:
 
 
 def load_events(path: Path) -> list:
+    """Every event in a (small) events file."""
     with path.open(encoding="utf-8") as f:
         reader = csv.reader(f, delimiter=";")
         header = next(reader)
@@ -72,32 +62,16 @@ def group_by_patient(events: list) -> dict:
 
 
 def scan_patient_ids(path: Path) -> list:
-    """Every distinct patientID in a large events CSV, without building a
-    single Event. Uses pandas (a lazy import — the only place in this
-    module that needs a dependency beyond the standard library) reading
-    just the patientID column: pandas' C parser only tokenizes the one
-    column asked for, whereas a plain csv.reader loop still pays full
-    per-row tokenization cost for every column even when only row[0] is
-    read — confirmed directly the naive version of this function (a
-    csv.reader loop reading only row[0]) still took ~34s against pandas'
-    ~7s on the real 13.8M-row corpus, because tokenizing all 5 columns
-    per row, not date-parsing, is what actually dominates at that scale."""
+    """Every distinct patientID, reading only that column (pandas; ~7 s on
+    the full corpus)."""
     import pandas as pd
     ids = pd.read_csv(path, sep=";", usecols=["patientID"], dtype=str)
     return sorted(ids["patientID"].unique())
 
 
 def load_events_for_patients(path: Path, patient_ids: set) -> list:
-    """Build Event objects ONLY for rows whose patientID is in
-    `patient_ids`. Also pandas-based, for the same reason as
-    scan_patient_ids: reads the whole file (pandas has no way to skip
-    rows before parsing them, so this cost doesn't shrink with a smaller
-    `patient_ids`), but its C parser does that full read far faster than
-    a Python-level csv.reader loop does even when the loop itself skips
-    most rows — confirmed directly (~26s pandas vs ~28s csv.reader
-    despite the csv.reader version constructing far fewer Event objects)
-    on the real 13.8M-row corpus. Pair with scan_patient_ids to choose
-    `patient_ids` first."""
+    """Events of `patient_ids` only (pandas). Row-number ALARM_IDs are
+    assigned before filtering, as in load_events."""
     import pandas as pd
     df = pd.read_csv(path, sep=";", dtype=str)
     if "alarm_id" not in df.columns:
@@ -133,8 +107,7 @@ class AlarmEnd:
 
 
 def replay_stream(events: list) -> list:
-    """Every event as an AlarmArrival and an AlarmEnd, in stream order (see
-    the module docstring for the order at one instant)."""
+    """Every event as an AlarmArrival and an AlarmEnd, in stream order."""
     keyed = []
     for seq, e in enumerate(sorted(events, key=lambda ev: ev.start)):
         keyed.append(((e.start, 1, seq, 0), AlarmArrival(e.patient, e.label, e.device_id, e.start, e.alarm_id)))

@@ -1,22 +1,10 @@
 """
-ontology_tree.py — the class nesting implied by the ontology, derived once.
+ontology_tree.py — the class tree rooted at mda:Alarm, derived from the
+ontology's rdfs:domain/rdfs:range pairs, and a walk of it over the catalogue.
 
-FORKED VERBATIM from CODE/shared/ontology_tree.py — MDA-POC-RDFox is
-self-contained (does not import code from outside itself), so this is a
-duplicated copy, not a live import. Keep in sync by hand if the original
-changes; no logic here has been altered.
-
-Shared by CODE/framework_build/build_framework.py (which builds the blueprint)
-and CODE/evaluation_poc/op_knowledge.py (which reads it back).  It belongs to
-no single stage, hence CODE/shared/.
-
-Both stages need the same fact: which object properties, with named domain and
-range, span a tree rooted at mda:Alarm.  Before this module existed the readout
-derived that tree and the operational reader re-walked it by hand, so a branch
-added to the ontology was picked up by one and silently ignored by the other.
-
-Nothing here knows any domain vocabulary.  Everything comes from asserted
-rdfs:domain / rdfs:range pairs.
+The subset of CODE/shared/ontology_tree.py that mint.py uses, copied (the
+POC imports nothing from outside its folder); keep the logic in sync by
+hand. Knows no domain vocabulary.
 """
 
 import re

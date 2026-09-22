@@ -1,9 +1,8 @@
 """
-execution.py — running a generated script and reading its results.
+execution.py — runs a generated script in RDFox and reads the results back.
 
-The engine behind it is RDFox (a sandbox process fed the script on stdin);
-results come back as trace blocks (event_log.trace_block) parsed by
-event_log.parse_trace_blocks.
+RDFox runs as a sandbox process fed the script on stdin; results come back
+as trace blocks (event_log.trace_block).
 """
 
 from __future__ import annotations
@@ -29,10 +28,8 @@ FRAMEWORK_FILES = [
     DATA_DIR / "mdapoc.ttl",
 ]
 
-# Set once at the top of every script: every select prints its answers as
-# TSV (event_log.trace_block wraps each one), and the prefixes the rule and
-# action files use are declared once (rules.py: the RDFox shell rejects a
-# PREFIX clause inside a one-line command).
+# Top of every script: answers as TSV, and the rule files' prefixes
+# declared once (rules.py).
 SCRIPT_PREAMBLE = (["set query.answer-format text/tab-separated-values", "set output out"]
                    + PREFIX_COMMANDS)
 
@@ -43,12 +40,8 @@ def _progress_bar(done: int, total: int, width: int = 30) -> str:
 
 
 def _reader_thread(pipe, q: queue.Queue) -> None:
-    """Runs in a background thread: forward every line RDFox prints to
-    `q`, then a final None sentinel on EOF. Needed (rather than just
-    iterating `pipe` in the main thread) so execute_script can still
-    enforce a wall-clock timeout even if RDFox goes completely silent —
-    an in-loop time check only runs between lines received, which never
-    fires at all if no more lines ever arrive."""
+    """Forward RDFox's output lines to `q`, then None on EOF. A thread, so
+    the timeout also fires when RDFox goes silent."""
     for line in pipe:
         q.put(line.rstrip("\n"))
     q.put(None)
@@ -57,42 +50,16 @@ def _reader_thread(pipe, q: queue.Queue) -> None:
 def execute_script(script_text: str, checks: list, scratch: Path, timeout: int = 600,
                     progress: bool = True, patients: dict | None = None,
                     trace: list | None = None) -> tuple:
-    """Run `script_text` against a real RDFox instance and return
-    ({check_key: answer_count}, {check_key: seconds}) for every entry in
-    `checks`, in order — the second dict is per-statement wall-clock time
-    as RDFox itself reports it ("Total statement evaluation time"), used
-    by summarize_rule_timings for per-rule trigger-count/duration
-    analysis.
+    """Run `script_text` in RDFox. Returns ({check_key: answer_count},
+    {check_key: seconds}) for `checks`, the time as RDFox reports it.
 
-    Shared by regression.py, poc_entry.py and the validation scripts so the RDFox invocation/output-parsing
-    logic — both non-obvious, see the comments inline — lives in exactly
-    one place.
+    `progress`: a live per-patient bar, driven by the PATIENT_START /
+    ALARM_DONE echo lines build_script emits (RDFox flushes per line).
+    `patients`: {patient: events}, only to size that bar.
+    `trace`: if given, extended with every trace block as
+    (tag, check_key or None, rows) — input for event_log.
 
-    `progress`: render an in-place, per-patient progress bar as RDFox
-    actually executes the script — the counterpart to build_script's own
-    per-alarm minting bar, for the step that follows it. Confirmed
-    directly (not assumed) that this is possible at all: RDFox flushes
-    its stdout per-line even when piped, not just when attached to a
-    TTY — verified with an `echo`-then-`sleep 3000`-then-`echo` script,
-    where the first echo arrived immediately and the second only after
-    the full 3s, ruling out RDFox block-buffering its own output until
-    exit (the common failure mode that would have made "live" progress
-    silently do nothing until the process ends anyway). Driven by the
-    `echo PATIENT_START:<patient>` / `echo ALARM_DONE:<patient>` marker
-    lines build_script emits into the script for exactly this purpose —
-    `echo`'s own RDFox semantics (`help echo`: "Prints the tokens
-    specified... separated by a single space") make these unambiguous,
-    exact lines to match on, unlike inferring progress from counting
-    select/DELETE-WHERE result lines (which don't carry a patient
-    identity at all).
-
-    `patients`: the same {patient: events} dict build_script was called
-    with, used only to size the progress bar (alarm count per patient).
-
-    `trace`: if given, extended with every trace block printed during the
-    run, as (tag, check_key or None, rows) — the input of event_log's
-    event_records/firing_records. Optional so existing callers are
-    unaffected.
+    On timeout RDFox is killed and the output so far is still parsed.
     """
     script_path = scratch / "replay.rdfox"
     script_path.write_text(script_text)
@@ -100,12 +67,8 @@ def execute_script(script_text: str, checks: list, scratch: Path, timeout: int =
     total_per_patient = {p: len(evs) for p, evs in (patients or {}).items()}
     num_patients = len(total_per_patient)
 
-    # RDFox's CLI has no "run this script file" positional argument — any
-    # argument after <root> in sandbox/shell mode is itself a SHELL COMMAND
-    # (confirmed via `RDFox -help`: "all supplied commands are executed").
-    # The working pattern is piping the script's own text via stdin, which
-    # also closes stdin on EOF (no interactive prompt to hang on) without
-    # needing an explicit `< /dev/null`.
+    # RDFox takes no script-file argument: the script goes in on stdin,
+    # whose EOF also ends the shell.
     t0 = time.monotonic()
     script_file = script_path.open()
     process = subprocess.Popen(
@@ -127,16 +90,6 @@ def execute_script(script_text: str, checks: list, scratch: Path, timeout: int =
     while True:
         remaining = deadline - time.monotonic()
         if remaining <= 0:
-            # Used to raise TimeoutExpired here, which meant a stalling
-            # run produced ZERO diagnostic data — exactly the case where
-            # per-rule timing (summarize_rule_timings) matters most.
-            # Instead: kill the process, and fall through to the same
-            # parsing logic below on whatever output was captured before
-            # the kill, so every check/alarm that DID complete still gets
-            # counted and timed. The caller can tell a partial result from
-            # a complete one via the printed warning below (there's no
-            # separate return signal — the point is graceful degradation,
-            # not a new error-handling contract every caller must adopt).
             timed_out = True
             process.kill()
             break
@@ -181,12 +134,7 @@ def execute_script(script_text: str, checks: list, scratch: Path, timeout: int =
               f"({len(checks)} check(s) run)")
     output = "\n".join(out_lines)
 
-    # Every select runs inside a trace block (event_log.trace_block),
-    # with output switched on for the whole script, so results are read
-    # from the rows each block printed — not from RDFox's "Number of query
-    # answers" statistics, which updates and deletes print too. A check's
-    # count is its number of rows; its timing is the block's own "Total
-    # statement evaluation time".
+    # A check's count is its trace block's number of rows.
     blocks = EL.parse_trace_blocks(out_lines)
     counts_by_check, timings_by_check = {}, {}
     collected = []
@@ -216,19 +164,8 @@ def execute_script(script_text: str, checks: list, scratch: Path, timeout: int =
 
 
 def summarize_rule_timings(counts_by_check: dict, timings_by_check: dict) -> None:
-    """Per-rule breakdown across a whole run: how many times each
-    on-demand check (cat1a/cat1b/cat2a/cat2b) was evaluated,
-    how many of those evaluations actually matched ("hits"), total time
-    RDFox itself reports spending on that check's queries, and average
-    time per invocation vs. average time per hit — the latter is what
-    actually answers "does this rule get slower when it fires, or is
-    cost independent of outcome." Keyed by (kind, name) — e.g.
-    ("silencedBy", "cat2a") — since every checks tuple now carries a rule
-    name as its 4th element (see build_script's own comment on why:
-    keeping every on-demand check as its own separate query, one rule
-    name per query, both to avoid the confirmed cat2a/cat2b UNION
-    regression and to make exactly this kind of per-rule instrumentation
-    possible without extra bookkeeping)."""
+    """Print per CAT1/CAT2 rule: invocations, hits, total time, and average
+    time per call and per hit."""
     groups: dict = {}
     for key, t in timings_by_check.items():
         kind, name = key[2], key[3]

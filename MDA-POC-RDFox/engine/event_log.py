@@ -1,38 +1,23 @@
 """
-event_log.py — what fired, and which alarms it rests on. Kept outside the
-store.
+event_log.py — what fired and which alarms it rests on (RSP-QL: R2S).
+Never written back into the store.
 
-Two logs, both reduced to ALARMS — enough to rebuild the graph, since every
-fact in it is minted from an alarm (patient, label, device, start, end):
+  clinical_events.csv   per clinical event: kind, start, end, and every
+                        alarm that supported it.
+  rule_firings.csv      per CAT1/CAT2 firing (and withdrawal, lift): the
+                        alarm, and the alarm(s) that caused it.
 
-  clinical_events.csv   one row per clinical event: its kind, start, end,
-                        and the alarms that supported it at any point.
-  rule_firings.csv      one row per firing of a CAT1/CAT2 rule: the
-                        arriving alarm, and the alarm(s) that caused it.
+Alarms are written as labels (for reading) and ids (the local name of the
+alarm IRI, for rebuilding: validation/log_rebuild_check.py).
 
-Each alarm is written twice: as its label, for reading, and as its id
-(the local name of its IRI, which encodes patient, device, start, end and
-ALARM_ID), for rebuilding — a label alone repeats far too often to
-identify an alarm.
-
-Input: the trace blocks execution.execute_script collects (see
-trace_block below), as (tag, check_key, rows):
-  ("ended", None, rows)     rows: event, kind, start, end
-  ("support", None, rows)   rows: event, support — an alarm graph
-                            (<alarm#transient|#persistent>) or, for a
-                            combined event, a constituent event
-  ("check", key, rows)      rows: alarm, witness — the witness is an alarm
-                            graph or an alarm (unbound when a rule cannot
-                            name one)
-  ("withdraw <patient> <time>", None, rows)
-                            rows: flagged alarm, arriving alarm — a stored
-                            cat1b flag withdrawn because an alarm on its IBP
-                            pathway arrived (actions.cat1b_withdraw)
-  ("lift <patient> <time>", None, rows)
-                            rows: silenced alarm, ended alarm — a CAT2a
-                            silence lifted because the last active alarm
-                            justifying it ended (actions.cat2_lift)
-Nothing here is ever written back into the store.
+Input: the trace blocks execution.execute_script collects, as
+(tag, check_key, rows):
+  "ended"                     event, kind, start, end
+  "support"                   event, support (an alarm graph, or a
+                              constituent event)
+  "check"                     alarm, witness (an alarm graph or alarm)
+  "withdraw <patient> <time>" flagged alarm, arriving alarm (cat1b)
+  "lift <patient> <time>"     silenced alarm, ended alarm (CAT2)
 """
 
 from __future__ import annotations
@@ -45,9 +30,8 @@ from pathlib import Path
 
 import mint as M
 
-# Every select whose answers matter runs inside a trace block, with output
-# switched on for the whole script (execution.SCRIPT_PREAMBLE): the block's
-# tag says what asked, its rows are the answers.
+# Every select whose answers matter runs inside a trace block: the tag says
+# what asked, the rows are the answers.
 TRACE_BEGIN = "TRACE_BEGIN"
 TRACE_END = "TRACE_END"
 
@@ -69,11 +53,8 @@ def _term(token: str) -> str:
 
 
 def parse_trace_blocks(out_lines: list) -> list:
-    """Every TRACE_BEGIN <tag> ... TRACE_END block in RDFox's output, as
-    (tag, rows). Answer rows are the lines starting with an IRI or a
-    literal; the TSV header (`?var ...`) and RDFox's statistics lines are
-    skipped. The statement's own "Total statement evaluation time" is
-    returned alongside, for per-check timing."""
+    """Every trace block in RDFox's output, as (tag, rows, seconds):
+    answer rows only, and RDFox's "Total statement evaluation time"."""
     blocks, tag, rows, seconds = [], None, [], None
     begin = TRACE_BEGIN + " "
     for line in out_lines:
@@ -110,6 +91,7 @@ def _describe(alarm_iris, alarms: dict) -> tuple:
 
 @dataclass
 class EventRecord:
+    """One ended clinical event."""
     event: str
     kind: str
     patient: str
@@ -153,6 +135,7 @@ def event_records(blocks: list, patients=()) -> list:
 
 @dataclass
 class FiringRecord:
+    """One firing: a check that matched, a withdrawal or a lift."""
     patient: str
     time: datetime
     kind: str       # flaggedLikelyFalsePositive / silencedBy
@@ -168,11 +151,8 @@ LIFTED_RULE = "cat2_lifted"
 
 
 def firing_records(blocks: list) -> list:
-    """One FiringRecord per check that returned at least one row, one per
-    withdrawn cat1b flag (rule WITHDRAWN_RULE: `alarm` is the flagged alarm,
-    `causes` the alarm whose arrival withdrew it), and one per lifted CAT2
-    silence (rule LIFTED_RULE: `alarm` is the silenced alarm, `causes` the
-    alarm whose end lifted it)."""
+    """One FiringRecord per matching check, per withdrawn cat1b flag
+    (WITHDRAWN_RULE) and per lifted CAT2 silence (LIFTED_RULE)."""
     records = []
     for tag, key, rows in blocks:
         for prefix, kind, rule in ((WITHDRAW_TAG, "flagWithdrawn", WITHDRAWN_RULE),
@@ -193,9 +173,7 @@ def firing_records(blocks: list) -> list:
 
 
 def flagged_alarms(firings: list) -> set:
-    """(patient, alarm) for every alarm still flagged likely false positive
-    at the end of the replay: flagged by some rule, and not only by cat1b
-    flags that were withdrawn."""
+    """(patient, alarm) of every alarm flagged and not withdrawn."""
     withdrawn = {(f.patient, f.alarm) for f in firings if f.rule == WITHDRAWN_RULE}
     return {(f.patient, f.alarm) for f in firings
             if f.kind == "flaggedLikelyFalsePositive"
@@ -203,22 +181,19 @@ def flagged_alarms(firings: list) -> set:
 
 
 def silenced_alarms(firings: list) -> set:
-    """(patient, alarm) for every alarm still silenced at the end of the
-    replay: silenced at arrival (CAT2a and/or CAT2b), and not lifted before
-    it ended — a lift ends the silence whatever rules were behind it."""
+    """(patient, alarm) of every alarm silenced and not lifted."""
     lifted = {(f.patient, f.alarm) for f in firings if f.rule == LIFTED_RULE}
     return {(f.patient, f.alarm) for f in firings
             if f.kind == "silencedBy" and (f.patient, f.alarm) not in lifted}
 
 
 def episodes_by_patient(records: list, kind: str) -> Counter:
-    """How many episodes of `kind` each patient had — one record is one
-    episode, since an event ends and is removed before a new one of the
-    same kind can start."""
+    """Episodes of `kind` per patient."""
     return Counter(r.patient for r in records if r.kind == kind)
 
 
 def write_event_log(records: list, alarms: dict, path: Path) -> None:
+    """clinical_events.csv."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f, delimiter=";")
@@ -229,6 +204,7 @@ def write_event_log(records: list, alarms: dict, path: Path) -> None:
 
 
 def write_firing_log(records: list, alarms: dict, path: Path) -> None:
+    """rule_firings.csv."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f, delimiter=";")

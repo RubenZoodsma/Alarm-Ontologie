@@ -1,22 +1,11 @@
 ####################################################################
-# mdapoc.ttl — HAND-AUTHORED. NOT GENERATED.
+# mdapoc.ttl — HAND-AUTHORED. The POC's own vocabulary, outside the
+# framework ontology (mda:).
 #
-# The MDA-POC's own vocabulary: terms the POC needs that are NOT part of
-# the framework ontology (FRAMEWORK/ONTOLOGY/ontology.ttl, mda:). Formerly
-# graph_metadata.ttl (validity terms only, then in the mda: namespace;
-# removed 2026-09-21 with the arrive/end stream model: a graph is valid
-# exactly while it is in the store).
-#
-# WHAT GOES HERE (decided 2026-09-21). The framework holds claims about the
-# world — patient, devices, signals, the meaning of vocabulary concepts —
-# that stay true whatever system uses it. This file holds the rest:
-#   - Decisions of the POC's alarm management (mdapoc:silencedBy,
-#     mdapoc:flaggedLikelyFalsePositive): true only under this rule set and
-#     its timing policy (checked at arrival, lifted/withdrawn later); another
-#     alarm-management system on the same framework may decide otherwise.
-# Modelling the decisions as framework content (reified decision nodes, on
-# the mda:ClinicalEvent pattern) is deferred — see
-# FRAMEWORK/PLAN_alarm_management_module.md.
+# The framework holds claims about the world (patient, devices, signals,
+# the meaning of concepts). This file holds the POC's alarm-management
+# decisions: true only under its rule set and timing policy. Modelling them
+# as framework content is deferred (FRAMEWORK/PLAN_alarm_management_module.md).
 ####################################################################
 
 @prefix mdapoc:  <https://w3id.org/mda/poc#> .
@@ -29,8 +18,8 @@
 ####################################################################
 # Alarm-management decisions (CAT1, CAT2). Stored in the decided-on alarm's
 # own transient graph, so they end with it; withdrawn (CAT1b) or lifted
-# (CAT2) earlier by the POC — see engine/replay_driver.py. A flagged alarm
-# is no evidence for a clinical event (engine/clinical_events.py).
+# (CAT2) earlier — see engine/actions.py. A flagged alarm is no evidence
+# for a clinical event.
 ####################################################################
 
 mdapoc:flaggedLikelyFalsePositive a owl:ObjectProperty ;
