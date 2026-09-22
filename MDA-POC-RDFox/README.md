@@ -13,14 +13,20 @@ The engine follows the RDF stream processing model of RSP-QL. Each module in `en
 | `windows.py` | Window operators | Keeps each alarm's knowledge in the store while it is valid: a transient graph (until its end arrives) and a persistent graph (until the ontology's post-alarm window after its end). A graph is valid exactly while it is in the store |
 | `rules.py` | R2R: what holds | The registry of the nine rules, the loader for their `.rq` files, and cheap gates that skip checks that cannot match |
 | `actions.py` | R2R: what happens | What a rule's result does: CAT1 stores a flag (withdrawable), CAT2 stores a silence (lifted when its last justification ends), clinical events and CAT3 are episodes with a start and an end |
-| `processor.py` | Query processor | Per stream element: close due windows, handle ends (drop, lift silences, update episodes), handle arrivals (insert, evaluate rules, apply their actions). Works on one patient's stream or several interleaved |
-| `execution.py` | Execution | Runs the generated script in RDFox and reads the results back |
+| `processor.py` | Query processor | Per stream element: close due windows, handle ends (drop, lift silences, update episodes), handle arrivals (insert, evaluate rules, apply their actions). Runs the stream live (`run_live`): each element is minted, sent to RDFox and executed before the next. Works on one patient's stream or several interleaved |
+| `execution.py` | Execution | One RDFox process per run (`RDFoxSession`), fed in lockstep; reads the results back and times each rule invocation |
 | `event_log.py` | R2S | Writes what fired, and which alarms it rests on, as two CSV logs |
 | `paths.py` | — | Where the inputs live |
 
 ## Order at one instant
 
-At time t: landmark windows closing at or before t, then all `AlarmEnd`s at t (transient graphs dropped, then CAT2 lifts, then one episode update), then each `AlarmArrival` at t. An alarm's end never precedes its own arrival: a zero-length alarm ends right after arriving. Nothing about an alarm's end is in the store before its `AlarmEnd` arrives. The script is generated before RDFox runs it, but each alarm's commands depend only on the stream up to that alarm: `regression.py` checks this by prefix invariance — at every instant t of every fixture patient, the script so far equals the script of a run that knows only the stream up to t.
+At time t: landmark windows closing at or before t, then all `AlarmEnd`s at t (transient graphs dropped, then CAT2 lifts, then one episode update), then each `AlarmArrival` at t. An alarm's end never precedes its own arrival: a zero-length alarm ends right after arriving. Nothing about an alarm's end is in the store before its `AlarmEnd` arrives.
+
+## Live processing
+
+The engine is a live stream processor. Each stream element — an arrival, or one patient's ends at one instant — is minted, sent to RDFox and executed before the next element is taken (lockstep, one RDFox process per run). Nothing in Python reacts to a query result: every decision is an update inside the store. `regression.py` also checks that no command can depend on the future, by prefix invariance: at every instant t of every fixture patient, the commands so far equal those of a run that knows only the stream up to t.
+
+Everything sent to RDFox is logged to `replay.rdfox` in the run's scratch folder, with each imported alarm graph's triples under its `import` line as `#` comments; the graph files themselves are deleted once imported.
 
 ## Rules and actions
 

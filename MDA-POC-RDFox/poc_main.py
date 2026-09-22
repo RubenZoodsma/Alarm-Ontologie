@@ -62,6 +62,9 @@ SETTINGS = {
     # Patients per RDFox run; None: all in one run.
     "batch_size": 1,
 
+    # Seconds RDFox may take for one stream element before the run stops.
+    "element_timeout_s": 600,
+
     # The two logs (engine/event_log.py).
     "event_log": ROOT / "_scratch" / "clinical_events.csv",
     "firing_log": ROOT / "_scratch" / "rule_firings.csv",
@@ -206,7 +209,8 @@ def run():
           f"batch_size={SETTINGS['batch_size'] or 'unbounded'}...")
     trace: list = []
     invocations = P.run_batched(kb, groups, scratch, batch_size=SETTINGS["batch_size"],
-                                enabled_rules=rule_names, trace=trace)
+                                enabled_rules=rule_names, trace=trace,
+                                timeout=SETTINGS["element_timeout_s"])
     alarms = EL.alarm_index(events)
     records = EL.event_records(trace, groups)
     EL.write_event_log(records, alarms, SETTINGS["event_log"])

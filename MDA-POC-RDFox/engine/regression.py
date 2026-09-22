@@ -22,9 +22,9 @@ import rules as RU
 import event_log as EL
 import mint as M
 import stream as S
-from execution import execute_script, summarize_invocations
+from execution import summarize_invocations
 from paths import ACTIONS_DIR, ENGINE_DIR, RULES_DIR
-from processor import Processor, build_script
+from processor import Processor, run_live
 from stream import DATASET, group_by_patient, load_events
 
 # CAT1/CAT2 fabricated patients: expected flaggedLikelyFalsePositive/
@@ -341,6 +341,7 @@ def script_depends_on_future(kb, groups: dict, scratch: Path) -> list:
             if _normalised(cut.lines) != full_script[:emitted]:
                 problems.append(f"{patient}: the script up to {t.isoformat()} depends on the stream after it")
                 break
+    shutil.rmtree(scratch / "lookahead")
     return problems
 
 
@@ -357,9 +358,8 @@ def run():
     groups = group_by_patient(events)
     in_scope = {p: evs for p, evs in groups.items() if p in EXPECTED}
 
-    script_text, checks = build_script(kb, in_scope, scratch)
     trace: list = []
-    invocations = execute_script(script_text, checks, scratch, patients=in_scope, trace=trace)
+    invocations = run_live(kb, in_scope, scratch, trace=trace)
     summarize_invocations(invocations)
     alarms = EL.alarm_index(e for evs in in_scope.values() for e in evs)
     records = EL.event_records(trace, in_scope)

@@ -10,7 +10,7 @@ Never written back into the store.
 Alarms are written as labels (for reading) and ids (the local name of the
 alarm IRI, for rebuilding: validation/log_rebuild_check.py).
 
-Input: the trace blocks execution.execute_script collects, as
+Input: the trace blocks execution.read_results collects, as
 (tag, check_key, rows):
   "ended"                     event, kind, start, end
   "support"                   event, support (an alarm graph, or a

@@ -1,8 +1,9 @@
 """
 execution.py — runs a generated script in RDFox and reads the results back.
 
-RDFox runs as a sandbox process fed the script on stdin; results come back
-as trace blocks (event_log.trace_block). Each rule invocation is wrapped in
+RDFox runs as one sandbox process per run (RDFoxSession), fed each stream
+element's commands in lockstep; results come back as trace blocks
+(event_log.trace_block). Each rule invocation is wrapped in
 a timing group (timed): the RDFox time of all its statements, and whether
 any of its selects answered, give the performance table.
 """
@@ -78,98 +79,96 @@ def _progress_bar(done: int, total: int, width: int = 30) -> str:
     return "[" + "#" * filled + "-" * (width - filled) + "]"
 
 
-def _reader_thread(pipe, q: queue.Queue) -> None:
-    """Forward RDFox's output lines to `q`, then None on EOF. A thread, so
-    the timeout also fires when RDFox goes silent."""
-    for line in pipe:
-        q.put(line.rstrip("\n"))
-    q.put(None)
+class RDFoxSession:
+    """One RDFox process for a whole run, fed in lockstep: send() a stream
+    element's commands, sync() until RDFox has executed them, then the next.
+
+    Everything sent is logged to `log` (replay.rdfox), each imported TriG
+    file's content under it as `#` comments; the file itself is deleted once
+    RDFox has imported it. A sync that exceeds `timeout` seconds kills RDFox;
+    `stopped` then says why, and the output so far can still be read."""
+
+    def __init__(self, scratch: Path, timeout: float):
+        self.scratch = scratch
+        self.timeout = timeout
+        self.out_lines: list = []
+        self.stopped: str | None = None
+        self._log = (scratch / "replay.rdfox").open("w", encoding="utf-8")
+        self._imported: list = []
+        self._syncs = 0
+        self._process = subprocess.Popen(
+            [str(RDFOX_BIN), "sandbox", str(scratch)],
+            env={"RDFOX_LICENSE_FILE": str(LICENSE)},
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            text=True, bufsize=1,
+        )
+        self._q: queue.Queue = queue.Queue()
+        threading.Thread(target=self._read, daemon=True).start()
+
+    def _read(self) -> None:
+        """Forward RDFox's output lines to the queue, then None on EOF."""
+        for line in self._process.stdout:
+            self._q.put(line.rstrip("\n"))
+        self._q.put(None)
+
+    def send(self, lines: list) -> None:
+        for line in lines:
+            self._process.stdin.write(line + "\n")
+            self._log.write(line + "\n")
+            if line.startswith("import "):
+                path = Path(line[len("import "):])
+                if path.parent == self.scratch:
+                    self._log.writelines(f"# {t}\n" for t in path.read_text().splitlines())
+                    self._imported.append(path)
+        self._process.stdin.flush()
+
+    def sync(self) -> list:
+        """Wait until RDFox has executed everything sent; return its output
+        since the last sync. On timeout, kill RDFox and set `stopped`."""
+        self._syncs += 1
+        marker = f"SYNC {self._syncs}"
+        self.send([f"echo {marker}"])
+        received, deadline = [], time.monotonic() + self.timeout
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                self.stopped = f"timed out after {self.timeout:.0f} s"
+                self._process.kill()
+                break
+            try:
+                line = self._q.get(timeout=min(remaining, 1.0))
+            except queue.Empty:
+                continue
+            if line is None:
+                self.stopped = "RDFox exited"
+                break
+            if line == marker:
+                break
+            received.append(line)
+        self.out_lines += received
+        if self.stopped is None:
+            for path in self._imported:
+                path.unlink()
+            self._imported = []
+        return received
+
+    def close(self) -> list:
+        """Quit RDFox; return all its output."""
+        if self.stopped is None:
+            self.send(["quit"])
+            self._process.stdin.close()
+            while (line := self._q.get()) is not None:
+                self.out_lines.append(line)
+        self._process.wait()
+        self._log.close()
+        return self.out_lines
 
 
-def execute_script(script_text: str, checks: list, scratch: Path, timeout: int = 600,
-                    progress: bool = True, patients: dict | None = None,
-                    trace: list | None = None) -> tuple:
-    """Run `script_text` in RDFox. Returns its invocations (parse_invocations).
-
-    `progress`: a live per-patient bar, driven by the PATIENT_START /
-    ALARM_DONE echo lines build_script emits (RDFox flushes per line).
-    `patients`: {patient: events}, only to size that bar.
-    `trace`: if given, extended with every trace block as
-    (tag, check_key or None, rows) — input for event_log.
-
-    On timeout RDFox is killed and the output so far is still parsed.
-    """
-    script_path = scratch / "replay.rdfox"
-    script_path.write_text(script_text)
-
-    total_per_patient = {p: len(evs) for p, evs in (patients or {}).items()}
-    num_patients = len(total_per_patient)
-
-    # RDFox takes no script-file argument: the script goes in on stdin,
-    # whose EOF also ends the shell.
-    t0 = time.monotonic()
-    script_file = script_path.open()
-    process = subprocess.Popen(
-        [str(RDFOX_BIN), "sandbox", str(scratch)],
-        env={"RDFOX_LICENSE_FILE": str(LICENSE)},
-        stdin=script_file, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-        text=True, bufsize=1,
-    )
-    q: queue.Queue = queue.Queue()
-    reader = threading.Thread(target=_reader_thread, args=(process.stdout, q), daemon=True)
-    reader.start()
-
-    out_lines: list = []
-    current_patient = None
-    patient_index = 0
-    alarms_done = 0
-    timed_out = False
-    deadline = t0 + timeout
-    while True:
-        remaining = deadline - time.monotonic()
-        if remaining <= 0:
-            timed_out = True
-            process.kill()
-            break
-        try:
-            line = q.get(timeout=min(remaining, 1.0))
-        except queue.Empty:
-            continue
-        if line is None:
-            break
-        out_lines.append(line)
-
-        if not progress:
-            continue
-        if line.startswith("PATIENT_START:"):
-            current_patient = line.split(":", 1)[1]
-            patient_index += 1
-            alarms_done = 0
-            total = total_per_patient.get(current_patient, 0)
-            print(f"\r  RDFox: patient {patient_index}/{num_patients} ({current_patient}) "
-                  f"{_progress_bar(0, total)} 0/{total} alarms "
-                  f"[{time.monotonic() - t0:6.1f}s]", end="", flush=True)
-        elif line.startswith("ALARM_DONE:"):
-            total = total_per_patient.get(current_patient, 0)
-            report_every = max(1, total // 100)
-            alarms_done += 1
-            if alarms_done == total or alarms_done % report_every == 0:
-                print(f"\r  RDFox: patient {patient_index}/{num_patients} ({current_patient}) "
-                      f"{_progress_bar(alarms_done, total)} {alarms_done}/{total} alarms "
-                      f"[{time.monotonic() - t0:6.1f}s]", end="", flush=True)
-
-    process.wait()
-    script_file.close()
-    if progress and num_patients:
-        print()  # finalize the in-place line
-    if timed_out:
-        print(f"  [{time.monotonic() - t0:7.1f}s] *** TIMED OUT after {timeout}s — "
-              f"RDFox killed mid-execution. Parsing partial output below: every check "
-              f"that DID complete before the kill is still counted/timed; anything "
-              f"after the stall is simply absent from the result. ***")
-    else:
-        print(f"  [{time.monotonic() - t0:7.1f}s] RDFox execution finished "
-              f"({len(checks)} check(s) run)")
+def read_results(out_lines: list, checks: list, trace: list | None = None,
+                 complete: bool = True) -> list:
+    """Parse a run's output: extend `trace` with every trace block as (tag,
+    check_key or None, rows) — input for event_log — and return the
+    invocations (parse_invocations)."""
     collected, n_checks = [], 0
     for tag, rows, _seconds in EL.parse_trace_blocks(out_lines):
         if tag.startswith("check "):
@@ -178,15 +177,7 @@ def execute_script(script_text: str, checks: list, scratch: Path, timeout: int =
         else:
             collected.append((tag, None, rows))
 
-    error_lines = [l for i, l in enumerate(out_lines)
-                   if l.startswith("An error occurred")
-                   or (i and out_lines[i - 1].startswith("An error occurred"))]
-    if error_lines:
-        print("--- errors seen in RDFox output ---")
-        for l in error_lines:
-            print(" ", l)
-
-    if n_checks != len(checks) and not timed_out:
+    if n_checks != len(checks) and complete:
         print(f"  WARNING: {n_checks} check result(s) for {len(checks)} check(s) — "
               f"some check blocks are missing; results below are incomplete.")
     if trace is not None:

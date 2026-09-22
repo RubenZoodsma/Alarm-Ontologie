@@ -11,9 +11,10 @@ At an instant t, in this order:
   3. each AlarmArrival at t: insert it (two phases), run its CAT1 and CAT2
      checks and store their flags and silences, then evaluate the episodes.
 
-The whole script is written before it runs (execution.py): nothing here
-reacts to a query result. Works on one patient's stream or on several
-interleaved in one store.
+Live, in lockstep (run_live): each stream element — an arrival, or one
+patient's ends at one instant — is minted, sent to RDFox and executed
+before the next element is taken. Nothing here reacts to a query result.
+Works on one patient's stream or on several interleaved in one store.
 """
 
 from __future__ import annotations
@@ -27,7 +28,7 @@ import mint as M
 from actions import (check, dt, evaluate_commands, flag_insert, flag_withdraw, iri, silence_bindings,
                      silence_insert, silence_lift, values)
 from event_log import trace_block
-from execution import FRAMEWORK_FILES, SCRIPT_PREAMBLE, _progress_bar, execute_script, timed
+from execution import FRAMEWORK_FILES, SCRIPT_PREAMBLE, RDFoxSession, _progress_bar, read_results, timed
 from rules import (RULES, _alarm_functional_unit,
                    _alarm_metric_types, enabled_event_rules, kinds_supported_by_metric, relevant_kinds)
 from stream import AlarmArrival, AlarmEnd, replay_stream
@@ -35,9 +36,9 @@ from windows import WindowOperator
 
 
 class Processor:
-    """Turns stream elements into RDFox commands (`lines`) and records the
-    CAT1/CAT2 checks it emitted (`checks`, matched to their results by
-    execution.execute_script)."""
+    """Turns stream elements into RDFox commands (`lines`, taken by
+    take_lines) and records the CAT1/CAT2 checks it emitted (`checks`,
+    matched to their results by execution.read_results)."""
 
     def __init__(self, kb, scratch_dir: Path, rule_names):
         self.kb = kb
@@ -65,26 +66,19 @@ class Processor:
     # The stream
     # ----------------------------------------------------------------
 
-    def feed(self, elements, on_arrival=None) -> None:
-        """Process `elements` in stream order; one patient's ends at one
-        instant are handled together. `on_arrival(patient)`: a progress
-        callback."""
-        i = 0
-        while i < len(elements):
-            element = elements[i]
-            self.close_windows(element.time)
-            if isinstance(element, AlarmEnd):
-                j = i
-                while (j < len(elements) and isinstance(elements[j], AlarmEnd)
-                       and elements[j].time == element.time and elements[j].patient == element.patient):
-                    j += 1
-                self.on_ends(element.patient, element.time, elements[i:j])
-                i = j
+    def feed(self, elements) -> None:
+        """Process `elements` in stream order (see stream_units)."""
+        for unit in stream_units(elements):
+            self.close_windows(unit[0].time)
+            if isinstance(unit[0], AlarmEnd):
+                self.on_ends(unit[0].patient, unit[0].time, unit)
             else:
-                self.on_arrival(element)
-                if on_arrival is not None:
-                    on_arrival(element.patient)
-                i += 1
+                self.on_arrival(unit[0])
+
+    def take_lines(self) -> list:
+        """The commands emitted since the last call."""
+        lines, self.lines = self.lines, []
+        return lines
 
     def close_windows(self, up_to=None) -> None:
         """Close every window due at or before `up_to` (all when None),
@@ -166,7 +160,21 @@ class Processor:
         # This arrival (or a cat1b withdrawal) may start or extend an event.
         self.lines += evaluate_commands(event_kinds | withdraw_kinds, self.event_rules, patient, e.start,
                                         invocation)
-        self.lines.append(f"echo ALARM_DONE:{patient}")
+
+
+def stream_units(elements: list) -> list:
+    """The stream's processing units, in order: each arrival on its own, and
+    one patient's consecutive ends at one instant together."""
+    units, i = [], 0
+    while i < len(elements):
+        j = i + 1
+        if isinstance(elements[i], AlarmEnd):
+            while (j < len(elements) and isinstance(elements[j], AlarmEnd)
+                   and elements[j].time == elements[i].time and elements[j].patient == elements[i].patient):
+                j += 1
+        units.append(elements[i:j])
+        i = j
+    return units
 
 
 def script_header(dstore: str) -> list:
@@ -175,50 +183,76 @@ def script_header(dstore: str) -> list:
             + [f"import {f}" for f in FRAMEWORK_FILES] + SCRIPT_PREAMBLE)
 
 
-def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
-                  progress: bool = True, dstore: str = "poc") -> tuple:
-    """(script text, checks): each patient's alarms replayed one patient
-    after another, in ONE dstore (IRIs are patient-scoped, mint.py).
-    `enabled_rules`: rules.RULES names, or None for all."""
+def execute(proc: Processor, session: RDFoxSession, where: str) -> bool:
+    """Send the processor's pending commands and wait until RDFox has run
+    them. Reports an RDFox error with `where` it happened. False once the
+    session has stopped."""
+    session.send(proc.take_lines())
+    received = session.sync()
+    for i, line in enumerate(received):
+        if line.startswith("An error occurred"):
+            print(f"\n  RDFox error at {where}: {' '.join(received[i:i + 2])}")
+    return session.stopped is None
+
+
+def stream_through(proc: Processor, session: RDFoxSession, elements: list, on_arrival=None) -> bool:
+    """Feed `elements` unit by unit, each executed by RDFox before the next.
+    `on_arrival()`: a progress callback. False once the session has stopped."""
+    for unit in stream_units(elements):
+        proc.feed(unit)
+        if not execute(proc, session, f"{unit[0].patient} {unit[0].time.isoformat()}"):
+            return False
+        if on_arrival is not None and isinstance(unit[0], AlarmArrival):
+            on_arrival()
+    return True
+
+
+def run_live(kb, patients: dict, scratch_dir: Path, enabled_rules=None, progress: bool = True,
+             trace: list | None = None, timeout: float = 600, dstore: str = "poc") -> list:
+    """Replay each patient's stream, one patient after another, through ONE
+    RDFox process and store, live: every element is executed before the
+    next is minted. `enabled_rules`: rules.RULES names, or None for all.
+    `timeout`: seconds RDFox may take for one element. Returns the
+    invocations (execution.parse_invocations); `trace` is extended with the
+    trace blocks."""
     rule_names = list(RULES) if enabled_rules is None else list(enabled_rules)
     proc = Processor(kb, scratch_dir, rule_names)
-    lines = script_header(dstore)
+    session = RDFoxSession(scratch_dir, timeout)
+    session.send(script_header(dstore))
+    session.sync()
     t0 = time.monotonic()
-    num_patients = len(patients)
 
     for pi, (patient, events) in enumerate(patients.items(), start=1):
-        n_events = len(events)
-        if progress:
-            print(f"  [{time.monotonic() - t0:7.1f}s] minting patient {pi}/{num_patients} "
-                  f"({patient}): {n_events} alarm(s)")
-        # Progress markers for execute_script.
-        proc.lines.append(f"echo PATIENT_START:{patient}")
+        n_events, done = len(events), itertools.count(1)
         report_every = max(1, n_events // 100)
-        done = itertools.count(1)
 
-        def report(_patient):
+        def report():
             k = next(done)
             if progress and (k == 1 or k == n_events or k % report_every == 0):
-                print(f"\r    {_progress_bar(k, n_events)} {k}/{n_events} alarms "
-                      f"[{time.monotonic() - t0:7.1f}s]", end="", flush=True)
+                print(f"\r  patient {pi}/{len(patients)} ({patient}) {_progress_bar(k, n_events)} "
+                      f"{k}/{n_events} alarms [{time.monotonic() - t0:7.1f}s]", end="", flush=True)
 
-        proc.feed(replay_stream(events), on_arrival=report)
-        proc.close_windows()  # the patient's remaining landmark windows
+        ok = stream_through(proc, session, replay_stream(events), on_arrival=report)
+        if ok:
+            proc.close_windows()  # the patient's remaining windows
+            ok = execute(proc, session, f"{patient}, closing its windows")
         if progress:
             print()
+        if not ok:
+            print(f"  *** RDFox {session.stopped} during patient {patient}: the run stops here; "
+                  f"results below are partial. ***")
+            break
 
-    if progress:
-        print(f"  [{time.monotonic() - t0:7.1f}s] minting done for {num_patients} patient(s)")
-    lines += proc.lines
-    lines.append("quit")
-    return "\n".join(lines), proc.checks
+    out_lines = session.close()
+    return read_results(out_lines, proc.checks, trace, complete=session.stopped is None)
 
 
 def run_batched(kb, patients: dict, scratch_root: Path, batch_size: "int | None" = None,
-                 enabled_rules=None, progress: bool = True, trace: list | None = None) -> tuple:
-    """Run `patients` in batches of `batch_size` (None: one batch), each
-    its own script and RDFox process, bounding memory and disk. Returns
-    every batch's invocations (execution.parse_invocations)."""
+                 enabled_rules=None, progress: bool = True, trace: list | None = None,
+                 timeout: float = 600) -> list:
+    """Run `patients` in batches of `batch_size` (None: one batch), each its
+    own live run (run_live) and RDFox process. Returns every batch's
+    invocations."""
     items = list(patients.items())
     size = batch_size if batch_size else len(items)
     invocations: list = []
@@ -232,13 +266,6 @@ def run_batched(kb, patients: dict, scratch_root: Path, batch_size: "int | None"
         if batch_scratch.exists():
             shutil.rmtree(batch_scratch)
         batch_scratch.mkdir(parents=True)
-        script_text, checks = build_script(kb, batch, batch_scratch,
-                                            enabled_rules=enabled_rules, progress=progress)
-        # Timeout: 10 ms per alarm, at least 1500 s. Alarm counts per
-        # patient vary widely (up to ~26k), and a burst of concurrent alarms
-        # on one device makes the CAT1 checks slow.
-        total_alarms = sum(len(events) for events in batch.values())
-        timeout = max(1500, total_alarms // 100)
-        invocations += execute_script(script_text, checks, batch_scratch, timeout=timeout,
-                                      patients=batch, trace=trace)
+        invocations += run_live(kb, batch, batch_scratch, enabled_rules=enabled_rules,
+                                progress=progress, trace=trace, timeout=timeout)
     return invocations

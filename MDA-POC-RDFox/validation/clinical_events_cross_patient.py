@@ -67,13 +67,17 @@ EXPECTED = {
 }
 
 
-def build_interleaved_script(kb, scratch: Path, rule_names) -> str:
+def run_interleaved(kb, scratch: Path, rule_names, trace: list) -> None:
     """One stream of all patients' alarms, interleaved in time, through the
-    engine's own processor into ONE store — as a live feed would arrive."""
+    engine's own processor into ONE store, live — as a feed would arrive."""
     proc = P.Processor(kb, scratch, rule_names)
-    proc.feed(S.replay_stream(EVENTS))
-    proc.close_windows()
-    return "\n".join(P.script_header("xp") + proc.lines + ["quit"])
+    session = X.RDFoxSession(scratch, timeout=600)
+    session.send(P.script_header("xp"))
+    session.sync()
+    if P.stream_through(proc, session, S.replay_stream(EVENTS)):
+        proc.close_windows()
+        P.execute(proc, session, "closing the windows")
+    X.read_results(session.close(), proc.checks, trace, complete=session.stopped is None)
 
 
 def main() -> int:
@@ -84,9 +88,8 @@ def main() -> int:
     scratch.mkdir(parents=True)
 
     kb = M.load_kb()
-    script = build_interleaved_script(kb, scratch, SETTINGS["enabled_rules"])
     trace: list = []
-    X.execute_script(script, [], scratch, progress=False, trace=trace)
+    run_interleaved(kb, scratch, SETTINGS["enabled_rules"], trace)
     records = EL.event_records(trace, {e.patient for e in EVENTS})
     alarms = EL.alarm_index(EVENTS)
     got = {(r.patient, r.kind, r.start, r.end, len(r.alarms)) for r in records}
