@@ -1,12 +1,10 @@
 """
 clinical_events_cross_patient.py — clinical events never mix patients.
 
-engine/processor.build_script processes one patient completely (all
-graphs dropped) before starting the next, so its regression fixtures never
-have two patients' alarms in the store at the same moment and cannot show
-whether an event could be built from another patient's evidence. This
-check interleaves several patients' alarms in ONE data store, in real time
-order, and compares the resulting event log with the expected one.
+The regression replays patients one after another, so it never has two
+patients' alarms in the store at once. This check interleaves five
+patients' alarms in one store and compares the event log with the
+expected one.
 
 Scenarios (all overlapping in time, all in the same store):
   xp_cardiac     Asystolie 08:00:00–08:01:00        -> CardiacArrest only
@@ -79,6 +77,7 @@ def build_interleaved_script(kb, scratch: Path, rule_names) -> str:
 
 
 def main() -> int:
+    """Run the scenarios; non-zero on a missing, unexpected or foreign event."""
     scratch = SETTINGS["scratch"]
     if scratch.exists():
         shutil.rmtree(scratch)

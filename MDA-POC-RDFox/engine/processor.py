@@ -1,25 +1,19 @@
 """
-processor.py — the query processor (RSP-QL): consumes the stream
-(stream.py) and emits, per element, the RDFox commands that bring the
-store and the rules' results up to date, in order.
+processor.py — the query processor (RSP-QL): turns the stream into the
+RDFox commands that keep the store and the rules' results up to date.
 
 At an instant t, in this order:
-  1. landmark windows closing at or before t: drop those persistent graphs
-     (windows.py), then re-evaluate the episodes they could support, at
-     their own closing time;
-  2. the AlarmEnds at t (stream.py orders them first): drop ALL their
-     transient graphs, then lift the CAT2 silences they were the last
-     justification for, then re-evaluate the episodes once;
+  1. windows closing at or before t: drop those persistent graphs, then
+     re-evaluate the episodes they could support, at their closing time;
+  2. the AlarmEnds at t: drop all their transient graphs, then lift the
+     CAT2 silences they were the last justification for, then re-evaluate
+     the episodes once;
   3. each AlarmArrival at t: insert it (two phases), run its CAT1 and CAT2
-     checks with their flags and silences, then evaluate the episodes.
-Ending every alarm at t before any lift reproduces "the silenced alarm is
-still active strictly after t" without knowing anyone's end in advance.
+     checks and store their flags and silences, then evaluate the episodes.
 
-The script is written in full before anything runs (execution.py), so
-this module never reacts to a query result. The same Processor handles one
-patient's stream (build_script, the replay) or several patients interleaved
-in one store (validation/clinical_events_cross_patient.py) — as a live feed
-would deliver them.
+The whole script is written before it runs (execution.py): nothing here
+reacts to a query result. Works on one patient's stream or on several
+interleaved in one store.
 """
 
 from __future__ import annotations
@@ -45,15 +39,14 @@ class Processor:
     CAT1/CAT2 checks it emitted (`checks`, matched to their results by
     execution.execute_script)."""
 
-    def __init__(self, kb, scratch_dir: Path, rule_names, verify_identity: bool = False):
+    def __init__(self, kb, scratch_dir: Path, rule_names):
         self.kb = kb
         self.scratch = scratch_dir
         self.lines: list = []
         self.checks: list = []
-        self.verify_identity = verify_identity
         self._file_counter = itertools.count(1)
         self._windows: dict = {}       # patient -> WindowOperator
-        self._arrived: dict = {}       # patient -> [AlarmArrival] so far
+        self._arrived: dict = {}       # patient -> number of arrivals so far
         # Which rules are enabled, grouped by what their result does.
         self.flag_rules = [n for n in ("cat1a", "cat1b") if n in rule_names]
         self.silence_rules = [n for n in ("cat2a", "cat2b") if n in rule_names]
@@ -64,7 +57,7 @@ class Processor:
     def window(self, patient: str) -> WindowOperator:
         if patient not in self._windows:
             self._windows[patient] = WindowOperator(self.kb, self.scratch, self._file_counter)
-            self._arrived[patient] = []
+            self._arrived[patient] = 0
         return self._windows[patient]
 
     # ----------------------------------------------------------------
@@ -72,9 +65,9 @@ class Processor:
     # ----------------------------------------------------------------
 
     def feed(self, elements, on_arrival=None) -> None:
-        """Process `elements` (in stream order). Consecutive AlarmEnds of one
-        patient at one instant are handled together. `on_arrival(patient)`
-        is called after each arrival (progress reporting)."""
+        """Process `elements` in stream order; one patient's ends at one
+        instant are handled together. `on_arrival(patient)`: a progress
+        callback."""
         i = 0
         while i < len(elements):
             element = elements[i]
@@ -93,8 +86,8 @@ class Processor:
                 i += 1
 
     def close_windows(self, up_to=None) -> None:
-        """Close every landmark window due at or before `up_to` (all when
-        None), across patients, in time order."""
+        """Close every window due at or before `up_to` (all when None),
+        across patients, in time order."""
         closing = []
         for patient, window in self._windows.items():
             closing += [(due, patient, alarms) for due, alarms in window.due(up_to)]
@@ -105,6 +98,7 @@ class Processor:
             self.lines += evaluate_commands(kinds, self.event_rules, patient, due)
 
     def on_ends(self, patient: str, when, ends: list) -> None:
+        """Step 2 of the module docstring, for one patient at `when`."""
         window = self.window(patient)
         ended = []
         for end in ends:
@@ -120,44 +114,30 @@ class Processor:
         self.lines += evaluate_commands(kinds, self.event_rules, patient, when)
 
     def on_arrival(self, e: AlarmArrival) -> None:
+        """Step 3 of the module docstring."""
         kb, patient = self.kb, e.patient
         window = self.window(patient)
-        arrived = self._arrived[patient]
-        arrived.append(e)
-        ei = len(arrived)  # this alarm's per-patient sequence number
+        self._arrived[patient] += 1
+        ei = self._arrived[patient]  # this alarm's per-patient sequence number
 
         M.update_identity(kb, e, window.identity_tracker)
         identity = window.identity_tracker.identity
-        if self.verify_identity:
-            batch_identity = M.resolve_identity(kb, arrived)
-            assert identity == batch_identity, (
-                f"incremental identity tracker diverged from resolve_identity's batch "
-                f"computation for {patient} at {e.label}@{e.start}")
 
         event_kinds = (frozenset(relevant_kinds(kb, e.label, _alarm_metric_types(kb, e), self.event_rules))
                        if self.event_rules else frozenset())
         commands, pending = window.on_arrive(e, identity, event_kinds)
         self.lines += commands
 
-        # Every rule is evaluated on demand, at this moment (rules.py's
-        # docstring: why not standing Datalog), bound to THIS alarm (?alarm)
-        # and this moment (?now). This runs BETWEEN the insert's two phases:
-        # the arriving alarm's own hasPriority triple is not in the store
-        # yet. Each rule is its own query, never a UNION of rules: that
-        # keeps each rule individually timed (summarize_rule_timings), and
-        # RDFox's planner handled a cat2a/cat2b UNION badly (patient 2826,
-        # alarms 0-900: ~2-3 s each alone, ~90-97 s as one UNION). A check
-        # key carries the rule name and `ei`, so neither two rules nor two
-        # alarms sharing a start instant collide.
+        # Checks run between the insert's two phases, bound to this alarm
+        # and this moment. One query per rule, never a UNION: each is timed
+        # on its own, and RDFox planned a cat2a/cat2b UNION ~30x slower.
         alarm = pending["alarm"]
         now = dt(e.start)
         for name in self.flag_rules:
             self.lines += trace_block(f"check {len(self.checks)}", check(name, values(alarm=iri(alarm), now=now)))
             self.checks.append((patient, e.start, "flaggedLikelyFalsePositive", name, ei))
-        # Store the flags (actions.flag_insert): clinical events ignore
-        # flagged alarms, and a later alarm on a cat1b flag's IBP pathway
-        # withdraws it. Only heart-rate alarms can be an asystole — a cheap
-        # gate for cat1b; the condition decides.
+        # Store the flags: clinical events ignore flagged alarms. cat1b is
+        # gated on heart-rate alarms; an IBP alarm may withdraw a cat1b flag.
         withdraw_kinds = frozenset()
         if "cat1a" in self.flag_rules:
             self.lines.append(flag_insert("cat1a", alarm, pending["tgraph"], now))
@@ -179,42 +159,24 @@ class Processor:
             self.checks.append((patient, e.start, "silencedBy", name, ei))
 
         self.lines += WindowOperator.complete(pending)
-        # This arrival may start or extend a clinical event of this patient
-        # (or, through a cat1b withdrawal, let a heart-rate alarm count).
+        # This arrival (or a cat1b withdrawal) may start or extend an event.
         self.lines += evaluate_commands(event_kinds | withdraw_kinds, self.event_rules, patient, e.start)
         self.lines.append(f"echo ALARM_DONE:{patient}")
 
 
 def script_header(dstore: str) -> list:
-    """Create the store, load the framework, set the output format and the
-    prefixes."""
+    """Create the store, load the framework, set output format and prefixes."""
     return ([f"dstore create {dstore}", f"active {dstore}"]
             + [f"import {f}" for f in FRAMEWORK_FILES] + SCRIPT_PREAMBLE)
 
 
 def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
-                  progress: bool = True, verify_identity: bool = False,
-                  dstore: str = "poc") -> tuple:
-    """(script text, checks) for replaying each patient's alarms, one
-    patient after another, in ONE dstore.
-
-    `enabled_rules`: iterable of rules.RULES names, or None for all.
-
-    `dstore`: shared by every patient in `patients` and populated with the
-    framework once. Memory, not import time, was the cost of one dstore per
-    patient (a copy of the ~3000-triple framework each). Safe because every
-    minted entity/alarm/message IRI is patient-scoped (mint.py).
-
-    `progress`: a per-patient header line, then an in-place progress bar
-    (a real patient can carry tens of thousands of alarms; one real-corpus
-    patient had 25,793).
-
-    `verify_identity`: development-only — also run the batch
-    M.resolve_identity over the alarms arrived so far and assert it matches
-    the incremental tracker. Doubles identity-resolution cost; only turn on
-    to re-confirm the equivalence after touching either implementation."""
+                  progress: bool = True, dstore: str = "poc") -> tuple:
+    """(script text, checks): each patient's alarms replayed one patient
+    after another, in ONE dstore (IRIs are patient-scoped, mint.py).
+    `enabled_rules`: rules.RULES names, or None for all."""
     rule_names = list(RULES) if enabled_rules is None else list(enabled_rules)
-    proc = Processor(kb, scratch_dir, rule_names, verify_identity)
+    proc = Processor(kb, scratch_dir, rule_names)
     lines = script_header(dstore)
     t0 = time.monotonic()
     num_patients = len(patients)
@@ -224,8 +186,7 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
         if progress:
             print(f"  [{time.monotonic() - t0:7.1f}s] minting patient {pi}/{num_patients} "
                   f"({patient}): {n_events} alarm(s)")
-        # RDFox's `echo` prints its tokens as one exact line: an unambiguous
-        # per-patient/per-alarm marker for execute_script's live progress.
+        # Progress markers for execute_script.
         proc.lines.append(f"echo PATIENT_START:{patient}")
         report_every = max(1, n_events // 100)
         done = itertools.count(1)
@@ -250,29 +211,9 @@ def build_script(kb, patients: dict, scratch_dir: Path, enabled_rules=None,
 
 def run_batched(kb, patients: dict, scratch_root: Path, batch_size: "int | None" = None,
                  enabled_rules=None, progress: bool = True, trace: list | None = None) -> tuple:
-    """Process `patients` in bounded-size batches instead of one script for
-    every patient in the run, returning the merged
-    ({check_key: answer_count}, {check_key: seconds}) across all batches.
-
-    `batch_size`: None (or >= len(patients)) processes everyone in a single
-    batch — today's behaviour, unchanged. A smaller number bounds how much
-    is held in memory/disk at once (every batch's trig files, its script
-    text) and how many patients' worth of data live in the shared dstore
-    simultaneously, which matters at the project's 3500-patient target —
-    holding the entire run as one script/dstore doesn't scale the way it
-    does for a handful of patients.
-
-    Deliberately NOT the long-lived-streaming-subprocess design (a
-    persistent RDFox process fed incrementally) — that needs its own
-    spike first (unverified I/O territory: every RDFox invocation tested
-    so far is one-shot blocking, write-then-close-stdin-then-read-all-of-
-    stdout; a persistent open-stdin process risks output buffering and
-    writer/reader deadlock that hasn't been exercised at all). This
-    batches across separate, already-proven `subprocess.run` calls
-    instead — zero new subprocess-I/O risk, and each batch still gets its
-    own shared dstore (item 2), just scoped to that batch's patients
-    rather than the whole run.
-    """
+    """Run `patients` in batches of `batch_size` (None: one batch), each
+    its own script and RDFox process, bounding memory and disk. Returns the
+    merged ({check_key: answer_count}, {check_key: seconds})."""
     items = list(patients.items())
     size = batch_size if batch_size else len(items)
     counts_by_check: dict = {}
@@ -289,26 +230,9 @@ def run_batched(kb, patients: dict, scratch_root: Path, batch_size: "int | None"
         batch_scratch.mkdir(parents=True)
         script_text, checks = build_script(kb, batch, batch_scratch,
                                             enabled_rules=enabled_rules, progress=progress)
-        # Scaled by TOTAL ALARM COUNT in the batch, not patient count —
-        # real-corpus patients have wildly uneven alarm density (confirmed
-        # directly: one real patient carried 25,793 alarms against ~10-16
-        # for the small fabricated/excerpt datasets), so a handful of
-        # patients can still mean a huge script. A patient-count-scaled
-        # timeout (30s/patient) genuinely timed out RDFox mid-execution on
-        # a real 5-patient/44,375-alarm batch at its 150s cap. ~10ms/alarm
-        # gives real headroom over that observed case without being
-        # wastefully large for small batches.
-        #
-        # Floor raised 120s -> 600s -> 1500s (this session): even single-patient
-        # batches (batch_size=1) were still timing out at 120s on patients
-        # with a large concurrently-active cluster on one device (e.g.
-        # patient 2826's ABP-verkleinen storm, 59 concurrent alarms) —
-        # cat1a/cat1b's cross-alarm consolidation (see cat1a_signal_
-        # quality.rq's own header) genuinely needs independent per-hop
-        # graph variables for correctness, so unlike cat2a/cat2b this cost
-        # has no query-shape fix yet. 600s is a stopgap to let those
-        # patients actually finish instead of silently truncating results —
-        # not a fix for the underlying cost.
+        # Timeout: 10 ms per alarm, at least 1500 s. Alarm counts per
+        # patient vary widely (up to ~26k), and a burst of concurrent alarms
+        # on one device makes the CAT1 checks slow.
         total_alarms = sum(len(events) for events in batch.values())
         timeout = max(1500, total_alarms // 100)
         batch_counts, batch_timings = execute_script(script_text, checks, batch_scratch,

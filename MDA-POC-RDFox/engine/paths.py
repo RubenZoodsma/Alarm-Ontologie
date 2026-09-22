@@ -1,5 +1,5 @@
 """
-paths.py — where the POC's inputs live. One place, so every module agrees.
+paths.py — where the POC's inputs, rule files and RDFox live.
 """
 
 from pathlib import Path

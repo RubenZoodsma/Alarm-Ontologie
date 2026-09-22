@@ -1,44 +1,26 @@
 """
-rules.py — the alarm-management rules (RSP-QL: R2R, what holds).
+rules.py — the rule registry, the .rq loader, and cheap gates (RSP-QL: R2R).
 
-Every rule is a CONDITION in its own file, representation/rules/<name>.rq:
-a SPARQL graph pattern (the body of a WHERE clause) with a header stating
-the natural-language rule, its clause-by-clause reading, the variables it
-expects bound and those it binds, and the fixtures that validate it.
-What happens with a rule's result is an ACTION, representation/actions/
-<name>.rq: a complete SPARQL command with two slots, {{BINDINGS}} (a
-VALUES clause with this moment's data: the alarm, the time, the patient)
-and {{CONDITION}} (a rule). Composition is the only templating there is;
-no rule logic lives in Python.
+A rule is a CONDITION, representation/rules/<name>.rq: a SPARQL graph
+pattern whose header gives the natural-language rule, its clause-by-clause
+reading, its bound and bound-by variables, and its regression fixtures.
+An ACTION, representation/actions/<name>.rq, is a SPARQL command with a
+{{BINDINGS}} slot (a VALUES clause) and a {{CONDITION}} slot (a rule).
+No rule logic lives in Python.
 
-File format. Whole-line `#` comments; standard SPARQL `PREFIX` lines; the
-body. The RDFox shell does not accept a PREFIX clause inside a one-line
-command (it reads the leading PREFIX as its own `prefix` command), so the
-loader strips the PREFIX lines, checks that every file agrees on each
-prefix, and the script declares them once (PREFIX_COMMANDS). Each command
-is collapsed to one line, as the shell requires.
+The RDFox shell rejects PREFIX inside a command, so the loader strips the
+PREFIX lines, checks all files agree, and the script declares them once.
+Each command is collapsed to one line.
 
-WHY ON-DEMAND, NOT STANDING DATALOG. Every rule is evaluated as a query
-at the moment it can change (an alarm's arrival or end), not maintained as
-a standing Datalog rule. Measured on the real corpus (patient 2826): the
-cost of a standing rule is RDFox's incremental "delete, then re-derive"
-maintenance, triggered by every relevant import or graph drop anywhere in
-the store, proportional to how many standing rules a change could affect —
-not to how much matches. CAT2's cross-alarm self-join, maintained this way,
-stalled for tens of seconds per alarm; the same join issued as a query at
-the alarm's arrival answered in milliseconds. Some rule semantics are not
-expressible in monotone Datalog at all: absence (CAT1b: no alarm on the
-pathway), a flag withdrawn or a silence lifted later, and a clinical event
-that outlives its first evidence and carries an end time.
+ON DEMAND, NOT STANDING DATALOG. A rule is a query run when its result can
+change (an arrival or an end). Standing rules cost RDFox incremental
+maintenance on every import and drop — CAT2 stalled for tens of seconds
+per alarm that way — and absence, withdrawal, lifting and events that
+outlive their evidence are not monotone Datalog anyway.
 
-NO MATERIALISATION. The rules read the framework's axioms where they are
-stated. CAT2a's metric -> physiological property hop follows inference.ttl's
-class-level restriction (metric:X rdfs:subClassOf [owl:onProperty
-mda:approximates ; owl:hasValue ?property]) through rdfs:subClassOf*, so a
-metric subtype inherits its parent's property without a copy of the axiom.
-Measured on the 5-patient sample against a per-graph Datalog port of the
-same axioms (the former approximates_bridge.dlog): identical logs, no
-measurable difference in RDFox time.
+NO MATERIALISATION. Rules read the framework's axioms where they are
+stated: CAT2a follows inference.ttl's mda:approximates restrictions
+through rdfs:subClassOf*.
 """
 
 from __future__ import annotations
@@ -57,13 +39,13 @@ from paths import ACTIONS_DIR, RULES_DIR
 
 @dataclass(frozen=True)
 class Rule:
-    """One switchable rule (a poc_entry.py SETTINGS['enabled_rules'] name).
+    """One switchable rule (a SETTINGS['enabled_rules'] name).
 
     condition: its file in representation/rules/.
     action:    "flag" (CAT1), "silence" (CAT2) or "episode" (clinical
                events, CAT3).
     kind:      for an episode rule, the clinical-event class it maintains.
-    requires:  the rules whose events a combined episode rule is built on.
+    requires:  the rules a combined episode rule is built on.
     """
     name: str
     condition: str
@@ -128,8 +110,7 @@ _PREFIX_RE = re.compile(r"^PREFIX\s+([\w-]*):\s*<([^>]*)>\s*$", re.IGNORECASE)
 
 
 def _read(path: Path) -> tuple:
-    """(prefixes, body) of one .rq file: whole-line comments dropped,
-    PREFIX lines collected, the rest collapsed to one line."""
+    """(prefixes, body) of one .rq file, the body on one line."""
     prefixes, body = {}, []
     for line in path.read_text(encoding="utf-8").splitlines():
         s = line.strip()
@@ -144,6 +125,7 @@ def _read(path: Path) -> tuple:
 
 
 def _load_all() -> tuple:
+    """Every rule and action body, and their agreed prefixes."""
     bodies, prefixes = {}, {}
     for folder in (RULES_DIR, ACTIONS_DIR):
         for path in sorted(folder.glob("*.rq")):
@@ -169,9 +151,7 @@ def condition(name: str) -> str:
 
 
 def compose(action: str, bindings: str, condition_file: str | None = None) -> str:
-    """One RDFox command: the action template `action` (representation/
-    actions/<action>.rq) with its {{BINDINGS}} and {{CONDITION}} slots
-    filled."""
+    """One RDFox command: action template `action` with its slots filled."""
     text = _BODIES[ACTIONS_DIR / f"{action}.rq"].replace("{{BINDINGS}}", bindings)
     if condition_file is not None:
         text = text.replace("{{CONDITION}}", condition(condition_file))
@@ -198,14 +178,9 @@ def _alarm_functional_unit(kb, event) -> str | None:
     return str(concept).rsplit("/", 1)[-1] if concept is not None else None
 
 
-
 def _alarm_metric_types(kb, event) -> set:
-    """Every distinct Metric-kind concept name (e.g. {"ArterialBloodPressure_Mean"})
-    M.ground_chain would mint for this alarm's own archetype — used only to
-    decide whether a query can possibly match, not part of any minted
-    output itself. Cheap: archetype_structure is memoized on `kb`
-    (kb.archetype_cache), so this is a small, already-cached tree walk,
-    safe to call once per alarm."""
+    """The metric concept names in this alarm's blueprint (e.g.
+    {"ArterialBloodPressure_Mean"})."""
     type_iri = kb.type_index.get(event.label)
     if type_iri is None:
         return set()
@@ -245,6 +220,7 @@ def kinds_supported_by_metric(metric_type: str, rules: list) -> frozenset:
 
 
 def _is_ventilator(kb, concept) -> bool:
+    """Whether a device concept is a mechanical ventilator (or subclass)."""
     target = M.URIRef(f"{DEVICE}MechanicalVentilator")
     if concept is None:
         return False

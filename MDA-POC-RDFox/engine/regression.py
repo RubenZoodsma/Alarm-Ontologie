@@ -1,13 +1,12 @@
 """
-regression.py — the fixed regression test: every rule against the
-fabricated, known-outcome patients in DATA/CAT_evaluation/events_data.csv
-(documented in that folder's README.md), checked against the expected
-outcomes below.
+regression.py — every rule against the fabricated, known-outcome patients
+in DATA/CAT_evaluation/events_data.csv (see that folder's README.md).
 
-Usage
------
-  cd MDA-POC-RDFox/engine
-  python3 regression.py
+Checks per patient: flagged/silenced or not, CAT3a/CAT3b episodes, exact
+event times, expected and forbidden firings; plus two structural checks
+(no lookahead, no rule logic in Python). Writes both logs to _scratch/.
+
+  cd MDA-POC-RDFox/engine && python3 regression.py
 """
 
 from __future__ import annotations
@@ -137,8 +136,7 @@ EXPECTED_CAT3A = {"cat3a_pos": True, "cat3a_neg": False, "cat3c": True,
 #   cat3b_neg: fault ends 08:00:20, low minute volume at 08:20:00.
 #   cat3d: same overlap as cat3b_pos, arrival order swapped.
 #   cat3e: fault ends 08:00:20, low minute volume at 08:10:00 — the device
-#     state still persists, but its alarm is over: negative (positive
-#     before 2026-09-21, when the fault counted for its 15-minute window).
+#     state still persists, but its alarm is over: negative.
 #   cat3b_leak / cat3b_circuit: a leak / a disconnected circuit on the
 #     same ServoU — positive.
 #   cat3b_disconnect: Datex "Patient Disconnected" (a patient circuit
@@ -297,6 +295,7 @@ def lookahead_possible() -> list:
 
 
 def run():
+    """Replay the fixtures, print both logs and a PASS/FAIL line per check."""
     scratch = ENGINE_DIR / "_scratch"
     if scratch.exists():
         shutil.rmtree(scratch)
