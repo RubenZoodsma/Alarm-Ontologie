@@ -8,8 +8,9 @@ __pycache__/
 .vscode/*
 /PREVIOUS_STALE**
 *.lic
-MDA-POC-RDFox/engine/_scratch/
-MDA-POC-RDFox/_baseline/
+# Local run output and reference logs — never committed.
+**/_scratch/
+**/_baseline/
 *.rData
 *scratch/*    
 *.trig
@@ -30,3 +31,6 @@ MDA-POC-RDFox/_baseline/
 !DATA/CQ_evaluation/events_data.csv
 !DATA/CAT_evaluation/events_data.csv
 *_scratch*
+*.DS_Store
+*.docx
+*.pdf
