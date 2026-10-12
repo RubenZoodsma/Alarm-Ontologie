@@ -2,25 +2,66 @@
 # reduced_pulmonary_function.rq — clinical event ReducedPulmonaryFunction.
 # HAND-AUTHORED.
 #
-# Criterion (FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl):
-#   evidencedBy some (metric:RespirationVolume_Minute and hasValueState
-#   value Decreased)
-# — a low minute volume, reported by an alarm of this patient that is still
-# active and not CAT1-flagged. See cardiac_arrest.rq for the single-graph
-# matching.
+# Criterion (FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl, revised
+# 2026-10-12):
+#   evidencedBy some
+#     ( (metric:RespirationVolume_Minute and hasValueState Decreased or
+#        narrower)
+#    or (a metric approximating a property of PulmonaryOxygenation, with
+#        hasValueState Decreased or narrower) )
+# — a low minute volume or a low oxygenation (e.g. SpO2 laag, Desaturatie),
+# reported by an alarm of this patient that is still active and not
+# CAT1-flagged. See cardiac_arrest.rq for the single-graph matching.
+#
+# Clause by clause:
+#   "decreased or narrower"    — the value-state hierarchy (vocabulary
+#                                skos:broader): Decreased itself, or
+#                                SeverelyDecreased, so a severe
+#                                desaturation counts as well.
+#   "low minute volume"        — the exact metric type, as before: not the
+#                                broader RespirationVolume (a low tidal
+#                                volume alone can be rate-compensated).
+#   "low oxygenation"          — concept level, as CAT2a: the metric's type
+#                                or any superclass carries inference.ttl's
+#                                class-level approximates restriction, and
+#                                that property isPropertyOf
+#                                PulmonaryOxygenation. Any device's
+#                                oxygenation metric qualifies; no label or
+#                                metric is named here.
+#   Not admitted: low airway pressure (what a leak itself produces), low
+#   end-tidal CO2, low respiratory rate, low tidal volume — see the
+#   criterion's comment in clinicalEvents.ttl.
+#   "not CAT1-flagged"         — a likely false positive (e.g. SpO2 laag on
+#                                a weak signal) is no evidence.
 #
 # CONTRACT. Bound on entry: ?patient, ?now. Binds: ?evidence (the metric),
 # ?support (the alarm's graph). Used by the episode actions.
+#
+# VALIDATION — engine/regression.py: cat3e, cat3b_leak, cat3b_cpap (minute
+# volume); cat3b_spo2, cat3b_desat, fig2_scenario (oxygenation) fire;
+# cat3b_spo2_flagged (flagged SpO2) and cat3b_rr (low respiratory rate) do
+# not.
 ####################################################################
 
 PREFIX mda:        <https://w3id.org/mda/ontology#>
 PREFIX mdapoc:     <https://w3id.org/mda/poc#>
 PREFIX rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:       <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:        <http://www.w3.org/2002/07/owl#>
+PREFIX skos:       <http://www.w3.org/2004/02/skos/core#>
 PREFIX metric:     <https://w3id.org/mda/vocab/metric/>
 PREFIX valuestate: <https://w3id.org/mda/vocab/metric-value-state/>
+PREFIX process:    <https://w3id.org/mda/vocab/physiological-process/>
 
 GRAPH ?gEv { ?evAlarm mda:hasMessage ?evMsg . ?evMsg mda:concernsPatient ?patient .
-             ?evidence rdf:type metric:RespirationVolume_Minute .
-             ?evidence mda:hasValueState valuestate:Decreased . }
+             ?evidence rdf:type ?metricType .
+             ?evidence mda:hasValueState ?state . }
+?state skos:broader* valuestate:Decreased .
+{
+  VALUES ?metricType { metric:RespirationVolume_Minute }
+} UNION {
+  ?metricType rdfs:subClassOf* ?r . ?r owl:onProperty mda:approximates ; owl:hasValue ?property .
+  ?property mda:isPropertyOf process:PulmonaryOxygenation .
+}
 FILTER NOT EXISTS { GRAPH ?gEv { ?evAlarm mdapoc:flaggedLikelyFalsePositive ?why } }
 BIND(?gEv AS ?support)

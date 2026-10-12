@@ -105,3 +105,18 @@ cat3b_cpap;HULBUS - Leak too high;cat3bcpap_Hulbus_00;2026-01-01T08:00:10;2026-0
 cat3b_cpap;SERVOU - Exp. minuutvol. laag;cat3bcpap_ServoU_00;2026-01-01T08:00:20;2026-01-01T08:01:30
 cat2a_peak;DATEXOHMEDACOMVENTILATOR - VTexp High;cat2apeak_CarescapeR860_00;2026-01-01T08:00:00;2026-01-01T08:02:00
 cat2a_peak;DATEXOHMEDACOMVENTILATOR - Ppeak High;cat2apeak_CarescapeR860_00;2026-01-01T08:00:30;2026-01-01T08:01:00
+cat3b_spo2;SERVOU - Te veel lekkage;cat3bspo2_ServoU_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat3b_spo2;PHILIPSMONITOR - SpO2 laag;cat3bspo2_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:30
+cat3b_desat;SERVOU - Te veel lekkage;cat3bdesat_ServoU_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat3b_desat;PHILIPSMONITOR - Desaturatie;cat3bdesat_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:30
+cat3b_spo2_flagged;SERVOU - Te veel lekkage;cat3bspo2flagged_ServoU_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat3b_spo2_flagged;PHILIPSMONITOR - SpO2 zwak signaal;cat3bspo2flagged_PhilipsMonitor_00;2026-01-01T08:00:10;2026-01-01T08:02:00
+cat3b_spo2_flagged;PHILIPSMONITOR - SpO2 laag;cat3bspo2flagged_PhilipsMonitor_00;2026-01-01T08:00:30;2026-01-01T08:01:30
+cat3b_rr;SERVOU - Te veel lekkage;cat3brr_ServoU_00;2026-01-01T08:00:00;2026-01-01T08:02:00
+cat3b_rr;SERVOU - Ademfrequentie laag;cat3brr_ServoU_00;2026-01-01T08:00:30;2026-01-01T08:01:30
+fig2_scenario;PHILIPSMONITOR - SpO2 zwak signaal;fig2_PhilipsMonitor_00;2026-01-01T08:02:00;2026-01-01T08:03:30
+fig2_scenario;PHILIPSMONITOR - SpO2 laag;fig2_PhilipsMonitor_00;2026-01-01T08:02:20;2026-01-01T08:02:50
+fig2_scenario;PHILIPSMONITOR - Lage ademfreq.;fig2_PhilipsMonitor_00;2026-01-01T08:21:00;2026-01-01T08:22:30
+fig2_scenario;SERVOU - Ademfrequentie laag;fig2_ServoU_00;2026-01-01T08:21:10;2026-01-01T08:22:20
+fig2_scenario;SERVOU - Te veel lekkage;fig2_ServoU_00;2026-01-01T08:40:00;2026-01-01T08:42:30
+fig2_scenario;PHILIPSMONITOR - SpO2 laag;fig2_PhilipsMonitor_00;2026-01-01T08:40:30;2026-01-01T08:41:40
