@@ -26,5 +26,7 @@
 PREFIX mda:    <https://w3id.org/mda/ontology#>
 PREFIX mdapoc: <https://w3id.org/mda/poc#>
 
-GRAPH ?gNew { ?new mda:hasMessage ?newMsg . ?newMsg mda:triggeredBy ?fu . }
+GRAPH ?gNew { ?new mda:hasMessage ?newMsg . ?newMsg mda:triggeredBy ?newDevice . }
+BIND(IRI(CONCAT(STR(?new), "#persistent")) AS ?gNewP)
+GRAPH ?gNewP { ?newDevice mda:hasFunctionalUnit ?fu . }
 GRAPH ?gFlag { ?flagged mdapoc:flaggedLikelyFalsePositive ?fu }

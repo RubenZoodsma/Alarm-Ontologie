@@ -79,7 +79,9 @@ GRAPH ?gIbp { ?patient mda:isMonitoredBy ?ibpDevice . ?ibpDevice rdf:type ?ibpDe
 ?ibpDeviceType rdfs:subClassOf* device:PhysiologicalMonitor .
 # without a current alarm on that pathway
 FILTER NOT EXISTS {
-  GRAPH ?gOther { ?other mda:hasMessage ?otherMsg . ?otherMsg mda:triggeredBy ?ibpFunctionalUnit . }
+  GRAPH ?gOther { ?other mda:hasMessage ?otherMsg . ?otherMsg mda:triggeredBy ?ibpDevice . }
+  BIND(IRI(CONCAT(STR(?other), "#persistent")) AS ?gOtherP)
+  GRAPH ?gOtherP { ?ibpDevice mda:hasFunctionalUnit ?ibpFunctionalUnit . }
 }
 BIND(?ibpFunctionalUnit AS ?evidence)
 BIND(?gIbp AS ?witness)
