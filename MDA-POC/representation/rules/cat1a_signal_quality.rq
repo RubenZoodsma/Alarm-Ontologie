@@ -13,8 +13,8 @@
 #                                pathway: its FunctionalUnit -> sensor ->
 #                                signal -> the analysis producing its metric.
 #                                Anchored at both ends on the alarm itself
-#                                (?fu from its message, ?analysis from its
-#                                metric), so a sibling signal on the same
+#                                (?fu through its device in its own persistent
+#                                graph, ?analysis from its metric), so a sibling signal on the same
 #                                sensor never counts — e.g. an ECG-signal
 #                                problem does not flag a respiration-rate
 #                                alarm derived from ECG_lead_Impedance.
@@ -48,6 +48,10 @@
 # ElectroCardioGraphy_sensor/ECG_lead_Impedance — so it never reaches any
 # alarm's pathway and never flags anything.
 #
+#   own pathway: the message is triggeredBy the device; the device's
+#   functional unit is read from the alarm's OWN persistent graph
+#   (<alarm#persistent>), so another alarm's chain on the same device is
+#   never reached (option D, 2026-10-12).
 # GRAPHS. ?gT is the arriving alarm's transient graph (category, message,
 # triggeredBy and producesMetric are minted there together); ?gP is a
 # persistent graph holding its structural chain (FunctionalUnit, sensor,
@@ -79,10 +83,11 @@ PREFIX qualitystate: <https://w3id.org/mda/vocab/quality-state/>
 PREFIX opstate:      <https://w3id.org/mda/vocab/operation-state/>
 
 GRAPH ?gT { ?alarm mda:hasCategory alarmcat:Physiological .
-            ?alarm mda:hasMessage ?msg . ?msg mda:triggeredBy ?fu .
+            ?alarm mda:hasMessage ?msg . ?msg mda:triggeredBy ?device .
             ?analysis mda:producesMetric ?metric . }
-GRAPH ?gP { ?fu mda:hasSensor ?sensor . ?sensor mda:sensorProducesSignal ?signal .
-            ?signal mda:analyzedBy ?analysis . }
+BIND(IRI(CONCAT(STR(?alarm), "#persistent")) AS ?gP)
+GRAPH ?gP { ?device mda:hasFunctionalUnit ?fu . ?fu mda:hasSensor ?sensor .
+            ?sensor mda:sensorProducesSignal ?signal . ?signal mda:analyzedBy ?analysis . }
 {
   GRAPH ?gQ { ?signal mda:hasQualityState ?quality }
   FILTER(?quality != qualitystate:Good)

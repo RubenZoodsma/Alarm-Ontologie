@@ -4,10 +4,10 @@ in DATA/CAT_evaluation/events_data.csv (see that folder's README.md).
 
 Checks per patient: flagged/silenced or not, CAT3a/CAT3b episodes, exact
 event times, expected and forbidden firings; plus no lookahead (prefix
-invariance, no RDFox needed) and no rule logic in Python. Writes both logs
+invariance, no engine needed) and no rule logic in Python. Writes both logs
 to _scratch/.
 
-  cd MDA-POC-RDFox/engine && python3 regression.py
+  cd MDA-POC/engine && python3 regression.py
 """
 
 from __future__ import annotations
@@ -28,7 +28,7 @@ from processor import Processor, run_live
 from stream import DATASET, group_by_patient, load_events
 
 SETTINGS = {
-    # Write every command sent to RDFox to _scratch/replay.rdfox (debugging).
+    # Write every command sent to the engine to _scratch/replay.* (debugging).
     "audit_logging": False,
 }
 
@@ -121,6 +121,12 @@ EXPECTED = {
     #   in inference.ttl (decision 39):
     #   without it the peak-pressure alarm reaches no process at all.
     "cat2a_peak": True,
+    # Reduced pulmonary function through oxygenation (revised 2026-10-12):
+    # cat3b_spo2_flagged: the low SpO2 on a weak signal is CAT1a-flagged.
+    # fig2_scenario: the manuscript's Fig. 2 — one CAT1a flag (episode 1)
+    #   and one CAT2b silence (episode 2).
+    "cat3b_spo2": False, "cat3b_desat": False, "cat3b_spo2_flagged": True,
+    "cat3b_rr": False, "fig2_scenario": True,
 }
 
 # CAT3a (cardiorespiratory arrest): a cardiac arrest (Asystolie) and a
@@ -160,7 +166,12 @@ EXPECTED_CAT3A = {"cat3a_pos": True, "cat3a_neg": False, "cat3c": True,
 #     positive; CPAP alarms leave CAT3b intact.
 EXPECTED_CAT3B = {"cat3b_pos": True, "cat3b_neg": False, "cat3d": True, "cat3e": False,
                   "cat3b_leak": True, "cat3b_circuit": True, "cat3b_disconnect": True,
-                  "cat3b_swap": False, "cat3b_datalink": False, "cat3b_cpap": True}
+                  "cat3b_swap": False, "cat3b_datalink": False, "cat3b_cpap": True,
+                  # oxygenation branch (revised 2026-10-12): a low SpO2 or a
+                  # desaturation on the monitor counts; a flagged SpO2 and a
+                  # low respiratory rate do not.
+                  "cat3b_spo2": True, "cat3b_desat": True, "cat3b_spo2_flagged": False,
+                  "cat3b_rr": False, "fig2_scenario": True}
 
 # Exact clinical events for patients where timing matters — (kind, start,
 # end, number of supporting alarms). hasStart/hasEnd must be when the
@@ -194,6 +205,21 @@ EXPECTED_EVENTS = {
     },
     "cat3f": {
         ("CardiacArrest", "08:00:00", "08:02:00", 2),
+    },
+    # cat3b_spo2: reduced pulmonary function from the low SpO2 alone, and
+    #   ventilation failure while the leak is also active.
+    "cat3b_spo2": {
+        ("ReducedPulmonaryFunction", "08:00:30", "08:01:30", 1),
+        ("VentilationFailure", "08:00:30", "08:01:30", 2),
+    },
+    # cat3b_spo2_flagged / cat3b_rr: no event at all.
+    "cat3b_spo2_flagged": set(),
+    "cat3b_rr": set(),
+    # fig2_scenario: the episode-1 SpO2 laag (flagged) supports nothing;
+    #   the episode-3 SpO2 laag supports both events.
+    "fig2_scenario": {
+        ("ReducedPulmonaryFunction", "08:40:30", "08:41:40", 1),
+        ("VentilationFailure", "08:40:30", "08:41:40", 2),
     },
     # cat3a_flagged: the flagged asystole supports nothing; the apnoea's
     #   respiratory arrest stands alone.
@@ -242,6 +268,11 @@ EXPECTED_FIRINGS = {
         ("cat1b", "PHILIPSMONITOR - Asystolie", "PHILIPSMONITOR - ABP verkleinen"),
         ("cat1b_withdrawn", "PHILIPSMONITOR - Asystolie", "PHILIPSMONITOR - ABPm laag"),
     },
+    "cat3b_spo2_flagged": {("cat1a", "PHILIPSMONITOR - SpO2 laag", "PHILIPSMONITOR - SpO2 zwak signaal")},
+    "fig2_scenario": {
+        ("cat1a", "PHILIPSMONITOR - SpO2 laag", "PHILIPSMONITOR - SpO2 zwak signaal"),
+        ("cat2b", "SERVOU - Ademfrequentie laag", "PHILIPSMONITOR - Lage ademfreq."),
+    },
 }
 
 # Firings that must NOT appear, as (rule, alarm label) or (rule, alarm
@@ -254,6 +285,14 @@ FORBIDDEN_FIRINGS = {
                          "PHILIPSMONITOR - Extr. lage hartfreq.")},
     "cat1b_borrow": {("cat1b", "PHILIPSMONITOR - Lage hartfreq."),
                      ("cat1b_withdrawn", "PHILIPSMONITOR - Asystolie")},
+    # fig2_scenario: exactly the conclusions of the manuscript's Fig. 2 —
+    #   neither low respiratory rate is silenced by CAT2a, the monitor's is
+    #   not silenced at all, and no SpO2 laag is silenced.
+    "fig2_scenario": {("cat2a", "PHILIPSMONITOR - Lage ademfreq."),
+                      ("cat2a", "SERVOU - Ademfrequentie laag"),
+                      ("cat2b", "PHILIPSMONITOR - Lage ademfreq."),
+                      ("cat2a", "PHILIPSMONITOR - SpO2 laag"),
+                      ("cat2b", "PHILIPSMONITOR - SpO2 laag")},
 }
 
 
@@ -322,7 +361,7 @@ def script_depends_on_future(kb, groups: dict, scratch: Path) -> list:
     a run that knows only the stream up to t: arrivals after t removed,
     ends after t unknown. Any difference means something after t leaked
     into what the engine did at or before t. The whole script covers the
-    minted triples, every rule invocation and every window drop; RDFox
+    minted triples, every rule invocation and every window drop; the engine
     executes it deterministically, so the store and every decision up to t
     are identical too."""
     rule_names = list(RU.RULES)
@@ -369,7 +408,7 @@ def run():
     complete = run_live(kb, in_scope, scratch, log, stats, audit_log=SETTINGS["audit_logging"])
     log.close()
     if not complete:
-        print("*** INCOMPLETE RUN: RDFox stopped or reported errors (see above). ***")
+        print("*** INCOMPLETE RUN: the engine stopped or reported errors (see above). ***")
     summarize_invocations(stats)
     records, firings = log.records, log.firings
     for name in ("clinical_events.csv", "rule_firings.csv"):

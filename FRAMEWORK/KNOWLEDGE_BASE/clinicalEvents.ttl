@@ -27,7 +27,7 @@
 # existential on the right-hand side of rdfs:subClassOf is outside the
 # OWL 2 RL profile, so an RL reasoner derives nothing from this file. That
 # is intended: an event is minted by an application (the RDFox POC,
-# MDA-POC-RDFox/), which implements each criterion as a query and gives the
+# MDA-POC/), which implements each criterion as a query and gives the
 # event its patient, evidence and times. These axioms are the reference
 # that implementation is checked against, and what a competency question
 # can read to ask which evidence leads to which event.
@@ -72,6 +72,7 @@
 @prefix qualitystate:     <https://w3id.org/mda/vocab/quality-state/> .
 @prefix therapeuticModality: <https://w3id.org/mda/vocab/therapeutic-modality/> .
 @prefix clinicalEvent:    <https://w3id.org/mda/vocab/clinical-event/> .
+@prefix physiologicalProcess: <https://w3id.org/mda/vocab/physiological-process/> .
 
 ####################################################################
 # Single-alarm events — evidenced by a metric
@@ -97,20 +98,46 @@ clinicalEvent:RespiratoryArrest rdfs:subClassOf
         owl:intersectionOf ( metric:RespirationRate
           [ a owl:Restriction ; owl:onProperty mda:hasRhythm ; owl:hasValue metricRhythm:Absent ] ) ] ] .
 
-# Reduced pulmonary function: a DECREASED MINUTE ventilation volume.
-# Deliberately metric:RespirationVolume_Minute, not the broader
-# metric:RespirationVolume, which would also admit a low tidal volume
-# ("DATEXOHMEDACOMVENTILATOR - VTexp Low"). A low tidal volume alone can be
-# rate-compensated; minute ventilation (rate x tidal volume) is the
-# textbook marker of inadequate ventilation.
-# Real corpus archetype: "MEDIBUS - MV ondergrens".
+# Reduced pulmonary function: decreased VENTILATION or decreased
+# OXYGENATION of the patient (revised 2026-10-12; previously minute volume
+# only). Two branches, both with a value state of Decreased or narrower
+# (SeverelyDecreased, e.g. "Desaturatie"):
+#   - ventilation: metric:RespirationVolume_Minute. Deliberately not the
+#     broader metric:RespirationVolume, which would also admit a low tidal
+#     volume ("DATEXOHMEDACOMVENTILATOR - VTexp Low"): a low tidal volume
+#     alone can be rate-compensated; minute ventilation (rate x tidal
+#     volume) is the textbook marker of inadequate ventilation. Real corpus
+#     archetype: "MEDIBUS - MV ondergrens".
+#   - oxygenation: ANY metric that approximates a property of pulmonary
+#     oxygenation (inference.ttl: metric:SpO2 approximates SaO2, a property
+#     of PulmonaryOxygenation), stated at the concept level so that every
+#     source of that property qualifies, whatever the device.
+# Deliberately NOT "any decreased pulmonary property": a low airway
+# pressure is what a leak or disconnection itself produces, and a low
+# end-tidal CO2 reflects measurement or hyperventilation, so neither shows
+# that the patient is affected. A low respiratory rate is excluded for the
+# same reason as a low tidal volume (it can be compensated). Why the
+# oxygenation branch was added: a ventilation-therapy fault with low SpO2
+# from ANOTHER device is independent evidence that the patient is
+# affected, whereas a low minute volume during a leak is partly the leak's
+# own measurement effect.
 clinicalEvent:ReducedPulmonaryFunction rdfs:subClassOf
   [ a owl:Restriction ;
     owl:onProperty mda:evidencedBy ;
     owl:someValuesFrom
       [ a owl:Class ;
-        owl:intersectionOf ( metric:RespirationVolume_Minute
-          [ a owl:Restriction ; owl:onProperty mda:hasValueState ; owl:hasValue metricValueState:Decreased ] ) ] ] .
+        owl:unionOf (
+          [ a owl:Class ;
+            owl:intersectionOf ( metric:RespirationVolume_Minute
+              [ a owl:Restriction ; owl:onProperty mda:hasValueState ;
+                owl:someValuesFrom [ a owl:Class ; owl:oneOf ( metricValueState:Decreased metricValueState:SeverelyDecreased ) ] ] ) ]
+          [ a owl:Class ;
+            owl:intersectionOf ( mda:Metric
+              [ a owl:Restriction ; owl:onProperty mda:approximates ;
+                owl:someValuesFrom [ a owl:Restriction ; owl:onProperty mda:isPropertyOf ;
+                                     owl:hasValue physiologicalProcess:PulmonaryOxygenation ] ]
+              [ a owl:Restriction ; owl:onProperty mda:hasValueState ;
+                owl:someValuesFrom [ a owl:Class ; owl:oneOf ( metricValueState:Decreased metricValueState:SeverelyDecreased ) ] ] ) ] ) ] ] .
 
 ####################################################################
 # Combined events — evidenced by other events (and a therapy)
@@ -126,7 +153,7 @@ clinicalEvent:ReducedPulmonaryFunction rdfs:subClassOf
 # conditions (asystole, apnoea) and must hold simultaneously — no
 # tolerance window. This departs from the original NL rule table ("reduced
 # heart rate + reduced respiratory rate within 60 s -> respiratory
-# arrest") in favour of clinical fidelity; see MDA-POC-RDFox/engine/
+# arrest") in favour of clinical fidelity; see MDA-POC/engine/
 # clinical_events.py (EVENT_RULES) for the clause-by-clause account.
 clinicalEvent:CardioRespiratoryArrest rdfs:subClassOf
   [ a owl:Restriction ; owl:onProperty mda:evidencedBy ; owl:someValuesFrom clinicalEvent:CardiacArrest ] ,
@@ -146,7 +173,8 @@ clinicalEvent:CardioRespiratoryArrest rdfs:subClassOf
 #     Disconnected is also what a lost data link or mains power yields, and
 #     neither stops ventilation.
 #   - "reduced function of pulmonary processes": ReducedPulmonaryFunction,
-#     i.e. a decreased minute volume — strict on purpose.
+#     i.e. a decreased minute volume or a decreased oxygenation (revised
+#     2026-10-12, see above).
 #   - "within 180 s": both hold at the same time, as for CAT3a. Real data
 #     showed that the former 15-minute carry-over of a device fault only
 #     ever joined a ventilator swap (patient disconnected from one

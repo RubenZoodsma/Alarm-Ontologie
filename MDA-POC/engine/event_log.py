@@ -53,8 +53,8 @@ def _term(token: str) -> str:
 
 
 def parse_trace_blocks(out_lines: list) -> list:
-    """Every trace block in RDFox's output, as (tag, rows, seconds):
-    answer rows only, and RDFox's "Total statement evaluation time"."""
+    """Every trace block in the engine's output, as (tag, rows, seconds):
+    answer rows only, and its "Total statement evaluation time"."""
     blocks, tag, rows, seconds = [], None, [], None
     begin = TRACE_BEGIN + " "
     for line in out_lines:
@@ -187,6 +187,17 @@ class LiveLog:
             else:
                 for firing in self._firing_records(tag, key, rows):
                     self._add_firing(firing)
+        for f in (self._event_file, self._firing_file):
+            if f is not None:
+                f.flush()
+
+    def extend(self, records: list, firings: list) -> None:
+        """Add the records and firings of another log (a parallel worker's),
+        writing them as if they had happened here."""
+        for r in firings:
+            self._add_firing(r)
+        for r in records:
+            self._add_event(r)
         for f in (self._event_file, self._firing_file):
             if f is not None:
                 f.flush()

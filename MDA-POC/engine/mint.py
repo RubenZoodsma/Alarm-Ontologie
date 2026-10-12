@@ -33,7 +33,7 @@ from rdflib.namespace import RDF, RDFS, SKOS, XSD, DCTERMS, OWL
 sys.path.append(str(Path(__file__).resolve().parent))
 from ontology_tree import derive_class_tree, walk_instances
 
-# ── Paths: copies of the framework files, under MDA-POC-RDFox/data/ ──────
+# ── Paths: copies of the framework files, under MDA-POC/data/ ──────
 
 DATA_DIR  = Path(__file__).resolve().parent.parent / "data"
 ONTOLOGY  = DATA_DIR / "ontology.ttl"
@@ -430,14 +430,16 @@ def update_identity(kb: KB, event, tracker: IdentityTracker) -> None:
 
 
 def add_triggered_by(g: Graph, events: list, kb: KB, identity: dict) -> None:
-    """Each message mda:triggeredBy its functional unit (else its device):
-    the anchor every CAT1/CAT2 rule starts from."""
+    """Each message mda:triggeredBy its device, as in the ontology and the
+    blueprints. Rules reach the alarm's own functional unit through the
+    device inside the alarm's own persistent graph (<alarm#persistent>),
+    which holds only that alarm's chain: the device is shared across the
+    alarms of one device, so walking device -> functional unit outside that
+    graph would reach every functional unit the device has reported."""
     for e in events:
         type_iri = kb.type_index.get(e.label)
         if type_iri is None:
             continue
         arch = archetype_structure(kb, type_iri)
         msg = message_iri(e)
-        fu = particular_iri(kb, arch, e.patient, e.device_id, MDA.FunctionalUnit, identity)
-        target = fu if fu is not None else device_iri(e.patient, e.device_id)
-        g.add((msg, MDA.triggeredBy, target))
+        g.add((msg, MDA.triggeredBy, device_iri(e.patient, e.device_id)))

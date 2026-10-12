@@ -119,7 +119,7 @@ def silence_lift(ended_alarm: str, when: datetime) -> tuple:
 # --------------------------------------------------------------------
 
 def evaluate_commands(kinds: set, rules: list, patient_id: str, now: datetime, invocation: int) -> list:
-    """RDFox script lines that bring this patient's events of `kinds` up to
+    """Engine script lines that bring this patient's events of `kinds` up to
     date at logical time `now`. `invocation` numbers this evaluation: it
     times each rule and goes into the IRI of any event it starts. Empty when
     no kind is relevant."""

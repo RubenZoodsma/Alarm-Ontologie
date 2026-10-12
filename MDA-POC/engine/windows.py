@@ -54,7 +54,7 @@ class OpenAlarm:
 
 
 class WindowOperator:
-    """The windows of ONE patient's stream: RDFox commands for each
+    """The windows of ONE patient's stream: engine commands for each
     transition; the processor orders them. `file_counter` is shared across
     patients, who write TriG files into one scratch directory."""
 

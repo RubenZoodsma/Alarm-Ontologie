@@ -8,12 +8,12 @@ An ACTION, representation/actions/<name>.rq, is a SPARQL command with a
 {{BINDINGS}} slot (a VALUES clause) and a {{CONDITION}} slot (a rule).
 No rule logic lives in Python.
 
-The RDFox shell rejects PREFIX inside a command, so the loader strips the
-PREFIX lines, checks all files agree, and the script declares them once.
+The loader strips the PREFIX lines, checks all files agree, and the
+script declares them once (the session prepends them to each statement).
 Each command is collapsed to one line.
 
 ON DEMAND, NOT STANDING DATALOG. A rule is a query run when its result can
-change (an arrival or an end). Standing rules cost RDFox incremental
+change (an arrival or an end). Standing rules cost an engine incremental
 maintenance on every import and drop — CAT2 stalled for tens of seconds
 per alarm that way — and absence, withdrawal, lifting and events that
 outlive their evidence are not monotone Datalog anyway.
@@ -151,7 +151,7 @@ def condition(name: str) -> str:
 
 
 def compose(action: str, bindings: str, condition_file: str | None = None) -> str:
-    """One RDFox command: action template `action` with its slots filled."""
+    """One engine command: action template `action` with its slots filled."""
     text = _BODIES[ACTIONS_DIR / f"{action}.rq"].replace("{{BINDINGS}}", bindings)
     if condition_file is not None:
         text = text.replace("{{CONDITION}}", condition(condition_file))
@@ -203,18 +203,50 @@ def _alarm_metric_types(kb, event) -> set:
 # relevant_kinds). Combined kinds are relevant whenever one of their
 # constituents is, plus — for ventilation failure — any ventilator alarm.
 _METRIC_FOR_KIND = {
-    "CardiacArrest": "HeartRate",
-    "RespiratoryArrest": "RespirationRate",
-    "ReducedPulmonaryFunction": "RespirationVolume_Minute",
+    "CardiacArrest": frozenset({"HeartRate"}),
+    "RespiratoryArrest": frozenset({"RespirationRate"}),
+    "ReducedPulmonaryFunction": frozenset({"RespirationVolume_Minute"}),
 }
 
+# ReducedPulmonaryFunction also admits any metric approximating a property
+# of pulmonary oxygenation (rules/reduced_pulmonary_function.rq). The gate
+# reads those metrics from inference.ttl rather than naming them, so a new
+# oxygenation metric is never gated out.
+_OXYGENATION = M.URIRef("https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation")
+_OWL = M.Namespace("http://www.w3.org/2002/07/owl#")
+_oxygenation_cache: dict = {}
 
-def kinds_supported_by_metric(metric_type: str, rules: list) -> frozenset:
+
+def _oxygenation_metrics(kb) -> frozenset:
+    """Metric concept names whose type (or a superclass) approximates a
+    property of pulmonary oxygenation, read from inference.ttl."""
+    key = id(kb)
+    if key not in _oxygenation_cache:
+        g = kb.reasoning_static
+        properties = set(g.subjects(M.MDA.isPropertyOf, _OXYGENATION))
+        names = set()
+        for r in g.subjects(_OWL.onProperty, M.MDA.approximates):
+            if g.value(r, _OWL.hasValue) in properties:
+                for metric in g.subjects(M.RDFS.subClassOf, r):
+                    for m in {metric} | set(g.transitive_subjects(M.RDFS.subClassOf, metric)):
+                        names.add(str(m).rsplit("/", 1)[-1])
+        _oxygenation_cache[key] = frozenset(names)
+    return _oxygenation_cache[key]
+
+
+def _metrics_for_kind(kb, kind: str) -> frozenset:
+    metrics = _METRIC_FOR_KIND[kind]
+    if kind == "ReducedPulmonaryFunction" and kb is not None:
+        metrics = metrics | _oxygenation_metrics(kb)
+    return metrics
+
+
+def kinds_supported_by_metric(metric_type: str, rules: list, kb=None) -> frozenset:
     """The enabled kinds an alarm with `metric_type` can be evidence for,
     directly or through a constituent — used when a CAT1b withdrawal lets a
     heart-rate alarm count from that moment on."""
     kinds = {r.kind for r in rules}
-    direct = {k for k, m in _METRIC_FOR_KIND.items() if k in kinds and m == metric_type}
+    direct = {k for k in _METRIC_FOR_KIND if k in kinds and metric_type in _metrics_for_kind(kb, k)}
     combined = {r.kind for r in rules if r.combined and {KIND_BY_RULE[n] for n in r.requires} & direct}
     return frozenset(direct | combined)
 
@@ -234,7 +266,7 @@ def relevant_kinds(kb, label: str, metric_types: set, rules: list) -> set:
     few cheap queries; under-inclusion would miss an event, so when in
     doubt a kind is included."""
     kinds = {r.kind for r in rules}
-    direct = {k for k, m in _METRIC_FOR_KIND.items() if k in kinds and m in metric_types}
+    direct = {k for k in _METRIC_FOR_KIND if k in kinds and _metrics_for_kind(kb, k) & metric_types}
     if "VentilationFailure" in kinds:
         type_iri = kb.type_index.get(label)
         if type_iri is not None:

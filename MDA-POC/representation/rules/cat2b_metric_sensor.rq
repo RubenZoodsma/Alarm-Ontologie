@@ -69,21 +69,23 @@ PREFIX skos:     <http://www.w3.org/2004/02/skos/core#>
 # the incoming alarm (its own graphs)
 GRAPH ?gT { ?alarm mda:hasCategory alarmcat:Physiological .
             ?alarm mda:hasMessage ?msg . ?msg mda:concernsPatient ?patient .
-            ?msg mda:triggeredBy ?fu .
+            ?msg mda:triggeredBy ?device .
             ?analysis mda:producesMetric ?metric . ?metric rdf:type ?metricType .
             ?metric ?stateProp ?state . }
 VALUES ?stateProp { mda:hasValueState mda:hasRhythm }
-GRAPH ?gP { ?fu mda:hasSensor ?sensor . ?sensor mda:sensorProducesSignal ?signal .
+BIND(IRI(CONCAT(STR(?alarm), "#persistent")) AS ?gP)
+GRAPH ?gP { ?device mda:hasFunctionalUnit ?fu . ?fu mda:hasSensor ?sensor . ?sensor mda:sensorProducesSignal ?signal .
             ?signal mda:analyzedBy ?analysis . ?sensor rdf:type ?sensorType . }
 
 # an active alarm of the same patient, same metric type (its own graphs)
 GRAPH ?gA { ?active mda:hasCategory alarmcat:Physiological .
             ?active mda:hasMessage ?activeMsg . ?activeMsg mda:concernsPatient ?patient .
-            ?activeMsg mda:triggeredBy ?activeFu .
+            ?activeMsg mda:triggeredBy ?activeDevice .
             ?activeAnalysis mda:producesMetric ?activeMetric . ?activeMetric rdf:type ?metricType .
             ?activeMetric ?activeStateProp ?activeState . }
 VALUES ?activeStateProp { mda:hasValueState mda:hasRhythm }
-GRAPH ?gAP { ?activeFu mda:hasSensor ?activeSensor .
+BIND(IRI(CONCAT(STR(?active), "#persistent")) AS ?gAP)
+GRAPH ?gAP { ?activeDevice mda:hasFunctionalUnit ?activeFu . ?activeFu mda:hasSensor ?activeSensor .
              ?activeSensor mda:sensorProducesSignal ?activeSignal .
              ?activeSignal mda:analyzedBy ?activeAnalysis .
              ?activeSensor rdf:type ?activeSensorType . }

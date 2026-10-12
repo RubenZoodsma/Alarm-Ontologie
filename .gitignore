@@ -30,9 +30,9 @@ __pycache__/
 # which could never fire while the file was invisible to git.
 !DATA/CQ_evaluation/events_data.csv
 !DATA/CAT_evaluation/events_data.csv
-# The MDA-POC-RDFox README is documentation, not output; the blanket *.md
+# The MDA-POC README is documentation, not output; the blanket *.md
 # rule above would otherwise keep it out of the repository.
-!MDA-POC-RDFox/README.md
+!MDA-POC/README.md
 *_scratch*
 *.DS_Store
 *.docx
