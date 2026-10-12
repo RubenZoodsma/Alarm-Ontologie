@@ -33,7 +33,7 @@ from rdflib.namespace import RDF, RDFS, SKOS, XSD, DCTERMS, OWL
 sys.path.append(str(Path(__file__).resolve().parent))
 from ontology_tree import derive_class_tree, walk_instances
 
-# ── Paths: copies of the framework files, under MDA-POC-RDFox/data/ ──────
+# ── Paths: copies of the framework files, under MDA-POC/data/ ──────
 
 DATA_DIR  = Path(__file__).resolve().parent.parent / "data"
 ONTOLOGY  = DATA_DIR / "ontology.ttl"

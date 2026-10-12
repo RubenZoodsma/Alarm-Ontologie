@@ -7,7 +7,7 @@ event times, expected and forbidden firings; plus no lookahead (prefix
 invariance, no engine needed) and no rule logic in Python. Writes both logs
 to _scratch/.
 
-  cd MDA-POC-RDFox/engine && python3 regression.py
+  cd MDA-POC/engine && python3 regression.py
 """
 
 from __future__ import annotations

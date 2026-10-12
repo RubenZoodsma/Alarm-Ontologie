@@ -27,7 +27,7 @@
 # existential on the right-hand side of rdfs:subClassOf is outside the
 # OWL 2 RL profile, so an RL reasoner derives nothing from this file. That
 # is intended: an event is minted by an application (the RDFox POC,
-# MDA-POC-RDFox/), which implements each criterion as a query and gives the
+# MDA-POC/), which implements each criterion as a query and gives the
 # event its patient, evidence and times. These axioms are the reference
 # that implementation is checked against, and what a competency question
 # can read to ask which evidence leads to which event.
@@ -153,7 +153,7 @@ clinicalEvent:ReducedPulmonaryFunction rdfs:subClassOf
 # conditions (asystole, apnoea) and must hold simultaneously — no
 # tolerance window. This departs from the original NL rule table ("reduced
 # heart rate + reduced respiratory rate within 60 s -> respiratory
-# arrest") in favour of clinical fidelity; see MDA-POC-RDFox/engine/
+# arrest") in favour of clinical fidelity; see MDA-POC/engine/
 # clinical_events.py (EVENT_RULES) for the clause-by-clause account.
 clinicalEvent:CardioRespiratoryArrest rdfs:subClassOf
   [ a owl:Restriction ; owl:onProperty mda:evidencedBy ; owl:someValuesFrom clinicalEvent:CardiacArrest ] ,

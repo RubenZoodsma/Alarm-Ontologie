@@ -1163,7 +1163,7 @@ therapeuticModality:VentilationTherapy rdfs:subClassOf
 # inherits VentilationTherapy's targetsProcess above and the therapy-
 # delivery-quality axioms scoped to VentilationTherapy (leak, malfunction,
 # disconnected circuit). Consumers that match rdf:type without reasoning
-# (MDA-POC-RDFox) must follow rdfs:subClassOf* to see it.
+# (MDA-POC) must follow rdfs:subClassOf* to see it.
 therapeuticModality:CPAP rdfs:subClassOf therapeuticModality:VentilationTherapy .
 
 therapeuticModality:ThermoRegulationTherapy rdfs:subClassOf

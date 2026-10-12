@@ -1,4 +1,4 @@
-# MDA-POC-RDFox
+# MDA-POC
 
 Proof of concept: patient-centred alarm management by reasoning over a stream of medical device alarms with the Medical Device Alarm (MDA) framework. The engine is Oxigraph, an open-source SPARQL 1.1 store, run in-process.
 
