@@ -18,14 +18,14 @@
 # ReducedPulmonaryFunction (low minute volume); "within 180 s" -> at the
 # same time; any ventilator of the patient.
 #
-# hasTherapyDeliveryQuality is not materialised in RDFox: the three
+# hasTherapyDeliveryQuality is not materialised by the engine: the three
 # inference.ttl axioms that entail it are inlined as the UNION's branches.
 # Each branch anchors on a device-scoped node reported by the active alarm
 # (?gV: the leak's analysis, the device, the component), so the therapy
 # found is that alarm's device's therapy. Structure (the analysis chain,
 # hasComponent, administers) comes from a persistent graph; any copy in the
 # store carries the same IRIs. A mode of ventilation therapy
-# (therapeuticModality:CPAP) counts as ventilation therapy: RDFox does not
+# (therapeuticModality:CPAP) counts as ventilation therapy: the engine does not
 # reason over rdfs:subClassOf here, so the therapy's type is walked up the
 # hierarchy (inference.ttl, default graph) explicitly.
 #

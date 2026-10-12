@@ -8,12 +8,12 @@ An ACTION, representation/actions/<name>.rq, is a SPARQL command with a
 {{BINDINGS}} slot (a VALUES clause) and a {{CONDITION}} slot (a rule).
 No rule logic lives in Python.
 
-The RDFox shell rejects PREFIX inside a command, so the loader strips the
-PREFIX lines, checks all files agree, and the script declares them once.
+The loader strips the PREFIX lines, checks all files agree, and the
+script declares them once (the session prepends them to each statement).
 Each command is collapsed to one line.
 
 ON DEMAND, NOT STANDING DATALOG. A rule is a query run when its result can
-change (an arrival or an end). Standing rules cost RDFox incremental
+change (an arrival or an end). Standing rules cost an engine incremental
 maintenance on every import and drop — CAT2 stalled for tens of seconds
 per alarm that way — and absence, withdrawal, lifting and events that
 outlive their evidence are not monotone Datalog anyway.
@@ -151,7 +151,7 @@ def condition(name: str) -> str:
 
 
 def compose(action: str, bindings: str, condition_file: str | None = None) -> str:
-    """One RDFox command: action template `action` with its slots filled."""
+    """One engine command: action template `action` with its slots filled."""
     text = _BODIES[ACTIONS_DIR / f"{action}.rq"].replace("{{BINDINGS}}", bindings)
     if condition_file is not None:
         text = text.replace("{{CONDITION}}", condition(condition_file))

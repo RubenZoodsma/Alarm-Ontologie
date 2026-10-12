@@ -4,7 +4,7 @@ in DATA/CAT_evaluation/events_data.csv (see that folder's README.md).
 
 Checks per patient: flagged/silenced or not, CAT3a/CAT3b episodes, exact
 event times, expected and forbidden firings; plus no lookahead (prefix
-invariance, no RDFox needed) and no rule logic in Python. Writes both logs
+invariance, no engine needed) and no rule logic in Python. Writes both logs
 to _scratch/.
 
   cd MDA-POC-RDFox/engine && python3 regression.py
@@ -28,7 +28,7 @@ from processor import Processor, run_live
 from stream import DATASET, group_by_patient, load_events
 
 SETTINGS = {
-    # Write every command sent to RDFox to _scratch/replay.rdfox (debugging).
+    # Write every command sent to the engine to _scratch/replay.* (debugging).
     "audit_logging": False,
 }
 
@@ -361,7 +361,7 @@ def script_depends_on_future(kb, groups: dict, scratch: Path) -> list:
     a run that knows only the stream up to t: arrivals after t removed,
     ends after t unknown. Any difference means something after t leaked
     into what the engine did at or before t. The whole script covers the
-    minted triples, every rule invocation and every window drop; RDFox
+    minted triples, every rule invocation and every window drop; the engine
     executes it deterministically, so the store and every decision up to t
     are identical too."""
     rule_names = list(RU.RULES)
@@ -408,7 +408,7 @@ def run():
     complete = run_live(kb, in_scope, scratch, log, stats, audit_log=SETTINGS["audit_logging"])
     log.close()
     if not complete:
-        print("*** INCOMPLETE RUN: RDFox stopped or reported errors (see above). ***")
+        print("*** INCOMPLETE RUN: the engine stopped or reported errors (see above). ***")
     summarize_invocations(stats)
     records, firings = log.records, log.firings
     for name in ("clinical_events.csv", "rule_firings.csv"):

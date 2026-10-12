@@ -59,14 +59,19 @@ SETTINGS = {
     "cat3a": True,
     "cat3b": True,
 },
-    # Patients per RDFox run; None: all in one run.
+    # Parallel worker processes (patients are independent; each gets its
+    # own Oxigraph store). 1: serial, in batches of `batch_size`.
+    "workers": 1,
+
+    # Patients per engine run when serial; None: all in one run.
     "batch_size": 1,
 
-    # Seconds RDFox may take for one stream element before the run stops.
+    # Seconds one stream element may take (kept for compatibility; the
+    # engine runs in-process).
     "element_timeout_s": 600,
 
-    # Write every command sent to RDFox, with each alarm's triples, to
-    # replay.rdfox per batch. Large (~17 KB per alarm); for debugging only.
+    # Write every command sent to the engine to replay.oxigraph per run.
+    # Large; for debugging only.
     "audit_logging": False,
 
     # The two logs (engine/event_log.py).
@@ -199,7 +204,7 @@ def run():
         if len(unresolved_counts) > len(top):
             print(f"  ... and {len(unresolved_counts) - len(top)} more distinct label(s)")
 
-    # Unknown labels mint nothing; drop them before they cost RDFox commands.
+    # Unknown labels mint nothing; drop them before they cost engine commands.
     if unresolved_counts:
         events = [e for e in events if e.label in kb.type_index]
         groups = S.group_by_patient(events)
@@ -214,9 +219,13 @@ def run():
     # Both logs are written as the run goes (engine/event_log.LiveLog).
     log = EL.LiveLog(groups, EL.alarm_index(events), SETTINGS["event_log"], SETTINGS["firing_log"])
     stats = X.RuleStats()
-    complete = P.run_batched(kb, groups, scratch, log, stats, batch_size=SETTINGS["batch_size"],
-                             enabled_rules=rule_names, timeout=SETTINGS["element_timeout_s"],
-                             audit_log=SETTINGS["audit_logging"])
+    if SETTINGS["workers"] > 1:
+        complete = P.run_parallel(groups, scratch, log, stats, SETTINGS["workers"],
+                                  enabled_rules=rule_names, audit_log=SETTINGS["audit_logging"])
+    else:
+        complete = P.run_batched(kb, groups, scratch, log, stats, batch_size=SETTINGS["batch_size"],
+                                 enabled_rules=rule_names, timeout=SETTINGS["element_timeout_s"],
+                                 audit_log=SETTINGS["audit_logging"])
     log.close()
     records, firings = log.records, log.firings
 
@@ -227,7 +236,7 @@ def run():
     X.summarize_invocations(stats)
     print(f"\nTotal wall-clock time: {time.monotonic() - t_start:.1f}s")
     if not complete:
-        print("*** INCOMPLETE RUN: RDFox stopped or reported errors (see above); results are partial. ***")
+        print("*** INCOMPLETE RUN: the engine stopped or reported errors (see above); results are partial. ***")
 
 
 if __name__ == "__main__":

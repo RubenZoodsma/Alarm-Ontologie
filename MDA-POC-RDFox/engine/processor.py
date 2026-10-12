@@ -1,6 +1,6 @@
 """
 processor.py — the query processor (RSP-QL): turns the stream into the
-RDFox commands that keep the store and the rules' results up to date.
+engine commands that keep the store and the rules' results up to date.
 
 At an instant t, in this order:
   1. windows closing at or before t: drop those persistent graphs, then
@@ -12,7 +12,7 @@ At an instant t, in this order:
      checks and store their flags and silences, then evaluate the episodes.
 
 Live, in lockstep (run_live): each stream element — an arrival, or one
-patient's ends at one instant — is minted, sent to RDFox and executed
+patient's ends at one instant — is minted, sent to Oxigraph and executed
 before the next element is taken. Nothing here reacts to a query result.
 Works on one patient's stream or on several interleaved in one store.
 """
@@ -27,8 +27,8 @@ from pathlib import Path
 import mint as M
 from actions import (check, dt, evaluate_commands, flag_insert, flag_withdraw, iri, silence_bindings,
                      silence_insert, silence_lift, values)
-from event_log import LiveLog, trace_block
-from execution import (FRAMEWORK_FILES, SCRIPT_PREAMBLE, RDFoxSession, RuleStats, _progress_bar, read_blocks,
+from event_log import LiveLog, alarm_index, trace_block
+from execution import (FRAMEWORK_FILES, SCRIPT_PREAMBLE, RuleStats, _progress_bar, make_session, read_blocks,
                        timed)
 from rules import (RULES, _alarm_functional_unit,
                    _alarm_metric_types, enabled_event_rules, kinds_supported_by_metric, relevant_kinds)
@@ -37,7 +37,7 @@ from windows import WindowOperator
 
 
 class Processor:
-    """Turns stream elements into RDFox commands (`lines`, taken by
+    """Turns stream elements into engine commands (`lines`, taken by
     take_lines) and records the CAT1/CAT2 checks it emitted (`checks`,
     removed once LiveRun has read their results)."""
 
@@ -127,7 +127,7 @@ class Processor:
 
         # Checks run between the insert's two phases, bound to this alarm
         # and this moment. One query per rule, never a UNION: each is timed
-        # on its own, and RDFox planned a cat2a/cat2b UNION ~30x slower.
+        # on its own, and the former engine (RDFox) planned a cat2a/cat2b UNION ~30x slower.
         alarm = pending["alarm"]
         now = dt(e.start)
         invocation = next(self._invocations)
@@ -181,32 +181,31 @@ def stream_units(elements: list) -> list:
     return units
 
 
-def script_header(dstore: str) -> list:
-    """Create the store, load the framework, set output format and prefixes."""
-    return ([f"dstore create {dstore}", f"active {dstore}"]
-            + [f"import {f}" for f in FRAMEWORK_FILES] + SCRIPT_PREAMBLE)
+def script_header() -> list:
+    """Load the framework into the default graph; declare the prefixes."""
+    return [f"import {f}" for f in FRAMEWORK_FILES] + SCRIPT_PREAMBLE
 
 
 class LiveRun:
-    """A live run: one Processor and one RDFox session. Each stream element
-    is minted, executed by RDFox, and its results added to `log` and
-    `stats`, before the next element is taken. Raises if RDFox cannot load
+    """A live run: one Processor and one Oxigraph store. Each stream element
+    is minted, executed, and its results added to `log` and
+    `stats`, before the next element is taken. Raises if the engine cannot load
     the framework."""
 
     def __init__(self, kb, scratch_dir: Path, rule_names, log: LiveLog, stats: RuleStats,
-                 timeout: float = 600, dstore: str = "poc", audit_log: bool = False):
+                 timeout: float = 600, audit_log: bool = False):
         self.proc = Processor(kb, scratch_dir, rule_names)
-        self.session = RDFoxSession(scratch_dir, timeout, audit_log)
+        self.session = make_session(scratch_dir, timeout, audit_log)
         self.log, self.stats = log, stats
         self.errors = 0
-        self.proc.lines += script_header(dstore)
+        self.proc.lines += script_header()
         if not self.execute("loading the framework") or self.errors:
             self.session.close()
-            raise RuntimeError(f"RDFox could not load the framework ({self.session.stopped or 'errors above'})")
+            raise RuntimeError(f"the engine could not load the framework ({self.session.stopped or 'errors above'})")
 
     def execute(self, where: str) -> bool:
-        """Send the pending commands, wait until RDFox has run them, and read
-        their results. An RDFox error is reported with `where` it happened.
+        """Send the pending commands, run them, and read their results. An
+        engine error is reported with `where` it happened.
         False once the session has stopped."""
         self.session.send(self.proc.take_lines())
         self._read(self.session.sync(), where)
@@ -216,7 +215,7 @@ class LiveRun:
         for i, line in enumerate(lines):
             if line.startswith("An error occurred") or "cannot be resolved to a file" in line:
                 self.errors += 1
-                print(f"\n  RDFox error at {where}: {' '.join(lines[i:i + 2])}")
+                print(f"\n  engine error at {where}: {' '.join(lines[i:i + 2])}")
         self.stats.add(lines)
         self.log.add(read_blocks(lines, self.proc.checks))
 
@@ -233,28 +232,27 @@ class LiveRun:
         return True
 
     def close(self) -> bool:
-        """Quit RDFox. True if the run completed without RDFox errors."""
+        """Close the store. True if the run completed without engine errors."""
         self._read(self.session.close(), "the end of the run")
         complete = self.session.stopped is None
         if complete and self.proc.checks:
             print(f"  WARNING: {len(self.proc.checks)} check(s) without a result — results are incomplete.")
             complete = False
         if self.errors:
-            print(f"  WARNING: {self.errors} RDFox error(s) during the run (reported above).")
+            print(f"  WARNING: {self.errors} engine error(s) during the run (reported above).")
         return complete and not self.errors
 
 
 def run_live(kb, patients: dict, scratch_dir: Path, log: LiveLog, stats: RuleStats, enabled_rules=None,
-             progress: bool = True, timeout: float = 600, dstore: str = "poc",
-             audit_log: bool = False) -> bool:
+             progress: bool = True, timeout: float = 600, audit_log: bool = False) -> bool:
     """Replay each patient's stream, one patient after another, through ONE
-    RDFox process and store, live (LiveRun); results go to `log` and
+    Oxigraph store, live (LiveRun); results go to `log` and
     `stats` as they happen. `enabled_rules`: rules.RULES names, or None for
-    all. `timeout`: seconds RDFox may take for one element. `audit_log`:
-    write replay.rdfox (execution.RDFoxSession). True if the run completed
-    without RDFox errors."""
+    all. `timeout`: kept for interface stability (statements run in-process).
+    `audit_log`: write replay.oxigraph. True if the run completed without
+    engine errors."""
     rule_names = list(RULES) if enabled_rules is None else list(enabled_rules)
-    run = LiveRun(kb, scratch_dir, rule_names, log, stats, timeout, dstore, audit_log)
+    run = LiveRun(kb, scratch_dir, rule_names, log, stats, timeout, audit_log)
     t0 = time.monotonic()
 
     for pi, (patient, events) in enumerate(patients.items(), start=1):
@@ -274,7 +272,7 @@ def run_live(kb, patients: dict, scratch_dir: Path, log: LiveLog, stats: RuleSta
         if progress:
             print()
         if not ok:
-            print(f"  *** RDFox {run.session.stopped} during patient {patient}: the run stops here; "
+            print(f"  *** engine {run.session.stopped} during patient {patient}: the run stops here; "
                   f"results are partial. ***")
             break
 
@@ -285,9 +283,9 @@ def run_batched(kb, patients: dict, scratch_root: Path, log: LiveLog, stats: Rul
                 batch_size: "int | None" = None, enabled_rules=None, progress: bool = True,
                 timeout: float = 600, audit_log: bool = False) -> bool:
     """Run `patients` in batches of `batch_size` (None: one batch), each its
-    own live run (run_live) and RDFox process, sharing `log` and `stats`.
+    own live run (run_live) and Oxigraph store, sharing `log` and `stats`.
     A batch that stops is reported and the next batch still runs. True if
-    every batch completed without RDFox errors."""
+    every batch completed without engine errors."""
     items = list(patients.items())
     size = batch_size if batch_size else len(items)
     num_batches = -(-len(items) // size) if items else 0  # ceil div
@@ -303,4 +301,67 @@ def run_batched(kb, patients: dict, scratch_root: Path, log: LiveLog, stats: Rul
         batch_scratch.mkdir(parents=True)
         complete &= run_live(kb, batch, batch_scratch, log, stats, enabled_rules=enabled_rules,
                              progress=progress, timeout=timeout, audit_log=audit_log)
+    return complete
+
+
+# --------------------------------------------------------------------
+# Parallel runs: patients are independent, so they can be replayed in
+# separate processes, each with its own stores. Results are written in the
+# input order of the patients, so the logs match a serial run.
+# --------------------------------------------------------------------
+
+_WORKER: dict = {}
+
+
+def _worker_init(enabled_rules, scratch_root: str, audit_log: bool) -> None:
+    """Load the knowledge base once per worker process."""
+    _WORKER.update(kb=M.load_kb(), rules=enabled_rules, root=Path(scratch_root), audit=audit_log)
+
+
+def _worker_patient(item) -> tuple:
+    """Replay one patient; return (index, records, firings, rule stats, complete)."""
+    from execution import RuleStats as _RuleStats
+    index, patient, events = item
+    scratch = _WORKER["root"] / f"patient_{index:05d}"
+    if scratch.exists():
+        shutil.rmtree(scratch)
+    scratch.mkdir(parents=True)
+    log = LiveLog({patient: events}, alarm_index(events))
+    stats = _RuleStats()
+    ok = run_live(_WORKER["kb"], {patient: events}, scratch, log, stats,
+                  enabled_rules=_WORKER["rules"], progress=False, audit_log=_WORKER["audit"])
+    log.close()
+    if not _WORKER["audit"]:
+        shutil.rmtree(scratch, ignore_errors=True)
+    return index, log.records, log.firings, stats, ok
+
+
+def run_parallel(patients: dict, scratch_root: Path, log: LiveLog, stats: RuleStats, workers: int,
+                 enabled_rules=None, progress: bool = True, audit_log: bool = False) -> bool:
+    """Replay `patients`, one task per patient, over `workers` processes.
+    Each worker loads the knowledge base once; each patient gets its own
+    store. Records and firings are written to `log` in the input order of
+    the patients; rule statistics are merged into `stats`. True if every
+    patient completed without engine errors."""
+    from concurrent.futures import ProcessPoolExecutor, as_completed
+    rule_names = list(RULES) if enabled_rules is None else list(enabled_rules)
+    items = [(i, p, evs) for i, (p, evs) in enumerate(patients.items())]
+    results: dict = {}
+    complete, t0 = True, time.monotonic()
+    with ProcessPoolExecutor(max_workers=workers, initializer=_worker_init,
+                             initargs=(rule_names, str(scratch_root), audit_log)) as pool:
+        futures = [pool.submit(_worker_patient, item) for item in items]
+        for done, future in enumerate(as_completed(futures), start=1):
+            index, records, firings, worker_stats, ok = future.result()
+            results[index] = (records, firings)
+            stats.merge(worker_stats)
+            complete &= ok
+            if progress:
+                print(f"\r  {_progress_bar(done, len(items))} {done}/{len(items)} patients "
+                      f"[{time.monotonic() - t0:7.1f}s]", end="", flush=True)
+    if progress:
+        print()
+    for index in range(len(items)):
+        records, firings = results[index]
+        log.extend(records, firings)
     return complete
