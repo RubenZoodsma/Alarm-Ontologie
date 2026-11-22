@@ -1,0 +1,8 @@
+# silence_readback.rq — after a CAT2 insert: the links that rule just stored
+# in the arriving alarm's own transient graph, for the firing log. Rows: the
+# arriving alarm and the alarm justifying its silence (the witness). Run
+# unconditionally right after the insert, at the same instant, so the
+# command script stays independent of query results.
+# Slots: {{BINDINGS}} ?alarm ?tgraph ?ruleLink.
+
+select distinct ?alarm ?witness where { {{BINDINGS}} GRAPH ?tgraph { ?alarm ?ruleLink ?witness } }

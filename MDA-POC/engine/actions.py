@@ -100,11 +100,28 @@ def silence_bindings(rule: str, alarm: str, now: str, incoming_prio=None) -> str
 def silence_insert(rule: str, alarm: str, tgraph: str, now: str, incoming_prio=None) -> str:
     """Store `rule`'s (cat2a or cat2b) silence on `alarm`: one silencedBy
     link per active alarm justifying it."""
+    link = rule_link(rule)
     if rule == "cat2a":
-        bindings = values(alarm=iri(alarm), now=now, incomingPrio=_incoming_prio(incoming_prio), tgraph=tgraph)
+        bindings = values(alarm=iri(alarm), now=now, incomingPrio=_incoming_prio(incoming_prio), tgraph=tgraph,
+                          ruleLink=link)
     else:
-        bindings = values(alarm=iri(alarm), now=now, tgraph=tgraph)
+        bindings = values(alarm=iri(alarm), now=now, tgraph=tgraph, ruleLink=link)
     return compose("silence_insert", bindings, RULES[rule].condition)
+
+
+MDAPOC = "https://w3id.org/mda/poc#"
+
+
+def rule_link(rule: str) -> str:
+    """The sub-property of mdapoc:silencedBy a CAT2 rule stores its links
+    under (data/mdapoc.ttl)."""
+    return iri(f"{MDAPOC}silencedBy{rule[0].upper()}{rule[1:]}")
+
+
+def silence_readback(rule: str, alarm: str, tgraph: str) -> str:
+    """The links `rule` just stored on `alarm` (for the firing log): the
+    CAT2 condition is evaluated once, by silence_insert."""
+    return compose("silence_readback", values(alarm=iri(alarm), tgraph=tgraph, ruleLink=rule_link(rule)))
 
 
 def silence_lift(ended_alarm: str, when: datetime) -> tuple:

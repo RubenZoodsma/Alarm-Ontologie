@@ -34,3 +34,19 @@ mdapoc:silencedBy a owl:ObjectProperty ;
     rdfs:comment        "The subject alarm is silenced because the object alarm, active when the subject arrived, carries overlapping or redundant information (CAT2a, CAT2b). One link per justifying alarm; the silence lasts while at least one link remains."@en ;
     rdfs:domain         mda:Alarm ;
     rdfs:range          mda:Alarm .
+
+# Which rule stored a silencedBy link: written with it (silence_insert.rq)
+# and read back once for the firing log (silence_readback.rq), so each CAT2
+# condition is evaluated once per arrival. No rule reads them; lifting reads
+# mdapoc:silencedBy.
+mdapoc:silencedByCat2a a owl:ObjectProperty ;
+    rdfs:subPropertyOf  mdapoc:silencedBy ;
+    rdfs:label          "silenced by (rule 2a)"@en ;
+    rdfs:domain         mda:Alarm ;
+    rdfs:range          mda:Alarm .
+
+mdapoc:silencedByCat2b a owl:ObjectProperty ;
+    rdfs:subPropertyOf  mdapoc:silencedBy ;
+    rdfs:label          "silenced by (rule 2b)"@en ;
+    rdfs:domain         mda:Alarm ;
+    rdfs:range          mda:Alarm .

@@ -26,7 +26,7 @@ from pathlib import Path
 
 import mint as M
 from actions import (check, dt, evaluate_commands, flag_insert, flag_withdraw, iri, silence_bindings,
-                     silence_insert, silence_lift, values)
+                     silence_insert, silence_lift, silence_readback, values)
 from event_log import LiveLog, alarm_index, trace_block
 from execution import (FRAMEWORK_FILES, SCRIPT_PREAMBLE, RuleStats, _progress_bar, make_session, read_blocks,
                        timed)
@@ -151,13 +151,16 @@ class Processor:
                                 [*trace_block(f"withdraw {patient} {e.start.isoformat()}", select), delete])
             withdraw_kinds = kinds_supported_by_metric("HeartRate", self.event_rules)
 
+        # CAT2: the condition is evaluated once, by the insert; the links it
+        # stored are then read back for the firing log (always, so the
+        # script does not depend on the result).
         prio = pending["incoming_prio"]
         for name in self.silence_rules:
             number = next(self._check_numbers)
             self.lines += timed(name, invocation,
-                                [*trace_block(f"check {number}",
-                                              check(name, silence_bindings(name, alarm, now, prio))),
-                                 silence_insert(name, alarm, pending["tgraph"], now, prio)])
+                                [silence_insert(name, alarm, pending["tgraph"], now, prio),
+                                 *trace_block(f"check {number}",
+                                              silence_readback(name, alarm, pending["tgraph"]))])
             self.checks[number] = (patient, e.start, "silencedBy", name, ei)
 
         self.lines += WindowOperator.complete(pending)

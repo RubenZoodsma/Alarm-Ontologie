@@ -4,5 +4,7 @@
 
 PREFIX mdapoc: <https://w3id.org/mda/poc#>
 
-DELETE { GRAPH ?gS { ?silenced mdapoc:silencedBy ?ended } }
+DELETE { GRAPH ?gS { ?silenced mdapoc:silencedBy ?ended .
+                      ?silenced mdapoc:silencedByCat2a ?ended .
+                      ?silenced mdapoc:silencedByCat2b ?ended } }
 WHERE { {{BINDINGS}} GRAPH ?gS { ?silenced mdapoc:silencedBy ?ended } }
