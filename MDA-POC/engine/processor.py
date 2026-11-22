@@ -319,6 +319,11 @@ def run_batched(kb, patients: dict, scratch_root: Path, log: LiveLog, stats: Rul
 _WORKER: dict = {}
 
 
+def _hms(seconds: float) -> str:
+    s = int(seconds)
+    return f"{s // 3600}:{s % 3600 // 60:02d}:{s % 60:02d}"
+
+
 def _worker_init(enabled_rules, scratch_root: str, audit_log: bool, window) -> None:
     """Load the knowledge base once per worker process."""
     _WORKER.update(kb=M.load_kb(window), rules=enabled_rules, root=Path(scratch_root), audit=audit_log)
@@ -362,16 +367,24 @@ def run_parallel(patients: dict, scratch_root: Path, log: LiveLog, stats: RuleSt
     with ProcessPoolExecutor(max_workers=workers, initializer=_worker_init,
                              initargs=(rule_names, str(scratch_root), audit_log, window)) as pool:
         futures = [pool.submit(_worker_patient, item) for item in items]
+        total_alarms = sum(len(evs) for _, _, evs in items)
+        size_of = {i: len(evs) for i, _, evs in items}
+        alarms_done = 0
         for done, future in enumerate(as_completed(futures), start=1):
             index, records, firings, worker_stats, ok = future.result()
             results[index] = (records, firings)
             stats.merge(worker_stats)
             complete &= ok
+            alarms_done += size_of[index]
             if progress:
-                print(f"\r  {_progress_bar(done, len(items))} {done}/{len(items)} patients "
-                      f"[{time.monotonic() - t0:7.1f}s]", end="", flush=True)
-    if progress:
-        print()
+                elapsed = time.monotonic() - t0
+                rate = alarms_done / elapsed if elapsed > 0 else 0.0
+                eta = (total_alarms - alarms_done) / rate if rate > 0 else 0.0
+                line = (f"  {_progress_bar(alarms_done, total_alarms)} {done}/{len(items)} patients, "
+                        f"{alarms_done:,}/{total_alarms:,} alarms, {rate:,.0f} alarms/s, "
+                        f"elapsed {_hms(elapsed)}, remaining ~{_hms(eta)}")
+                # in place on a terminal; a kept line every 10 patients for logs
+                print("\r" + line, end="\n" if done % 10 == 0 or done == len(items) else "", flush=True)
     for index in range(len(items)):
         records, firings = results[index]
         log.extend(records, firings)

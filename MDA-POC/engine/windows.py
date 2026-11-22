@@ -10,7 +10,10 @@ metadata, so no query can see an alarm's future. An alarm's graphs hold
 only what it reported, and no other alarm edits them: a shared node (a
 sensor, a metric) carries one state per alarm reporting it.
 
-Insert: a TriG file via `import`. Drop: `DELETE WHERE { GRAPH <g> {...} }`.
+Insert: a TriG file via `import`. Drop: `DROP SILENT GRAPH <g>`, which
+removes the graph itself: emptying it (DELETE WHERE) would leave its name in
+the store, and the names of every expired graph would pile up over a stay
+and slow every GRAPH ?g pattern (validation/accumulation_probe.py).
 """
 
 from __future__ import annotations
@@ -132,7 +135,7 @@ class WindowOperator:
         alarm = self.open.pop(end.alarm_id)
         self.expiries.append((end.time + self.kb.window, next(self._seq), alarm))
         commands = [f"# end: {alarm.label} @ {alarm.device_id} {end.time.isoformat()}",
-                    f"DELETE WHERE {{ GRAPH {alarm.tgraph} {{ ?s ?p ?o }} }}"]
+                    f"DROP SILENT GRAPH {alarm.tgraph}"]
         return commands, alarm
 
     def due(self, up_to: datetime | None = None) -> list:
@@ -152,7 +155,7 @@ class WindowOperator:
     def expire(alarm: OpenAlarm) -> list:
         """Drop the alarm's persistent graph: its window closed."""
         return [f"# window-expiry: {alarm.label} @ {alarm.device_id}",
-                f"DELETE WHERE {{ GRAPH {alarm.pgraph} {{ ?s ?p ?o }} }}"]
+                f"DROP SILENT GRAPH {alarm.pgraph}"]
 
 
 def alarms_with_context(events: list, window) -> set:

@@ -21,6 +21,7 @@ pattern outside GRAPH sees only the framework.
 
 from __future__ import annotations
 
+import os
 import time
 from pathlib import Path
 
@@ -43,6 +44,17 @@ def _term(t) -> str:
     return f'"{value}"'
 
 
+# Oxigraph's in-memory store keeps every deleted quad (its transaction
+# history) and never reclaims it, so query time grows with every quad ever
+# inserted, not with what the store holds: over a long stay (tens of
+# thousands of alarms, each inserting and later dropping its graphs) a
+# query became ~6x slower (validation/accumulation_probe.py). Every
+# REBUILD_EVERY syncs the live quads are copied into a fresh store; the
+# rules see exactly the same quads before and after.
+# MDA_REBUILD_EVERY overrides it (tests force a rebuild every few syncs).
+REBUILD_EVERY = int(os.environ.get("MDA_REBUILD_EVERY", "500"))
+
+
 class OxigraphSession:
     """One in-memory Oxigraph store for a whole run. send() queues a stream
     element's commands; sync() executes them and returns their output.
@@ -54,6 +66,8 @@ class OxigraphSession:
         self.timeout = timeout          # kept for interface parity; statements run in-process
         self.stopped: str | None = None
         self._store = ox.Store()
+        self._syncs = 0
+        self.rebuilds = 0
         self._prefixes: list = []
         self._pending: list = []
         self._log = (scratch / "replay.oxigraph").open("w", encoding="utf-8") if audit_log else None
@@ -115,7 +129,19 @@ class OxigraphSession:
                 out.append(stripped[:200])
         if self.stopped == "quit":
             self.stopped = None
+        self._syncs += 1
+        if REBUILD_EVERY and self._syncs % REBUILD_EVERY == 0:
+            self._rebuild()
         return out
+
+    def _rebuild(self) -> None:
+        """Replace the store by a fresh one holding the same quads (the
+        default graph and every non-empty named graph), dropping the
+        deleted-quad history."""
+        fresh = ox.Store()
+        fresh.extend(self._store.quads_for_pattern(None, None, None, None))
+        self._store = fresh
+        self.rebuilds += 1
 
     def close(self) -> list:
         out = self.sync()

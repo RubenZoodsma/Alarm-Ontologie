@@ -47,7 +47,12 @@ SETTINGS = {
     "dataset_cache": None,
 
     # "all" (or None), or a number of randomly sampled patients.
-    "n_patients": 5,
+    "n_patients": 25,
+
+    # Leave out patients with more alarms than this before sampling (None:
+    # keep all). A selection on stay length only, for quick runs; the
+    # replay itself is unchanged. Must be None for the manuscript run.
+    "max_alarms_per_patient": 20000,
 
     # Seed of the patient sample.
     "seed": 42,
@@ -73,7 +78,7 @@ SETTINGS = {
 
     # Parallel worker processes (patients are independent; each gets its
     # own Oxigraph store). 1: serial, in batches of `batch_size`.
-    "workers": 1,
+    "workers": 8,
 
     # Patients per engine run when serial; None: all in one run.
     "batch_size": 1,
@@ -115,7 +120,11 @@ def resolve_dataset(path: Path) -> Path:
 
     cache = SETTINGS["dataset_cache"] or ROOT.parent / "DATA" / "POC_EVENTS" / f"{path.stem}.csv"
     if not path.exists():
-        raise FileNotFoundError(f"{path} not found (is the research share mounted?)")
+        if cache.exists():
+            print(f"WARNING: {path} not found (research share not mounted?); using the cached conversion "
+                  f"{cache.name} without checking it against the source.")
+            return cache
+        raise FileNotFoundError(f"{path} not found (is the research share mounted?), and no cached conversion")
     if cache.exists() and cache.stat().st_mtime >= path.stat().st_mtime:
         print(f"Using cached CSV conversion: {cache.name} "
               f"(delete it, or touch {path.name}, to force reconversion)")
@@ -252,9 +261,15 @@ def run():
     dataset = resolve_dataset(SETTINGS["dataset"])
 
     t = time.monotonic()
-    all_ids = S.scan_patient_ids(dataset)
+    counts = S.scan_patient_counts(dataset)
+    all_ids = sorted(counts)
     print(f"[{time.monotonic() - t_start:7.1f}s] scanned {len(all_ids)} patient ID(s) "
           f"in {dataset.name} ({time.monotonic() - t:.1f}s)")
+    if SETTINGS["max_alarms_per_patient"]:
+        cap = SETTINGS["max_alarms_per_patient"]
+        all_ids = [p for p in all_ids if counts[p] <= cap]
+        print(f"-- max_alarms_per_patient={cap}: {len(all_ids)}/{len(counts)} patient(s) eligible "
+              f"(a quick-run selection, not for the manuscript run)")
     chosen_ids = choose_patient_ids(all_ids, SETTINGS["n_patients"], SETTINGS["seed"])
     size = SETTINGS["chunk_size"] or len(chosen_ids)
     chunks = [chosen_ids[i:i + size] for i in range(0, len(chosen_ids), size)]
@@ -266,6 +281,7 @@ def run():
     identity = {
         "dataset": str(dataset), "patients": sorted(chosen_ids),
         "n_patients": SETTINGS["n_patients"], "seed": SETTINGS["seed"],
+        "max_alarms_per_patient": SETTINGS["max_alarms_per_patient"],
         "enabled_rules": rule_names, "post_alarm_validity": str(kb.window),
         "chunk_size": size, **provenance(),
     }

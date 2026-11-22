@@ -135,6 +135,14 @@ def silence_lift(ended_alarm: str, when: datetime) -> tuple:
 # Episodes: clinical events and CAT3
 # --------------------------------------------------------------------
 
+def events_graph(patient_id: str, kind: str) -> str:
+    """The graph holding this patient's events of `kind`: one per patient
+    and kind, not one per event, so ended events leave no graph names
+    behind (a removed event's triples go, its graph stays for the next).
+    At most one event per patient and kind is open (episode_start.rq)."""
+    return iri(f"{M.patient_iri(patient_id)}#events-{kind}")
+
+
 def evaluate_commands(kinds: set, rules: list, patient_id: str, now: datetime, invocation: int) -> list:
     """Engine script lines that bring this patient's events of `kinds` up to
     date at logical time `now`. `invocation` numbers this evaluation: it
@@ -158,7 +166,7 @@ def evaluate_commands(kinds: set, rules: list, patient_id: str, now: datetime, i
         rule = RULE_BY_KIND[kind]
         event = M.event_iri(kind, patient_id, now, invocation)
         start = values(patient=patient, now=dt(now), kind=iri(CLINICAL_EVENT + kind),
-                       event=iri(event), eventGraph=iri(f"{event}#event"))
+                       event=iri(event), eventGraph=events_graph(patient_id, kind))
         lines += timed(rule.name, invocation,
                        [compose("episode_extend", state(kind), rule.condition),
                         compose("episode_start", start, rule.condition),

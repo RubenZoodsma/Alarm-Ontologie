@@ -108,6 +108,13 @@ def partition_by_patient(path: Path, chunks: list, out_dir: Path) -> list:
     return paths
 
 
+def scan_patient_counts(path: Path) -> dict:
+    """{patientID: number of alarms}, reading only that column (pandas)."""
+    import pandas as pd
+    ids = pd.read_csv(path, sep=";", usecols=["patientID"], dtype=str)
+    return ids["patientID"].value_counts().to_dict()
+
+
 def scan_patient_ids(path: Path) -> list:
     """Every distinct patientID, reading only that column (pandas; ~7 s on
     the full corpus)."""

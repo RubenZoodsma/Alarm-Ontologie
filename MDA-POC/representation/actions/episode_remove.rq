@@ -1,8 +1,9 @@
-# episode_remove.rq — remove the ended events of ?patient (their whole
-# named graph): the store holds only current belief.
+# episode_remove.rq — remove the ended events of ?patient (every triple of
+# the event; its graph, one per patient and kind, stays for the next event of
+# that kind): the store holds only current belief.
 # Slots: {{BINDINGS}} ?patient.
 
 PREFIX mda: <https://w3id.org/mda/ontology#>
 
-DELETE { GRAPH ?eg { ?s ?p ?o } }
-WHERE { {{BINDINGS}} GRAPH ?eg { ?ev mda:concernsPatient ?patient . ?ev mda:hasEnd ?end . ?s ?p ?o . } }
+DELETE { GRAPH ?eg { ?ev ?p ?o } }
+WHERE { {{BINDINGS}} GRAPH ?eg { ?ev mda:concernsPatient ?patient . ?ev mda:hasEnd ?end . ?ev ?p ?o . } }
