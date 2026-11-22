@@ -118,12 +118,16 @@ class RuleStats:
     def add_arrival(self, patient: str, seconds: float) -> None:
         self.arrival_ms.setdefault(patient, Counter())[round(1000 * seconds, 1)] += 1
 
-    def write_arrival_times(self, path) -> None:
-        """patient;ms;alarms — the processing-time histogram per patient."""
+    def write_arrival_times(self, path, append: bool = False) -> None:
+        """patient;ms;alarms — the processing-time histogram per patient.
+        `append`: add to an existing file (a chunked or resumed run)."""
         import csv
-        with open(path, "w", newline="", encoding="utf-8") as f:
+        from pathlib import Path
+        fresh = not append or not Path(path).exists() or Path(path).stat().st_size == 0
+        with open(path, "a" if append else "w", newline="", encoding="utf-8") as f:
             w = csv.writer(f, delimiter=";")
-            w.writerow(["patient", "ms", "alarms"])
+            if fresh:
+                w.writerow(["patient", "ms", "alarms"])
             for patient, ms in self.arrival_ms.items():
                 w.writerows([patient, v, n] for v, n in sorted(ms.items()))
 

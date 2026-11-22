@@ -71,6 +71,43 @@ def group_by_patient(events: list) -> dict:
     return groups
 
 
+def partition_by_patient(path: Path, chunks: list, out_dir: Path) -> list:
+    """Split `path` into one file per chunk of patient ids (`chunks`: lists
+    of ids), in ONE streaming pass, so a run over the full corpus never
+    holds more than one chunk in memory. Each file keeps the header, the
+    rows of its patients in input order (the stream's order at one instant
+    depends on it), and their ALARM_IDs: the `alarm_id` column, else the
+    1-based data-row number over the whole file, as load_events assigns it.
+    Splits the input only; nothing is computed from it. Returns the paths,
+    one per chunk."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    chunk_of = {pid: k for k, ids in enumerate(chunks) for pid in ids}
+    paths = [out_dir / f"chunk_{k:05d}.csv" for k in range(len(chunks))]
+    files = [p.open("w", newline="", encoding="utf-8") for p in paths]
+    try:
+        writers = [csv.writer(f, delimiter=";") for f in files]
+        with path.open(encoding="utf-8", newline="") as f:
+            reader = csv.reader(f, delimiter=";")
+            header = next(reader)
+            has_id = "alarm_id" in header
+            out_header = header if has_id else header + ["alarm_id"]
+            for w in writers:
+                w.writerow(out_header)
+            pcol = header.index("patientID")
+            number = 0
+            for row in reader:
+                if not row:
+                    continue
+                number += 1
+                k = chunk_of.get(row[pcol])
+                if k is not None:
+                    writers[k].writerow(row if has_id else row + [str(number)])
+    finally:
+        for f in files:
+            f.close()
+    return paths
+
+
 def scan_patient_ids(path: Path) -> list:
     """Every distinct patientID, reading only that column (pandas; ~7 s on
     the full corpus)."""

@@ -350,6 +350,10 @@ def run_parallel(patients: dict, scratch_root: Path, log: LiveLog, stats: RuleSt
     from concurrent.futures import ProcessPoolExecutor, as_completed
     rule_names = list(RULES) if enabled_rules is None else list(enabled_rules)
     items = [(i, p, evs) for i, (p, evs) in enumerate(patients.items())]
+    # Largest patients first, so one long stay does not run alone at the
+    # end. Scheduling only: each patient is still replayed on its own, and
+    # the logs are written in input order below.
+    items.sort(key=lambda item: -len(item[2]))
     results: dict = {}
     complete, t0 = True, time.monotonic()
     with ProcessPoolExecutor(max_workers=workers, initializer=_worker_init,

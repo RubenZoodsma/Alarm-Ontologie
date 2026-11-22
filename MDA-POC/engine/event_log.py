@@ -83,8 +83,12 @@ def alarm_index(events) -> dict:
 
 
 def _describe(alarm_iris, alarms: dict) -> tuple:
-    """(labels joined with " + ", ids joined with " "), ordered by start."""
-    known = sorted((alarms[a] for a in alarm_iris if a in alarms), key=lambda e: (e.start, e.label))
+    """(labels joined with " + ", ids joined with " "), ordered by start,
+    label and ALARM_ID: the id breaks ties between identical alarms at one
+    instant, so the log does not depend on set order (which varies between
+    processes)."""
+    known = sorted((alarms[a] for a in alarm_iris if a in alarms),
+                   key=lambda e: (e.start, e.label, e.alarm_id))
     ids = [str(M.alarm_iri(e)).rsplit("/", 1)[-1] for e in known]
     return " + ".join(e.label for e in known), " ".join(ids)
 
@@ -153,23 +157,27 @@ class LiveLog:
     `alarms`: {alarm IRI: Event} (alarm_index), to write labels and ids."""
 
     def __init__(self, patients, alarms: dict, event_path: Path | None = None,
-                 firing_path: Path | None = None):
+                 firing_path: Path | None = None, append: bool = False):
         self._original = {M._clean(p): p for p in patients}
         self._alarms = alarms
         self._supports: dict = {}   # active event -> its supports so far
         self.records: list = []     # EventRecord, in the order events end
         self.firings: list = []     # FiringRecord, in the order they fire
-        self._event_file, self._event_csv = self._open(event_path, EVENT_LOG_HEADER)
-        self._firing_file, self._firing_csv = self._open(firing_path, FIRING_LOG_HEADER)
+        self._event_file, self._event_csv = self._open(event_path, EVENT_LOG_HEADER, append)
+        self._firing_file, self._firing_csv = self._open(firing_path, FIRING_LOG_HEADER, append)
 
     @staticmethod
-    def _open(path: Path | None, header: list) -> tuple:
+    def _open(path: Path | None, header: list, append: bool = False) -> tuple:
+        """`append`: continue an existing log (a chunked or resumed run);
+        the header is written only to a new or empty file."""
         if path is None:
             return None, None
         path.parent.mkdir(parents=True, exist_ok=True)
-        f = path.open("w", newline="", encoding="utf-8")
+        fresh = not append or not path.exists() or path.stat().st_size == 0
+        f = path.open("w" if not append else "a", newline="", encoding="utf-8")
         writer = csv.writer(f, delimiter=";")
-        writer.writerow(header)
+        if fresh:
+            writer.writerow(header)
         return f, writer
 
     def add(self, blocks: list) -> None:

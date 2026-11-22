@@ -72,6 +72,17 @@ SETTINGS = {
     # Patients per engine run when serial; None: all in one run.
     "batch_size": 1,
 
+    # Patients per chunk: the dataset is split once into chunk files and
+    # processed chunk by chunk, so memory holds one chunk (about 2.7 KB per
+    # alarm), and the logs are appended after each chunk. None: one chunk.
+    "chunk_size": 100,
+
+    # Continue an interrupted run: the chunks recorded as done in the run
+    # manifest are skipped, the logs cut back to their size after the last
+    # completed chunk. Refused when the manifest's settings, commit or
+    # framework files differ from this run's.
+    "resume": False,
+
     # Seconds one stream element may take (kept for compatibility; the
     # engine runs in-process).
     "element_timeout_s": 600,
@@ -131,17 +142,14 @@ def _pct(part: int, whole: int) -> float:
     return 100.0 * part / whole if whole else 0.0
 
 
-def report(kb, patients: dict, rule_names: list, firings: list, records: list) -> None:
-    """Per patient and in total: flagged, silenced, episodes per kind, the
-    share of alarms CAT1 or CAT2 managed, the share that arrived with
-    context (another alarm of the patient still in the store), and the
-    managed share of those."""
+def report(kb, patients: dict, rule_names: list, firings: list, records: list, totals: Counter) -> None:
+    """Per patient: flagged, silenced, episodes per kind, the share of
+    alarms CAT1 or CAT2 managed, the share that arrived with context
+    (another alarm of the patient still in the store), and the managed
+    share of those. Adds the patient's counts to `totals` (print_totals)."""
     event_kinds = [r.kind for r in RU.enabled_event_rules(rule_names)]
     episodes = {kind: EL.episodes_by_patient(records, kind) for kind in event_kinds}
-    total_flagged = total_silenced = total_managed = total_alarms = 0
-    total_context = total_managed_in_context = 0
     with_context = W.alarms_with_context([e for evs in patients.values() for e in evs], kb.window)
-    total_events = {kind: 0 for kind in event_kinds}
     # From the firing log, so withdrawn flags and lifted silences don't count.
     flagged = EL.flagged_alarms(firings)
     silenced = EL.silenced_alarms(firings)
@@ -153,40 +161,70 @@ def report(kb, patients: dict, rule_names: list, firings: list, records: list) -
         # Distinct alarms flagged or silenced, over the alarms with a known label.
         n_managed = len(fired_flag | fired_silence)
         n_alarms = len(patients[patient])
-        pct_managed = 100.0 * n_managed / n_alarms if n_alarms else 0.0
         context = {str(M.alarm_iri(e)) for e in patients[patient]} & with_context
         n_context = len(context)
         n_managed_in_context = len((fired_flag | fired_silence) & context)
-        total_flagged += n_flag
-        total_silenced += n_silence
-        total_managed += n_managed
-        total_alarms += n_alarms
-        total_context += n_context
-        total_managed_in_context += n_managed_in_context
+        totals.update(flagged=n_flag, silenced=n_silence, managed=n_managed, alarms=n_alarms,
+                      context=n_context, managed_in_context=n_managed_in_context, patients=1)
         parts = [f"flaggedLikelyFalsePositive={n_flag}", f"silencedBy={n_silence}"]
         for kind in event_kinds:
             n = episodes[kind].get(patient, 0)
-            total_events[kind] += n
+            totals["event:" + kind] += n
             parts.append(f"{kind}={n}")
-        parts.append(f"cat1+cat2 hit rate={n_managed}/{n_alarms} ({pct_managed:.1f}%)")
+        parts.append(f"cat1+cat2 hit rate={n_managed}/{n_alarms} ({_pct(n_managed, n_alarms):.1f}%)")
         parts.append(f"with context={n_context}/{n_alarms} ({_pct(n_context, n_alarms):.1f}%)")
         parts.append(f"cat1+cat2 hit rate with context={n_managed_in_context}/{n_context} "
                      f"({_pct(n_managed_in_context, n_context):.1f}%)")
         print(f"  {patient}: {', '.join(parts)}")
-    total_pct = 100.0 * total_managed / total_alarms if total_alarms else 0.0
-    print(f"\nTotals across {len(patients)} patient(s): "
-          f"flaggedLikelyFalsePositive={total_flagged}, silencedBy={total_silenced}"
-          + "".join(f", {kind}={n}" for kind, n in total_events.items())
-          + f", cat1+cat2 hit rate={total_managed}/{total_alarms} ({total_pct:.1f}%)"
-          + f", with context={total_context}/{total_alarms} ({_pct(total_context, total_alarms):.1f}%)"
-          + f", cat1+cat2 hit rate with context={total_managed_in_context}/{total_context} "
-            f"({_pct(total_managed_in_context, total_context):.1f}%)")
+
+
+def print_totals(totals: Counter, rule_names: list) -> None:
+    event_kinds = [r.kind for r in RU.enabled_event_rules(rule_names)]
+    t = totals
+    print(f"\nTotals across {t['patients']} patient(s) (this session): "
+          f"flaggedLikelyFalsePositive={t['flagged']}, silencedBy={t['silenced']}"
+          + "".join(f", {kind}={t['event:' + kind]}" for kind in event_kinds)
+          + f", cat1+cat2 hit rate={t['managed']}/{t['alarms']} ({_pct(t['managed'], t['alarms']):.1f}%)"
+          + f", with context={t['context']}/{t['alarms']} ({_pct(t['context'], t['alarms']):.1f}%)"
+          + f", cat1+cat2 hit rate with context={t['managed_in_context']}/{t['context']} "
+            f"({_pct(t['managed_in_context'], t['context']):.1f}%)")
     print("  with context: another alarm of the patient was still in the store at arrival — active,\n"
           "  or within the post-alarm window after its end; without it CAT1/CAT2 have nothing to compare to.")
 
 
+def provenance() -> dict:
+    """The commit and a hash of the framework files the engine reads, so a
+    run (and a resumed run) can be tied to exactly what produced it."""
+    import hashlib
+    try:
+        commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True,
+                                text=True).stdout.strip()
+        dirty = bool(subprocess.run(["git", "status", "--porcelain", "--untracked-files=no", "--", "."],
+                                    cwd=ROOT, capture_output=True, text=True).stdout.strip())
+    except OSError:
+        commit, dirty = "", True
+    h = hashlib.sha256()
+    for path in sorted((ROOT / "data").glob("*.ttl")) + sorted((ROOT / "representation").rglob("*.rq")):
+        h.update(path.name.encode())
+        h.update(path.read_bytes())
+    return {"commit": commit, "uncommitted_changes": dirty, "framework_sha256": h.hexdigest()}
+
+
+def _write_manifest(path: Path, manifest: dict) -> None:
+    """Atomically: a crash never leaves a half-written manifest."""
+    import json
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(manifest, indent=1))
+    tmp.replace(path)
+
+
+LOG_KEYS = ("event_log", "firing_log", "arrival_times")
+
+
 def run():
-    """Load, sample, replay, write both logs, report."""
+    """Load, sample, split into chunks, replay chunk by chunk (appending
+    both logs), report."""
+    import json
     t_start = time.monotonic()
 
     unknown = set(SETTINGS["enabled_rules"]) - set(RU.RULES)
@@ -209,24 +247,103 @@ def run():
     all_ids = S.scan_patient_ids(dataset)
     print(f"[{time.monotonic() - t_start:7.1f}s] scanned {len(all_ids)} patient ID(s) "
           f"in {dataset.name} ({time.monotonic() - t:.1f}s)")
-
     chosen_ids = choose_patient_ids(all_ids, SETTINGS["n_patients"], SETTINGS["seed"])
-    t = time.monotonic()
-    events = S.load_events_for_patients(dataset, set(chosen_ids))
-    groups = S.group_by_patient(events)
-    print(f"[{time.monotonic() - t_start:7.1f}s] loaded {len(events)} alarm(s) for "
-          f"{len(groups)} patient(s) ({time.monotonic() - t:.1f}s)")
-    print(f"-- Patients: {len(groups)}/{len(all_ids)} ")
+    size = SETTINGS["chunk_size"] or len(chosen_ids)
+    chunks = [chosen_ids[i:i + size] for i in range(0, len(chosen_ids), size)]
 
-    # Coverage: the share of alarms with a blueprint (device model + label +
-    # priority). A gap is reported with its full identity.
+    scratch = ROOT / "_scratch"
+    chunk_dir = scratch / "chunks"
+    manifest_path = SETTINGS["run_manifest"]
+    # What must match for a resumed run to continue this one.
+    identity = {
+        "dataset": str(dataset), "patients": sorted(chosen_ids),
+        "n_patients": SETTINGS["n_patients"], "seed": SETTINGS["seed"],
+        "enabled_rules": rule_names, "post_alarm_validity": str(kb.window),
+        "chunk_size": size, **provenance(),
+    }
+    manifest = None
+    if SETTINGS["resume"] and manifest_path.exists():
+        manifest = json.loads(manifest_path.read_text())
+        differs = [k for k in identity if manifest.get(k) != identity[k]]
+        if differs:
+            raise RuntimeError(f"resume refused: {', '.join(differs)} differ(s) from the interrupted run "
+                               f"({manifest_path}). Set resume False to start over.")
+        # Cut each log back to its size after the last completed chunk: rows
+        # of a chunk that was interrupted are dropped, and the chunk reruns.
+        for key in LOG_KEYS:
+            path, size_done = Path(manifest[key]), manifest["log_sizes"].get(key, 0)
+            if path.exists():
+                with path.open("r+b") as f:
+                    f.truncate(size_done)
+        print(f"Resuming: {len(manifest['chunks_done'])}/{len(chunks)} chunk(s) already done.")
+    if manifest is None:
+        if scratch.exists():
+            shutil.rmtree(scratch)
+        scratch.mkdir(parents=True)
+        for key in LOG_KEYS:
+            if SETTINGS[key].exists():
+                SETTINGS[key].unlink()
+        t = time.monotonic()
+        S.partition_by_patient(dataset, chunks, chunk_dir)
+        print(f"[{time.monotonic() - t_start:7.1f}s] split {len(chosen_ids)} patient(s) into "
+              f"{len(chunks)} chunk(s) of up to {size} ({time.monotonic() - t:.1f}s)")
+        manifest = {**identity, "event_log": str(SETTINGS["event_log"]),
+                    "firing_log": str(SETTINGS["firing_log"]),
+                    "arrival_times": str(SETTINGS["arrival_times"]),
+                    "chunks": len(chunks), "chunks_done": [], "log_sizes": {}, "complete": False}
+        _write_manifest(manifest_path, manifest)
+
     key_of = lambda e: f"{e.device_name} | {e.label} | {e.priority}"  # noqa: E731
-    unresolved_counts = Counter(key_of(e) for e in events if M.type_of(kb, e) is None)
-    n_total = len(events)
-    n_covered = n_total - sum(unresolved_counts.values())
-    coverage_pct = 100.0 * n_covered / n_total if n_total else 0.0
-    print(f"-- Coverage: {coverage_pct:.1f}% - {n_covered}/{n_total} alarm(s) ")
+    unresolved_counts, n_total = Counter(), 0
+    totals, session_stats = Counter(), X.RuleStats()
+    complete = True
+    for k, ids in enumerate(chunks):
+        if k in manifest["chunks_done"]:
+            continue
+        t = time.monotonic()
+        events = S.load_events_for_patients(chunk_dir / f"chunk_{k:05d}.csv", set(ids))
+        n_total += len(events)
+        # Coverage: alarms without a blueprint (device model + label +
+        # priority) mint nothing; drop them before they cost engine commands.
+        unresolved = [e for e in events if M.type_of(kb, e) is None]
+        unresolved_counts.update(key_of(e) for e in unresolved)
+        if unresolved:
+            events = [e for e in events if M.type_of(kb, e) is not None]
+        groups = S.group_by_patient(events)
+        print(f"[{time.monotonic() - t_start:7.1f}s] chunk {k + 1}/{len(chunks)}: {len(groups)} patient(s), "
+              f"{len(events)} alarm(s) with a blueprint")
 
+        log = EL.LiveLog(groups, EL.alarm_index(events), SETTINGS["event_log"], SETTINGS["firing_log"],
+                         append=True)
+        stats = X.RuleStats()
+        engine_scratch = scratch / "engine"
+        if engine_scratch.exists():
+            shutil.rmtree(engine_scratch)
+        engine_scratch.mkdir(parents=True)
+        if SETTINGS["workers"] > 1:
+            ok = P.run_parallel(groups, engine_scratch, log, stats, SETTINGS["workers"],
+                                enabled_rules=rule_names, audit_log=SETTINGS["audit_logging"],
+                                window=SETTINGS["post_alarm_validity"])
+        else:
+            ok = P.run_batched(kb, groups, engine_scratch, log, stats, batch_size=SETTINGS["batch_size"],
+                               enabled_rules=rule_names, timeout=SETTINGS["element_timeout_s"],
+                               audit_log=SETTINGS["audit_logging"])
+        log.close()
+        stats.write_arrival_times(SETTINGS["arrival_times"], append=True)
+        session_stats.merge(stats)
+        report(kb, groups, rule_names, log.firings, log.records, totals)
+        if not ok:
+            complete = False
+            print(f"*** chunk {k + 1} did not complete; it is not recorded as done, the run stops. ***")
+            break
+        manifest["chunks_done"].append(k)
+        manifest["log_sizes"] = {key: SETTINGS[key].stat().st_size for key in LOG_KEYS}
+        manifest["complete"] = len(manifest["chunks_done"]) == len(chunks)
+        _write_manifest(manifest_path, manifest)
+        print(f"  chunk {k + 1} done ({time.monotonic() - t:.1f}s)")
+
+    covered = n_total - sum(unresolved_counts.values())
+    print(f"\n-- Coverage (this session): {_pct(covered, n_total):.1f}% - {covered}/{n_total} alarm(s)")
     if unresolved_counts:
         top = unresolved_counts.most_common(3)
         print(f"WARNING: {len(unresolved_counts)} device | label | priority combination(s) without a blueprint. "
@@ -235,51 +352,15 @@ def run():
             print(f"  - {label} ({n} alarm(s))")
         if len(unresolved_counts) > len(top):
             print(f"  ... and {len(unresolved_counts) - len(top)} more")
-
-    # Unknown labels mint nothing; drop them before they cost engine commands.
-    if unresolved_counts:
-        events = [e for e in events if M.type_of(kb, e) is not None]
-        groups = S.group_by_patient(events)
-
-    scratch = ROOT / "_scratch"
-    if scratch.exists():
-        shutil.rmtree(scratch)
-    scratch.mkdir(parents=True)
-
-    print(f"[{time.monotonic() - t_start:7.1f}s] processing {len(groups)} patient(s), "
-          f"batch_size={SETTINGS['batch_size'] or 'unbounded'}...")
-    # Both logs are written as the run goes (engine/event_log.LiveLog).
-    log = EL.LiveLog(groups, EL.alarm_index(events), SETTINGS["event_log"], SETTINGS["firing_log"])
-    stats = X.RuleStats()
-    if SETTINGS["workers"] > 1:
-        complete = P.run_parallel(groups, scratch, log, stats, SETTINGS["workers"],
-                                  enabled_rules=rule_names, audit_log=SETTINGS["audit_logging"],
-                                  window=SETTINGS["post_alarm_validity"])
-    else:
-        complete = P.run_batched(kb, groups, scratch, log, stats, batch_size=SETTINGS["batch_size"],
-                                 enabled_rules=rule_names, timeout=SETTINGS["element_timeout_s"],
-                                 audit_log=SETTINGS["audit_logging"])
-    log.close()
-    records, firings = log.records, log.firings
-
-    print()
-    report(kb, groups, rule_names, firings, records)
-    print(f"Clinical-event log: {len(records)} event(s) -> {SETTINGS['event_log']}")
+    print_totals(totals, rule_names)
+    print(f"Clinical-event log -> {SETTINGS['event_log']}")
     print(f"Rule-firing log -> {SETTINGS['firing_log']}")
-    X.summarize_invocations(stats)
-    stats.write_arrival_times(SETTINGS["arrival_times"])
-    import json
-    SETTINGS["run_manifest"].write_text(json.dumps({
-        "dataset": str(dataset), "patients": sorted(chosen_ids),
-        "n_patients": SETTINGS["n_patients"], "seed": SETTINGS["seed"],
-        "enabled_rules": rule_names, "post_alarm_validity": str(kb.window),
-        "complete": complete, "event_log": str(SETTINGS["event_log"]),
-        "firing_log": str(SETTINGS["firing_log"]), "arrival_times": str(SETTINGS["arrival_times"]),
-    }, indent=1))
-    print(f"Processing times -> {SETTINGS['arrival_times']}; run manifest -> {SETTINGS['run_manifest']}")
+    X.summarize_invocations(session_stats)
+    print(f"Processing times -> {SETTINGS['arrival_times']}; run manifest -> {manifest_path}")
     print(f"\nTotal wall-clock time: {time.monotonic() - t_start:.1f}s")
-    if not complete:
-        print("*** INCOMPLETE RUN: the engine stopped or reported errors (see above); results are partial. ***")
+    if not (complete and manifest["complete"]):
+        print("*** INCOMPLETE RUN: the engine stopped or reported errors (see above); results are partial. "
+              "Rerun with resume True to continue. ***")
 
 
 if __name__ == "__main__":
