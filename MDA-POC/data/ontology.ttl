@@ -90,10 +90,12 @@ mda:hasDuration    a owl:DatatypeProperty ;
     dcterms:identifier  "hasDuration" ;
     rdfs:label          "has duration"@en,
                         "heeft duur"@nl ;
-    rdfs:comment        "The duration of the alarm."@en,
-                        "De duur van het alarm."@nl ;
+    rdfs:comment        "The duration of the alarm, as an ISO 8601 duration (e.g. PT30S)."@en,
+                        "De duur van het alarm, als ISO 8601-duur (bijv. PT30S)."@nl ;
     rdfs:domain         mda:Alarm ;
-    rdfs:range          xsd:duration .
+    # rdfs:Literal, not xsd:duration: xsd:duration is outside the OWL 2
+    # datatype map, so an OWL 2 DL reasoner (HermiT) refuses the ontology.
+    rdfs:range          rdfs:Literal .
 
 mda:hasStart a owl:DatatypeProperty ;
     dcterms:identifier  "hasStart" ;
@@ -1181,6 +1183,31 @@ mda:Metric        mda:nodeKind  mda:Stateful .
 # against DATA/CAT_evaluation/cat1a_pos before adding this tag.
 mda:AnatomicalPosition mda:nodeKind mda:Referential .
 mda:Laterality         mda:nodeKind mda:Referential .
+
+# Explicitly Referential for the same reason: the clinical tail past the
+# metric bridge. inference.ttl's §TAIL axioms relate these classes' concepts
+# to each other directly ("SaO2 isPropertyOf PulmonaryOxygenation",
+# "PulmonaryOxygenation presentIn Lungs") — universal to universal, which
+# holds only if the node IS the concept. None of them carries a per-alarm
+# state (their only properties are those universal relations), so they are
+# not Stateful either. Left unmarked, op_knowledge.py's ground_chain walked
+# into mda:PhysiologicalProperty once an archetype's metric carried its own
+# mda:approximates edge, and minted a property particular per alarm, keyed on
+# the device's sensing chain: two monitors measuring one patient's saturation
+# would report two different "SaO2"s, and the alarm's triggeredByStructure
+# anchor moved off its metric.
+#
+# Revisit when patient-level data enters (the EHR extension): patient-
+# specific anatomy or state — one lung, a transplanted kidney, circulation
+# supported by ECMO — would need Organ (and possibly PhysiologicalProcess)
+# particulars PER PATIENT, never per alarm or device. The same applies as
+# soon as any of these classes is given a state: a state on a shared concept
+# leaks across patients (the removed mda:impliesClinicalEvent; why
+# mda:TherapeuticModality is Individuated).
+mda:PhysiologicalProperty mda:nodeKind mda:Referential .
+mda:PhysiologicalProcess  mda:nodeKind mda:Referential .
+mda:Organ                 mda:nodeKind mda:Referential .
+mda:OrganSystem           mda:nodeKind mda:Referential .
 
 # Individuated, not the Referential default: a therapeutic modality is a
 # concrete treatment episode particular to the alarm's own device, not a

@@ -120,7 +120,7 @@ class Processor:
         M.update_identity(kb, e, window.identity_tracker)
         identity = window.identity_tracker.identity
 
-        event_kinds = (frozenset(relevant_kinds(kb, e.label, _alarm_metric_types(kb, e), self.event_rules))
+        event_kinds = (frozenset(relevant_kinds(kb, e, _alarm_metric_types(kb, e), self.event_rules))
                        if self.event_rules else frozenset())
         commands, pending = window.on_arrive(e, identity, event_kinds)
         self.lines += commands
@@ -224,9 +224,12 @@ class LiveRun:
         `on_arrival()`: a progress callback. False once the session has
         stopped."""
         for unit in stream_units(elements):
+            t = time.perf_counter()
             self.proc.feed(unit)
             if not self.execute(f"{unit[0].patient} {unit[0].time.isoformat()}"):
                 return False
+            if isinstance(unit[0], AlarmArrival):
+                self.stats.add_arrival(unit[0].patient, time.perf_counter() - t)
             if on_arrival is not None and isinstance(unit[0], AlarmArrival):
                 on_arrival()
         return True
@@ -313,9 +316,9 @@ def run_batched(kb, patients: dict, scratch_root: Path, log: LiveLog, stats: Rul
 _WORKER: dict = {}
 
 
-def _worker_init(enabled_rules, scratch_root: str, audit_log: bool) -> None:
+def _worker_init(enabled_rules, scratch_root: str, audit_log: bool, window) -> None:
     """Load the knowledge base once per worker process."""
-    _WORKER.update(kb=M.load_kb(), rules=enabled_rules, root=Path(scratch_root), audit=audit_log)
+    _WORKER.update(kb=M.load_kb(window), rules=enabled_rules, root=Path(scratch_root), audit=audit_log)
 
 
 def _worker_patient(item) -> tuple:
@@ -337,10 +340,11 @@ def _worker_patient(item) -> tuple:
 
 
 def run_parallel(patients: dict, scratch_root: Path, log: LiveLog, stats: RuleStats, workers: int,
-                 enabled_rules=None, progress: bool = True, audit_log: bool = False) -> bool:
+                 enabled_rules=None, progress: bool = True, audit_log: bool = False,
+                 window: str | None = None) -> bool:
     """Replay `patients`, one task per patient, over `workers` processes.
-    Each worker loads the knowledge base once; each patient gets its own
-    store. Records and firings are written to `log` in the input order of
+    Each worker loads the knowledge base once (`window`: see
+    mint.load_kb); each patient gets its own store. Records and firings are written to `log` in the input order of
     the patients; rule statistics are merged into `stats`. True if every
     patient completed without engine errors."""
     from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -349,7 +353,7 @@ def run_parallel(patients: dict, scratch_root: Path, log: LiveLog, stats: RuleSt
     results: dict = {}
     complete, t0 = True, time.monotonic()
     with ProcessPoolExecutor(max_workers=workers, initializer=_worker_init,
-                             initargs=(rule_names, str(scratch_root), audit_log)) as pool:
+                             initargs=(rule_names, str(scratch_root), audit_log, window)) as pool:
         futures = [pool.submit(_worker_patient, item) for item in items]
         for done, future in enumerate(as_completed(futures), start=1):
             index, records, firings, worker_stats, ok = future.result()

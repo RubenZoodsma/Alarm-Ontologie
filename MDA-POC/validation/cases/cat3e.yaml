@@ -1,0 +1,27 @@
+id: cat3e
+title: "The circuit leak still persists"
+rule: "3b"
+purpose: edge
+status: active
+# 2026-11-22: the compromising alarm was BabyTherm "Ventilator storing" (now an
+# incubator alarm: no blueprint reports a malfunctioning ventilator). Replaced
+# by the circuit leak of the same Medibus ventilator; timings and expected
+# outcomes unchanged.
+review: pending
+rationale:
+  clinical: ""
+  technical: >
+    The circuit leak still persists (post-alarm window) but its alarm is no longer
+    active; CAT3b requires both at the same time — CAT3b negative (positive before
+    2026-09-21). The reduced pulmonary function stands alone (exact event times)
+author: "Migrated from DATA/CAT_evaluation (README and regression.py), 2026-10-14"
+strict: true
+
+stream:
+  - {id: a1, device: "Medibus_00", label: "MEDIBUS - Volume niet constant", device_name: "Medibus", priority: "Unknown", start: "08:00:00", end: "08:00:20"}
+  - {id: a2, device: "Medibus_00", label: "MEDIBUS - MV ondergrens", device_name: "Medibus", priority: "Unknown", start: "08:10:00", end: "08:10:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:10:00", until: "08:10:30", evidence: [a2]}

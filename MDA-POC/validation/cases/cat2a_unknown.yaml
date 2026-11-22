@@ -1,0 +1,21 @@
+id: cat2a_unknown
+title: "An Unknown priority cannot be compared"
+rule: "2a"
+purpose: edge
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: >
+    An Unknown priority cannot be compared — never silenced — CAT2a negative
+author: "Migrated from DATA/CAT_evaluation (README and regression.py), 2026-10-14"
+strict: true
+
+stream:
+  - {id: a1, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - Lage ademfreq.", device_name: "Philipsmonitor", priority: "Medium", start: "08:00:00", end: "08:02:00"}
+  - {id: a2, device: "ServoU_00", label: "SERVOU - Exp. minuutvol. laag", device_name: "ServoU", priority: "Hoog", start: "08:00:30", end: "08:01:00"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:30", until: "08:01:00", evidence: [a2]}

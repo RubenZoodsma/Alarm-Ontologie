@@ -55,10 +55,7 @@ on:
       - 'CODE/shared/ontology_tree.py'
       - 'EVALUATION/CQs/**/*.rq'
       - 'CODE/evaluation_cq/cq_QA.py'
-      - 'CODE/evaluation_cq/cq_temporal_QA.py'
       - 'CODE/evaluation_cq/cq_report_html.py'
-      - 'CODE/evaluation_poc/core/op_knowledge.py'
-      - 'DATA/CQ_evaluation/events_data.csv'
   workflow_dispatch: {}
 
 # Serialise runs: two pushes in quick succession would otherwise race each
@@ -119,8 +116,10 @@ jobs:
         with:
           python-version: '3.11'
 
+      # pyoxigraph executes the CQ SPARQL (CODE/evaluation_cq/sparql_engine.py);
+      # rdflib + owlrl still build and reason the graphs.
       - name: Install Python dependencies
-        run: pip install rdflib owlrl pandas
+        run: pip install rdflib owlrl pandas pyoxigraph
 
       - name: Regenerate docs/cq (Competency Questions page)
         run: python3 CODE/evaluation_cq/cq_report_html.py

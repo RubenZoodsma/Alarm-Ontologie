@@ -1,0 +1,24 @@
+id: cat3b_spo2
+title: "Reduced pulmonary function through OXYGENATION"
+rule: "3b"
+purpose: edge
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: >
+    Reduced pulmonary function through OXYGENATION (revised 2026-10-12): a
+    compromised ventilation therapy with low SpO2 from the monitor — CAT3b
+    positive, 08:00:30–08:01:30
+author: "Migrated from DATA/CAT_evaluation (README and regression.py), 2026-10-14"
+strict: true
+
+stream:
+  - {id: a1, device: "ServoU_00", label: "SERVOU - Te veel lekkage", device_name: "ServoU", priority: "Hoog", start: "08:00:00", end: "08:02:00"}
+  - {id: a2, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - SpO2 laag", device_name: "Philipsmonitor", priority: "Medium", start: "08:00:30", end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: VentilationFailure, from: "08:00:30", until: "08:01:30", evidence: [a1, a2]}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:30", until: "08:01:30", evidence: [a2]}

@@ -26,6 +26,8 @@ from pathlib import Path
 from rdflib import Dataset, URIRef, Literal
 from rdflib.namespace import RDF, XSD, OWL
 
+import sparql_engine
+
 QUESTION_DIRECTIVE = re.compile(r"^#\s*question:\s*(.+)$", re.MULTILINE)
 
 CQ_DIR = Path(__file__).resolve().parent
@@ -90,13 +92,14 @@ def build_snapshot_dataset() -> Dataset:
 def run_query(query_path: Path, ds: Dataset) -> dict:
     text = query_path.read_text()
     question_match = QUESTION_DIRECTIVE.search(text)
-    result = ds.query(text)
-    rows = [[str(t) for t in row] for row in result if not isinstance(row, bool)]
+    # Executed on Oxigraph (sparql_engine.py); the Dataset is built here.
+    names, result_rows = sparql_engine.select(ds, text)
+    rows = [[str(t) for t in row] for row in result_rows]
     print(f"[cq_temporal_QA] {query_path.name}: {len(rows)} row(s)")
     return {
         "name": query_path.stem,
         "question": question_match.group(1).strip() if question_match else None,
-        "vars": [str(v) for v in result.vars] if result.vars else [],
+        "vars": names,
         "rows": rows,
     }
 

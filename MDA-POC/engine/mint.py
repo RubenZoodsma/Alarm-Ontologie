@@ -42,6 +42,8 @@ CLINICAL_EVENT_VOCAB = DATA_DIR / "clinicalEvent_vocab.ttl"
 INFERENCE = DATA_DIR / "inference.ttl"
 CATALOGUE = DATA_DIR / "kg_generated.ttl"
 ENTITIES  = DATA_DIR / "entities.ttl"
+# Gateway device name -> device model (FRAMEWORK/PLAN_blueprint_identity.md).
+DEVICE_MODELS = DATA_DIR.parent.parent / "DATA" / "ANNOTATION" / "device_models.csv"
 
 # ── Namespaces ────────────────────────────────────────────────────────────
 
@@ -65,7 +67,8 @@ class KB:
     """The framework, loaded once per run, plus memoised lookups."""
     reasoning_static: Graph   # TBox + inference + vocabulary + scaffold (ABox context)
     catalogue: Graph          # kg_generated.ttl — the AlarmType archetypes
-    type_index: dict          # alarm label  → AlarmType IRI
+    type_index: dict          # (model, label, priority), normalised → AlarmType IRI
+    model_of: dict            # gateway device name → device model ("" when unknown)
     scaffold_concepts: set    # concepts declared in the scaffold type catalogue
     window: timedelta         # post-alarm validity (PostAlarmValidScheme)
     tree: dict                # class nesting derived from the ontology
@@ -87,9 +90,10 @@ def node_kinds(g: Graph) -> dict:
             if kind in NODE_KIND_OF}
 
 
-def load_kb() -> KB:
+def load_kb(window: str | None = None) -> KB:
     """Parse the framework files; the post-alarm window comes from the
-    ontology (mda:postAlarmValidityDuration)."""
+    ontology (mda:postAlarmValidityDuration), unless `window` (an
+    xsd:duration such as "PT5M") overrides it, for sensitivity analyses."""
     static = Graph()
     for f in (ONTOLOGY, VOCAB, CLINICAL_EVENT_VOCAB, INFERENCE, ENTITIES):
         static.parse(f, format="turtle")
@@ -101,11 +105,8 @@ def load_kb() -> KB:
     catalogue = Graph()
     catalogue.parse(CATALOGUE, format="turtle")
 
-    type_index = {
-        str(lbl): s
-        for s, lbl in catalogue.subject_objects(MDA.hasLabel)
-        if (s, RDF.type, MDA.AlarmType) in catalogue
-    }
+    type_index = blueprint_index(catalogue)
+    model_of = load_device_models()
 
     scaffold = Graph()
     scaffold.parse(ENTITIES, format="turtle")
@@ -117,8 +118,54 @@ def load_kb() -> KB:
     dur = static.value(MDA.PostAlarmValidScheme, MDA.postAlarmValidityDuration)
     if dur is None:
         raise ValueError("ontology states no mda:postAlarmValidityDuration on mda:PostAlarmValidScheme")
-    return KB(static, catalogue, type_index, scaffold_concepts,
-              parse_duration(str(dur)), tree, node_kinds(static))
+    return KB(static, catalogue, type_index, model_of, scaffold_concepts,
+              parse_duration(window or str(dur)), tree, node_kinds(static))
+
+
+def _norm(s) -> str:
+    return " ".join(str(s or "").split()).casefold()
+
+
+def blueprint_key(model, label, priority) -> tuple:
+    """A blueprint's identity, normalised: (device model, label, priority)."""
+    return (_norm(model), _norm(label), _norm(priority))
+
+
+def blueprint_index(catalogue: Graph) -> dict:
+    """(model, label, priority) -> AlarmType, read from each blueprint: its
+    mda:hasLabel, mda:hasPriority, and the model (mda:hasDeviceType) of the
+    device its message is triggered by; model "" when the blueprint has none."""
+    index = {}
+    for at in catalogue.subjects(RDF.type, MDA.AlarmType):
+        label = catalogue.value(at, MDA.hasLabel)
+        prio = catalogue.value(at, MDA.hasPriority)
+        models = {m for msg in catalogue.objects(at, MDA.hasMessage)
+                  for dev in catalogue.objects(msg, MDA.triggeredBy)
+                  for m in catalogue.objects(dev, MDA.hasDeviceType)}
+        if len(models) > 1:
+            raise ValueError(f"{at} has more than one device model: {sorted(models)}")
+        model = str(next(iter(models))).rsplit("/", 1)[-1] if models else ""
+        key = blueprint_key(model, label, str(prio).rsplit("/", 1)[-1] if prio else "")
+        if key in index:
+            raise ValueError(f"two blueprints share the identity {key}: {index[key]}, {at}")
+        index[key] = at
+    return index
+
+
+def load_device_models() -> dict:
+    import csv
+    with DEVICE_MODELS.open(encoding="utf-8", newline="") as fh:
+        return {r["gateway_name"]: r["model"] for r in csv.DictReader(fh, delimiter=";")}
+
+
+def type_of(kb: KB, ev):
+    """The blueprint of an alarm (an Event or AlarmArrival), by device model
+    + label + priority; None when the gateway name is unknown or no
+    blueprint has that identity (a coverage gap)."""
+    name = getattr(ev, "device_name", "")
+    if name not in kb.model_of:
+        return None
+    return kb.type_index.get(blueprint_key(kb.model_of[name], ev.label, getattr(ev, "priority", "")))
 
 
 def parse_duration(s: str) -> timedelta:
@@ -314,9 +361,9 @@ def ground_chain(kb: KB, arch: "Archetype", patient_id: str, device_id: str,
     return background, condition, leaves
 
 
-def background_for_key(kb: KB, patient_id: str, label: str, device_id: str, identity: dict) -> Graph:
+def background_for_key(kb: KB, patient_id: str, ev, device_id: str, identity: dict) -> Graph:
     """What persists after the alarm: the device and its structural chain."""
-    type_iri = kb.type_index.get(label)
+    type_iri = type_of(kb, ev)
     if type_iri is None:
         return Graph()
     arch = archetype_structure(kb, type_iri)
@@ -338,7 +385,7 @@ def background_for_key(kb: KB, patient_id: str, label: str, device_id: str, iden
 def alarm_message(kb: KB, ev, identity: dict = None) -> Graph:
     """The alarm, its message, patient and triggeredByStructure."""
     g = Graph()
-    type_iri = kb.type_index.get(ev.label)
+    type_iri = type_of(kb, ev)
     if type_iri is None:
         return g
     arch = archetype_structure(kb, type_iri)
@@ -360,12 +407,12 @@ def alarm_message(kb: KB, ev, identity: dict = None) -> Graph:
     return g
 
 
-def condition_for_event(kb: KB, patient_id: str, label: str, device_id: str,
+def condition_for_event(kb: KB, patient_id: str, ev, device_id: str,
                          identity: dict = None) -> Graph:
     """What the alarm reports while active: stateful nodes and every leaf
     property, including the device's state (CAT3b needs a ventilator fault
     only while its alarm is active)."""
-    type_iri = kb.type_index.get(label)
+    type_iri = type_of(kb, ev)
     if type_iri is None:
         return Graph()
     arch = archetype_structure(kb, type_iri)
@@ -405,7 +452,7 @@ def new_identity_tracker(kb: KB) -> IdentityTracker:
 
 def update_identity(kb: KB, event, tracker: IdentityTracker) -> None:
     """Fold one arriving alarm into `tracker` (in arrival order)."""
-    type_iri = kb.type_index.get(event.label)
+    type_iri = type_of(kb, event)
     if type_iri is None:
         return
     arch = archetype_structure(kb, type_iri)
@@ -437,7 +484,7 @@ def add_triggered_by(g: Graph, events: list, kb: KB, identity: dict) -> None:
     alarms of one device, so walking device -> functional unit outside that
     graph would reach every functional unit the device has reported."""
     for e in events:
-        type_iri = kb.type_index.get(e.label)
+        type_iri = type_of(kb, e)
         if type_iri is None:
             continue
         arch = archetype_structure(kb, type_iri)

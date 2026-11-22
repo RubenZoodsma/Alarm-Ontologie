@@ -353,8 +353,14 @@ def build_report(g: Graph, root: URIRef) -> dict:
     label = next(g.objects(root, MDA.hasLabel), Literal(local(root)))
     priority = next(g.objects(root, MDA.hasPriority), None)
     category = next(g.objects(root, MDA.hasCategory), None)
+    # A blueprint is identified by device model + label + priority; the same
+    # label can recur on several models or priorities, so the model is shown.
+    model = next((m for msg in g.objects(root, MDA.hasMessage)
+                  for dev in g.objects(msg, MDA.triggeredBy)
+                  for m in g.objects(dev, MDA.hasDeviceType)), None)
     return {
         "label": str(label),
+        "model": local(model) if model else "",
         "priority": local(priority) if priority else "—",
         "mmd_notype": mmd_notype,
         "category": local(category) if category else "—",
@@ -536,14 +542,15 @@ _PAGE = """<!doctype html>
 mermaid.initialize({startOnLoad:false, theme:'neutral', securityLevel:'loose', flowchart:{useMaxWidth:false}});
 const $ = id => document.getElementById(id);
 let idx = 0, seq = 0;
+const nameOf = a => `${a.label}${a.model ? ' · ' + a.model : ''} (${a.priority})`;
 
 function buildPicker(){
-  $('pick').innerHTML = DATA.map((a,i) => `<option value="${i}">${a.label}</option>`).join('');
+  $('pick').innerHTML = DATA.map((a,i) => `<option value="${i}">${nameOf(a)}</option>`).join('');
 }
 
 async function draw(){
   const a = DATA[idx];
-  $('title').textContent = a.label;
+  $('title').textContent = nameOf(a);
   $('cat').textContent = a.category;
   $('prio').textContent = a.priority;
   $('fcount').textContent = a.n_facts + ' fact(s) — every entailed triple reachable from this archetype';

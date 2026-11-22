@@ -9,7 +9,7 @@ The engine follows the RDF stream processing model of RSP-QL. Each module in `en
 | Module | RSP-QL role | Responsibility |
 |---|---|---|
 | `stream.py` | Stream | Replays an alarm corpus as a stream of separate `AlarmArrival` (no end) and `AlarmEnd` elements, in time order |
-| `mint.py` | Stream items | Turns an alarm into RDF using the MDA framework (its alarm-type blueprint), minting patient-scoped entities |
+| `mint.py` | Stream items | Turns an alarm into RDF using the MDA framework (its alarm-type blueprint), minting patient-scoped entities. An alarm's blueprint is found by device model + label + priority (`type_of`): the event's gateway device name is mapped to the model through `DATA/ANNOTATION/device_models.csv`; no match is a coverage gap |
 | `windows.py` | Window operators | Keeps each alarm's knowledge in the store while it is valid: a transient graph (until its end arrives) and a persistent graph (until the ontology's post-alarm window after its end). A graph is valid exactly while it is in the store |
 | `rules.py` | R2R: what holds | The registry of the nine rules, the loader for their `.rq` files, and cheap gates that skip checks that cannot match |
 | `actions.py` | R2R: what happens | What a rule's result does: CAT1 stores a flag (withdrawable), CAT2 stores a silence (lifted when its last justification ends), clinical events and CAT3 are episodes with a start and an end |
@@ -44,21 +44,26 @@ Rule logic lives only in `representation/`, never in Python:
 
 Files use standard `PREFIX` lines; `rules.py` checks they agree and the script declares them once (the session prepends them to each statement). `regression.py` fails if query text appears in the Python sources.
 
+## Input
+
+An events file is `;`-separated with a header: `patientID;label;device_id;start;end;device_name;priority[;alarm_id]`. `device_id` identifies the physical device (minting); `device_name` (the gateway's name, e.g. Caleo) and `priority` identify, with the label, the alarm's blueprint. The engine reads the framework from copies in `data/` (ontology, inference, kg_generated, vocab_generated, clinicalEvent_vocab, priority_rank): copy them from `FRAMEWORK/` after every build; `regression.py` fails when they differ.
+
 ## Running
 
 Both scripts are configured through a `SETTINGS` dict at the top of the file; there are no command-line arguments.
 
-- **Regression test** (fabricated, known-outcome patients in `DATA/CAT_evaluation/events_data.csv`):
+- **Regression test** (verification cases in `validation/cases/`, one YAML file per synthetic patient with its alarms, expected conclusions and rationale; format in `engine/cases.py` and `validation/cases/README.md`):
   ```
   cd engine && python3 regression.py
   ```
-  Ends with `N/91 checks matched expected outcome` and writes both logs to `engine/_scratch/`.
-- **Real-corpus run**: `python3 poc_main.py`. Choose the dataset, number of patients, seed, rules, batch size and number of parallel `workers` in `SETTINGS`. Logs go to `_scratch/`. Ends with a per-rule table: invocations, hits, hit rate and Oxigraph time per invocation (rounded to 1 ms).
+  Besides the cases it checks four engine invariants: no lookahead, no rule logic in Python, blueprint identity (every distinct annotated alarm of the selected corpus resolves to a blueprint of its own) and framework copies in sync. Ends with `N/M assertions passed in K active cases`, writes `validation/results/cases_results.csv` (one row per assertion) and `cases_run.json` (commit and file hashes), and both logs plus `cases_events.csv` to `engine/_scratch/`. `python3 validation/cases_appendix.py` then writes the cases and results as Markdown (`validation/results/cases_appendix.md`).
+- **Real-corpus run**: `python3 poc_main.py`. Choose the dataset, number of patients, seed, rules, batch size and number of parallel `workers` in `SETTINGS`. `post_alarm_validity` overrides the ontology's post-alarm window (PT15M) for the sensitivity analysis, e.g. `"PT5M"`. Logs go to `_scratch/`. Ends with a per-rule table: invocations, hits, hit rate and Oxigraph time per invocation (rounded to 1 ms).
 
 Validation scripts in `validation/`:
 - `log_rebuild_check.py`: every logged row comes out again when only the alarms the logs name for it are replayed through the engine; the criterion is the rule file itself (run `regression.py` or `poc_main.py` first).
 - `clinical_events_cross_patient.py`: five patients interleaved in one stream and one store produce no cross-patient events.
 - `compare_logs.py`: two runs log the same firings and events (alarms matched by ALARM_ID).
+- `rule_coverage.py`: every ordered pair of alarm types in the knowledge base replayed as a synthetic patient (B active when A arrives; B ended before A arrives), giving the label combinations each rule covers, split by the department the types come from (manuscript 4.3.2). Writes `results/rule_coverage_pairs.csv` and `rule_coverage_summary.csv`; about 2 minutes with 8 workers.
 
 ## Requirements
 

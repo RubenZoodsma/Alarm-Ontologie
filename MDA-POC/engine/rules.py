@@ -171,7 +171,7 @@ DEVICE = "https://w3id.org/mda/vocab/device/"
 
 def _alarm_functional_unit(kb, event) -> str | None:
     """The functional-unit concept name of this alarm's archetype."""
-    type_iri = kb.type_index.get(event.label)
+    type_iri = M.type_of(kb, event)
     if type_iri is None:
         return None
     concept = M.archetype_structure(kb, type_iri).concept(M.MDA.FunctionalUnit)
@@ -181,7 +181,7 @@ def _alarm_functional_unit(kb, event) -> str | None:
 def _alarm_metric_types(kb, event) -> set:
     """The metric concept names in this alarm's blueprint (e.g.
     {"ArterialBloodPressure_Mean"})."""
-    type_iri = kb.type_index.get(event.label)
+    type_iri = M.type_of(kb, event)
     if type_iri is None:
         return set()
     arch = M.archetype_structure(kb, type_iri)
@@ -260,7 +260,7 @@ def _is_ventilator(kb, concept) -> bool:
         kb.reasoning_static.transitive_objects(concept, M.RDFS.subClassOf))
 
 
-def relevant_kinds(kb, label: str, metric_types: set, rules: list) -> set:
+def relevant_kinds(kb, event, metric_types: set, rules: list) -> set:
     """The enabled episode kinds an alarm with this label could be evidence
     for (directly, or through a constituent). Over-inclusion only costs a
     few cheap queries; under-inclusion would miss an event, so when in
@@ -268,7 +268,7 @@ def relevant_kinds(kb, label: str, metric_types: set, rules: list) -> set:
     kinds = {r.kind for r in rules}
     direct = {k for k in _METRIC_FOR_KIND if k in kinds and _metrics_for_kind(kb, k) & metric_types}
     if "VentilationFailure" in kinds:
-        type_iri = kb.type_index.get(label)
+        type_iri = M.type_of(kb, event)
         if type_iri is not None:
             arch = M.archetype_structure(kb, type_iri)
             if _is_ventilator(kb, arch.concept(M.MDA.Device)):

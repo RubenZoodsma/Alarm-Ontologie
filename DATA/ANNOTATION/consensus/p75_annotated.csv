@@ -1,0 +1,107 @@
+alarmLabel;reviewStatus;alarmPriority;alarmCategory;Device;Device.OperationalState;Device.Type;Device.Manufacturer;Component;Component.OperationalState;FunctionalUnit;Sensor;Sensor.OperationalState;Sensor.AnatomicalPosition;Sensor.Laterality;Signal;Signal.QualityState;Metric;Metric.Phase;Metric.Aggregation;Metric.ValueState;Metric.Rhythm;TherapeuticModality;PhysiologicalProperty;PhysiologicalProcess
+CARDIOHELP - Verbinding verbroken;x;Unknown;Technical;ExtracorporealMembraneOxygenator;;CardioHelp;Getinge ;ConnectionUnit;Disconnected;;;;;;;;;;;;;ExtraCorporealMembraneOxygenation;;PulmonaryOxygenation
+CARDIOHELP - pArt boven waarschuwingsgrens;x;Unknown;Physiological;ExtracorporealMembraneOxygenator;;CardioHelp;Getinge ;;;FU_InvasiveBloodPressure;;;;;;;ArterialBloodPressure;;;Increased;;ExtraCorporealMembraneOxygenation;ArterialPressure;
+CARDIOHELP - pVen onder alarmgrens;x;Unknown;Physiological;ExtracorporealMembraneOxygenator;;CardioHelp;Getinge ;;;FU_InvasiveBloodPressure;;;;;;;VenousBloodPressure;;;Decreased;;ExtraCorporealMembraneOxygenation;VenousPressure;
+CARDIOHELP - pVen onder waarschuwingsgrens;x;Unknown;Physiological;ExtracorporealMembraneOxygenator;;CardioHelp;Getinge ;;;FU_InvasiveBloodPressure;;;;;;;VenousBloodPressure;;;Decreased;;ExtraCorporealMembraneOxygenation;VenousPressure;PulmonaryOxygenation
+CRITICOOL - Verbinding verbroken;x;Hoog;Technical;Thermoregulator;;Criticool;BelmontMedicalTechnologies;ConnectionUnit;Disconnected;;;;;;;;;;;;;ThermoRegulationTherapy;;ThermoRegulation
+DATEXOHMEDACOMVENTILATOR - MVexp High;x;Hoog;Physiological;MechanicalVentilator;;CarescapeR860;GEHealthcare;;;FU_PneumoTachograph;;;;;;;RespirationVolume;;Minute;Increased;;VentilationTherapy;RespirationVolume;PulmonaryVentilation
+DATEXOHMEDACOMVENTILATOR - Patient Disconnected;x;Hoog;Technical;MechanicalVentilator;;CarescapeR860;GEHealthcare;AirwayCircuit;Disconnected;;;;;;;;;;;;;VentilationTherapy;;PulmonaryVentilation
+DATEXOHMEDACOMVENTILATOR - Plimit Reached;x;Hoog;Technical;MechanicalVentilator;;CarescapeR860;GEHealthcare;PressureReleaseValve;Active;;;;;;;;;;;;;VentilationTherapy;RespirationPressure;PulmonaryVentilation
+DATEXOHMEDACOMVENTILATOR - Ppeak High;x;Hoog;Physiological;MechanicalVentilator;;CarescapeR860;GEHealthcare;;;FU_AirwayPressure;;;;;;;AirwayPressure;Peak;;Increased;;;;
+DATEXOHMEDACOMVENTILATOR - Ppeak Low;x;Hoog;Physiological;MechanicalVentilator;;CarescapeR860;GEHealthcare;;;FU_AirwayPressure;;;;;;;AirwayPressure;Peak;;Decreased;;;;
+DATEXOHMEDACOMVENTILATOR - RR High;x;Hoog;Physiological;MechanicalVentilator;;CarescapeR860;GEHealthcare;;;FU_PneumoTachograph;;;;;;;RespirationRate;;;Increased;;VentilationTherapy;RespirationRate;PulmonaryVentilation
+DATEXOHMEDACOMVENTILATOR - VT Not Achieved;x;Hoog;Technical;MechanicalVentilator;;CarescapeR860;GEHealthcare;;;FU_PneumoTachograph;;;;;;;VentilationCircuitLeak;;;Increased;;;;
+DATEXOHMEDACOMVENTILATOR - VTexp High;x;Hoog;Physiological;MechanicalVentilator;;CarescapeR860;GEHealthcare;;;FU_PneumoTachograph;;;;;;;RespirationVolume;Tidal;;Increased;;VentilationTherapy;RespirationVolume;PulmonaryVentilation
+DATEXOHMEDACOMVENTILATOR - VTexp Low;x;Hoog;Physiological;MechanicalVentilator;;CarescapeR860;GEHealthcare;;;FU_PneumoTachograph;;;;;;;RespirationVolume;Tidal;;Decreased;;;;
+EDWARDS - Ll26;EXCL;Unknown;;;;Hemosphere;;;;;;;;;;;;;;;;;;
+EDWARDS - Verbinding verbroken;x;Unknown;Technical;CardiacMonitor;;Hemosphere;Edwards;ConnectionUnit;Disconnected;;;;;;;;;;;;;;;
+HULBUS - 345;EXCL;Hoog;Unknown;MechanicalVentilator;;LeoniPlus;LowensteinMedical;;;;;;;;;;;;;;;VentilationTherapy;;PulmonaryVentilation
+HULBUS - CPAP high;x;Hoog;Physiological;MechanicalVentilator;;LeoniPlus;LowensteinMedical;;;FU_AirwayPressure;;;;;;;AirwayPressure;EndExpiratory;;Increased;;CPAP;;PulmonaryVentilation
+HULBUS - CPAP low;x;Hoog;Physiological;MechanicalVentilator;;LeoniPlus;LowensteinMedical;;;FU_AirwayPressure;;;;;;;AirwayPressure;EndExpiratory;;Decreased;;CPAP;;PulmonaryVentilation
+HULBUS - Leak too high;x;Hoog;Technical;MechanicalVentilator;;LeoniPlus;LowensteinMedical;;;FU_PneumoTachograph;;;;;;;VentilationCircuitLeak;;;Increased;;VentilationTherapy;;PulmonaryVentilation
+HULBUS - Ppeak too low;x;Hoog;Technical;MechanicalVentilator;;LeoniPlus;LowensteinMedical;;;FU_AirwayPressure;;;;;;;AirwayPressure;Peak;;Decreased;;VentilationTherapy;;
+HULBUS - Vte high;x;Hoog;Physiological;MechanicalVentilator;;LeoniPlus;LowensteinMedical;;;FU_PneumoTachograph;;;;;;;RespirationVolume;Tidal;;Increased;;VentilationTherapy;RespirationVolume;PulmonaryVentilation
+MEDIBUS - Air temperature high;x;Medium;Technical;Incubator;;BabyLeo;Draeger;;;FU_Temperature;;;;;;;AirTemperature;;;Increased;;ThermoRegulationTherapy;Temperature;ThermoRegulation
+MEDIBUS - Air temperature low;x;Medium;Technical;Incubator;;BabyLeo;Draeger;;;FU_Temperature;;;;;;;AirTemperature;;;Decreased;;ThermoRegulationTherapy;Temperature;ThermoRegulation
+MEDIBUS - Check patient;;Medium;;;;BabyLeo;Draeger;;;;;;;;;;;;;;;ThermoRegulationTherapy;;ThermoRegulation
+MEDIBUS - Frequentie hoog;x;Unknown;Technical;MechanicalVentilator;;;Draeger;;;FU_PneumoTachograph;;;;;;;RespirationRate;;;Increased;;;;
+MEDIBUS - Humidity Sensor inoperable;x;Medium;Technical;Incubator;;BabyTherm;Draeger;;;FU_Humidity;Humidity_sensor;Malfunction;;;;;;;;;;ThermoRegulationTherapy;;ThermoRegulation
+MEDIBUS - Humidity low;x;Laag;Technical;Incubator;;BabyLeo;Draeger;;;FU_Humidity;;;;;;;Humidity;;;Decreased;;ThermoRegulationTherapy;Humidity;ThermoRegulation
+MEDIBUS - Humidity low;REVIEW;Laag;Technical;Incubator;;Caleo;Draeger;;;FU_Humidity;;;;;;;Humidity;;;Decreased;;ThermoRegulationTherapy;Humidity;ThermoRegulation
+MEDIBUS - Humidity low;REVIEW;Laag;Technical;Incubator;;BabyTherm;Draeger;;;FU_Humidity;;;;;;;Humidity;;;Decreased;;ThermoRegulationTherapy;Humidity;ThermoRegulation
+MEDIBUS - MV ondergrens;x;Unknown;Physiological;MechanicalVentilator;;;Draeger;;;FU_PneumoTachograph;;;;;;;RespirationVolume;;Minute;Decreased;;;;
+MEDIBUS - Mattress temperature  setting deviation;x;Medium;Technical;Incubator;;Caleo;Draeger;MattrasHeater;Warning;;;;;;;;;;;;;ThermoRegulationTherapy;;ThermoRegulation
+MEDIBUS - Mattress temperature  setting deviation;REVIEW;Medium;Technical;Incubator;;BabyTherm;Draeger;MattrasHeater;Warning;;;;;;;;;;;;;ThermoRegulationTherapy;;ThermoRegulation
+MEDIBUS - Radiant heater after 15 mins. operation;x;Medium;Technical;Incubator;;Caleo;Draeger;RadiantHeater;Warning;;;;;;;;;;;;;ThermoRegulationTherapy;;ThermoRegulation
+MEDIBUS - Setting alarm limit or ventilation mode changed;x;Medium;Technical;Incubator;;BabyLeo;Draeger;Settings;Warning;;;;;;;;;;;;;;;
+MEDIBUS - Slagvolume hoog;x;Unknown;Physiological;MechanicalVentilator;;;Draeger;;;FU_PneumoTachograph;;;;;;;RespirationVolume;Tidal;;Increased;;VentilationTherapy;RespirationVolume;PulmonaryVentilation
+MEDIBUS - Ventilator storing;x;Medium;Technical;Incubator;Malfunction;BabyTherm;Draeger;;;;;;;;;;;;;;;;;
+MEDIBUS - Verbinding verbroken;x;Unknown;Technical;MechanicalVentilator;;;Draeger;ConnectionUnit;Disconnected;;;;;;;;;;;;;VentilationTherapy;;PulmonaryVentilation
+MEDIBUS - Verbinding verbroken;x;Hoog;Technical;Incubator;;Caleo;Draeger;ConnectionUnit;Disconnected;;;;;;;;;;;;;ThermoRegulationTherapy;;ThermoRegulation
+MEDIBUS - Verbinding verbroken;REVIEW;Hoog;Technical;Incubator;;BabyLeo;Draeger;ConnectionUnit;Disconnected;;;;;;;;;;;;;ThermoRegulationTherapy;;ThermoRegulation
+MEDIBUS - Verbinding verbroken;REVIEW;Hoog;Technical;Incubator;;BabyTherm;Draeger;ConnectionUnit;Disconnected;;;;;;;;;;;;;ThermoRegulationTherapy;;ThermoRegulation
+MEDIBUS - Volume niet constant;x;Unknown;Technical;MechanicalVentilator;;;Draeger;;;FU_PneumoTachograph;;;;;;;VentilationCircuitLeak;;;Increased;;VentilationTherapy;;PulmonaryVentilation
+Monitor - ART buiten bereik laag;x;Unknown;Technical;PhysiologicalMonitor;;Infinity;Draeger;;;FU_InvasiveBloodPressure;ABP_transducer;Malfunction;Arterial;;;;;;;;;;;
+Monitor - ART statische druk;x;Unknown;Technical;PhysiologicalMonitor;;Infinity;Draeger;;;FU_InvasiveBloodPressure;ABP_transducer;Enabled;Arterial;;ABP_waveform;Impaired;;;;;;;;
+Monitor - ECG afleidingen los;x;Unknown;Technical;PhysiologicalMonitor;;Infinity;Draeger;;;FU_ElectroCardiography;ElectroCardioGraphy_sensor;Disconnected;;;;;;;;;;;;
+Monitor - ECG artefact;x;Unknown;Technical;PhysiologicalMonitor;;Infinity;Draeger;;;FU_ElectroCardiography;;;;;ECG_signal;Impaired;;;;;;;;
+Monitor - HR;EXCL;Unknown;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_ElectroCardiography;;;;;;;;;;;;;;
+Monitor - Hoge ARTmean;x;Unknown;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_InvasiveBloodPressure;;;;;;;ArterialBloodPressure;Mean;;Increased;;;ArterialPressure;
+Monitor - Hoge HR;x;Unknown;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_ElectroCardiography;;;;;;;HeartRate;;;Increased;;;;
+Monitor - Lage ARTmean;x;Unknown;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_InvasiveBloodPressure;;;;;;;ArterialBloodPressure;Mean;;Decreased;;;ArterialPressure;
+Monitor - Lage HR;x;Unknown;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_ElectroCardiography;;;;;;;HeartRate;;;Decreased;;;;
+Monitor - Lage SpO2;x;Unknown;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_PulseOximetry;;;;;;;SpO2;;;Decreased;;;SaO2;PulmonaryOxygenation
+Monitor - SpO2;EXCL;Unknown;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_PulseOximetry;;;;;;;;;;;;;;
+Monitor - SpO2 sensor niet aangesloten;x;Unknown;Technical;PhysiologicalMonitor;;Infinity;Draeger;;;FU_PulseOximetry;PulseOximeter;Disconnected;;;;;;;;;;;;
+Monitor - SpO2 sensor uit;x;Unknown;Technical;PhysiologicalMonitor;;Infinity;Draeger;;;FU_PulseOximetry;PulseOximeter;Disabled;;;;;;;;;;;;
+PHILIPSMONITOR - ?? Temp hoog;x;Medium;Physiological;PhysiologicalMonitor;;;Philips;;;FU_Temperature;;;;;;;Temperature;;;Increased;;;;
+PHILIPSMONITOR - ABP verkleinen;x;Laag;Physiological;PhysiologicalMonitor;;;Philips;;;FU_InvasiveBloodPressure;;;;;;;ArterialBloodPressure;;;Increased;;;ArterialPressure;
+PHILIPSMONITOR - ABPm hoog ;x;Medium;Physiological;PhysiologicalMonitor;;;Philips;;;FU_InvasiveBloodPressure;;;;;;;ArterialBloodPressure;Mean;;Increased;;;;
+PHILIPSMONITOR - ABPm laag;x;Medium;Physiological;PhysiologicalMonitor;;;Philips;;;FU_InvasiveBloodPressure;;;;;;;ArterialBloodPressure;Mean;;Decreased;;;;
+PHILIPSMONITOR - Apneu ;x;Hoog;Physiological;PhysiologicalMonitor;;;Philips;;;FU_ElectroCardiography;;;;;;;RespirationRate;;;;Absent;;;
+PHILIPSMONITOR - Asystolie ;x;Hoog;Physiological;PhysiologicalMonitor;;;Philips;;;FU_ElectroCardiography;;;;;;;HeartRate;;;;Absent;;;
+PHILIPSMONITOR - CO2 ctr adapter er;x;Medium;Technical;PhysiologicalMonitor;;;Philips;;;FU_Capnograph;Capnometer;Malfunction;;;;;;;;;;;;
+PHILIPSMONITOR - CO2 wzig schaal l;x;Laag;Physiological;PhysiologicalMonitor;;;Philips;;;FU_Capnograph;Capnometer;;;;Capnogram_waveform;ScalingError;;;;;;;;
+PHILIPSMONITOR - Desaturatie ;x;Hoog;Physiological;PhysiologicalMonitor;;;Philips;;;FU_PulseOximetry;;;;;;;SpO2;;;SeverelyDecreased;;;SaO2;PulmonaryOxygenation
+PHILIPSMONITOR - ECG alle leads los;x;Medium;Technical;PhysiologicalMonitor;;;Philips;;;FU_ElectroCardiography;ElectroCardioGraphy_sensor;Disconnected;;;;;;;;;;;;
+PHILIPSMONITOR - Extr. lage hartfreq.;x;Hoog;Physiological;PhysiologicalMonitor;;;Philips;;;FU_ElectroCardiography;;;;;;;HeartRate;;;SeverelyDecreased;;;;
+PHILIPSMONITOR - Extreme Tachy;x;Hoog;Physiological;PhysiologicalMonitor;;;Philips;;;FU_ElectroCardiography;;;;;;;HeartRate;;;SeverelyIncreased;;;ElectricalHeartRate;CardiacContraction
+PHILIPSMONITOR - HF hoog;x;Medium;Physiological;PhysiologicalMonitor;;;Philips;;;FU_ElectroCardiography;;;;;;;HeartRate;;;Increased;;;ElectricalHeartRate;CardiacContraction
+PHILIPSMONITOR - Lage ademfreq.;x;Medium;Physiological;PhysiologicalMonitor;;;Philips;;;FU_ElectroCardiography;;;;;;;RespirationRate;;;Decreased;;;;
+PHILIPSMONITOR - Lage hartfreq.;x;Medium;Physiological;PhysiologicalMonitor;;;Philips;;;FU_ElectroCardiography;;;;;;;HeartRate;;;Decreased;;;ElectricalHeartRate;CardiacContraction
+PHILIPSMONITOR - Niet te leren ECG;x;Medium;Technical;PhysiologicalMonitor;;;Philips;;;FU_ElectroCardiography;ElectroCardioGraphy_sensor;Enabled;;;ECG_signal;Impaired;;;;;;;;
+PHILIPSMONITOR - RF hoog;x;Medium;Physiological;PhysiologicalMonitor;;;Philips;;;FU_ElectroCardiography;;;;;;;RespirationRate;;;Increased;;;;
+PHILIPSMONITOR - Resp elektr.los;x;Medium;Technical;PhysiologicalMonitor;;;Philips;;;FU_ElectroCardiography;ECG_lead_Resp;Disconnected;;;;;;;;;;;;
+PHILIPSMONITOR - SpO2 ctrl sensor r;x;Laag;Technical;PhysiologicalMonitor;;;Philips;;;FU_PulseOximetry;PulseOximeter;Malfunction;;;;;;;;;;;;
+PHILIPSMONITOR - SpO2 geen pols;x;Medium;Technical;PhysiologicalMonitor;;;Philips;;;FU_PulseOximetry;;;;;;;PulseRate;;;;Absent;;;
+PHILIPSMONITOR - SpO2 hoog;x;Medium;Physiological;PhysiologicalMonitor;;;Philips;;;FU_PulseOximetry;;;;;;;SpO2;;;Increased;;;SaO2;PulmonaryOxygenation
+PHILIPSMONITOR - SpO2 laag ;x;Medium;Physiological;PhysiologicalMonitor;;;Philips;;;FU_PulseOximetry;;;;;;;SpO2;;;Decreased;;;SaO2;PulmonaryOxygenation
+PHILIPSMONITOR - SpO2 lage PFI;x;Laag;Technical;PhysiologicalMonitor;;;Philips;;;FU_PulseOximetry;;;;;;;PulseFlowIndex;;;Decreased;;;TissuePerfusion;
+PHILIPSMONITOR - SpO2 zwak signaal ;x;Laag;Technical;PhysiologicalMonitor;;;Philips;;;FU_PulseOximetry;;;;;PPG_waveform;Impaired;;;;;;;;
+PHILIPSMONITOR - SpO2-sensor los ;x;Medium;Technical;PhysiologicalMonitor;;;Philips;;;FU_PulseOximetry;PulseOximeter;Disconnected;;;;;;;;;;;;
+PHILIPSMONITOR - Storing in SpO2;x;Medium;Technical;PhysiologicalMonitor;;;Philips;;;FU_PulseOximetry;PulseOximeter;Enabled;Peripheral;;PPG_waveform;Impaired;;;;;;;;
+PHILIPSMONITOR - Temp laag;x;Medium;Physiological;PhysiologicalMonitor;;;Philips;;;FU_Temperature;;;;;;;Temperature;;;Decreased;;;;
+PRISMAFLEX - Algemene systeemfout ;x;Hoog;Technical;Dialysator;Malfunction;Prismax;Baxter;;;;;;;;;;;;;;;;;
+SERVOI - Ademfrequentie: Hoog;x;Unknown;Physiological;MechanicalVentilator;;ServoI;Getinge;;;FU_PneumoTachograph;;;;;;;RespirationRate;;;Increased;;VentilationTherapy;;PulmonaryVentilation
+SERVOI - Ademfrequentie: Laag;x;Unknown;Physiological;MechanicalVentilator;;ServoI;Getinge;;;FU_PneumoTachograph;;;;;;;RespirationRate;;;Decreased;;VentilationTherapy;;PulmonaryVentilation
+SERVOI - Exp. minuutvol: Laag;x;Unknown;Physiological;MechanicalVentilator;;ServoI;Getinge;;;FU_PneumoTachograph;;;;;;;RespirationVolume;;Minute;Decreased;;VentilationTherapy;RespirationVolume;PulmonaryVentilation
+SERVOI - Exp. minuutvolume;EXCL;Unknown;Physiological;MechanicalVentilator;;ServoI;Getinge;;;FU_PneumoTachograph;;;;;;;RespirationVolume;;Minute;Increased;;VentilationTherapy;RespirationVolume;PulmonaryVentilation
+SERVOI - Paw hoog;x;Unknown;Physiological;MechanicalVentilator;;ServoI;Getinge;;;FU_AirwayPressure;;;;;;;AirwayPressure;Peak;;Increased;;VentilationTherapy;RespirationPressure;PulmonaryVentilation
+SERVOI - Verbinding verbroken;x;Unknown;Technical;MechanicalVentilator;;ServoI;Getinge;ConnectionUnit;Disconnected;;;;;;;;;;;;;VentilationTherapy;;PulmonaryVentilation
+SERVOU - Ademfrequentie hoog;x;Unknown;Physiological;MechanicalVentilator;;ServoU;Getinge;;;FU_PneumoTachograph;;;;;;;RespirationRate;;;Increased;;VentilationTherapy;RespirationRate;PulmonaryVentilation
+SERVOU - Ademfrequentie hoog;x;Medium;Physiological;MechanicalVentilator;;ServoU;Getinge;;;FU_PneumoTachograph;;;;;;;RespirationRate;;;Increased;;VentilationTherapy;RespirationRate;PulmonaryVentilation
+SERVOU - Ademfrequentie laag;x;Unknown;Physiological;MechanicalVentilator;;ServoU;Getinge;;;FU_PneumoTachograph;;;;;;;RespirationRate;;;Decreased;;VentilationTherapy;RespirationRate;PulmonaryVentilation
+SERVOU - Beademingsdruk hoog;x;Unknown;Physiological;MechanicalVentilator;;ServoU;Getinge;;;FU_AirwayPressure;;;;;;;AirwayPressure;Peak;;Increased;;VentilationTherapy;RespirationPressure;PulmonaryVentilation
+SERVOU - Beademingsdruk hoog;x;Hoog;Physiological;MechanicalVentilator;;ServoU;Getinge;;;FU_AirwayPressure;;;;;;;AirwayPressure;Peak;;Increased;;VentilationTherapy;RespirationPressure;PulmonaryVentilation
+SERVOU - Exp. minuutvol. hoog;x;Unknown;Physiological;MechanicalVentilator;;ServoU;Getinge;;;FU_PneumoTachograph;;;;;;;RespirationVolume;;Minute;Increased;;VentilationTherapy;RespirationVolume;PulmonaryVentilation
+SERVOU - Exp. minuutvol. hoog;x;Medium;Physiological;MechanicalVentilator;;ServoU;Getinge;;;FU_PneumoTachograph;;;;;;;RespirationVolume;;Minute;Increased;;VentilationTherapy;RespirationVolume;PulmonaryVentilation
+SERVOU - Exp. minuutvol. laag;x;Unknown;Physiological;MechanicalVentilator;;ServoU;Getinge;;;FU_PneumoTachograph;;;;;;;RespirationVolume;;Minute;Decreased;;VentilationTherapy;RespirationVolume;PulmonaryVentilation
+SERVOU - Exp. minuutvol. laag;x;Hoog;Physiological;MechanicalVentilator;;ServoU;Getinge;;;FU_PneumoTachograph;;;;;;;RespirationVolume;;Minute;Decreased;;VentilationTherapy;RespirationVolume;PulmonaryVentilation
+SERVOU - Grensalarm;EXCL;Medium;;;;ServoU;;;;;;;;;;;;;;;;;;
+SERVOU - PEEP laag;x;Medium;Physiological;MechanicalVentilator;;ServoU;Getinge;;;FU_AirwayPressure;;;;;;;AirwayPressure;EndExpiratory;;Decreased;;VentilationTherapy;RespirationPressure;PulmonaryVentilation
+SERVOU - Patiëntcircuit los;x;Unknown;Technical;MechanicalVentilator;;ServoU;Getinge;AirwayCircuit;Disconnected;;;;;;;;;;;;;;;
+SERVOU - Te veel lekkage;x;Hoog;Technical;MechanicalVentilator;;ServoU;Getinge;;;FU_PneumoTachograph;;;;;;;VentilationCircuitLeak;;;Increased;;VentilationTherapy;;PulmonaryVentilation
+SERVOU - Volume uit blokkade;;Laag;Technical;MechanicalVentilator;;ServoU;Getinge;;;;;;;;;;;;;;;VentilationTherapy;;PulmonaryVentilation
+TRILOGY - 0x79;EXCL;Hoog;Unknown;MechanicalVentilator;;Trilogy;Philips;;;;;;;;;;;;;;;VentilationTherapy;;PulmonaryVentilation
+TRILOGY - Hoge ademfrequentie;x;Hoog;Physiological;MechanicalVentilator;;Trilogy;Philips;;;FU_PneumoTachograph;;;;;;;RespirationRate;;;Increased;;;;
+TRILOGY - Netspanning afwezig;x;Medium;Technical;MechanicalVentilator;;Trilogy;Philips;PowerUnit;Disconnected;;;;;;;;;;;;;VentilationTherapy;;PulmonaryVentilation

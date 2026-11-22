@@ -101,6 +101,10 @@ class RuleStats:
 
     def __init__(self):
         self.rules: dict = {}   # rule -> {"hits": int, "ms": Counter(ms -> invocations)}
+        # Processing time per arriving alarm (minting, every statement of its
+        # stream element, reading the results; wall clock), per patient, in
+        # 0.1 ms steps: patient -> Counter(ms -> alarms). For Table 4.
+        self.arrival_ms: dict = {}
 
     def merge(self, other: "RuleStats") -> None:
         """Add another run's counts (a parallel worker's)."""
@@ -108,6 +112,20 @@ class RuleStats:
             mine = self.rules.setdefault(rule, {"hits": 0, "ms": Counter()})
             mine["hits"] += st["hits"]
             mine["ms"].update(st["ms"])
+        for patient, ms in other.arrival_ms.items():
+            self.arrival_ms.setdefault(patient, Counter()).update(ms)
+
+    def add_arrival(self, patient: str, seconds: float) -> None:
+        self.arrival_ms.setdefault(patient, Counter())[round(1000 * seconds, 1)] += 1
+
+    def write_arrival_times(self, path) -> None:
+        """patient;ms;alarms — the processing-time histogram per patient."""
+        import csv
+        with open(path, "w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f, delimiter=";")
+            w.writerow(["patient", "ms", "alarms"])
+            for patient, ms in self.arrival_ms.items():
+                w.writerows([patient, v, n] for v, n in sorted(ms.items()))
 
     def add(self, lines: list) -> None:
         """The invocations in one element's output (parse_invocations)."""

@@ -1,0 +1,100 @@
+patientID;label;device_id;start;end;device_name;priority
+janeRoe_02;MEDIBUS - Mattress temperature  setting deviation;IncubatorDraeger_00;2026-07-17T08:02:50;2026-07-17T08:03:19;Caleo;Medium
+janeRoe_02;PHILIPSMONITOR - Resp elektr.los;PhysiologicalMonitorPhilips_00;2026-07-17T08:03:45;2026-07-17T08:04:11;Philipsmonitor;Medium
+janeRoe_02;PHILIPSMONITOR - SpO2 laag;PhysiologicalMonitorPhilips_01;2026-07-17T08:04:10;2026-07-17T08:04:31;Philipsmonitor;Medium
+janeRoe_02;CARDIOHELP - pVen onder waarschuwingsgrens;ExtracorporealMembraneOxygenatorCardioHelpGetinge_00;2026-07-17T08:04:30;2026-07-17T08:04:51;CardioHelp;Unknown
+janeRoe_02;Monitor - Lage SpO2;PhysiologicalMonitorInfinityDraeger_00;2026-07-17T08:04:32;2026-07-17T08:05:01;DraegerMonitor;Unknown
+johnDoe_01;DATEXOHMEDACOMVENTILATOR - VTexp High;MechanicalVentilatorDatexohmedacomGEHealthcare_00;2026-07-17T08:14:34;2026-07-17T08:15:04;CarescapeR860;Hoog
+janeRoe_02;MEDIBUS - Humidity low;IncubatorDraeger_00;2026-07-17T08:16:29;2026-07-17T08:16:46;BabyLeo;Laag
+janeRoe_02;Monitor - ART statische druk;PhysiologicalMonitorInfinityDraeger_00;2026-07-17T08:17:05;2026-07-17T08:17:23;DraegerMonitor;Unknown
+janeRoe_02;PHILIPSMONITOR - SpO2 hoog;PhysiologicalMonitorPhilips_00;2026-07-17T08:17:27;2026-07-17T08:17:44;Philipsmonitor;Medium
+alexKim_03;Monitor - SpO2 sensor uit;PhysiologicalMonitorInfinityDraeger_00;2026-07-17T08:23:10;2026-07-17T08:23:38;DraegerMonitor;Unknown
+alexKim_03;HULBUS - Leak too high;MechanicalVentilatorHulbusLowensteinMedical_00;2026-07-17T08:35:55;2026-07-17T08:36:13;LeoniPlus;Hoog
+janeRoe_02;PHILIPSMONITOR - ABP verkleinen;PhysiologicalMonitorPhilips_00;2026-07-17T08:36:28;2026-07-17T08:36:42;Philipsmonitor;Laag
+johnDoe_01;PHILIPSMONITOR - Desaturatie;PhysiologicalMonitorPhilips_00;2026-07-17T08:38:51;2026-07-17T08:39:07;Philipsmonitor;Hoog
+alexKim_03;TRILOGY - Netspanning afwezig;MechanicalVentilatorTrilogyPhilips_00;2026-07-17T08:40:10;2026-07-17T08:40:20;Trilogy;Medium
+alexKim_03;HULBUS - Vte high;MechanicalVentilatorHulbusLowensteinMedical_00;2026-07-17T08:40:10;2026-07-17T08:40:28;LeoniPlus;Hoog
+alexKim_03;TRILOGY - Netspanning afwezig;MechanicalVentilatorTrilogyPhilips_01;2026-07-17T08:40:12;2026-07-17T08:40:37;Trilogy;Medium
+alexKim_03;MEDIBUS - Slagvolume hoog;MechanicalVentilatorDraeger_00;2026-07-17T08:40:30;2026-07-17T08:40:58;Medibus;Unknown
+alexKim_03;MEDIBUS - Humidity low;IncubatorDraeger_00;2026-07-17T08:40:41;2026-07-17T08:41:11;BabyLeo;Laag
+alexKim_03;MEDIBUS - Humidity low;IncubatorDraeger_01;2026-07-17T08:40:49;2026-07-17T08:40:59;BabyLeo;Laag
+johnDoe_01;PHILIPSMONITOR - Desaturatie;PhysiologicalMonitorPhilips_00;2026-07-17T08:42:06;2026-07-17T08:42:20;Philipsmonitor;Hoog
+johnDoe_01;SERVOI - Verbinding verbroken;MechanicalVentilatorServoIGetinge_00;2026-07-17T08:42:15;2026-07-17T08:42:38;ServoI;Unknown
+johnDoe_01;PHILIPSMONITOR - ABP verkleinen;PhysiologicalMonitorPhilips_01;2026-07-17T08:42:16;2026-07-17T08:42:36;Philipsmonitor;Laag
+alexKim_03;PHILIPSMONITOR - SpO2 geen pols;PhysiologicalMonitorPhilips_02;2026-07-17T08:42:17;2026-07-17T08:42:33;Philipsmonitor;Medium
+johnDoe_01;PRISMAFLEX - Algemene systeemfout;DialysatorPrismaFlexBaxter_00;2026-07-17T08:42:19;2026-07-17T08:42:46;Prismax;Hoog
+johnDoe_01;PHILIPSMONITOR - SpO2 geen pols;PhysiologicalMonitorPhilips_00;2026-07-17T08:42:47;2026-07-17T08:43:09;Philipsmonitor;Medium
+johnDoe_01;DATEXOHMEDACOMVENTILATOR - RR High;MechanicalVentilatorDatexohmedacomGEHealthcare_00;2026-07-17T08:42:49;2026-07-17T08:42:59;CarescapeR860;Hoog
+johnDoe_01;SERVOU - Ademfrequentie laag;MechanicalVentilatorServoUGetinge_00;2026-07-17T08:43:01;2026-07-17T08:43:15;ServoU;Unknown
+mariaGarcia_04;MEDIBUS - Humidity Sensor inoperable;IncubatorDraeger_p4_00;2026-07-17T09:00:00;2026-07-17T09:00:22;BabyTherm;Medium
+mariaGarcia_04;SERVOU - PEEP laag;MechanicalVentilatorServoU_p4_00;2026-07-17T09:02:15;2026-07-17T09:02:40;ServoU;Medium
+mariaGarcia_04;PHILIPSMONITOR - Storing in SpO2;PhysiologicalMonitorPhilips_p4_00;2026-07-17T09:05:00;2026-07-17T09:07:00;Philipsmonitor;Medium
+mariaGarcia_04;PHILIPSMONITOR - SpO2 laag;PhysiologicalMonitorPhilips_p4_00;2026-07-17T09:05:30;2026-07-17T09:06:00;Philipsmonitor;Medium
+mariaGarcia_04;DATEXOHMEDACOMVENTILATOR - Ppeak High;MechanicalVentilatorDatexohmedacom_p4_00;2026-07-17T09:10:10;2026-07-17T09:10:35;CarescapeR860;Hoog
+mariaGarcia_04;MEDIBUS - Air temperature high;IncubatorDraeger_p4_00;2026-07-17T09:13:00;2026-07-17T09:13:20;BabyLeo;Medium
+mariaGarcia_04;PHILIPSMONITOR - Apneu;PhysiologicalMonitorPhilips_p4_00;2026-07-17T09:16:40;2026-07-17T09:17:00;Philipsmonitor;Hoog
+mariaGarcia_04;PHILIPSMONITOR - Storing in SpO2;PhysiologicalMonitorPhilips_p4_01;2026-07-17T09:20:00;2026-07-17T09:20:20;Philipsmonitor;Medium
+mariaGarcia_04;PHILIPSMONITOR - SpO2 hoog;PhysiologicalMonitorPhilips_p4_00;2026-07-17T09:20:30;2026-07-17T09:20:50;Philipsmonitor;Medium
+mariaGarcia_04;PRISMAFLEX - Algemene systeemfout;DialysatorPrismaFlex_p4_00;2026-07-17T09:24:10;2026-07-17T09:24:35;Prismax;Hoog
+mariaGarcia_04;SERVOU - Te veel lekkage;MechanicalVentilatorServoU_p4_00;2026-07-17T09:28:00;2026-07-17T09:28:22;ServoU;Hoog
+mariaGarcia_04;MEDIBUS - Check patient;IncubatorDraeger_p4_00;2026-07-17T09:32:15;2026-07-17T09:32:40;BabyLeo;Medium
+mariaGarcia_04;PHILIPSMONITOR - Resp elektr.los;PhysiologicalMonitorPhilips_p4_00;2026-07-17T09:36:00;2026-07-17T09:36:20;Philipsmonitor;Medium
+mariaGarcia_04;DATEXOHMEDACOMVENTILATOR - VTexp Low;MechanicalVentilatorDatexohmedacom_p4_00;2026-07-17T09:40:00;2026-07-17T09:40:25;CarescapeR860;Hoog
+davidLee_05;CARDIOHELP - Verbinding verbroken;ExtracorporealMembraneOxygenatorCardioHelp_p5_00;2026-07-17T10:00:00;2026-07-17T10:00:25;CardioHelp;Unknown
+davidLee_05;HULBUS - CPAP high;MechanicalVentilatorHulbus_p5_00;2026-07-17T10:03:10;2026-07-17T10:03:35;LeoniPlus;Hoog
+davidLee_05;PHILIPSMONITOR - HF hoog;PhysiologicalMonitorPhilips_p5_00;2026-07-17T10:06:00;2026-07-17T10:08:00;Philipsmonitor;Medium
+davidLee_05;PHILIPSMONITOR - Lage hartfreq.;PhysiologicalMonitorPhilips_p5_00;2026-07-17T10:06:30;2026-07-17T10:07:00;Philipsmonitor;Medium
+davidLee_05;MEDIBUS - Radiant heater after 15 mins. operation;IncubatorDraeger_p5_00;2026-07-17T10:11:00;2026-07-17T10:11:20;Caleo;Medium
+davidLee_05;PHILIPSMONITOR - HF hoog;PhysiologicalMonitorPhilips_p5_00;2026-07-17T10:14:30;2026-07-17T10:16:30;Philipsmonitor;Medium
+davidLee_05;SERVOU - Ademfrequentie laag;MechanicalVentilatorServoU_p5_00;2026-07-17T10:15:00;2026-07-17T10:15:25;ServoU;Unknown
+davidLee_05;HULBUS - CPAP low;MechanicalVentilatorHulbus_p5_00;2026-07-17T10:19:00;2026-07-17T10:19:22;LeoniPlus;Hoog
+davidLee_05;PHILIPSMONITOR - Niet te leren ECG;PhysiologicalMonitorPhilips_p5_00;2026-07-17T10:22:15;2026-07-17T10:22:40;Philipsmonitor;Medium
+davidLee_05;MEDIBUS - Check patient;IncubatorDraeger_p5_00;2026-07-17T10:26:00;2026-07-17T10:26:20;BabyLeo;Medium
+davidLee_05;SERVOU - Beademingsdruk hoog;MechanicalVentilatorServoU_p5_00;2026-07-17T10:29:10;2026-07-17T10:29:35;ServoU;Hoog
+davidLee_05;CARDIOHELP - pArt boven waarschuwingsgrens;ExtracorporealMembraneOxygenatorCardioHelp_p5_00;2026-07-17T10:32:00;2026-07-17T10:32:25;CardioHelp;Unknown
+davidLee_05;PHILIPSMONITOR - RF hoog;PhysiologicalMonitorPhilips_p5_00;2026-07-17T10:35:15;2026-07-17T10:35:40;Philipsmonitor;Medium
+davidLee_05;HULBUS - CPAP high;MechanicalVentilatorHulbus_p5_00;2026-07-17T10:38:00;2026-07-17T10:38:20;LeoniPlus;Hoog
+sarahChen_06;MEDIBUS - Air temperature low;IncubatorDraeger_p6_00;2026-07-17T11:00:00;2026-07-17T11:00:22;BabyLeo;Medium
+sarahChen_06;TRILOGY - Hoge ademfrequentie;MechanicalVentilatorTrilogy_p6_00;2026-07-17T11:03:00;2026-07-17T11:03:25;Trilogy;Hoog
+sarahChen_06;Monitor - Lage SpO2;PhysiologicalMonitorInfinityDraeger_p6_00;2026-07-17T11:06:00;2026-07-17T11:08:00;DraegerMonitor;Unknown
+sarahChen_06;PHILIPSMONITOR - SpO2 laag;PhysiologicalMonitorPhilips_p6_00;2026-07-17T11:06:30;2026-07-17T11:07:00;Philipsmonitor;Medium
+sarahChen_06;DATEXOHMEDACOMVENTILATOR - Plimit Reached;MechanicalVentilatorDatexohmedacom_p6_00;2026-07-17T11:11:00;2026-07-17T11:11:20;CarescapeR860;Hoog
+sarahChen_06;PHILIPSMONITOR - SpO2 laag;PhysiologicalMonitorPhilips_p6_00;2026-07-17T11:14:30;2026-07-17T11:16:30;Philipsmonitor;Medium
+sarahChen_06;PHILIPSMONITOR - HF hoog;PhysiologicalMonitorPhilips_p6_00;2026-07-17T11:15:00;2026-07-17T11:15:25;Philipsmonitor;Medium
+sarahChen_06;MEDIBUS - Humidity Sensor inoperable;IncubatorDraeger_p6_00;2026-07-17T11:19:00;2026-07-17T11:19:22;BabyTherm;Medium
+sarahChen_06;TRILOGY - Hoge ademfrequentie;MechanicalVentilatorTrilogy_p6_00;2026-07-17T11:22:15;2026-07-17T11:22:40;Trilogy;Hoog
+sarahChen_06;PHILIPSMONITOR - ECG alle leads los;PhysiologicalMonitorPhilips_p6_00;2026-07-17T11:26:00;2026-07-17T11:26:20;Philipsmonitor;Medium
+sarahChen_06;DATEXOHMEDACOMVENTILATOR - MVexp High;MechanicalVentilatorDatexohmedacom_p6_00;2026-07-17T11:29:10;2026-07-17T11:29:35;CarescapeR860;Hoog
+sarahChen_06;Monitor - SpO2 sensor niet aangesloten;PhysiologicalMonitorInfinityDraeger_p6_00;2026-07-17T11:32:00;2026-07-17T11:32:25;DraegerMonitor;Unknown
+sarahChen_06;PHILIPSMONITOR - Desaturatie;PhysiologicalMonitorPhilips_p6_00;2026-07-17T11:35:15;2026-07-17T11:35:40;Philipsmonitor;Hoog
+sarahChen_06;MEDIBUS - Check patient;IncubatorDraeger_p6_00;2026-07-17T11:38:00;2026-07-17T11:38:20;BabyLeo;Medium
+tomWilson_07;SERVOI - Paw hoog;MechanicalVentilatorServoI_p7_00;2026-07-17T12:00:00;2026-07-17T12:00:22;ServoI;Unknown
+tomWilson_07;MEDIBUS - Radiant heater after 15 mins. operation;IncubatorDraeger_p7_00;2026-07-17T12:03:00;2026-07-17T12:03:20;Caleo;Medium
+tomWilson_07;PHILIPSMONITOR - ABP verkleinen;PhysiologicalMonitorPhilips_p7_00;2026-07-17T12:06:00;2026-07-17T12:06:20;Philipsmonitor;Laag
+tomWilson_07;PHILIPSMONITOR - Asystolie;PhysiologicalMonitorPhilips_p7_00;2026-07-17T12:16:00;2026-07-17T12:16:20;Philipsmonitor;Hoog
+tomWilson_07;HULBUS - Leak too high;MechanicalVentilatorHulbus_p7_00;2026-07-17T12:20:00;2026-07-17T12:20:22;LeoniPlus;Hoog
+tomWilson_07;SERVOI - Exp. minuutvolume;MechanicalVentilatorServoI_p7_00;2026-07-17T12:23:15;2026-07-17T12:23:40;ServoI;Unknown
+tomWilson_07;PHILIPSMONITOR - ABP verkleinen;PhysiologicalMonitorPhilips_p7_00;2026-07-17T12:26:00;2026-07-17T12:28:00;Philipsmonitor;Laag
+tomWilson_07;PHILIPSMONITOR - Asystolie;PhysiologicalMonitorPhilips_p7_00;2026-07-17T12:26:30;2026-07-17T12:26:50;Philipsmonitor;Hoog
+tomWilson_07;MEDIBUS - Check patient;IncubatorDraeger_p7_00;2026-07-17T12:31:00;2026-07-17T12:31:20;BabyLeo;Medium
+tomWilson_07;SERVOI - Ademfrequentie: Hoog;MechanicalVentilatorServoI_p7_00;2026-07-17T12:34:10;2026-07-17T12:34:35;ServoI;Unknown
+tomWilson_07;HULBUS - CPAP low;MechanicalVentilatorHulbus_p7_00;2026-07-17T12:37:00;2026-07-17T12:37:22;LeoniPlus;Hoog
+tomWilson_07;PHILIPSMONITOR - Niet te leren ECG;PhysiologicalMonitorPhilips_p7_00;2026-07-17T12:40:15;2026-07-17T12:40:40;Philipsmonitor;Medium
+tomWilson_07;MEDIBUS - Air temperature high;IncubatorDraeger_p7_00;2026-07-17T12:43:00;2026-07-17T12:43:20;BabyLeo;Medium
+tomWilson_07;SERVOI - Ademfrequentie: Laag;MechanicalVentilatorServoI_p7_00;2026-07-17T12:46:00;2026-07-17T12:46:22;ServoI;Unknown
+lisaAnderson_08;CRITICOOL - Verbinding verbroken;ThermoregulatorCriticool_p8_00;2026-07-17T13:00:00;2026-07-17T13:00:20;Criticool;Hoog
+lisaAnderson_08;EDWARDS - Verbinding verbroken;CardiacMonitorEdwards_p8_00;2026-07-17T13:03:10;2026-07-17T13:03:35;Edwards;Unknown
+lisaAnderson_08;SERVOU - Volume uit blokkade;MechanicalVentilatorServoU_p8_00;2026-07-17T13:06:00;2026-07-17T13:06:22;ServoU;Laag
+lisaAnderson_08;PHILIPSMONITOR - CO2 ctr adapter er;PhysiologicalMonitorPhilips_p8_00;2026-07-17T13:09:15;2026-07-17T13:09:40;Philipsmonitor;Medium
+lisaAnderson_08;MEDIBUS - Air temperature low;IncubatorDraeger_p8_00;2026-07-17T13:12:00;2026-07-17T13:12:20;BabyLeo;Medium
+lisaAnderson_08;DATEXOHMEDACOMVENTILATOR - Ppeak Low;MechanicalVentilatorDatexohmedacom_p8_00;2026-07-17T13:15:10;2026-07-17T13:15:35;CarescapeR860;Hoog
+lisaAnderson_08;PHILIPSMONITOR - SpO2 zwak signaal;PhysiologicalMonitorPhilips_p8_00;2026-07-17T13:18:00;2026-07-17T13:18:22;Philipsmonitor;Laag
+lisaAnderson_08;SERVOU - Exp. minuutvol. hoog;MechanicalVentilatorServoU_p8_00;2026-07-17T13:21:15;2026-07-17T13:21:40;ServoU;Medium
+lisaAnderson_08;MEDIBUS - Radiant heater after 15 mins. operation;IncubatorDraeger_p8_00;2026-07-17T13:24:00;2026-07-17T13:24:20;Caleo;Medium
+lisaAnderson_08;PHILIPSMONITOR - RF hoog;PhysiologicalMonitorPhilips_p8_00;2026-07-17T13:27:10;2026-07-17T13:27:35;Philipsmonitor;Medium
+lisaAnderson_08;DATEXOHMEDACOMVENTILATOR - Patient Disconnected;MechanicalVentilatorDatexohmedacom_p8_00;2026-07-17T13:30:00;2026-07-17T13:30:22;CarescapeR860;Hoog
+lisaAnderson_08;SERVOU - PEEP laag;MechanicalVentilatorServoU_p8_00;2026-07-17T13:33:15;2026-07-17T13:33:40;ServoU;Medium
+lisaAnderson_08;PHILIPSMONITOR - SpO2-sensor los;PhysiologicalMonitorPhilips_p8_00;2026-07-17T13:36:00;2026-07-17T13:36:20;Philipsmonitor;Medium
+lisaAnderson_08;MEDIBUS - Check patient;IncubatorDraeger_p8_00;2026-07-17T13:39:10;2026-07-17T13:39:35;BabyLeo;Medium
+lisaAnderson_08;CRITICOOL - Verbinding verbroken;ThermoregulatorCriticool_p8_00;2026-07-17T13:42:00;2026-07-17T13:42:22;Criticool;Hoog
+lisaAnderson_08;PHILIPSMONITOR - Extreme Tachy;PhysiologicalMonitorPhilips_p8_00;2026-07-17T13:45:15;2026-07-17T13:45:40;Philipsmonitor;Hoog

@@ -1,0 +1,30 @@
+id: cat3b_cpap
+title: "A ventilator in CPAP mode"
+rule: "3b"
+purpose: edge
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: >
+    A ventilator in CPAP mode (`therapeuticModality:CPAP`, a subclass of
+    VentilationTherapy) with a leak, low minute volume on another ventilator —
+    CAT3b positive, 08:00:20–08:01:00. a3 is also silenced by rule 2a: with
+    blueprints identified by device model + label + priority, a3 is the UMCU
+    ServoU alarm (priority Hoog), and CPAP low (Hoog, same process, same
+    direction) is active. Before 2026-11-19 the label-only lookup happened to
+    pick the adult-ICU blueprint (priority Unknown), which rule 2a skips.
+author: "Migrated from DATA/CAT_evaluation (README and regression.py), 2026-10-14"
+strict: true
+
+stream:
+  - {id: a1, device: "Hulbus_00", label: "HULBUS - CPAP low", device_name: "LeoniPlus", priority: "Hoog", start: "08:00:00", end: "08:02:00"}
+  - {id: a2, device: "Hulbus_00", label: "HULBUS - Leak too high", device_name: "LeoniPlus", priority: "Hoog", start: "08:00:10", end: "08:01:00"}
+  - {id: a3, device: "ServoU_00", label: "SERVOU - Exp. minuutvol. laag", device_name: "ServoU", priority: "Hoog", start: "08:00:20", end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {silenced: a3, reason: redundant, rule: 2a, by: a1}
+  - {interpretation: VentilationFailure, from: "08:00:20", until: "08:01:00", evidence: [a2, a3]}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:20", until: "08:01:30", evidence: [a3]}

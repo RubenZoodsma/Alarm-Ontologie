@@ -21,7 +21,7 @@ from datetime import datetime
 from pathlib import Path
 
 import mint as M
-from stream import AlarmArrival, AlarmEnd
+from stream import AlarmArrival, AlarmEnd, group_by_patient, replay_stream
 
 
 def graph_iri(alarm: str, suffix: str) -> str:
@@ -91,8 +91,8 @@ class WindowOperator:
 
         msg_graph = M.alarm_message(kb, arrival, identity)
         M.add_triggered_by(msg_graph, [arrival], kb, identity)
-        cond_graph = M.condition_for_event(kb, arrival.patient, arrival.label, arrival.device_id, identity)
-        bg_graph = M.background_for_key(kb, arrival.patient, arrival.label, arrival.device_id, identity)
+        cond_graph = M.condition_for_event(kb, arrival.patient, arrival, arrival.device_id, identity)
+        bg_graph = M.background_for_key(kb, arrival.patient, arrival, arrival.device_id, identity)
 
         incoming_prio = msg_graph.value(alarm_uri, M.MDA.hasPriority)
         priority_pred = f"<{M.MDA}hasPriority>"
@@ -153,3 +153,25 @@ class WindowOperator:
         """Drop the alarm's persistent graph: its window closed."""
         return [f"# window-expiry: {alarm.label} @ {alarm.device_id}",
                 f"DELETE WHERE {{ GRAPH {alarm.pgraph} {{ ?s ?p ?o }} }}"]
+
+
+def alarms_with_context(events: list, window) -> set:
+    """IRIs of the alarms that arrive while another alarm of their patient
+    still has a graph in the store: its transient graph (active) or its
+    persistent graph (within `window` after its end). The same windows as
+    WindowOperator and Processor: a window closing at t, and the ends at t,
+    are applied before an arrival at t. Computed from the stream alone, so
+    it does not depend on any rule."""
+    found = set()
+    for evs in group_by_patient(events).values():
+        open_, expiries = set(), []
+        for element in replay_stream(evs):
+            if isinstance(element, AlarmEnd):
+                open_.discard(element.alarm_id)
+                expiries.append(element.time + window)
+                continue
+            expiries = [due for due in expiries if due > element.start]
+            if open_ or expiries:
+                found.add(str(M.alarm_iri(element)))
+            open_.add(element.alarm_id)
+    return found

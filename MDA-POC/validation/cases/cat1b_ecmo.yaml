@@ -1,0 +1,22 @@
+id: cat1b_ecmo
+title: "An ECMO circuit pressure is not an arterial line on a patient monitor"
+rule: "1b"
+purpose: edge
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: >
+    An ECMO circuit pressure is not an arterial line on a patient monitor — CAT1b
+    negative
+author: "Migrated from DATA/CAT_evaluation (README and regression.py), 2026-10-14"
+strict: true
+
+stream:
+  - {id: a1, device: "CardioHelp_00", label: "CARDIOHELP - pArt boven waarschuwingsgrens", device_name: "CardioHelp", priority: "Unknown", start: "07:55:00", end: "07:55:20"}
+  - {id: a2, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - Asystolie", device_name: "Philipsmonitor", priority: "Hoog", start: "08:00:00", end: "08:00:20"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: CardiacArrest, from: "08:00:00", until: "08:00:20", evidence: [a2]}

@@ -1,8 +1,9 @@
 """
 stream.py — the input stream (RSP-QL).
 
-Reads an alarm corpus (`;`-separated: patientID;label;device_id;start;end
-[;alarm_id]) and replays it as AlarmArrival and AlarmEnd elements in
+Reads an alarm corpus (`;`-separated, by header name: patientID;label;
+device_id;start;end, plus device_name;priority and optionally alarm_id) and
+replays it as AlarmArrival and AlarmEnd elements in
 logical time, as a live feed would deliver them. An arrival carries no end.
 
 Order at one instant t: all ends at t, then the arrivals at t in input
@@ -32,6 +33,12 @@ class Event:
     # ALARM_ID, part of the alarm IRI: the file's `alarm_id` column (the
     # corpus: its row in the locked source), else the 1-based row number.
     alarm_id: str
+    # With the label, they identify the alarm's blueprint (device model +
+    # label + priority): device_name is the gateway's device name (e.g.
+    # Caleo), mapped to the model through DATA/ANNOTATION/device_models.csv.
+    # Empty means unknown: the alarm then matches no blueprint.
+    device_name: str = ""
+    priority: str = ""
 
 
 def _alarm_ids(header: list, rows: list) -> list:
@@ -49,8 +56,11 @@ def load_events(path: Path) -> list:
         reader = csv.reader(f, delimiter=";")
         header = next(reader)
         rows = [row for row in reader if row]
-    return [Event(row[0], row[1], row[2], datetime.fromisoformat(row[3]), datetime.fromisoformat(row[4]),
-                  alarm_id)
+    col = {name: i for i, name in enumerate(header)}
+    get = lambda row, name: row[col[name]] if name in col else ""
+    return [Event(get(row, "patientID"), get(row, "label"), get(row, "device_id"),
+                  datetime.fromisoformat(get(row, "start")), datetime.fromisoformat(get(row, "end")),
+                  alarm_id, get(row, "device_name"), get(row, "priority"))
             for row, alarm_id in zip(rows, _alarm_ids(header, rows))]
 
 
@@ -77,9 +87,14 @@ def load_events_for_patients(path: Path, patient_ids: set) -> list:
     if "alarm_id" not in df.columns:
         df["alarm_id"] = [str(i) for i in range(1, len(df) + 1)]  # before filtering, like load_events
     df = df[df["patientID"].isin(patient_ids)]
+    for c in ("device_name", "priority"):
+        if c not in df.columns:
+            df[c] = ""
+    df = df.fillna("")
     return [
         Event(row.patientID, row.label, row.device_id,
-              datetime.fromisoformat(row.start), datetime.fromisoformat(row.end), row.alarm_id)
+              datetime.fromisoformat(row.start), datetime.fromisoformat(row.end), row.alarm_id,
+              row.device_name, row.priority)
         for row in df.itertuples(index=False)
     ]
 
@@ -92,6 +107,8 @@ class AlarmArrival:
     device_id: str
     start: datetime
     alarm_id: str
+    device_name: str = ""
+    priority: str = ""
 
     @property
     def time(self) -> datetime:
@@ -110,7 +127,8 @@ def replay_stream(events: list) -> list:
     """Every event as an AlarmArrival and an AlarmEnd, in stream order."""
     keyed = []
     for seq, e in enumerate(sorted(events, key=lambda ev: ev.start)):
-        keyed.append(((e.start, 1, seq, 0), AlarmArrival(e.patient, e.label, e.device_id, e.start, e.alarm_id)))
+        keyed.append(((e.start, 1, seq, 0), AlarmArrival(e.patient, e.label, e.device_id, e.start, e.alarm_id,
+                                                         e.device_name, e.priority)))
         if e.end > e.start:
             keyed.append(((e.end, 0, seq, 0), AlarmEnd(e.patient, e.alarm_id, e.end)))
         else:  # zero-length: right after its own arrival

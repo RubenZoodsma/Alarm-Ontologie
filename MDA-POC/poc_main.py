@@ -27,6 +27,7 @@ import execution as X
 import processor as P
 import rules as RU
 import stream as S
+import windows as W
 
 RDATA_EXPORT_SCRIPT = ROOT / "data" / "tools" / "export_rdata.R"
 
@@ -59,6 +60,11 @@ SETTINGS = {
     "cat3a": True,
     "cat3b": True,
 },
+    # Post-alarm validity of structural knowledge, as an xsd:duration
+    # ("PT5M", "PT30M", "PT1H"), for the sensitivity analysis; None: the
+    # ontology's mda:postAlarmValidityDuration (PT15M).
+    "post_alarm_validity": None,
+
     # Parallel worker processes (patients are independent; each gets its
     # own Oxigraph store). 1: serial, in batches of `batch_size`.
     "workers": 1,
@@ -77,6 +83,10 @@ SETTINGS = {
     # The two logs (engine/event_log.py).
     "event_log": ROOT / "_scratch" / "clinical_events.csv",
     "firing_log": ROOT / "_scratch" / "rule_firings.csv",
+    # For Table 4 (CODE/reporting/table4_stats.py): processing time per
+    # arriving alarm (histogram per patient), and what was run.
+    "arrival_times": ROOT / "_scratch" / "arrival_times.csv",
+    "run_manifest": ROOT / "_scratch" / "run.json",
 }
 
 
@@ -117,12 +127,20 @@ def choose_patient_ids(all_ids: list, n, seed: int) -> list:
     return rng.sample(all_ids, n)
 
 
-def report(patients: dict, rule_names: list, firings: list, records: list) -> None:
-    """Per patient and in total: flagged, silenced, episodes per kind, and
-    the share of alarms CAT1 or CAT2 managed."""
+def _pct(part: int, whole: int) -> float:
+    return 100.0 * part / whole if whole else 0.0
+
+
+def report(kb, patients: dict, rule_names: list, firings: list, records: list) -> None:
+    """Per patient and in total: flagged, silenced, episodes per kind, the
+    share of alarms CAT1 or CAT2 managed, the share that arrived with
+    context (another alarm of the patient still in the store), and the
+    managed share of those."""
     event_kinds = [r.kind for r in RU.enabled_event_rules(rule_names)]
     episodes = {kind: EL.episodes_by_patient(records, kind) for kind in event_kinds}
     total_flagged = total_silenced = total_managed = total_alarms = 0
+    total_context = total_managed_in_context = 0
+    with_context = W.alarms_with_context([e for evs in patients.values() for e in evs], kb.window)
     total_events = {kind: 0 for kind in event_kinds}
     # From the firing log, so withdrawn flags and lifted silences don't count.
     flagged = EL.flagged_alarms(firings)
@@ -136,22 +154,35 @@ def report(patients: dict, rule_names: list, firings: list, records: list) -> No
         n_managed = len(fired_flag | fired_silence)
         n_alarms = len(patients[patient])
         pct_managed = 100.0 * n_managed / n_alarms if n_alarms else 0.0
+        context = {str(M.alarm_iri(e)) for e in patients[patient]} & with_context
+        n_context = len(context)
+        n_managed_in_context = len((fired_flag | fired_silence) & context)
         total_flagged += n_flag
         total_silenced += n_silence
         total_managed += n_managed
         total_alarms += n_alarms
+        total_context += n_context
+        total_managed_in_context += n_managed_in_context
         parts = [f"flaggedLikelyFalsePositive={n_flag}", f"silencedBy={n_silence}"]
         for kind in event_kinds:
             n = episodes[kind].get(patient, 0)
             total_events[kind] += n
             parts.append(f"{kind}={n}")
         parts.append(f"cat1+cat2 hit rate={n_managed}/{n_alarms} ({pct_managed:.1f}%)")
+        parts.append(f"with context={n_context}/{n_alarms} ({_pct(n_context, n_alarms):.1f}%)")
+        parts.append(f"cat1+cat2 hit rate with context={n_managed_in_context}/{n_context} "
+                     f"({_pct(n_managed_in_context, n_context):.1f}%)")
         print(f"  {patient}: {', '.join(parts)}")
     total_pct = 100.0 * total_managed / total_alarms if total_alarms else 0.0
     print(f"\nTotals across {len(patients)} patient(s): "
           f"flaggedLikelyFalsePositive={total_flagged}, silencedBy={total_silenced}"
           + "".join(f", {kind}={n}" for kind, n in total_events.items())
-          + f", cat1+cat2 hit rate={total_managed}/{total_alarms} ({total_pct:.1f}%)")
+          + f", cat1+cat2 hit rate={total_managed}/{total_alarms} ({total_pct:.1f}%)"
+          + f", with context={total_context}/{total_alarms} ({_pct(total_context, total_alarms):.1f}%)"
+          + f", cat1+cat2 hit rate with context={total_managed_in_context}/{total_context} "
+            f"({_pct(total_managed_in_context, total_context):.1f}%)")
+    print("  with context: another alarm of the patient was still in the store at arrival — active,\n"
+          "  or within the post-alarm window after its end; without it CAT1/CAT2 have nothing to compare to.")
 
 
 def run():
@@ -167,9 +198,10 @@ def run():
           f"{', '.join(rule_names) or '(none)'}")
 
     t = time.monotonic()
-    kb = M.load_kb()
+    kb = M.load_kb(SETTINGS["post_alarm_validity"])
     print(f"[{time.monotonic() - t_start:7.1f}s] loaded knowledge base "
-          f"({time.monotonic() - t:.1f}s)")
+          f"({time.monotonic() - t:.1f}s); post-alarm validity {kb.window}"
+          + ("" if SETTINGS["post_alarm_validity"] is None else " (SETTINGS override)"))
 
     dataset = resolve_dataset(SETTINGS["dataset"])
 
@@ -186,10 +218,10 @@ def run():
           f"{len(groups)} patient(s) ({time.monotonic() - t:.1f}s)")
     print(f"-- Patients: {len(groups)}/{len(all_ids)} ")
 
-    # Coverage: the share of alarms whose label the catalogue knows.
-    label_counts = Counter(e.label for e in events)
-    unresolved_counts = Counter({label: n for label, n in label_counts.items()
-                                  if label not in kb.type_index})
+    # Coverage: the share of alarms with a blueprint (device model + label +
+    # priority). A gap is reported with its full identity.
+    key_of = lambda e: f"{e.device_name} | {e.label} | {e.priority}"  # noqa: E731
+    unresolved_counts = Counter(key_of(e) for e in events if M.type_of(kb, e) is None)
     n_total = len(events)
     n_covered = n_total - sum(unresolved_counts.values())
     coverage_pct = 100.0 * n_covered / n_total if n_total else 0.0
@@ -197,16 +229,16 @@ def run():
 
     if unresolved_counts:
         top = unresolved_counts.most_common(3)
-        print(f"WARNING: {len(unresolved_counts)} label(s) with non-matching AlarmType."
+        print(f"WARNING: {len(unresolved_counts)} device | label | priority combination(s) without a blueprint. "
               f"Top {len(top)} by alarm count:")
         for label, n in top:
             print(f"  - {label} ({n} alarm(s))")
         if len(unresolved_counts) > len(top):
-            print(f"  ... and {len(unresolved_counts) - len(top)} more distinct label(s)")
+            print(f"  ... and {len(unresolved_counts) - len(top)} more")
 
     # Unknown labels mint nothing; drop them before they cost engine commands.
     if unresolved_counts:
-        events = [e for e in events if e.label in kb.type_index]
+        events = [e for e in events if M.type_of(kb, e) is not None]
         groups = S.group_by_patient(events)
 
     scratch = ROOT / "_scratch"
@@ -221,7 +253,8 @@ def run():
     stats = X.RuleStats()
     if SETTINGS["workers"] > 1:
         complete = P.run_parallel(groups, scratch, log, stats, SETTINGS["workers"],
-                                  enabled_rules=rule_names, audit_log=SETTINGS["audit_logging"])
+                                  enabled_rules=rule_names, audit_log=SETTINGS["audit_logging"],
+                                  window=SETTINGS["post_alarm_validity"])
     else:
         complete = P.run_batched(kb, groups, scratch, log, stats, batch_size=SETTINGS["batch_size"],
                                  enabled_rules=rule_names, timeout=SETTINGS["element_timeout_s"],
@@ -230,10 +263,20 @@ def run():
     records, firings = log.records, log.firings
 
     print()
-    report(groups, rule_names, firings, records)
+    report(kb, groups, rule_names, firings, records)
     print(f"Clinical-event log: {len(records)} event(s) -> {SETTINGS['event_log']}")
     print(f"Rule-firing log -> {SETTINGS['firing_log']}")
     X.summarize_invocations(stats)
+    stats.write_arrival_times(SETTINGS["arrival_times"])
+    import json
+    SETTINGS["run_manifest"].write_text(json.dumps({
+        "dataset": str(dataset), "patients": sorted(chosen_ids),
+        "n_patients": SETTINGS["n_patients"], "seed": SETTINGS["seed"],
+        "enabled_rules": rule_names, "post_alarm_validity": str(kb.window),
+        "complete": complete, "event_log": str(SETTINGS["event_log"]),
+        "firing_log": str(SETTINGS["firing_log"]), "arrival_times": str(SETTINGS["arrival_times"]),
+    }, indent=1))
+    print(f"Processing times -> {SETTINGS['arrival_times']}; run manifest -> {SETTINGS['run_manifest']}")
     print(f"\nTotal wall-clock time: {time.monotonic() - t_start:.1f}s")
     if not complete:
         print("*** INCOMPLETE RUN: the engine stopped or reported errors (see above); results are partial. ***")

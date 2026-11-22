@@ -11,20 +11,17 @@ Two corpus stages, three ICUs
 ------------------------------
   Initial alarms            the full alarm log, before any feasibility
                              selection: DATA/CORPUS/Total_corpus.csv
-  Alarm corpus after         the Pareto-selected subset that has actually
-  feasibility split          been annotated so far: the 50th-percentile
-  (50th percentile)          cutoff (DATA/CORPUS/Annotation_corpus_
-                             50.csv), the only cutoff with a completed
-                             annotation pass (DATA/ANNOTATION/consensus/
-                             p50_annotated.csv). 95th/99th-percentile
-                             cutoffs exist as corpus files but are not yet
-                             annotated, so they cannot populate the
-                             "Annotation characteristics" section and are
-                             not used here.
+  Alarm corpus after         the Pareto-selected subset that was
+  feasibility split          annotated: the cutoff of the annotation file
+                             build_framework.py reads (currently 75%:
+                             DATA/CORPUS/Annotation_corpus_75.csv,
+                             DATA/ANNOTATION/consensus/p75_annotated.csv).
 
-An "alarm type" is a (label, priority) pair throughout, matching the
-identity already used elsewhere in the pipeline (build_annotation_scaffold.py's
-merge key, build_framework.py's alarmtype_iri). The same alarm type can be raised in more than one ICU
+An "alarm type" is a distinct alarm: device + label + priority, the identity
+of a blueprint (FRAMEWORK/PLAN_blueprint_identity.md). Corpus rows name the
+device by its gateway name, annotated rows by its model (Device.Type); they
+are joined through DATA/ANNOTATION/device_models.csv. Rows marked EXCL (not
+annotatable) are left out of the annotation characteristics. The same alarm type can be raised in more than one ICU
 (e.g. the same device model deployed in two departments); it is counted
 once per ICU it occurs in, but only once in the Total column, so Total is
 NOT the sum of the three ICU columns (see the table's footnote). The
@@ -36,7 +33,7 @@ labels, n".
 Device categories are not hardcoded
 ------------------------------------
 "Physiological monitor", "Mechanical ventilator", "Thermoregulator", etc.
-are read straight off the p50_annotated.csv 'Device' column (the
+are read straight off the the annotation file 'Device' column (the
 controlled-vocabulary class an annotator assigned to each alarm's device)
 and propagated to every corpus row sharing that device model — verified at
 runtime that each device model maps to exactly one category. A device
@@ -46,7 +43,7 @@ bucket that is reported, never silently dropped or guessed at.
 Annotation characteristics
 ----------------------------
 Relevant concepts / Clinically enriched / Technically enriched / Annotated
-triples are per-alarm counts of filled columns in p50_annotated.csv:
+triples are per-alarm counts of filled columns in the annotation file:
 
   Technically enriched = filled technical columns   (Device*, Component*,
                                                        Sensor*, Signal*,
@@ -84,11 +81,13 @@ from build_framework import COLUMN_SCHEMES
 SCRIPT_DIR          = Path(__file__).resolve().parent
 ROOT                = SCRIPT_DIR.parent.parent   # CODE/reporting -> CODE -> Restructured
 TOTAL_CORPUS_PATH   = ROOT / "DATA" / "CORPUS" / "Total_corpus.csv"
-CUTOFF_CORPUS_PATH  = ROOT / "DATA" / "CORPUS" / "Annotation_corpus_50.csv"
-ANNOTATED_PATH      = ROOT / "DATA" / "ANNOTATION" / "consensus" / "p50_annotated.csv"
+ANNOTATED_PATH      = ROOT / "DATA" / "ANNOTATION" / "consensus" / "p75_annotated.csv"
+CUTOFF_PCT          = int(ANNOTATED_PATH.stem.split("_")[0].lstrip("p"))
+CUTOFF_CORPUS_PATH  = ROOT / "DATA" / "CORPUS" / f"Annotation_corpus_{CUTOFF_PCT}.csv"
+DEVICE_MODELS_PATH  = ROOT / "DATA" / "ANNOTATION" / "device_models.csv"
 OUT_PATH            = ROOT / "DOCS" / "tables" / "corpus_stats.md"
 
-FEASIBILITY_CUTOFF_LABEL = "50th percentile"
+FEASIBILITY_CUTOFF_LABEL = f"{CUTOFF_PCT}th percentile"
 
 # ── Department / priority display ────────────────────────────────────────────
 
@@ -125,9 +124,26 @@ CLINICAL_COLUMNS = {
 METADATA_COLUMNS = {"alarmPriority", "alarmCategory"}
 
 
-def norm_key(label: str, priority: str) -> tuple:
-    """Whitespace/case-normalized (label, priority) join key."""
-    return (" ".join(label.split()).casefold(), " ".join(priority.split()).casefold())
+def _n(s) -> str:
+    return " ".join(str(s or "").split()).casefold()
+
+
+def load_device_models() -> dict:
+    with open(DEVICE_MODELS_PATH, encoding="utf-8", newline="") as f:
+        return {r["gateway_name"]: r["model"] for r in csv.DictReader(f, delimiter=";")}
+
+
+MODEL_OF = load_device_models()
+
+
+def corpus_key(r: dict) -> tuple:
+    """Distinct-alarm identity of a corpus row: (model, label, priority)."""
+    return (_n(MODEL_OF[r["Alarm_device"]]), _n(r["Alarm_label"]), _n(r["Alarm_priority"]))
+
+
+def annotated_key(r: dict) -> tuple:
+    """Distinct-alarm identity of an annotated row: (model, label, priority)."""
+    return (_n(r.get("Device.Type")), _n(r["alarmLabel"]), _n(r["alarmPriority"]))
 
 
 # ── Corpus loading ────────────────────────────────────────────────────────────
@@ -155,14 +171,14 @@ def load_annotated(path: Path) -> list:
 
 def alarm_types(rows: list) -> dict:
     """
-    Merge corpus rows into {(label, priority): {priority, departments, devices,
-    count}}, the same (label, priority) identity used by build_annotation_
-    scaffold.py and build_framework.py's alarmtype_iri. Priority is part of
-    that identity key, so every unique alarm type has exactly one priority.
+    Merge corpus rows into {(device, label, priority): {priority,
+    departments, devices, count}}: one entry per distinct alarm, the identity
+    of a blueprint. Priority is part of the key, so every alarm type has
+    exactly one priority.
     """
     types = {}
     for r in rows:
-        key = (r["Alarm_label"], r["Alarm_priority"])
+        key = (r["Alarm_device"], r["Alarm_label"], r["Alarm_priority"])
         t = types.setdefault(key, {"priority": r["Alarm_priority"],
                                     "departments": set(), "devices": set(), "count": 0})
         t["departments"].add(r["Alarm_department"])
@@ -174,31 +190,31 @@ def alarm_types(rows: list) -> dict:
 # ── Device → category, derived from the annotation, not hardcoded ───────────
 
 def build_device_category_map(annotated_rows: list, cutoff_rows: list):
-    label_prio_to_devices = defaultdict(set)
+    key_to_devices = defaultdict(set)
     for r in cutoff_rows:
-        label_prio_to_devices[norm_key(r["Alarm_label"], r["Alarm_priority"])].add(r["Alarm_device"])
+        key_to_devices[corpus_key(r)].add(r["Alarm_device"])
 
-    category_by_device = defaultdict(set)
+    category_by_device = defaultdict(Counter)
     unmatched = []
     for r in annotated_rows:
         device_class = (r.get("Device") or "").strip()
         if not device_class:
             continue
-        devices = label_prio_to_devices.get(norm_key(r["alarmLabel"], r["alarmPriority"]))
+        devices = key_to_devices.get(annotated_key(r))
         if not devices:
-            unmatched.append((r["alarmLabel"], r["alarmPriority"]))
+            unmatched.append((r.get("Device.Type"), r["alarmLabel"], r["alarmPriority"]))
             continue
         for dev in devices:
-            category_by_device[dev].add(device_class)
+            category_by_device[dev][device_class] += 1
 
-    conflicts = {d: c for d, c in category_by_device.items() if len(c) > 1}
-    if conflicts:
-        raise ValueError(
-            "Device model(s) annotated with more than one category — "
-            f"category derivation assumes exactly one per model: {conflicts}"
-        )
-
-    resolved = {d: next(iter(c)) for d, c in category_by_device.items()}
+    # One category per device is expected; a device annotated under two (an
+    # annotation to revise, also caught by inference.ttl's device-model
+    # axioms) is reported and given its majority category.
+    resolved = {}
+    for d, c in category_by_device.items():
+        if len(c) > 1:
+            print(f"[WARN]   device {d} annotated as {dict(c)}; using {c.most_common(1)[0][0]}")
+        resolved[d] = c.most_common(1)[0][0]
     return resolved, unmatched
 
 
@@ -245,13 +261,15 @@ def corpus_section(rows: list, category_by_device: dict) -> dict:
 # ── Annotation characteristics ───────────────────────────────────────────────
 
 def match_departments(annotated_rows: list, cutoff_rows: list):
-    label_prio_to_departments = defaultdict(set)
+    key_to_departments = defaultdict(set)
     for r in cutoff_rows:
-        label_prio_to_departments[norm_key(r["Alarm_label"], r["Alarm_priority"])].add(r["Alarm_department"])
+        key_to_departments[corpus_key(r)].add(r["Alarm_department"])
 
     matched, unmatched = [], []
     for r in annotated_rows:
-        depts = label_prio_to_departments.get(norm_key(r["alarmLabel"], r["alarmPriority"]))
+        if (r.get("reviewStatus") or "").strip() == "EXCL":
+            continue
+        depts = key_to_departments.get(annotated_key(r))
         if not depts:
             unmatched.append(r)
         else:
@@ -367,7 +385,7 @@ def main() -> None:
         print(f"[WARN]   Device model(s) with no annotated occurrence, reported as "
               f"'{UNCLASSIFIED}': {', '.join(unclassified)}")
     if unmatched_devices:
-        print(f"[WARN]   {len(unmatched_devices)} annotated row(s) did not match any corpus_50 "
+        print(f"[WARN]   {len(unmatched_devices)} annotated row(s) did not match the selected corpus "
               f"row by (label, priority), skipped for device categorization:")
         for label, prio in unmatched_devices:
             print(f"         {label!r} ({prio})")
@@ -385,7 +403,7 @@ def main() -> None:
     annotation, unmatched_annotation = annotation_section(annotated_rows, cutoff_rows,
                                                             technical_columns, clinical_columns)
     if unmatched_annotation:
-        print(f"[WARN]   {len(unmatched_annotation)} annotated row(s) did not match any corpus_50 "
+        print(f"[WARN]   {len(unmatched_annotation)} annotated row(s) did not match the selected corpus "
               f"row by (label, priority), excluded from Annotation characteristics:")
         for r in unmatched_annotation:
             print(f"         {r['alarmLabel']!r} ({r['alarmPriority']})")

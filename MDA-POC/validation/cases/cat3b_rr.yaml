@@ -1,0 +1,21 @@
+id: cat3b_rr
+title: "A low respiratory rate is not reduced pulmonary function"
+rule: "3b"
+purpose: edge
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: >
+    A low respiratory rate is not reduced pulmonary function (it can be
+    compensated) — CAT3b negative
+author: "Migrated from DATA/CAT_evaluation (README and regression.py), 2026-10-14"
+strict: true
+
+stream:
+  - {id: a1, device: "ServoU_00", label: "SERVOU - Te veel lekkage", device_name: "ServoU", priority: "Hoog", start: "08:00:00", end: "08:02:00"}
+  - {id: a2, device: "ServoU_00", label: "SERVOU - Ademfrequentie laag", device_name: "ServoU", priority: "Unknown", start: "08:00:30", end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}

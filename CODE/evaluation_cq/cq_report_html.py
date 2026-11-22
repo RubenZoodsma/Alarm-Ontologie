@@ -1,11 +1,10 @@
 """
 cq_report_html.py — generates docs/cq/index.html: a static, pre-computed
-browser for every competency question (CQ1-11) with Previous/Next
+browser for the retrieval competency questions (CQ1-7) with Previous/Next
 navigation.
 
 Reuses cq_QA.py (pre/post-enrichment CQs, against the base graph or its
-OWL-RL closure) and cq_temporal_QA.py (CQ9-11, against the fabricated
-snapshot dataset) unmodified to actually execute every query, then embeds
+OWL-RL closure) unmodified to actually execute every query, then embeds
 the results -- question, SPARQL text, first 5 result rows, full row count
 -- as a JSON blob into a single-file page whose JS only renders/paginates
 that blob. Same "compute in Python, render in JS" pattern as
@@ -22,7 +21,11 @@ import re
 from pathlib import Path
 
 import cq_QA as Q
-import cq_temporal_QA as T
+
+# The temporal CQs (reasoning over coinciding alarms; CQ8-10 in the
+# manuscript) are answered by the MDA-POC alarm management system (Section 4),
+# not by a static query page. Their page, built from the unused old POC
+# (CODE/evaluation_poc), was retired on 2026-11-19.
 
 OUT = Q.ROOT / "docs" / "cq" / "index.html"
 MAX_ROWS_SHOWN = 5
@@ -55,27 +58,8 @@ def collect_standard() -> list:
     return entries
 
 
-def collect_temporal() -> list:
-    ds = T.build_snapshot_dataset()
-    entries = []
-    for qpath in sorted(T.QUERY_DIR.glob("CQ*.rq")):
-        r = T.run_query(qpath, ds)
-        entries.append({
-            "stage": "temporal",
-            "name": r["name"],
-            "number": _number(r["name"]),
-            "question": r["question"],
-            "query": qpath.read_text().strip(),
-            "reasoning": "temporal",
-            "vars": r["vars"],
-            "rows": r["rows"][:MAX_ROWS_SHOWN],
-            "total_rows": len(r["rows"]),
-        })
-    return entries
-
-
 def main() -> None:
-    entries = collect_standard() + collect_temporal()
+    entries = collect_standard()
     stage_rank = {s: i for i, s in enumerate(Q.STAGE_ORDER)}
     entries.sort(key=lambda e: (stage_rank.get(e["stage"], len(stage_rank)), e["number"], e["name"]))
 
@@ -192,7 +176,6 @@ TEMPLATE = r"""<!doctype html>
   const REASONING_LABEL = {
     base: "base graph (asserted only)",
     reasoned: "reasoned (OWL-RL closure)",
-    temporal: "temporal snapshot dataset",
   };
 
   function humanizeStage(stage) {

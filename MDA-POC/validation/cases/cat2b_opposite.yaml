@@ -1,0 +1,22 @@
+id: cat2b_opposite
+title: "Same metric, different sensor, but the sensors DISAGREE"
+rule: "2b"
+purpose: edge
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: >
+    Same metric, different sensor, but the sensors DISAGREE — information, not
+    redundancy — CAT2b negative
+author: "Migrated from DATA/CAT_evaluation (README and regression.py), 2026-10-14"
+strict: true
+
+stream:
+  - {id: a1, device: "DraegerMonitor_00", label: "Monitor - Lage SpO2", device_name: "DraegerMonitor", priority: "Unknown", start: "08:00:00", end: "08:02:00"}
+  - {id: a2, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - SpO2 hoog", device_name: "Philipsmonitor", priority: "Medium", start: "08:00:30", end: "08:01:00"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:00", until: "08:02:00", evidence: [a1]}

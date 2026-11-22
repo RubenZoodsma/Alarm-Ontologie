@@ -67,6 +67,8 @@ from pathlib import Path
 from rdflib import Graph, Namespace, URIRef
 import owlrl
 
+import sparql_engine
+
 REASONING_DIRECTIVE = re.compile(r"^#\s*reasoning:\s*required\s*$", re.MULTILINE)
 QUESTION_DIRECTIVE = re.compile(r"^#\s*question:\s*(.+)$", re.MULTILINE)
 
@@ -184,10 +186,10 @@ def run_query(query_path: Path, base: Graph, reasoned: Graph) -> dict:
     graph = reasoned if used_reasoning else base
     question_match = QUESTION_DIRECTIVE.search(text)
 
-    result = graph.query(text)
-    # SELECT-only helper: Result.__iter__ is typed for ASK (bool)/CONSTRUCT
-    # (triple) too, so narrow to the row shape a SELECT actually yields.
-    rows = [[_label(t, graph) for t in row] for row in result if not isinstance(row, bool)]
+    # Executed on Oxigraph (sparql_engine.py: rdflib's evaluator has no
+    # query planner); the graph itself is still built and reasoned here.
+    names, result_rows = sparql_engine.select(graph, text)
+    rows = [[_label(t, graph) for t in row] for row in result_rows]
     print(f"[cq_QA] {query_path.parent.name}/{query_path.name}: {len(rows)} row(s) "
           f"({'reasoned' if used_reasoning else 'base'})")
 
@@ -197,7 +199,7 @@ def run_query(query_path: Path, base: Graph, reasoned: Graph) -> dict:
         "question": question_match.group(1).strip() if question_match else None,
         "query_text": text.strip(),
         "used_reasoning": used_reasoning,
-        "vars": [str(v) for v in result.vars] if result.vars else [],
+        "vars": names,
         "rows": rows,
     }
 

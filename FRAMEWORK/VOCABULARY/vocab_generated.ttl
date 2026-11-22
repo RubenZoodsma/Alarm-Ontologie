@@ -720,16 +720,19 @@ device:CardiacMonitor_Hemosphere_Edwards a skos:Concept ;
     mda:hasDeviceType deviceType:Hemosphere ;
     mda:hasManufacturer manufacturer:Edwards .
 
-device:Dialysator_Baxter a skos:Concept ;
+device:Dialysator_Prismax_Baxter a skos:Concept ;
     rdfs:subClassOf device:Dialysator ;
     owl:equivalentClass [ a owl:Class ;
             owl:intersectionOf ( device:Dialysator [ a owl:Restriction ;
+                        owl:hasValue deviceType:Prismax ;
+                        owl:onProperty mda:hasDeviceType ] [ a owl:Restriction ;
                         owl:hasValue manufacturer:Baxter ;
                         owl:onProperty mda:hasManufacturer ] ) ] ;
     skos:broader device:Dialysator ;
     skos:inScheme device:Scheme ;
-    skos:notation "Dialysator_Baxter" ;
-    skos:prefLabel "Dialysator_Baxter"@en ;
+    skos:notation "Dialysator_Prismax_Baxter" ;
+    skos:prefLabel "Dialysator_Prismax_Baxter"@en ;
+    mda:hasDeviceType deviceType:Prismax ;
     mda:hasManufacturer manufacturer:Baxter .
 
 device:ExtracorporealMembraneOxygenator_CardioHelp_Getinge a skos:Concept ;
@@ -747,31 +750,64 @@ device:ExtracorporealMembraneOxygenator_CardioHelp_Getinge a skos:Concept ;
     mda:hasDeviceType deviceType:CardioHelp ;
     mda:hasManufacturer manufacturer:Getinge .
 
-device:Incubator_Draeger a skos:Concept ;
+device:Incubator_BabyLeo_Draeger a skos:Concept ;
     rdfs:subClassOf device:Incubator ;
     owl:equivalentClass [ a owl:Class ;
             owl:intersectionOf ( device:Incubator [ a owl:Restriction ;
+                        owl:hasValue deviceType:BabyLeo ;
+                        owl:onProperty mda:hasDeviceType ] [ a owl:Restriction ;
                         owl:hasValue manufacturer:Draeger ;
                         owl:onProperty mda:hasManufacturer ] ) ] ;
     skos:broader device:Incubator ;
     skos:inScheme device:Scheme ;
-    skos:notation "Incubator_Draeger" ;
-    skos:prefLabel "Incubator_Draeger"@en ;
+    skos:notation "Incubator_BabyLeo_Draeger" ;
+    skos:prefLabel "Incubator_Baby Leo_Draeger"@en ;
+    mda:hasDeviceType deviceType:BabyLeo ;
     mda:hasManufacturer manufacturer:Draeger .
 
-device:MechanicalVentilator_Datexohmedacom_GEHealthcare a skos:Concept ;
+device:Incubator_BabyTherm_Draeger a skos:Concept ;
+    rdfs:subClassOf device:Incubator ;
+    owl:equivalentClass [ a owl:Class ;
+            owl:intersectionOf ( device:Incubator [ a owl:Restriction ;
+                        owl:hasValue deviceType:BabyTherm ;
+                        owl:onProperty mda:hasDeviceType ] [ a owl:Restriction ;
+                        owl:hasValue manufacturer:Draeger ;
+                        owl:onProperty mda:hasManufacturer ] ) ] ;
+    skos:broader device:Incubator ;
+    skos:inScheme device:Scheme ;
+    skos:notation "Incubator_BabyTherm_Draeger" ;
+    skos:prefLabel "Incubator_Baby Therm_Draeger"@en ;
+    mda:hasDeviceType deviceType:BabyTherm ;
+    mda:hasManufacturer manufacturer:Draeger .
+
+device:Incubator_Caleo_Draeger a skos:Concept ;
+    rdfs:subClassOf device:Incubator ;
+    owl:equivalentClass [ a owl:Class ;
+            owl:intersectionOf ( device:Incubator [ a owl:Restriction ;
+                        owl:hasValue deviceType:Caleo ;
+                        owl:onProperty mda:hasDeviceType ] [ a owl:Restriction ;
+                        owl:hasValue manufacturer:Draeger ;
+                        owl:onProperty mda:hasManufacturer ] ) ] ;
+    skos:broader device:Incubator ;
+    skos:inScheme device:Scheme ;
+    skos:notation "Incubator_Caleo_Draeger" ;
+    skos:prefLabel "Incubator_Caleo_Draeger"@en ;
+    mda:hasDeviceType deviceType:Caleo ;
+    mda:hasManufacturer manufacturer:Draeger .
+
+device:MechanicalVentilator_CarescapeR860_GEHealthcare a skos:Concept ;
     rdfs:subClassOf device:MechanicalVentilator ;
     owl:equivalentClass [ a owl:Class ;
             owl:intersectionOf ( device:MechanicalVentilator [ a owl:Restriction ;
-                        owl:hasValue deviceType:Datexohmedacom ;
+                        owl:hasValue deviceType:CarescapeR860 ;
                         owl:onProperty mda:hasDeviceType ] [ a owl:Restriction ;
                         owl:hasValue manufacturer:GEHealthcare ;
                         owl:onProperty mda:hasManufacturer ] ) ] ;
     skos:broader device:MechanicalVentilator ;
     skos:inScheme device:Scheme ;
-    skos:notation "MechanicalVentilator_Datexohmedacom_GEHealthcare" ;
-    skos:prefLabel "Mechanical Ventilator_Datexohmedacom_GE Healthcare"@en ;
-    mda:hasDeviceType deviceType:Datexohmedacom ;
+    skos:notation "MechanicalVentilator_CarescapeR860_GEHealthcare" ;
+    skos:prefLabel "Mechanical Ventilator_Carescape R860_GE Healthcare"@en ;
+    mda:hasDeviceType deviceType:CarescapeR860 ;
     mda:hasManufacturer manufacturer:GEHealthcare .
 
 device:MechanicalVentilator_Draeger a skos:Concept ;
@@ -786,19 +822,19 @@ device:MechanicalVentilator_Draeger a skos:Concept ;
     skos:prefLabel "Mechanical Ventilator_Draeger"@en ;
     mda:hasManufacturer manufacturer:Draeger .
 
-device:MechanicalVentilator_Hulbus_LowensteinMedical a skos:Concept ;
+device:MechanicalVentilator_LeoniPlus_LowensteinMedical a skos:Concept ;
     rdfs:subClassOf device:MechanicalVentilator ;
     owl:equivalentClass [ a owl:Class ;
             owl:intersectionOf ( device:MechanicalVentilator [ a owl:Restriction ;
-                        owl:hasValue deviceType:Hulbus ;
+                        owl:hasValue deviceType:LeoniPlus ;
                         owl:onProperty mda:hasDeviceType ] [ a owl:Restriction ;
                         owl:hasValue manufacturer:LowensteinMedical ;
                         owl:onProperty mda:hasManufacturer ] ) ] ;
     skos:broader device:MechanicalVentilator ;
     skos:inScheme device:Scheme ;
-    skos:notation "MechanicalVentilator_Hulbus_LowensteinMedical" ;
-    skos:prefLabel "Mechanical Ventilator_Hulbus_Lowenstein Medical"@en ;
-    mda:hasDeviceType deviceType:Hulbus ;
+    skos:notation "MechanicalVentilator_LeoniPlus_LowensteinMedical" ;
+    skos:prefLabel "Mechanical Ventilator_Leoni Plus_Lowenstein Medical"@en ;
+    mda:hasDeviceType deviceType:LeoniPlus ;
     mda:hasManufacturer manufacturer:LowensteinMedical .
 
 device:MechanicalVentilator_ServoI_Getinge a skos:Concept ;
@@ -2405,6 +2441,33 @@ metricValueState:SeverelyDecreased a skos:Concept ;
     skos:prefLabel "Severely Decreased"@en,
         "Severely Decreased"@nl .
 
+deviceType:BabyLeo a skos:Concept ;
+    skos:broader deviceType:DeviceType ;
+    skos:definition "Baby Leo"@en,
+        "Baby Leo"@nl ;
+    skos:inScheme deviceType:Scheme ;
+    skos:notation "BabyLeo" ;
+    skos:prefLabel "Baby Leo"@en,
+        "Baby Leo"@nl .
+
+deviceType:BabyTherm a skos:Concept ;
+    skos:broader deviceType:DeviceType ;
+    skos:definition "Baby Therm"@en,
+        "Baby Therm"@nl ;
+    skos:inScheme deviceType:Scheme ;
+    skos:notation "BabyTherm" ;
+    skos:prefLabel "Baby Therm"@en,
+        "Baby Therm"@nl .
+
+deviceType:Caleo a skos:Concept ;
+    skos:broader deviceType:DeviceType ;
+    skos:definition "Caleo"@en,
+        "Caleo"@nl ;
+    skos:inScheme deviceType:Scheme ;
+    skos:notation "Caleo" ;
+    skos:prefLabel "Caleo"@en,
+        "Caleo"@nl .
+
 deviceType:CardioHelp a skos:Concept ;
     skos:broader deviceType:DeviceType ;
     skos:definition "Cardio Help"@en,
@@ -2413,6 +2476,15 @@ deviceType:CardioHelp a skos:Concept ;
     skos:notation "CardioHelp" ;
     skos:prefLabel "Cardio Help"@en,
         "Cardio Help"@nl .
+
+deviceType:CarescapeR860 a skos:Concept ;
+    skos:broader deviceType:DeviceType ;
+    skos:definition "Carescape R860"@en,
+        "Carescape R860"@nl ;
+    skos:inScheme deviceType:Scheme ;
+    skos:notation "CarescapeR860" ;
+    skos:prefLabel "Carescape R860"@en,
+        "Carescape R860"@nl .
 
 deviceType:Criticool a skos:Concept ;
     skos:broader deviceType:DeviceType ;
@@ -2423,15 +2495,6 @@ deviceType:Criticool a skos:Concept ;
     skos:prefLabel "Criticool"@en,
         "Criticool"@nl .
 
-deviceType:Datexohmedacom a skos:Concept ;
-    skos:broader deviceType:DeviceType ;
-    skos:definition "Datexohmedacom"@en,
-        "Datexohmedacom"@nl ;
-    skos:inScheme deviceType:Scheme ;
-    skos:notation "Datexohmedacom" ;
-    skos:prefLabel "Datexohmedacom"@en,
-        "Datexohmedacom"@nl .
-
 deviceType:Hemosphere a skos:Concept ;
     skos:broader deviceType:DeviceType ;
     skos:definition "Hemosphere"@en,
@@ -2441,15 +2504,6 @@ deviceType:Hemosphere a skos:Concept ;
     skos:prefLabel "Hemosphere"@en,
         "Hemosphere"@nl .
 
-deviceType:Hulbus a skos:Concept ;
-    skos:broader deviceType:DeviceType ;
-    skos:definition "Hulbus"@en,
-        "Hulbus"@nl ;
-    skos:inScheme deviceType:Scheme ;
-    skos:notation "Hulbus" ;
-    skos:prefLabel "Hulbus"@en,
-        "Hulbus"@nl .
-
 deviceType:Infinity a skos:Concept ;
     skos:broader deviceType:DeviceType ;
     skos:definition "Infinity"@en,
@@ -2458,6 +2512,24 @@ deviceType:Infinity a skos:Concept ;
     skos:notation "Infinity" ;
     skos:prefLabel "Infinity"@en,
         "Infinity"@nl .
+
+deviceType:LeoniPlus a skos:Concept ;
+    skos:broader deviceType:DeviceType ;
+    skos:definition "Leoni Plus"@en,
+        "Leoni Plus"@nl ;
+    skos:inScheme deviceType:Scheme ;
+    skos:notation "LeoniPlus" ;
+    skos:prefLabel "Leoni Plus"@en,
+        "Leoni Plus"@nl .
+
+deviceType:Prismax a skos:Concept ;
+    skos:broader deviceType:DeviceType ;
+    skos:definition "Prismax"@en,
+        "Prismax"@nl ;
+    skos:inScheme deviceType:Scheme ;
+    skos:notation "Prismax" ;
+    skos:prefLabel "Prismax"@en,
+        "Prismax"@nl .
 
 deviceType:ServoI a skos:Concept ;
     skos:broader deviceType:DeviceType ;
@@ -2606,16 +2678,6 @@ device:ExtracorporealMembraneOxygenator a skos:Concept ;
     skos:prefLabel "Extracorporeal Membrane Oxygenator"@en,
         "Extracorporeal Membrane Oxygenator"@nl .
 
-device:Incubator a skos:Concept ;
-    rdfs:subClassOf mda:Device ;
-    skos:broader device:Device ;
-    skos:definition "Incubator"@en,
-        "Incubator"@nl ;
-    skos:inScheme device:Scheme ;
-    skos:notation "Incubator" ;
-    skos:prefLabel "Incubator"@en,
-        "Incubator"@nl .
-
 device:Thermoregulator a skos:Concept ;
     rdfs:subClassOf mda:Device ;
     skos:broader device:Device ;
@@ -2655,15 +2717,6 @@ device:PhysiologicalMonitor a skos:Concept ;
     skos:prefLabel "Physiological Monitor"@en,
         "Physiological Monitor"@nl .
 
-manufacturer:Draeger a skos:Concept ;
-    skos:broader manufacturer:Manufacturer ;
-    skos:definition "Draeger"@en,
-        "Draeger"@nl ;
-    skos:inScheme manufacturer:Scheme ;
-    skos:notation "Draeger" ;
-    skos:prefLabel "Draeger"@en,
-        "Draeger"@nl .
-
 manufacturer:Getinge a skos:Concept ;
     skos:broader manufacturer:Manufacturer ;
     skos:definition "Getinge"@en,
@@ -2692,6 +2745,25 @@ metric:RespirationVolume a skos:Concept ;
     skos:notation "RespirationVolume" ;
     skos:prefLabel "Respiration Volume"@en,
         "Respiration Volume"@nl .
+
+device:Incubator a skos:Concept ;
+    rdfs:subClassOf mda:Device ;
+    skos:broader device:Device ;
+    skos:definition "Incubator"@en,
+        "Incubator"@nl ;
+    skos:inScheme device:Scheme ;
+    skos:notation "Incubator" ;
+    skos:prefLabel "Incubator"@en,
+        "Incubator"@nl .
+
+manufacturer:Draeger a skos:Concept ;
+    skos:broader manufacturer:Manufacturer ;
+    skos:definition "Draeger"@en,
+        "Draeger"@nl ;
+    skos:inScheme manufacturer:Scheme ;
+    skos:notation "Draeger" ;
+    skos:prefLabel "Draeger"@en,
+        "Draeger"@nl .
 
 device:MechanicalVentilator a skos:Concept ;
     rdfs:subClassOf mda:Device ;

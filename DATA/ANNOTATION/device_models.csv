@@ -1,0 +1,16 @@
+gateway_name;model;note
+BabyLeo;BabyLeo;
+BabyTherm;BabyTherm;
+Caleo;Caleo;
+CardioHelp;CardioHelp;
+CarescapeR860;CarescapeR860;was annotated Datexohmedacom (GE brand name)
+Criticool;Criticool;
+DraegerMonitor;Infinity;
+Edwards;Hemosphere;gateway name is the manufacturer
+LeoniPlus;LeoniPlus;was annotated Hulbus (communication protocol)
+Medibus;;communication protocol, Draeger ventilator model unknown
+Philipsmonitor;;Philips patient monitor, model unknown
+Prismax;Prismax;
+ServoI;ServoI;
+ServoU;ServoU;
+Trilogy;Trilogy;

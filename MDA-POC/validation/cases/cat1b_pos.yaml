@@ -1,0 +1,22 @@
+id: cat1b_pos
+title: "The IBP alarm has long stopped revealing its pathway by the time the asystole arrives, but stays structurally "
+rule: "1b"
+purpose: confirm
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: >
+    The IBP alarm has long stopped revealing its pathway by the time the asystole
+    arrives, but stays structurally known from the patient's history — CAT1b
+    positive
+author: "Migrated from DATA/CAT_evaluation (README and regression.py), 2026-10-14"
+strict: true
+
+stream:
+  - {id: a1, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - ABP verkleinen", device_name: "Philipsmonitor", priority: "Laag", start: "08:00:00", end: "08:00:20"}
+  - {id: a2, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - Asystolie", device_name: "Philipsmonitor", priority: "Hoog", start: "08:10:00", end: "08:10:20"}
+
+expect:
+  - {forwarded: a1}
+  - {silenced: a2, reason: likely-invalid, rule: 1b, by: [a1]}

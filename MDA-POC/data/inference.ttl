@@ -40,6 +40,7 @@
 @prefix skos:       <http://www.w3.org/2004/02/skos/core#> .
 
 @prefix device:      <https://w3id.org/mda/vocab/device/> .
+@prefix deviceType:  <https://w3id.org/mda/vocab/device-type/> .
 @prefix component:   <https://w3id.org/mda/vocab/component/> .
 @prefix opstate:     <https://w3id.org/mda/vocab/operation-state/> .
 @prefix therapeuticModality: <https://w3id.org/mda/vocab/therapeutic-modality/> .
@@ -118,6 +119,54 @@ device:MechanicalVentilator             mda:administers therapeuticModality:Vent
                  device:Incubator device:Thermoregulator
                  device:MechanicalVentilator device:PhysiologicalMonitor
                  device:CardiacMonitor ) .
+
+
+# Device model -> device category. A blueprint is identified by device model
+# + label + priority (FRAMEWORK/PLAN_blueprint_identity.md), so the model is
+# known for every alarm whose gateway name identifies one; these axioms let a
+# reasoner infer the device category from the model alone:
+#
+#     [ hasDeviceType hasValue Caleo ]  rdfs:subClassOf  device:Incubator
+#
+# Restriction-subject form (OWL-RL rule cls-hv2), for the same reason as the
+# bridge axioms above: a plain triple on the punned concept would reach no
+# per-alarm device. Together with the disjointness above, a model annotated
+# under two categories makes the knowledge base inconsistent, which is the
+# intended check (build_framework.py also lists such conflicts).
+#
+# Gateway names without a known model (Medibus: a protocol; Philipsmonitor)
+# have no axiom; their category stays as annotated. Mapping from gateway name
+# to model: DATA/ANNOTATION/device_models.csv.
+#
+# BabyLeo and BabyTherm: written as Incubator although one alarm each is
+# annotated as MechanicalVentilator (ventilation function of the warmer);
+# those annotations are being revised (2026-11-19).
+[ a owl:Restriction ; owl:onProperty mda:hasDeviceType ; owl:hasValue deviceType:BabyLeo ]
+    rdfs:subClassOf device:Incubator .
+[ a owl:Restriction ; owl:onProperty mda:hasDeviceType ; owl:hasValue deviceType:BabyTherm ]
+    rdfs:subClassOf device:Incubator .
+[ a owl:Restriction ; owl:onProperty mda:hasDeviceType ; owl:hasValue deviceType:Caleo ]
+    rdfs:subClassOf device:Incubator .
+[ a owl:Restriction ; owl:onProperty mda:hasDeviceType ; owl:hasValue deviceType:CardioHelp ]
+    rdfs:subClassOf device:ExtracorporealMembraneOxygenator .
+[ a owl:Restriction ; owl:onProperty mda:hasDeviceType ; owl:hasValue deviceType:CarescapeR860 ]
+    rdfs:subClassOf device:MechanicalVentilator .
+[ a owl:Restriction ; owl:onProperty mda:hasDeviceType ; owl:hasValue deviceType:Criticool ]
+    rdfs:subClassOf device:Thermoregulator .
+[ a owl:Restriction ; owl:onProperty mda:hasDeviceType ; owl:hasValue deviceType:Hemosphere ]
+    rdfs:subClassOf device:CardiacMonitor .
+[ a owl:Restriction ; owl:onProperty mda:hasDeviceType ; owl:hasValue deviceType:Infinity ]
+    rdfs:subClassOf device:PhysiologicalMonitor .
+[ a owl:Restriction ; owl:onProperty mda:hasDeviceType ; owl:hasValue deviceType:LeoniPlus ]
+    rdfs:subClassOf device:MechanicalVentilator .
+[ a owl:Restriction ; owl:onProperty mda:hasDeviceType ; owl:hasValue deviceType:Prismax ]
+    rdfs:subClassOf device:Dialysator .
+[ a owl:Restriction ; owl:onProperty mda:hasDeviceType ; owl:hasValue deviceType:ServoI ]
+    rdfs:subClassOf device:MechanicalVentilator .
+[ a owl:Restriction ; owl:onProperty mda:hasDeviceType ; owl:hasValue deviceType:ServoU ]
+    rdfs:subClassOf device:MechanicalVentilator .
+[ a owl:Restriction ; owl:onProperty mda:hasDeviceType ; owl:hasValue deviceType:Trilogy ]
+    rdfs:subClassOf device:MechanicalVentilator .
 
 
 ####################################################################

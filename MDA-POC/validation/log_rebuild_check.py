@@ -30,9 +30,10 @@ from execution import RuleStats  # noqa: E402
 from processor import run_live  # noqa: E402
 
 SETTINGS = {
-    # The fixture regression: S.DATASET with ROOT / "engine" / "_scratch".
-    # A poc_main.py run: its dataset with ROOT / "_scratch".
-    "events": S.DATASET,
+    # The case regression: the cases_events.csv it writes, with
+    # ROOT / "engine" / "_scratch". A poc_main.py run: its dataset with
+    # ROOT / "_scratch".
+    "events": ROOT / "engine" / "_scratch" / "cases_events.csv",
     "logs": ROOT / "engine" / "_scratch",
     "scratch": ROOT / "_scratch_rebuild",
 }

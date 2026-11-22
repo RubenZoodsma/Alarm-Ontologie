@@ -116,13 +116,22 @@ ROOT_CLASS = MDA.Alarm
 LABEL_COLUMN    = "alarmLabel"
 PRIORITY_COLUMN = "alarmPriority"
 
-# The CSV's second column has no header (it sits between "alarmLabel;" and
-# "alarmPriority;" as a bare ";"), so pandas names it "Unnamed: 1". It is a
-# human bookkeeping marker for the annotation review, not ontology data: a
-# row marked 'EXCL' has been excluded from that review and must not be
-# read out into the ontology at all.
-EXCLUSION_COLUMN = "Unnamed: 1"
+# Human bookkeeping marker for the annotation review, not ontology data:
+#   x       reviewed
+#   EXCL    not annotatable (label conveys no interpretable alarm condition);
+#           never read out into the ontology
+#   REVIEW  copied from another device's annotation when a label + priority
+#           was split per device model; built, pending team annotation
+EXCLUSION_COLUMN = "reviewStatus"
 EXCLUSION_VALUE  = "EXCL"
+REVIEW_VALUE     = "REVIEW"
+MODEL_COLUMN     = "Device.Type"
+
+# A blueprint is identified by device model + label + priority
+# (FRAMEWORK/PLAN_blueprint_identity.md). The selected corpus names devices by
+# their gateway name; device_models.csv maps that name to the model.
+CORPUS_PATH       = ROOT / "DATA" / "CORPUS" / "Annotation_corpus_75.csv"
+DEVICE_MODELS_PATH = ROOT / "DATA" / "ANNOTATION" / "device_models.csv"
 
 COLUMN_SCHEMES = {
     "alarmPriority":             ("alarmprio",             VOCAB + "alarm-priority/"),
@@ -707,14 +716,74 @@ def check_approximates_axioms(kg: Graph, inference: Graph, vocab: Graph) -> None
           f"({len(unbridged)} metric(s) without an axiom)")
 
 
-def alarmtype_iri(label: str, priority: str) -> URIRef:
+def alarmtype_iri(label: str, priority: str, model: str = "") -> URIRef:
     """
-    Generate a stable alarm type IRI from label + priority.
-    'HR High' + 'High' → alarmtype:HrHigh_High
+    Stable alarm type IRI from device model + label + priority; the model is
+    left out when unknown (gateway names such as Medibus, Philipsmonitor).
+    'ServoU' + 'SERVOU - PEEP laag' + 'Medium' → alarmtype:ServoU_ServouPeepLaag_Medium
     """
     clean_label    = re.sub(r"[^A-Za-z0-9]+", "", label.title().replace(" ", ""))
     clean_priority = re.sub(r"[^A-Za-z0-9]+", "_", priority).strip("_")
-    return ALARMTYPE[f"{clean_label}_{clean_priority}"]
+    clean_model    = re.sub(r"[^A-Za-z0-9]+", "", model)
+    return ALARMTYPE[f"{clean_model + '_' if clean_model else ''}{clean_label}_{clean_priority}"]
+
+
+def _norm(s) -> str:
+    return " ".join(str(s).split()).casefold() if s is not None and not pd.isna(s) else ""
+
+
+def blueprint_key(label, priority, model) -> tuple:
+    """Normalised identity of a blueprint: (model, label, priority)."""
+    return (_norm(model), _norm(label), _norm(priority))
+
+
+def check_blueprint_identity(df_all: pd.DataFrame) -> None:
+    """Every row of the annotation file (EXCL included) is one distinct alarm
+    of the selected corpus, and vice versa: no duplicate identities, none
+    missing, none extra. Stops the build otherwise."""
+    import csv
+    with DEVICE_MODELS_PATH.open(encoding="utf-8", newline="") as fh:
+        model_of = {r["gateway_name"]: r["model"] for r in csv.DictReader(fh, delimiter=";")}
+    with CORPUS_PATH.open(encoding="utf-8-sig", newline="") as fh:
+        corpus = list(csv.DictReader(fh, delimiter=";"))
+    unknown = sorted({r["Alarm_device"] for r in corpus} - set(model_of))
+    if unknown:
+        raise ValueError(f"Gateway name(s) missing from {DEVICE_MODELS_PATH.name}: {unknown}")
+    expected = {blueprint_key(r["Alarm_label"], r["Alarm_priority"], model_of[r["Alarm_device"]])
+                for r in corpus}
+    keys = [blueprint_key(r[LABEL_COLUMN], r[PRIORITY_COLUMN], r.get(MODEL_COLUMN))
+            for _, r in df_all.iterrows()]
+    dupes = sorted({k for k in keys if keys.count(k) > 1})
+    missing, extra = sorted(expected - set(keys)), sorted(set(keys) - expected)
+    if dupes or missing or extra:
+        raise ValueError(
+            "Blueprint identity (model, label, priority) does not match the selected corpus:\n"
+            + "".join(f"  duplicate: {k}\n" for k in dupes)
+            + "".join(f"  missing:   {k}\n" for k in missing)
+            + "".join(f"  extra:     {k}\n" for k in extra))
+    print(f"[check]  blueprint identity: {len(keys)} rows = {len(expected)} distinct alarms "
+          f"(model, label, priority) in {CORPUS_PATH.name}")
+
+
+def check_model_axioms(df: pd.DataFrame, index: dict, inference: Graph) -> list:
+    """Rows whose annotated Device category disagrees with inference.ttl's
+    device-model axioms ([hasDeviceType hasValue M] subClassOf D). Reported,
+    not fatal: with the disjoint device categories such a row makes the
+    knowledge base inconsistent until the annotation is revised."""
+    category_of = {}
+    for r in inference.subjects(OWL.onProperty, MDA.hasDeviceType):
+        model = inference.value(r, OWL.hasValue)
+        for d in inference.objects(r, RDFS.subClassOf):
+            category_of[_local(model)] = _local(d)
+    conflicts = []
+    for _, row in df.iterrows():
+        model, device = str(row.get(MODEL_COLUMN) or "").strip(), str(row.get("Device") or "").strip()
+        if model in category_of and device and device != "nan" and device != category_of[model]:
+            conflicts.append((model, row[LABEL_COLUMN], device, category_of[model]))
+    for model, label, device, expected in conflicts:
+        print(f"[WARN]   model axiom: {model} is {expected}, annotated {device}: {label}")
+    print(f"[check]  device-model axioms: {len(category_of)} model(s), {len(conflicts)} conflicting row(s)")
+    return conflicts
 
 
 def label_concept_iri(label: str) -> URIRef:
@@ -871,7 +940,9 @@ def build_alarmtype_triples(row: pd.Series, kg: Graph, ref: Graph, index: dict,
     per-alarm particulars to `kg`, deduplicable universals to `ref`.
     """
     label  = str(row[LABEL_COLUMN]).strip()
-    at_iri = alarmtype_iri(label, str(row.get(PRIORITY_COLUMN, "")).strip())
+    model  = row.get(MODEL_COLUMN)
+    model  = "" if model is None or pd.isna(model) else str(model).strip()
+    at_iri = alarmtype_iri(label, str(row.get(PRIORITY_COLUMN, "")).strip(), model)
     kg.add((at_iri, RDF.type, MDA.AlarmType))
     kg.add((at_iri, MDA.hasLabel, Literal(label, lang="en")))
     kg.add((at_iri, MDA.hasLabelConcept, label_concept_iri(label)))
@@ -1038,10 +1109,15 @@ def build_alarmtype_triples(row: pd.Series, kg: Graph, ref: Graph, index: dict,
             # never the folded-together device:PhysiologicalMonitor_Philips.
             # The blueprint stays untransformed; only the vocab layer
             # pre-coordinates.
-            refs = identity_refinements(cls) if concept is not None else []
+            refs = identity_refinements(cls)
             if refs:
-                precoordinate(ref, concept, refs)
-                kg.add((b, RDF.type, concept))
+                # Without a concept (e.g. a model but no device category),
+                # the node is typed by its class and keeps its refining leaves;
+                # inference.ttl's device-model axioms infer the category. Before
+                # 2026-11-19 these leaves were dropped silently.
+                if concept is not None:
+                    precoordinate(ref, concept, refs)
+                kg.add((b, RDF.type, concept if concept is not None else cls))
                 for ref_prop, ref_val in refs:
                     kg.add((b, ref_prop, ref_val))
             else:
@@ -1242,11 +1318,14 @@ def main() -> None:
     # 3. Read the alarm type definitions
     df = pd.read_csv(CSV_PATH, sep=";", dtype=str)
     df.columns = df.columns.str.strip()
-    if EXCLUSION_COLUMN in df.columns:
-        excluded = df[EXCLUSION_COLUMN].str.strip() == EXCLUSION_VALUE
-        if excluded.any():
-            print(f"[csv]    {excluded.sum()} row(s) marked '{EXCLUSION_VALUE}' — excluded from readout")
-        df = df.loc[~excluded].drop(columns=[EXCLUSION_COLUMN])
+    if EXCLUSION_COLUMN not in df.columns:
+        raise ValueError(f"CSV is missing the review marker column '{EXCLUSION_COLUMN}'.")
+    check_blueprint_identity(df)
+    status = df[EXCLUSION_COLUMN].fillna("").str.strip()
+    excluded = status == EXCLUSION_VALUE
+    print(f"[csv]    {excluded.sum()} row(s) marked '{EXCLUSION_VALUE}' (not annotatable) — excluded from readout; "
+          f"{(status == REVIEW_VALUE).sum()} row(s) marked '{REVIEW_VALUE}' — built, pending annotation")
+    df = df.loc[~excluded].drop(columns=[EXCLUSION_COLUMN])
     columns = [c for c in df.columns if c in COLUMN_SCHEMES]
     print(f"[csv]    Read {len(df)} row(s) from {CSV_PATH.name}; "
           f"vocabulary columns: {', '.join(columns)}")
@@ -1324,6 +1403,7 @@ def main() -> None:
     for t in ref_out:                     # merge the deduplicated universal graph
         vocab_out.add(t)
     check_approximates_axioms(kg_out, inference, vocab_out)
+    check_model_axioms(df, index, inference)
 
     VOCAB_OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     KG_OUT_PATH.parent.mkdir(parents=True, exist_ok=True)

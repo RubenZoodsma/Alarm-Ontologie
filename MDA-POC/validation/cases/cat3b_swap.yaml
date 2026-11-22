@@ -1,0 +1,22 @@
+id: cat3b_swap
+title: "A ventilator swap, the only pattern the former 15-minute device-fault carry-over ever matched on real data"
+rule: "3b"
+purpose: edge
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: >
+    A ventilator swap, the only pattern the former 15-minute device-fault
+    carry-over ever matched on real data — CAT3b negative
+author: "Migrated from DATA/CAT_evaluation (README and regression.py), 2026-10-14"
+strict: true
+
+stream:
+  - {id: a1, device: "CarescapeR860_00", label: "DATEXOHMEDACOMVENTILATOR - Patient Disconnected", device_name: "CarescapeR860", priority: "Hoog", start: "08:00:00", end: "08:00:20"}
+  - {id: a2, device: "ServoU_00", label: "SERVOU - Exp. minuutvol. laag", device_name: "ServoU", priority: "Hoog", start: "08:05:00", end: "08:05:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:05:00", until: "08:05:30", evidence: [a2]}

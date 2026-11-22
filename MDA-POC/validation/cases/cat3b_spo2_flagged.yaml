@@ -1,0 +1,23 @@
+id: cat3b_spo2_flagged
+title: "The low SpO2 is CAT1a-flagged"
+rule: "3b"
+purpose: edge
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: >
+    The low SpO2 is CAT1a-flagged (weak signal), hence no evidence — no reduced
+    pulmonary function, no CAT3b
+author: "Migrated from DATA/CAT_evaluation (README and regression.py), 2026-10-14"
+strict: true
+
+stream:
+  - {id: a1, device: "ServoU_00", label: "SERVOU - Te veel lekkage", device_name: "ServoU", priority: "Hoog", start: "08:00:00", end: "08:02:00"}
+  - {id: a2, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - SpO2 zwak signaal", device_name: "Philipsmonitor", priority: "Laag", start: "08:00:10", end: "08:02:00"}
+  - {id: a3, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - SpO2 laag", device_name: "Philipsmonitor", priority: "Medium", start: "08:00:30", end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {silenced: a3, reason: likely-invalid, rule: 1a, by: [a2]}

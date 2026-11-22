@@ -48,12 +48,12 @@ def t(hms: str) -> datetime:
 
 
 EVENTS = [
-    S.Event("xp_cardiac", "PHILIPSMONITOR - Asystolie", "xp_PhilipsMonitor_00", t("08:00:00"), t("08:01:00"), "xp1"),
-    S.Event("xp_respiratory", "PHILIPSMONITOR - Apneu", "xp_PhilipsMonitor_00", t("08:00:30"), t("08:01:30"), "xp2"),
-    S.Event("xp_both", "PHILIPSMONITOR - Asystolie", "xp_PhilipsMonitor_00", t("08:00:00"), t("08:01:00"), "xp3"),
-    S.Event("xp_both", "PHILIPSMONITOR - Apneu", "xp_PhilipsMonitor_00", t("08:00:30"), t("08:01:30"), "xp4"),
-    S.Event("xp_vent_fault", "MEDIBUS - Ventilator storing", "xp_Medibus_00", t("08:00:00"), t("08:01:00"), "xp5"),
-    S.Event("xp_low_mv", "MEDIBUS - MV ondergrens", "xp_Medibus_00", t("08:00:30"), t("08:01:30"), "xp6"),
+    S.Event("xp_cardiac", "PHILIPSMONITOR - Asystolie", "xp_PhilipsMonitor_00", t("08:00:00"), t("08:01:00"), "xp1", "Philipsmonitor", "Hoog"),
+    S.Event("xp_respiratory", "PHILIPSMONITOR - Apneu", "xp_PhilipsMonitor_00", t("08:00:30"), t("08:01:30"), "xp2", "Philipsmonitor", "Hoog"),
+    S.Event("xp_both", "PHILIPSMONITOR - Asystolie", "xp_PhilipsMonitor_00", t("08:00:00"), t("08:01:00"), "xp3", "Philipsmonitor", "Hoog"),
+    S.Event("xp_both", "PHILIPSMONITOR - Apneu", "xp_PhilipsMonitor_00", t("08:00:30"), t("08:01:30"), "xp4", "Philipsmonitor", "Hoog"),
+    S.Event("xp_vent_fault", "MEDIBUS - Ventilator storing", "xp_Medibus_00", t("08:00:00"), t("08:01:00"), "xp5", "BabyTherm", "Medium"),
+    S.Event("xp_low_mv", "MEDIBUS - MV ondergrens", "xp_Medibus_00", t("08:00:30"), t("08:01:30"), "xp6", "Medibus", "Unknown"),
 ]
 
 # (patient, kind, start, end, number of supporting alarms)
@@ -70,7 +70,7 @@ EXPECTED = {
 def run_interleaved(kb, scratch: Path, rule_names, log) -> None:
     """One stream of all patients' alarms, interleaved in time, through the
     engine's own processor into ONE store, live — as a feed would arrive."""
-    run = P.LiveRun(kb, scratch, rule_names, log, X.RuleStats(), dstore="xp")
+    run = P.LiveRun(kb, scratch, rule_names, log, X.RuleStats())
     if run.stream(S.replay_stream(EVENTS)):
         run.proc.close_windows()
         run.execute("closing the windows")
