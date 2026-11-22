@@ -32,13 +32,19 @@ import windows as W
 RDATA_EXPORT_SCRIPT = ROOT / "data" / "tools" / "export_rdata.R"
 
 SETTINGS = {
-    # The events file (.csv, or .rData: converted and cached).
-    ### locked dataset - real-world corpus of 14m alarms over 3299 patients
-    "dataset": ROOT.parent / "DATA" / "POC_EVENTS" / "DATA_LOCKED.csv",
+    # The events file (.csv, or .rData: converted once to `dataset_cache`).
+    ### locked dataset - real-world corpus, 14.45M alarms over 3358 patients
+    ### (PICU + NICU, Aug 2023 - Jul 2025), locked 2026-10-16
+    "dataset": Path("/Volumes/Onderzoek/Onderzoek_Overig/24U-0113_SAS-ICU/E_ResearchData/2_ResearchData/"
+                    "oldCode/pipeline/locked/20261016/DATA_FINAL_20261016.rData"),
     ### trial dataset - small excerpt of the real-world corpus, 41 alarms over 8 patients
     # "dataset": ROOT.parent / "DATA" / "POC_EVENTS" / "events_data.csv",
     ### fabricated dataset - 46 known-outcome patients (CAT1–CAT3), for regression testing
     # "dataset": ROOT.parent / "DATA/CAT_evaluation" / "events_data.csv",
+
+    # Where an .rData dataset's CSV conversion is cached: local and
+    # gitignored (*.csv), never next to the locked source. None: DATA/POC_EVENTS/<name>.csv.
+    "dataset_cache": None,
 
     # "all" (or None), or a number of randomly sampled patients.
     "n_patients": 5,
@@ -107,7 +113,9 @@ def resolve_dataset(path: Path) -> Path:
     if path.suffix.lower() not in (".rdata",):
         return path
 
-    cache = path.with_suffix(".csv")
+    cache = SETTINGS["dataset_cache"] or ROOT.parent / "DATA" / "POC_EVENTS" / f"{path.stem}.csv"
+    if not path.exists():
+        raise FileNotFoundError(f"{path} not found (is the research share mounted?)")
     if cache.exists() and cache.stat().st_mtime >= path.stat().st_mtime:
         print(f"Using cached CSV conversion: {cache.name} "
               f"(delete it, or touch {path.name}, to force reconversion)")
@@ -118,7 +126,7 @@ def resolve_dataset(path: Path) -> Path:
             f"{path.name} is an R data file and needs `Rscript` to convert — "
             f"install R (e.g. `brew install r`) and ensure Rscript is on PATH."
         )
-    print(f"Converting {path.name} -> {cache.name} via R (full corpus: ~70s, cached after this)...")
+    print(f"Converting {path.name} -> {cache} via R (full corpus: a few minutes, cached after this)...")
     t0 = time.monotonic()
     result = subprocess.run(
         ["Rscript", str(RDATA_EXPORT_SCRIPT), str(path), str(cache), "all", "0"],

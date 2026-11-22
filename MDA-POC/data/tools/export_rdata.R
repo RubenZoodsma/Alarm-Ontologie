@@ -1,4 +1,5 @@
-# export_rdata.R — convert the full corpus (DATA/POC_EVENTS/DATA_LOCKED.rData)
+# export_rdata.R — convert the full corpus (the locked R workspace, e.g.
+# DATA_FINAL_20261016.rData; object `data`)
 # to the POC's CSV shape: patientID;label;device_id;start;end;alarm_id;
 # device_name;priority;department,
 # optionally sampling N patients.
@@ -51,7 +52,7 @@ d <- get("data", envir = e)
 # with the locked data (plan step A5): stop, listing the source's columns, if
 # either is missing, and stop on device names the mapping does not know.
 DEVICE_COLUMN    <- "device_naam"
-PRIORITY_COLUMNS <- c("prioriteit", "priority", "alarm_prioriteit", "Alarm_priority")
+PRIORITY_COLUMNS <- c("alarm_prio_bron", "prioriteit", "priority", "alarm_prioriteit", "Alarm_priority")
 if (!DEVICE_COLUMN %in% names(d)) {
   stop("No column '", DEVICE_COLUMN, "'. Columns: ", paste(names(d), collapse = ", "))
 }
