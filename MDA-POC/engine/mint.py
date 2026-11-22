@@ -183,22 +183,29 @@ class Archetype:
     nodes: dict          # class IRI → node in the catalogue
     catalogue: Graph
     vocab: Graph
+    # concept() and value() read only the blueprint, which is fixed for the
+    # run (the catalogue and vocabulary are never written after loading), so
+    # their answers are kept. Nothing from the stream enters these caches:
+    # per-patient identity is resolved in particular_iri, per arrival.
+    _concepts: dict = field(default_factory=dict, repr=False)
+    _values: dict = field(default_factory=dict, repr=False)
 
     def node(self, cls: URIRef):
         return self.nodes.get(cls)
 
     def concept(self, cls: URIRef):
-        node = self.nodes.get(cls)
-        if node is None:
-            return None
-        return next((t for t in self.catalogue.objects(node, RDF.type)
-                     if (t, RDF.type, SKOS.Concept) in self.vocab), None)
+        if cls not in self._concepts:
+            node = self.nodes.get(cls)
+            self._concepts[cls] = None if node is None else next(
+                (t for t in self.catalogue.objects(node, RDF.type)
+                 if (t, RDF.type, SKOS.Concept) in self.vocab), None)
+        return self._concepts[cls]
 
     def value(self, cls: URIRef, prop: URIRef):
-        node = self.nodes.get(cls)
-        if node is None:
-            return None
-        return next(self.catalogue.objects(node, prop), None)
+        if (cls, prop) not in self._values:
+            node = self.nodes.get(cls)
+            self._values[(cls, prop)] = None if node is None else next(self.catalogue.objects(node, prop), None)
+        return self._values[(cls, prop)]
 
 
 def archetype_structure(kb: KB, type_iri: URIRef) -> Archetype:

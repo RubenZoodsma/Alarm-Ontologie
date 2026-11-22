@@ -178,12 +178,23 @@ def _alarm_functional_unit(kb, event) -> str | None:
     return str(concept).rsplit("/", 1)[-1] if concept is not None else None
 
 
-def _alarm_metric_types(kb, event) -> set:
+_metric_types_cache: dict = {}
+
+
+def _alarm_metric_types(kb, event) -> frozenset:
     """The metric concept names in this alarm's blueprint (e.g.
-    {"ArterialBloodPressure_Mean"})."""
+    {"ArterialBloodPressure_Mean"}). Read from the blueprint only, so kept
+    per blueprint."""
     type_iri = M.type_of(kb, event)
     if type_iri is None:
-        return set()
+        return frozenset()
+    key = (id(kb), type_iri)
+    if key not in _metric_types_cache:
+        _metric_types_cache[key] = _blueprint_metric_types(kb, type_iri)
+    return _metric_types_cache[key]
+
+
+def _blueprint_metric_types(kb, type_iri) -> frozenset:
     arch = M.archetype_structure(kb, type_iri)
     found = set()
 
@@ -196,7 +207,7 @@ def _alarm_metric_types(kb, event) -> set:
                 walk(child_cls)
 
     walk(M.MDA.Device)
-    return found
+    return frozenset(found)
 
 
 # What an alarm must carry to possibly be evidence, per episode kind (see
