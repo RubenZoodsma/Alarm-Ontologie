@@ -47,12 +47,12 @@ SETTINGS = {
     "dataset_cache": None,
 
     # "all" (or None), or a number of randomly sampled patients.
-    "n_patients": 25,
+    "n_patients": "all",
 
     # Leave out patients with more alarms than this before sampling (None:
     # keep all). A selection on stay length only, for quick runs; the
     # replay itself is unchanged. Must be None for the manuscript run.
-    "max_alarms_per_patient": 20000,
+    "max_alarms_per_patient": None,
 
     # Seed of the patient sample.
     "seed": 42,
@@ -209,22 +209,33 @@ def print_totals(totals: Counter, rule_names: list) -> None:
           "  or within the post-alarm window after its end; without it CAT1/CAT2 have nothing to compare to.")
 
 
-def provenance() -> dict:
-    """The commit and a hash of the framework files the engine reads, so a
-    run (and a resumed run) can be tied to exactly what produced it."""
+def code_hash() -> str:
+    """A hash of everything that decides a run's conclusions: the framework
+    files, the rule and action queries, the engine and this script. A
+    resumed run must match it; the commit may differ (work elsewhere in the
+    repository, e.g. on the reporting scripts, does not block a resume)."""
     import hashlib
+    h = hashlib.sha256()
+    paths = (sorted((ROOT / "data").glob("*.ttl")) + sorted((ROOT / "representation").rglob("*.rq"))
+             + sorted((ROOT / "engine").glob("*.py")) + [ROOT / "poc_main.py"])
+    for path in paths:
+        h.update(str(path.relative_to(ROOT)).encode())
+        h.update(path.read_bytes())
+    return h.hexdigest()
+
+
+def git_state() -> dict:
+    """The commit and whether MDA-POC had uncommitted changes: recorded, not
+    compared on resume."""
     try:
         commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True,
                                 text=True).stdout.strip()
-        dirty = bool(subprocess.run(["git", "status", "--porcelain", "--untracked-files=no", "--", "."],
+        dirty = bool(subprocess.run(["git", "-c", "core.fileMode=false", "status", "--porcelain",
+                                     "--untracked-files=no", "--", "."],
                                     cwd=ROOT, capture_output=True, text=True).stdout.strip())
     except OSError:
         commit, dirty = "", True
-    h = hashlib.sha256()
-    for path in sorted((ROOT / "data").glob("*.ttl")) + sorted((ROOT / "representation").rglob("*.rq")):
-        h.update(path.name.encode())
-        h.update(path.read_bytes())
-    return {"commit": commit, "uncommitted_changes": dirty, "framework_sha256": h.hexdigest()}
+    return {"commit": commit, "uncommitted_changes": dirty}
 
 
 def _write_manifest(path: Path, manifest: dict) -> None:
@@ -283,7 +294,7 @@ def run():
         "n_patients": SETTINGS["n_patients"], "seed": SETTINGS["seed"],
         "max_alarms_per_patient": SETTINGS["max_alarms_per_patient"],
         "enabled_rules": rule_names, "post_alarm_validity": str(kb.window),
-        "chunk_size": size, **provenance(),
+        "chunk_size": size, "code_sha256": code_hash(),
     }
     manifest = None
     if SETTINGS["resume"] and manifest_path.exists():
@@ -299,6 +310,8 @@ def run():
             if path.exists():
                 with path.open("r+b") as f:
                     f.truncate(size_done)
+        manifest.setdefault("resumed", []).append({"at": time.strftime("%Y-%m-%d %H:%M:%S"), **git_state()})
+        manifest["chunks_failed"] = []      # retried below
         print(f"Resuming: {len(manifest['chunks_done'])}/{len(chunks)} chunk(s) already done.")
     if manifest is None:
         if scratch.exists():
@@ -314,13 +327,18 @@ def run():
         manifest = {**identity, "event_log": str(SETTINGS["event_log"]),
                     "firing_log": str(SETTINGS["firing_log"]),
                     "arrival_times": str(SETTINGS["arrival_times"]),
-                    "chunks": len(chunks), "chunks_done": [], "log_sizes": {}, "complete": False}
+                    "chunks": len(chunks), "chunks_done": [], "chunks_failed": [], "log_sizes": {},
+                    "complete": False, "git": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S")}
         _write_manifest(manifest_path, manifest)
 
     key_of = lambda e: f"{e.device_name} | {e.label} | {e.priority}"  # noqa: E731
     unresolved_counts, n_total = Counter(), 0
     totals, session_stats = Counter(), X.RuleStats()
     complete = True
+    # Progress over the whole run, by raw alarms (known from the scan).
+    chunk_alarms = [sum(counts[p] for p in ids) for ids in chunks]
+    todo = [k for k in range(len(chunks)) if k not in manifest["chunks_done"]]
+    total_todo, done_alarms, t_run = sum(chunk_alarms[k] for k in todo), 0, time.monotonic()
     for k, ids in enumerate(chunks):
         if k in manifest["chunks_done"]:
             continue
@@ -356,15 +374,27 @@ def run():
         stats.write_arrival_times(SETTINGS["arrival_times"], append=True)
         session_stats.merge(stats)
         report(kb, groups, rule_names, log.firings, log.records, totals)
-        if not ok:
+        if ok and not manifest["chunks_failed"]:
+            manifest["chunks_done"].append(k)
+        elif not ok:
+            # The chunk is not done. A resume cuts the logs back to log_sizes
+            # (frozen at the last chunk before the first failure) and reruns
+            # every chunk not done: this one and all after it, which still run
+            # now (their rows are provisional) but are not recorded as done.
             complete = False
-            print(f"*** chunk {k + 1} did not complete; it is not recorded as done, the run stops. ***")
-            break
-        manifest["chunks_done"].append(k)
-        manifest["log_sizes"] = {key: SETTINGS[key].stat().st_size for key in LOG_KEYS}
+            manifest["chunks_failed"].append(k)
+            print(f"*** chunk {k + 1} did not complete (engine errors above); recorded as failed, the run "
+                  f"goes on. Resume reruns it. ***")
+        if not manifest["chunks_failed"]:
+            manifest["log_sizes"] = {key: SETTINGS[key].stat().st_size for key in LOG_KEYS}
         manifest["complete"] = len(manifest["chunks_done"]) == len(chunks)
         _write_manifest(manifest_path, manifest)
-        print(f"  chunk {k + 1} done ({time.monotonic() - t:.1f}s)")
+        done_alarms += chunk_alarms[k]
+        elapsed = time.monotonic() - t_run
+        eta = elapsed / done_alarms * (total_todo - done_alarms) if done_alarms else 0
+        print(f"== chunk {k + 1}/{len(chunks)} {'done' if ok else 'FAILED'} ({time.monotonic() - t:.0f}s) | "
+              f"run: {len(manifest['chunks_done'])}/{len(chunks)} chunks, {done_alarms:,}/{total_todo:,} raw alarms, "
+              f"elapsed {P._hms(elapsed)}, remaining ~{P._hms(eta)}", flush=True)
 
     covered = n_total - sum(unresolved_counts.values())
     print(f"\n-- Coverage (this session): {_pct(covered, n_total):.1f}% - {covered}/{n_total} alarm(s)")
