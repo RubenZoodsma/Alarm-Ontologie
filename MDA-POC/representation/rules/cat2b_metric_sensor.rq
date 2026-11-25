@@ -19,11 +19,17 @@
 #                                flagged likely false positive. An active
 #                                alarm that is itself silenced by CAT2 still
 #                                justifies: it is redundant, not false.
-#   "the same metric"          — the same metric type, or one is a
-#                                pre-coordinated refinement of the other
-#                                (rdfs:subClassOf+, either way; e.g. the
-#                                monitor's minute volume and the ServoU's
-#                                expiratory minute volume). Related metrics
+#   "the same metric"          — the same metric type, or the ACTIVE
+#                                alarm's metric refines the incoming one's
+#                                (rdfs:subClassOf+; revised 2026-11-25, was
+#                                either way): a specific active alarm covers
+#                                a generic incoming one, not the reverse. An
+#                                active ServoU expiratory minute volume
+#                                covers an incoming monitor minute volume;
+#                                an active monitor minute volume does not
+#                                cover an incoming ServoU expiratory one, nor
+#                                an unsited SpO2 a pre-ductal one (site
+#                                refinement, inference.ttl). Related metrics
 #                                of one property are CAT2a's business.
 #                                Both metrics must have a metric type: a
 #                                blueprint that annotates a metric without
@@ -40,12 +46,15 @@
 #                                their types are equal or one refines the
 #                                other ("some ECG electrode" may be RA).
 #                                Anatomical position and laterality play no
-#                                part: a patient does not carry two sensors
-#                                of one kind on one device, so e.g. an
-#                                unpositioned and a pre-ductal SpO2 probe on
-#                                one monitor are the same probe. A pre-ductal
-#                                probe on one monitor and a post-ductal one
-#                                on another are different sensors (another
+#                                part here. A monitor can carry two sensors
+#                                of one kind (Tskin and Trect, SpO2 and
+#                                SpO2 r), so this treats them as one: it
+#                                never silences between two probes on one
+#                                functional unit, which is the cautious side.
+#                                Where the site changes what is measured, the
+#                                metric types differ anyway (site refinement,
+#                                revised 2026-11-25). A probe on another
+#                                monitor is another sensor (another
 #                                functional unit). "No sensor in common"
 #                                rather than "some pair differs": an alarm
 #                                on two electrodes (ST-II: RA and LL) twice
@@ -101,7 +110,10 @@
 # monitors: a flagged alarm neither justifies nor is silenced, under
 # CAT2a or CAT2b); cat2b_lift and cat3f are silenced and lifted when the
 # justifying alarm ends; cat2b_untyped_active and cat2b_untyped_incoming
-# (strict: an untyped metric, active or incoming, matches nothing).
+# (strict: an untyped metric, active or incoming, matches nothing);
+# cat2b_generic_vs_specific (the direction of "the same metric");
+# site_pa_vs_arterial and site_skin_vs_core (site-refined metrics do not
+# match their unrelated siblings).
 ####################################################################
 
 PREFIX mda:      <https://w3id.org/mda/ontology#>
@@ -131,8 +143,10 @@ BIND(IRI(CONCAT(STR(?active), "#persistent")) AS ?gAP)
 GRAPH ?gAP { ?activeMetric rdf:type ?activeMetricType . }
 # both typed: plain mda:Metric (a metric annotated without a type) matches nothing
 FILTER(?metricType != mda:Metric && ?activeMetricType != mda:Metric)
-# equal, or one refines the other (subClassOf* includes equality)
-{ ?activeMetricType rdfs:subClassOf* ?metricType } UNION { ?metricType rdfs:subClassOf+ ?activeMetricType }
+# equal, or the active metric refines the incoming one (subClassOf* includes
+# equality): a specific active alarm covers a generic incoming one, not the
+# other way round
+?activeMetricType rdfs:subClassOf* ?metricType .
 # the same direction, not more severe
 ?activeState (mda:refinesConcept|skos:broadMatch)* ?state .
 

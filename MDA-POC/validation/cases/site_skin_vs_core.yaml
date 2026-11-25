@@ -1,0 +1,32 @@
+id: site_skin_vs_core
+title: "Site refinement: low skin temperature and low core temperature are not redundant"
+rule: "2b"
+purpose: falsify
+status: active
+review: pending
+rationale:
+  clinical: >
+    A cold skin with a normal core is peripheral vasoconstriction, a cold
+    core is hypothermia; when both are low, each still says something the
+    other does not. Neither silences the other, in either order.
+  technical: >
+    Both annotate BodyTemperature; at site Skin the site table makes it
+    SkinTemperature (replaces its base, own property), at site Rectal
+    CoreTemperature (a narrower BodyTemperature). Different metric types and
+    properties, so neither CAT2b nor CAT2a relates them. The coverage run of
+    2026-11-25 had the incubator's skin temperature silenced by the
+    monitor's rectal temperature.
+author: "Site refinement, 2026-11-25"
+strict: true
+
+stream:
+  - {id: a1, device: "BabyLeo_00", label: "MEDIBUS - Central skin temperature < low limit", device_name: "BabyLeo", priority: "Medium", start: "08:00:00", end: "08:02:00"}
+  - {id: a2, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - Trect laag", device_name: "Philipsmonitor", priority: "Medium", start: "08:00:30", end: "08:01:00"}
+  - {id: a3, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - Trect laag", device_name: "Philipsmonitor", priority: "Medium", start: "08:30:00", end: "08:32:00"}
+  - {id: a4, device: "BabyLeo_00", label: "MEDIBUS - Central skin temperature < low limit", device_name: "BabyLeo", priority: "Medium", start: "08:30:30", end: "08:31:00"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {forwarded: a3}
+  - {forwarded: a4}
