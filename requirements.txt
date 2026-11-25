@@ -1,0 +1,26 @@
+# Python 3.9 or later. Versions are those the manuscript results were produced
+# with (pinned for reproducibility).
+
+# Framework build, framework QA, competency questions
+rdflib==7.6.0
+owlrl==7.6.2
+
+# MDA-POC engine (SPARQL 1.1) and CQ1-7 query execution
+pyoxigraph==0.5.11
+
+# Data preparation, reporting, POC real-data runs
+pandas==1.5.3
+numpy==1.26.4
+openpyxl==3.1.5
+matplotlib==3.9.4
+
+# MDA-POC verification cases (validation/cases/*.yaml)
+PyYAML==6.0.3
+
+# Consistency check in CODE/reporting/framework_stats_table.py (HermiT, needs Java)
+owlready2==0.51
+
+# Outside pip, needed only by the scripts named:
+#   Java            owlready2's HermiT reasoner (framework_stats_table.py)
+#   R               MDA-POC/data/tools/export_rdata.R (locked R workspace -> CSV)
+#   rsvg-convert    MISC/figures/fig1_panels/make_figure.py (SVG -> PDF/PNG)

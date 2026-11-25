@@ -23,7 +23,7 @@ os.chdir(ROOT / "DATA" / "CORPUS")
 
 INPUT_PATH = "Total_corpus.csv"
 STRATA_COLS = ["Alarm_department", "Alarm_device", "Alarm_priority"]
-PERCENTILE_CUTOFFS = [0.99, 0.75]
+PERCENTILE_CUTOFFS = [0.99]
 
 df = pd.read_csv(INPUT_PATH, sep=";", encoding="utf-8-sig")
 

@@ -6,7 +6,7 @@ the Restructured root, not the current working directory) and writes, into
 DATA/ANNOTATION/initial/:
 
 - p<cutoff>_annotation.csv: same columns as the consensus annotation file
-  the build reads (p75_annotated.csv). alarmLabel, alarmPriority and
+  the build reads (p99_annotated.csv). alarmLabel, alarmPriority and
   Device.Type are pre-filled; the other ontology-derived columns are left
   blank for annotators to fill in.
 - p<cutoff>_annotation_axioms.md: one entry per alarm with label/device/
@@ -36,7 +36,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 ROOT = SCRIPT_DIR.parent.parent   # CODE/data_prep -> CODE -> Restructured
 # Column template: the live annotation schema (the older data.csv template is
 # tab-separated and lacks columns the build now reads).
-SCAFFOLD_PATH = ROOT / "DATA" / "ANNOTATION" / "consensus" / "p75_annotated.csv"
+SCAFFOLD_PATH = ROOT / "DATA" / "ANNOTATION" / "consensus" / "p99_annotated.csv"
 DEVICE_MODELS_PATH = ROOT / "DATA" / "ANNOTATION" / "device_models.csv"
 
 

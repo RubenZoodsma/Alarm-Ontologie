@@ -5,7 +5,7 @@ Generates the alarm-corpus / annotation-characteristics statistics for the
 manuscript table "Alarm corpus specifications and annotation
 characteristics" (Neonatal ICU / Paediatric ICU / Adult ICU / Total study
 population), and writes it as a ready-to-paste Markdown table to
-DOCS/tables/corpus_stats.md.
+docs/tables/corpus_stats.md.
 
 Two corpus stages, three ICUs
 ------------------------------
@@ -13,9 +13,9 @@ Two corpus stages, three ICUs
                              selection: DATA/CORPUS/Total_corpus.csv
   Alarm corpus after         the Pareto-selected subset that was
   feasibility split          annotated: the cutoff of the annotation file
-                             build_framework.py reads (currently 75%:
-                             DATA/CORPUS/Annotation_corpus_75.csv,
-                             DATA/ANNOTATION/consensus/p75_annotated.csv).
+                             build_framework.py reads (currently 99%:
+                             DATA/CORPUS/Annotation_corpus_99.csv,
+                             DATA/ANNOTATION/consensus/p99_annotated.csv).
 
 An "alarm type" is a distinct alarm: device + label + priority, the identity
 of a blueprint (FRAMEWORK/PLAN_blueprint_identity.md). Corpus rows name the
@@ -81,11 +81,11 @@ from build_framework import COLUMN_SCHEMES
 SCRIPT_DIR          = Path(__file__).resolve().parent
 ROOT                = SCRIPT_DIR.parent.parent   # CODE/reporting -> CODE -> Restructured
 TOTAL_CORPUS_PATH   = ROOT / "DATA" / "CORPUS" / "Total_corpus.csv"
-ANNOTATED_PATH      = ROOT / "DATA" / "ANNOTATION" / "consensus" / "p75_annotated.csv"
+ANNOTATED_PATH      = ROOT / "DATA" / "ANNOTATION" / "consensus" / "p99_annotated.csv"
 CUTOFF_PCT          = int(ANNOTATED_PATH.stem.split("_")[0].lstrip("p"))
 CUTOFF_CORPUS_PATH  = ROOT / "DATA" / "CORPUS" / f"Annotation_corpus_{CUTOFF_PCT}.csv"
 DEVICE_MODELS_PATH  = ROOT / "DATA" / "ANNOTATION" / "device_models.csv"
-OUT_PATH            = ROOT / "DOCS" / "tables" / "corpus_stats.md"
+OUT_PATH            = ROOT / "docs" / "tables" / "corpus_stats.md"
 
 FEASIBILITY_CUTOFF_LABEL = f"{CUTOFF_PCT}th percentile"
 

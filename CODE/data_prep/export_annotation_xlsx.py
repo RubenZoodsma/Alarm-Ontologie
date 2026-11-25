@@ -15,8 +15,8 @@ Sheets
                 Locked: the identity (alarmLabel, alarmPriority, Device.Type)
                 and read-only context (gateway device, departments, alarm
                 count, status). Editable: reviewStatus, every annotation
-                column, and a free-text comment. Rows already annotated (p75
-                consensus) are shaded green, rows to check amber, new rows white.
+                column, and a free-text comment. Rows already annotated
+                are shaded green, rows to check amber, new rows white.
   Vocabulary    the terms in use per column; the annotation columns offer them
                 as a dropdown but accept a new term after a warning (the
                 vocabulary is open: build_framework.py stubs new terms).
@@ -125,7 +125,7 @@ def status(rec, annotation_cols):
     if rv == "REVIEW-PRIO":
         return "Check: copied to a new priority", "check"
     if rv == "EXCL" or any(rec[c].strip() for c in annotation_cols):
-        return "Annotated (p75 consensus)", "done"
+        return "Annotated", "done"
     return "New: to annotate", "new"
 
 
@@ -270,7 +270,7 @@ def main():
         ("", None),
         ("Colours", "h"),
         ("Grey – alarm identity and context: read only", "identity"),
-        ("Green – annotated in the earlier (p75) consensus", "done"),
+        ("Green – already annotated", "done"),
         ("Amber – copied from another device or priority: please check", "check"),
         ("White – new: to annotate", "new"),
         ("", None),

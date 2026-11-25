@@ -57,7 +57,7 @@ SETTINGS = {
     # Only the first N ordered pairs (None: all); for a quick test.
     "limit": None,
     # The annotated corpus, for the department(s) of each alarm type.
-    "corpus": ROOT.parent / "DATA" / "CORPUS" / "Annotation_corpus_75.csv",
+    "corpus": ROOT.parent / "DATA" / "CORPUS" / "Annotation_corpus_99.csv",
     "out_dir": ROOT / "validation" / "results",
 }
 

@@ -32,12 +32,17 @@ __pycache__/
 !DATA/POC_EVENTS/events_data.csv
 # Blueprint identity (device model + label + priority,
 # old/PLAN_blueprint_identity.md): the gateway-name -> model mapping and
-# the consensus annotation the knowledge base is built from. Alarm labels and
-# expert annotations only, no patient data.
+# the p99 consensus annotation the knowledge base is built from (alarm labels
+# and expert annotations only), and the p99 corpus selection it annotates
+# (alarm label, department, priority, device and an aggregate alarm count per
+# row; no patient-level data). Both are inputs of build_framework.py and of
+# MDA-POC/engine/regression.py's blueprint-identity check.
 !DATA/ANNOTATION/device_models.csv
-!DATA/ANNOTATION/consensus/p75_annotated.csv
-# The MDA-POC README is documentation, not output; the blanket *.md
-# rule above would otherwise keep it out of the repository.
+!DATA/ANNOTATION/consensus/p99_annotated.csv
+!DATA/CORPUS/Annotation_corpus_99.csv
+# Documentation, not output; the blanket *.md rule above would otherwise keep
+# these out of the repository.
+!/README.md
 !MDA-POC/README.md
 *_scratch*
 *.DS_Store

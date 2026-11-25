@@ -1,0 +1,457 @@
+﻿Alarm_label;Alarm_department;Alarm_priority;Alarm_device;Quant_count
+CARDIOHELP - Verbinding verbroken;Adult intensive care;Hoog;CardioHelp;2087
+CARDIOHELP - pVen onder alarmgrens;Adult intensive care;Hoog;CardioHelp;1420
+CARDIOHELP - LPM onder alarmgrens;Adult intensive care;Hoog;CardioHelp;409
+CARDIOHELP - pArt boven alarmgrens;Adult intensive care;Hoog;CardioHelp;156
+CARDIOHELP - SvO2 buiten meetbereik;Adult intensive care;Hoog;CardioHelp;156
+CARDIOHELP - Hct buiten meetbereik;Adult intensive care;Hoog;CardioHelp;52
+CARDIOHELP - Hb buiten meetbereik;Adult intensive care;Hoog;CardioHelp;47
+CARDIOHELP - pVen onder waarschuwingsgrens;Adult intensive care;Medium;CardioHelp;2235
+CARDIOHELP - pArt boven waarschuwingsgrens;Adult intensive care;Medium;CardioHelp;725
+CARDIOHELP - SvO2 onder waarschuwingsgrens;Adult intensive care;Medium;CardioHelp;289
+CARDIOHELP - pInt boven waarschuwingsgrens;Adult intensive care;Medium;CardioHelp;79
+CARDIOHELP - Drukvermindering boven grens;Adult intensive care;Medium;CardioHelp;46
+CARDIOHELP - Hb onder waarschuwingsgrens;Adult intensive care;Medium;CardioHelp;36
+CARDIOHELP - Hct onder waarschuwingsgrens;Adult intensive care;Medium;CardioHelp;18
+CARDIOHELP - TArt boven waarschuwingsgrens;Adult intensive care;Medium;CardioHelp;13
+Monitor - HR;Adult intensive care;Hoog;DraegerMonitor;6012
+Monitor - Verbinding verbroken monitor;Adult intensive care;Hoog;DraegerMonitor;3584
+Monitor - Verbinding verbroken;Adult intensive care;Hoog;DraegerMonitor;1070
+Monitor - Ventriculaire fibrillatie;Adult intensive care;Hoog;DraegerMonitor;787
+Monitor - Asystolie;Adult intensive care;Hoog;DraegerMonitor;704
+Monitor - Hoge ARR;Adult intensive care;Hoog;DraegerMonitor;522
+Monitor - ARR: Ventriculaire tachycardie;Adult intensive care;Hoog;DraegerMonitor;431
+Monitor - SpO2 sensor uit;Adult intensive care;Laag;DraegerMonitor;26203
+Monitor - ECG artefact;Adult intensive care;Laag;DraegerMonitor;15077
+Monitor - ECG afleidingen los;Adult intensive care;Laag;DraegerMonitor;7428
+Monitor - SpO2;Adult intensive care;Laag;DraegerMonitor;7296
+Monitor - SpO2 sensor niet aangesloten;Adult intensive care;Laag;DraegerMonitor;5076
+Monitor - SpO2 interferentie gevonden;Adult intensive care;Laag;DraegerMonitor;2639
+Monitor - Hemopod niet aangesloten;Adult intensive care;Laag;DraegerMonitor;1613
+Monitor - Ta niet aangesloten;Adult intensive care;Laag;DraegerMonitor;878
+Monitor - PA M;Adult intensive care;Laag;DraegerMonitor;807
+Monitor - Ta;Adult intensive care;Laag;DraegerMonitor;696
+Monitor - PA niet aangesloten;Adult intensive care;Laag;DraegerMonitor;640
+Monitor - SpO2 sensor storing;Adult intensive care;Laag;DraegerMonitor;397
+Monitor - ECG niet aangesloten;Adult intensive care;Laag;DraegerMonitor;359
+Monitor - CO2 MCable storing;Adult intensive care;Laag;DraegerMonitor;194
+Monitor - NIBP open lijn;Adult intensive care;Laag;DraegerMonitor;166
+Monitor - SpO2 sensor onbekend;Adult intensive care;Laag;DraegerMonitor;133
+Monitor - NBPmean;Adult intensive care;Laag;DraegerMonitor;130
+Monitor - GP3 M;Adult intensive care;Laag;DraegerMonitor;90
+Monitor - T1a niet aangesloten;Adult intensive care;Laag;DraegerMonitor;84
+Monitor - CO2 verminderde nauwkeurigheid;Adult intensive care;Laag;DraegerMonitor;73
+Monitor - Lage ARTmean;Adult intensive care;Medium;DraegerMonitor;43161
+Monitor - Lage SpO2;Adult intensive care;Medium;DraegerMonitor;34410
+Monitor - ART statische druk;Adult intensive care;Medium;DraegerMonitor;23376
+Monitor - Hoge ARTmean;Adult intensive care;Medium;DraegerMonitor;17228
+Monitor - Hoge HR;Adult intensive care;Medium;DraegerMonitor;14357
+Monitor - ART buiten bereik laag;Adult intensive care;Medium;DraegerMonitor;11159
+Monitor - Lage HR;Adult intensive care;Medium;DraegerMonitor;6194
+Monitor - Hoge ARTsys;Adult intensive care;Medium;DraegerMonitor;4254
+Monitor - Lage CPP;Adult intensive care;Medium;DraegerMonitor;3448
+Monitor - ART buiten bereik hoog;Adult intensive care;Medium;DraegerMonitor;3409
+Monitor - ART S;Adult intensive care;Medium;DraegerMonitor;3275
+Monitor - ART M;Adult intensive care;Medium;DraegerMonitor;3199
+Monitor - Lage ARTsys;Adult intensive care;Medium;DraegerMonitor;2820
+Monitor - MIN VOL LAAG;Adult intensive care;Medium;DraegerMonitor;2584
+Monitor - Hoge ICP;Adult intensive care;Medium;DraegerMonitor;2346
+Monitor - TIDALVOL HOOG;Adult intensive care;Medium;DraegerMonitor;2095
+Monitor - etCO2 Laag;Adult intensive care;Medium;DraegerMonitor;2013
+Monitor - MIN VOL HOOG;Adult intensive care;Medium;DraegerMonitor;1364
+Monitor - ART niet aangesloten;Adult intensive care;Medium;DraegerMonitor;1340
+Monitor - Hoge CPP;Adult intensive care;Medium;DraegerMonitor;1310
+Monitor - ADEM. FREQ. HOOG;Adult intensive care;Medium;DraegerMonitor;1204
+Monitor - etCO2 Hoog;Adult intensive care;Medium;DraegerMonitor;1122
+Monitor - TIDALVOL LAAG;Adult intensive care;Medium;DraegerMonitor;1061
+Monitor - LOSKOPPELEN;Adult intensive care;Medium;DraegerMonitor;1029
+Monitor - DRUKSLANG GEKNIKT;Adult intensive care;Medium;DraegerMonitor;823
+Monitor - ZUIVERE CO2;Adult intensive care;Medium;DraegerMonitor;814
+Monitor - Lage GP1 M;Adult intensive care;Medium;DraegerMonitor;708
+Monitor - PAW HOOG;Adult intensive care;Medium;DraegerMonitor;647
+Monitor - APNOE BEAD.;Adult intensive care;Medium;DraegerMonitor;638
+Monitor - CO2 STORING;Adult intensive care;Medium;DraegerMonitor;545
+Monitor - PAW LAAG;Adult intensive care;Medium;DraegerMonitor;492
+Monitor - Lage Ta;Adult intensive care;Medium;DraegerMonitor;487
+Monitor - CO2 SENSOR ?;Adult intensive care;Medium;DraegerMonitor;478
+Monitor - Hoge Ta;Adult intensive care;Medium;DraegerMonitor;463
+Monitor - APNOE RESP;Adult intensive care;Medium;DraegerMonitor;439
+Monitor - Lage ICP;Adult intensive care;Medium;DraegerMonitor;407
+Monitor - PA statische druk;Adult intensive care;Medium;DraegerMonitor;392
+Monitor - Lage etCO2;Adult intensive care;Medium;DraegerMonitor;251
+Monitor - ART transducer storing;Adult intensive care;Medium;DraegerMonitor;204
+Monitor - GD1 statische druk;Adult intensive care;Medium;DraegerMonitor;202
+Monitor - Hoog etCO2;Adult intensive care;Medium;DraegerMonitor;194
+Monitor - Hoge PA M;Adult intensive care;Medium;DraegerMonitor;192
+Monitor - Hoge NBPmean;Adult intensive care;Medium;DraegerMonitor;158
+Monitor - SYSTEEMFOUT;Adult intensive care;Medium;DraegerMonitor;155
+Monitor - Hoge GP1 M;Adult intensive care;Medium;DraegerMonitor;147
+Monitor - ICP niet aangesloten;Adult intensive care;Medium;DraegerMonitor;143
+Monitor - DRUK FOUT;Adult intensive care;Medium;DraegerMonitor;138
+Monitor - Lage Pols;Adult intensive care;Medium;DraegerMonitor;134
+Monitor - Lage NBPmean;Adult intensive care;Medium;DraegerMonitor;130
+Monitor - ICP;Adult intensive care;Medium;DraegerMonitor;130
+Monitor - Lage GP2 M;Adult intensive care;Medium;DraegerMonitor;111
+Monitor - Lage PA M;Adult intensive care;Medium;DraegerMonitor;110
+EDWARDS - Verbinding verbroken;Adult intensive care;Hoog;Edwards;7370
+EDWARDS - Ll26;Adult intensive care;Hoog;Edwards;3463
+EDWARDS - SvO2 Low Alarm Limit;Adult intensive care;Hoog;Edwards;1158
+EDWARDS - SVRI High Alarm Limit;Adult intensive care;Hoog;Edwards;246
+EDWARDS - ScvO2 Low Alarm Limit;Adult intensive care;Hoog;Edwards;165
+EDWARDS - ScvO2 High Alarm Limit;Adult intensive care;Hoog;Edwards;136
+EDWARDS - SV: Heart Rate Signal Loss (2);Adult intensive care;Hoog;Edwards;104
+EDWARDS - EDV: Heart Rate Signal Loss;Adult intensive care;Hoog;Edwards;103
+EDWARDS - SVRI Low Alarm Limit;Adult intensive care;Hoog;Edwards;94
+EDWARDS - RVEF Low Alarm Limit;Adult intensive care;Hoog;Edwards;79
+EDWARDS - Oximetry: Cable Malfunction – Hardware Failure;Adult intensive care;Hoog;Edwards;77
+EDWARDS - EDV: Exceeding HR Threshold Limit;Adult intensive care;Hoog;Edwards;62
+EDWARDS - RVEF is below low limit;Adult intensive care;Hoog;Edwards;59
+EDWARDS - EDVI High Alarm Limit;Adult intensive care;Hoog;Edwards;47
+EDWARDS - Oximetry: Unstable Baseline (1);Adult intensive care;Hoog;Edwards;41
+EDWARDS - Swan Ganz Module Fault;Adult intensive care;Hoog;Edwards;37
+EDWARDS - L-Tech Module Slot - Hardware Failure;Adult intensive care;Hoog;Edwards;36
+EDWARDS - Cable Port 1 – Hardware Failure;Adult intensive care;Hoog;Edwards;35
+EDWARDS - Cable Port 1 – Communication Error;Adult intensive care;Hoog;Edwards;34
+EDWARDS - SVR High Alarm Limit;Adult intensive care;Hoog;Edwards;33
+EDWARDS - SvO2 High Alarm Limit;Adult intensive care;Hoog;Edwards;32
+EDWARDS - SVR Low Alarm Limit;Adult intensive care;Hoog;Edwards;31
+EDWARDS - CO: Check Thermal Filament Position;Adult intensive care;Hoog;Edwards;24
+EDWARDS - Module Slot 1 – Hardware Failure;Adult intensive care;Hoog;Edwards;23
+EDWARDS - SVI Low Alarm Limit;Adult intensive care;Hoog;Edwards;23
+EDWARDS - SVR is below low limit;Adult intensive care;Hoog;Edwards;20
+EDWARDS - Oximetry: Light Range;Adult intensive care;Hoog;Edwards;20
+EDWARDS - Oximetry Cable Disconnected;Adult intensive care;Hoog;Edwards;18
+EDWARDS - Oximetry: Wedge or Wall Artifact (1);Adult intensive care;Hoog;Edwards;18
+EDWARDS - CCI High Alarm Limit;Adult intensive care;Hoog;Edwards;13
+EDWARDS - CO exceeded high limit;Adult intensive care;Hoog;Edwards;13
+EDWARDS - SVR exceeded high limit;Adult intensive care;Hoog;Edwards;11
+EDWARDS - SVRI exceeded high limit;Adult intensive care;Hoog;Edwards;11
+EDWARDS - CO: Cardiac Output < 1.0 L/min;Adult intensive care;Hoog;Edwards;10
+EDWARDS - L-Tech Module Slot – Communication Error;Adult intensive care;Hoog;Edwards;10
+EDWARDS - CCI Low Alarm Limit;Adult intensive care;Hoog;Edwards;10
+MEDIBUS - Verbinding verbroken;Adult intensive care;Hoog;Medibus;2413
+MEDIBUS - Frequentie hoog;Adult intensive care;Hoog;Medibus;1845
+MEDIBUS - MV ondergrens;Adult intensive care;Hoog;Medibus;1843
+MEDIBUS - MV bovengrens;Adult intensive care;Hoog;Medibus;1145
+MEDIBUS - Disconnectie/Beademingsdruk laag;Adult intensive care;Hoog;Medibus;981
+MEDIBUS - Apnoe ventilatie;Adult intensive care;Hoog;Medibus;525
+MEDIBUS - Beademingsdruk hoog;Adult intensive care;Hoog;Medibus;505
+MEDIBUS - Luchtweg obstructie?;Adult intensive care;Hoog;Medibus;252
+MEDIBUS - Hose kinked;Adult intensive care;Hoog;Medibus;222
+MEDIBUS - Apnoe;Adult intensive care;Hoog;Medibus;91
+MEDIBUS - Drukbegrensd;Adult intensive care;Laag;Medibus;38
+MEDIBUS - Slagvolume hoog;Adult intensive care;Medium;Medibus;5289
+MEDIBUS - Volume niet constant;Adult intensive care;Medium;Medibus;2111
+MEDIBUS - Lekkage;Adult intensive care;Medium;Medibus;659
+SERVOI - Exp. minuutvolume;Adult intensive care;Hoog;ServoI;846
+SERVOI - Verbinding verbroken;Adult intensive care;Hoog;ServoI;742
+SERVOI - Exp. minuutvol: Laag;Adult intensive care;Hoog;ServoI;615
+SERVOI - Paw hoog;Adult intensive care;Hoog;ServoI;244
+SERVOI - Exp. minuutvol: Hoog;Adult intensive care;Hoog;ServoI;231
+SERVOI - Apneu;Adult intensive care;Hoog;ServoI;138
+SERVOI - Geen patiëntactiv.;Adult intensive care;Hoog;ServoI;131
+SERVOI - Lekkage buiten bereik;Adult intensive care;Hoog;ServoI;8
+SERVOI - Ademfrequentie: Hoog;Adult intensive care;Medium;ServoI;896
+SERVOI - Ademfrequentie: Laag;Adult intensive care;Medium;ServoI;504
+SERVOI - PEEP laag;Adult intensive care;Medium;ServoI;231
+SERVOI - Grensalarm;Adult intensive care;Medium;ServoI;158
+SERVOI - PEEP hoog;Adult intensive care;Medium;ServoI;64
+SERVOU - Exp. minuutvol. laag;Adult intensive care;Hoog;ServoU;2919
+SERVOU - Beademingsdruk hoog;Adult intensive care;Hoog;ServoU;1071
+SERVOU - Patiëntcircuit los;Adult intensive care;Hoog;ServoU;897
+SERVOU - Verbinding verbroken;Adult intensive care;Hoog;ServoU;847
+SERVOU - Patiënt los > 1 min;Adult intensive care;Hoog;ServoU;241
+SERVOU - Insp. druk hoog;Adult intensive care;Hoog;ServoU;205
+SERVOU - Te veel lekkage;Adult intensive care;Hoog;ServoU;58
+SERVOU - Werkt op batterijen;Adult intensive care;Laag;ServoU;13
+SERVOU - Exp. cass. vervangen;Adult intensive care;Laag;ServoU;7
+SERVOU - Ademfrequentie hoog;Adult intensive care;Medium;ServoU;2917
+SERVOU - Ademfrequentie laag;Adult intensive care;Medium;ServoU;1269
+SERVOU - Exp. minuutvol. hoog;Adult intensive care;Medium;ServoU;859
+SERVOU - PEEP laag;Adult intensive care;Medium;ServoU;786
+SERVOU - Geen patiëntactiv.;Adult intensive care;Medium;ServoU;395
+SERVOU - PEEP hoog;Adult intensive care;Medium;ServoU;127
+SERVOU - Edi storing door ECG;Adult intensive care;Medium;ServoU;68
+SERVOU - Volume uit blokkade;Adult intensive care;Medium;ServoU;44
+MEDIBUS - Verbinding verbroken;Neonatal intensive care;Hoog;BabyLeo;504
+MEDIBUS - Humidity low;Neonatal intensive care;Laag;BabyLeo;40188
+MEDIBUS - Water level low;Neonatal intensive care;Laag;BabyLeo;2841
+MEDIBUS - Air temperature high;Neonatal intensive care;Medium;BabyLeo;370
+MEDIBUS - Air temperature low;Neonatal intensive care;Medium;BabyLeo;386
+MEDIBUS - Check patient;Neonatal intensive care;Medium;BabyLeo;257
+MEDIBUS - Setting, alarm limit or ventilation mode changed;Neonatal intensive care;Medium;BabyLeo;201
+MEDIBUS - Instellingen verloren;Neonatal intensive care;Medium;BabyLeo;140
+MEDIBUS - Radiant heater after 15 mins. operation;Neonatal intensive care;Medium;BabyLeo;41
+MEDIBUS - Mattress temperature  setting deviation;Neonatal intensive care;Medium;BabyLeo;39
+MEDIBUS - System fault;Neonatal intensive care;Medium;BabyLeo;30
+MEDIBUS - Central skin temperature > high limit;Neonatal intensive care;Medium;BabyLeo;11
+MEDIBUS - Central skin temperature < low limit;Neonatal intensive care;Medium;BabyLeo;10
+MEDIBUS - Verbinding verbroken;Neonatal intensive care;Hoog;BabyTherm;7
+MEDIBUS - Humidity low;Neonatal intensive care;Laag;BabyTherm;50
+MEDIBUS - Water level low;Neonatal intensive care;Laag;BabyTherm;5
+MEDIBUS - Air temperature low;Neonatal intensive care;Laag;BabyTherm;4
+MEDIBUS - Humidity Sensor inoperable;Neonatal intensive care;Medium;BabyTherm;1
+MEDIBUS - Mattress temperature  setting deviation;Neonatal intensive care;Medium;BabyTherm;4
+MEDIBUS - Ventilator storing;Neonatal intensive care;Medium;BabyTherm;1
+MEDIBUS - Verbinding verbroken;Neonatal intensive care;Hoog;Caleo;55281
+MEDIBUS - Humidity low;Neonatal intensive care;Laag;Caleo;33489
+MEDIBUS - Water level low;Neonatal intensive care;Laag;Caleo;5462
+MEDIBUS - Air temperature low;Neonatal intensive care;Laag;Caleo;2292
+MEDIBUS - Radiant heater after 15 mins. operation;Neonatal intensive care;Medium;Caleo;1338
+MEDIBUS - Mattress temperature  setting deviation;Neonatal intensive care;Medium;Caleo;886
+MEDIBUS - Ventilator storing;Neonatal intensive care;Medium;Caleo;458
+MEDIBUS - Humidity Sensor inoperable;Neonatal intensive care;Medium;Caleo;127
+MEDIBUS - Temp. 1  Probe disconnected or fault;Neonatal intensive care;Medium;Caleo;32
+MEDIBUS - Air temperature high;Neonatal intensive care;Medium;Caleo;17
+MEDIBUS - Humidifier inoperable;Neonatal intensive care;Medium;Caleo;12
+CRITICOOL - Verbinding verbroken;Neonatal intensive care;Hoog;Criticool;165
+HULBUS - Vte high;Neonatal intensive care;Hoog;LeoniPlus;593367
+HULBUS - 345;Neonatal intensive care;Hoog;LeoniPlus;445417
+HULBUS - Leak too high;Neonatal intensive care;Hoog;LeoniPlus;275269
+HULBUS - CPAP low;Neonatal intensive care;Hoog;LeoniPlus;166941
+HULBUS - Ppeak too low;Neonatal intensive care;Hoog;LeoniPlus;146778
+HULBUS - CPAP high;Neonatal intensive care;Hoog;LeoniPlus;131592
+HULBUS - 370;Neonatal intensive care;Hoog;LeoniPlus;67372
+HULBUS - Ppeak too high;Neonatal intensive care;Hoog;LeoniPlus;66699
+HULBUS - MV high;Neonatal intensive care;Hoog;LeoniPlus;61462
+HULBUS - Disconnection ;Neonatal intensive care;Hoog;LeoniPlus;49235
+HULBUS - PEEP not reached;Neonatal intensive care;Hoog;LeoniPlus;43812
+HULBUS - 369;Neonatal intensive care;Hoog;LeoniPlus;30811
+HULBUS - Pressure E-Tube;Neonatal intensive care;Hoog;LeoniPlus;26369
+HULBUS - MV low;Neonatal intensive care;Hoog;LeoniPlus;20141
+HULBUS - Freq too high;Neonatal intensive care;Hoog;LeoniPlus;18368
+HULBUS - Vol not reached;Neonatal intensive care;Hoog;LeoniPlus;13897
+HULBUS - 368;Neonatal intensive care;Hoog;LeoniPlus;12276
+PHILIPSMONITOR - Desaturatie ;Neonatal intensive care;Hoog;Philipsmonitor;645013
+PHILIPSMONITOR - Extr. lage hartfreq.;Neonatal intensive care;Hoog;Philipsmonitor;272333
+PHILIPSMONITOR - Apneu ;Neonatal intensive care;Hoog;Philipsmonitor;35457
+PHILIPSMONITOR - Asystolie ;Neonatal intensive care;Hoog;Philipsmonitor;30789
+PHILIPSMONITOR - ABPm hoog ;Neonatal intensive care;Hoog;Philipsmonitor;24603
+PHILIPSMONITOR - Extreme Tachy;Neonatal intensive care;Hoog;Philipsmonitor;14238
+PHILIPSMONITOR - Ventrikel Fibr/Tachy;Neonatal intensive care;Hoog;Philipsmonitor;6923
+PHILIPSMONITOR - ABPmLaag;Neonatal intensive care;Hoog;Philipsmonitor;4029
+PHILIPSMONITOR - ABP verkleinen;Neonatal intensive care;Laag;Philipsmonitor;810722
+PHILIPSMONITOR - CO2 wzig schaal l;Neonatal intensive care;Laag;Philipsmonitor;169558
+PHILIPSMONITOR - SpO2 zwak signaal ;Neonatal intensive care;Laag;Philipsmonitor;77993
+PHILIPSMONITOR - SpO2-sensor error ;Neonatal intensive care;Laag;Philipsmonitor;48505
+PHILIPSMONITOR - ECG/arr-alrmn uit;Neonatal intensive care;Laag;Philipsmonitor;25373
+PHILIPSMONITOR - SpO2 lage PFI;Neonatal intensive care;Laag;Philipsmonitor;24980
+PHILIPSMONITOR - ABP artefact;Neonatal intensive care;Laag;Philipsmonitor;18753
+PHILIPSMONITOR - SpO2 r lage PFI;Neonatal intensive care;Laag;Philipsmonitor;17348
+PHILIPSMONITOR - Delta SpO2 contr. bron;Neonatal intensive care;Laag;Philipsmonitor;7985
+PHILIPSMONITOR - SpO2 r zoekend;Neonatal intensive care;Laag;Philipsmonitor;7706
+PHILIPSMONITOR - ABP contr.nulling;Neonatal intensive care;Laag;Philipsmonitor;5965
+PHILIPSMONITOR - SpO2 laag ;Neonatal intensive care;Medium;Philipsmonitor;2551634
+PHILIPSMONITOR - SpO2 hoog;Neonatal intensive care;Medium;Philipsmonitor;830988
+PHILIPSMONITOR - Lage hartfreq.;Neonatal intensive care;Medium;Philipsmonitor;440853
+PHILIPSMONITOR - Temp laag;Neonatal intensive care;Medium;Philipsmonitor;350991
+PHILIPSMONITOR - HF hoog;Neonatal intensive care;Medium;Philipsmonitor;320532
+PHILIPSMONITOR - ABPm hoog ;Neonatal intensive care;Medium;Philipsmonitor;262400
+PHILIPSMONITOR - ?? Temp hoog;Neonatal intensive care;Medium;Philipsmonitor;211647
+PHILIPSMONITOR - RF hoog;Neonatal intensive care;Medium;Philipsmonitor;188979
+PHILIPSMONITOR - Storing in SpO2;Neonatal intensive care;Medium;Philipsmonitor;161333
+PHILIPSMONITOR - SDM READY FOR USE;Neonatal intensive care;Medium;Philipsmonitor;127608
+PHILIPSMONITOR - SpO2 geen pols;Neonatal intensive care;Medium;Philipsmonitor;115923
+PHILIPSMONITOR - Resp elektr.los;Neonatal intensive care;Medium;Philipsmonitor;113189
+PHILIPSMONITOR - ABPm laag;Neonatal intensive care;Medium;Philipsmonitor;112177
+PHILIPSMONITOR - SpO2 r laag;Neonatal intensive care;Medium;Philipsmonitor;81709
+PHILIPSMONITOR - SDM TC UNSTBL. ;Neonatal intensive care;Medium;Philipsmonitor;73811
+PHILIPSMONITOR - ?? etCO2 hoog;Neonatal intensive care;Medium;Philipsmonitor;67622
+PHILIPSMONITOR - ??SDM HI/LO tcpCO2;Neonatal intensive care;Medium;Philipsmonitor;63748
+PHILIPSMONITOR - EtCO2 laag;Neonatal intensive care;Medium;Philipsmonitor;59116
+PHILIPSMONITOR - ECG alle leads los;Neonatal intensive care;Medium;Philipsmonitor;55810
+PHILIPSMONITOR - ECG ruissignaal;Neonatal intensive care;Medium;Philipsmonitor;47138
+PHILIPSMONITOR - Niet te leren ECG;Neonatal intensive care;Medium;Philipsmonitor;47027
+PHILIPSMONITOR - ABP pulseert niet;Neonatal intensive care;Medium;Philipsmonitor;42525
+PHILIPSMONITOR - SDM SYSTEM MESSAGE ;Neonatal intensive care;Medium;Philipsmonitor;43195
+PHILIPSMONITOR - Lage ademfreq.;Neonatal intensive care;Medium;Philipsmonitor;42240
+PHILIPSMONITOR - ?? SpO2r hoog;Neonatal intensive care;Medium;Philipsmonitor;40385
+PHILIPSMONITOR - SDM SITE TIMEOUT;Neonatal intensive care;Medium;Philipsmonitor;32568
+PHILIPSMONITOR - ABP slecht signaal;Neonatal intensive care;Medium;Philipsmonitor;26040
+PHILIPSMONITOR - SpO2 geen sensor;Neonatal intensive care;Medium;Philipsmonitor;20698
+PHILIPSMONITOR - ?? imCO2 hoog;Neonatal intensive care;Medium;Philipsmonitor;19590
+PHILIPSMONITOR - CO2 ctr adapter er;Neonatal intensive care;Medium;Philipsmonitor;17989
+PHILIPSMONITOR - F elektrode los;Neonatal intensive care;Medium;Philipsmonitor;17493
+PHILIPSMONITOR - SDM HEATING REDUCD ;Neonatal intensive care;Medium;Philipsmonitor;17286
+PHILIPSMONITOR - R elektrode los;Neonatal intensive care;Medium;Philipsmonitor;16501
+PHILIPSMONITOR - SDM SENS. OFF PAT.;Neonatal intensive care;Medium;Philipsmonitor;14840
+PHILIPSMONITOR - SDM TC MSG. ;Neonatal intensive care;Medium;Philipsmonitor;13830
+PHILIPSMONITOR - SpO2 interferentie;Neonatal intensive care;Medium;Philipsmonitor;13936
+PHILIPSMONITOR - NiBDm hoog;Neonatal intensive care;Medium;Philipsmonitor;11976
+PHILIPSMONITOR - SpO2 r geen puls;Neonatal intensive care;Medium;Philipsmonitor;11112
+PHILIPSMONITOR - SpO2 Pols?;Neonatal intensive care;Medium;Philipsmonitor;10314
+PHILIPSMONITOR - Control. pat-ID;Neonatal intensive care;Medium;Philipsmonitor;9979
+PHILIPSMONITOR - L elektrode los;Neonatal intensive care;Medium;Philipsmonitor;9804
+PHILIPSMONITOR - NiBD meting faalde;Neonatal intensive care;Medium;Philipsmonitor;9460
+PHILIPSMONITOR - Temp geen sensor;Neonatal intensive care;Medium;Philipsmonitor;8857
+PHILIPSMONITOR - NiBD onderbroken;Neonatal intensive care;Medium;Philipsmonitor;6735
+PHILIPSMONITOR - Storing in SpO2 r;Neonatal intensive care;Medium;Philipsmonitor;6344
+PHILIPSMONITOR - SpO2 r sensor los;Neonatal intensive care;Medium;Philipsmonitor;5774
+DATEXOHMEDACOMVENTILATOR - Plimit Reached;Paediatric intensive care;Hoog;CarescapeR860;3417
+DATEXOHMEDACOMVENTILATOR - MVexp High;Paediatric intensive care;Hoog;CarescapeR860;2547
+DATEXOHMEDACOMVENTILATOR - RR High;Paediatric intensive care;Hoog;CarescapeR860;2409
+DATEXOHMEDACOMVENTILATOR - Patient Disconnected;Paediatric intensive care;Hoog;CarescapeR860;2105
+DATEXOHMEDACOMVENTILATOR - VTexp High;Paediatric intensive care;Hoog;CarescapeR860;1522
+DATEXOHMEDACOMVENTILATOR - Ppeak High;Paediatric intensive care;Hoog;CarescapeR860;1387
+DATEXOHMEDACOMVENTILATOR - VT Not Achieved;Paediatric intensive care;Hoog;CarescapeR860;1036
+DATEXOHMEDACOMVENTILATOR - Ppeak Low;Paediatric intensive care;Hoog;CarescapeR860;987
+DATEXOHMEDACOMVENTILATOR - VTexp Low;Paediatric intensive care;Hoog;CarescapeR860;1239
+DATEXOHMEDACOMVENTILATOR - MVexp Low;Paediatric intensive care;Hoog;CarescapeR860;945
+DATEXOHMEDACOMVENTILATOR - RR Low;Paediatric intensive care;Hoog;CarescapeR860;918
+DATEXOHMEDACOMVENTILATOR - Apnea;Paediatric intensive care;Hoog;CarescapeR860;699
+DATEXOHMEDACOMVENTILATOR - Backup Mode Active;Paediatric intensive care;Hoog;CarescapeR860;462
+DATEXOHMEDACOMVENTILATOR - PEEPe Low;Paediatric intensive care;Hoog;CarescapeR860;600
+DATEXOHMEDACOMVENTILATOR - Neo Flow Sensor Error;Paediatric intensive care;Hoog;CarescapeR860;282
+DATEXOHMEDACOMVENTILATOR - Verbinding verbroken;Paediatric intensive care;Hoog;CarescapeR860;211
+DATEXOHMEDACOMVENTILATOR - Neo Flow Sensor Off;Paediatric intensive care;Hoog;CarescapeR860;128
+DATEXOHMEDACOMVENTILATOR - Circuit Leak;Paediatric intensive care;Hoog;CarescapeR860;125
+DATEXOHMEDACOMVENTILATOR - Circuit Leak Alarm Off;Paediatric intensive care;Hoog;CarescapeR860;91
+DATEXOHMEDACOMVENTILATOR - Patient Connected?;Paediatric intensive care;Hoog;CarescapeR860;51
+DATEXOHMEDACOMVENTILATOR - Exp Flow Sensor Error;Paediatric intensive care;Hoog;CarescapeR860;44
+DATEXOHMEDACOMVENTILATOR - No Neo Flow Sensor;Paediatric intensive care;Hoog;CarescapeR860;44
+DATEXOHMEDACOMVENTILATOR - Apnea Alarm Off;Paediatric intensive care;Hoog;CarescapeR860;36
+DATEXOHMEDACOMVENTILATOR - MVexp Low Alarm Off;Paediatric intensive care;Hoog;CarescapeR860;34
+CRITICOOL - Verbinding verbroken;Paediatric intensive care;Hoog;Criticool;35
+PHILIPSMONITOR - Desaturatie ;Paediatric intensive care;Hoog;Philipsmonitor;16101
+PHILIPSMONITOR - Extreme Tachy;Paediatric intensive care;Hoog;Philipsmonitor;7372
+PHILIPSMONITOR - Apneu ;Paediatric intensive care;Hoog;Philipsmonitor;3973
+PHILIPSMONITOR - Asystolie ;Paediatric intensive care;Hoog;Philipsmonitor;3657
+PHILIPSMONITOR - Extr. lage hartfreq.;Paediatric intensive care;Hoog;Philipsmonitor;2828
+PHILIPSMONITOR - ??? Brady (pols);Paediatric intensive care;Hoog;Philipsmonitor;1461
+PHILIPSMONITOR - Ventrikel Fibr/Tachy;Paediatric intensive care;Hoog;Philipsmonitor;1411
+PHILIPSMONITOR - ABP losgeraakt;Paediatric intensive care;Hoog;Philipsmonitor;1422
+PHILIPSMONITOR - ABP buiten bereik;Paediatric intensive care;Hoog;Philipsmonitor;1315
+PHILIPSMONITOR - Verbinding verbroken;Paediatric intensive care;Hoog;Philipsmonitor;1206
+PHILIPSMONITOR - Tachy (pols) ;Paediatric intensive care;Hoog;Philipsmonitor;479
+PHILIPSMONITOR - ??? Desaturatie ;Paediatric intensive care;Hoog;Philipsmonitor;397
+PHILIPSMONITOR - ABPm hoog ;Paediatric intensive care;Hoog;Philipsmonitor;349
+PHILIPSMONITOR - CVD buiten bereik;Paediatric intensive care;Hoog;Philipsmonitor;332
+PHILIPSMONITOR - Vtach;Paediatric intensive care;Hoog;Philipsmonitor;304
+PHILIPSMONITOR - ABPs hoog ;Paediatric intensive care;Hoog;Philipsmonitor;269
+PHILIPSMONITOR - NiBD manch.ovrdruk;Paediatric intensive care;Hoog;Philipsmonitor;240
+PHILIPSMONITOR - ???ALARM LOW ;Paediatric intensive care;Hoog;Philipsmonitor;136
+PHILIPSMONITOR - ABP verkleinen;Paediatric intensive care;Laag;Philipsmonitor;270385
+PHILIPSMONITOR - CO2 wzig schaal l;Paediatric intensive care;Laag;Philipsmonitor;252011
+PHILIPSMONITOR - SpO2 lage PFI;Paediatric intensive care;Laag;Philipsmonitor;119464
+PHILIPSMONITOR - SpO2 zwak signaal ;Paediatric intensive care;Laag;Philipsmonitor;101722
+PHILIPSMONITOR - SpO2 ctrl sensor r;Paediatric intensive care;Laag;Philipsmonitor;89707
+PHILIPSMONITOR - SpO2-sensor error ;Paediatric intensive care;Laag;Philipsmonitor;65199
+PHILIPSMONITOR - ECG/arr-alrmn uit;Paediatric intensive care;Laag;Philipsmonitor;31194
+PHILIPSMONITOR - CVD verkleinen ;Paediatric intensive care;Laag;Philipsmonitor;26994
+PHILIPSMONITOR - ABP artefact;Paediatric intensive care;Laag;Philipsmonitor;23670
+PHILIPSMONITOR - Niet te leren ST;Paediatric intensive care;Laag;Philipsmonitor;11792
+PHILIPSMONITOR - SpO2 r zoekend;Paediatric intensive care;Laag;Philipsmonitor;8191
+PHILIPSMONITOR - Delta SpO2 contr. bron;Paediatric intensive care;Laag;Philipsmonitor;7884
+PHILIPSMONITOR - CVD artefact;Paediatric intensive care;Laag;Philipsmonitor;7532
+PHILIPSMONITOR - SpO2 r lage PFI;Paediatric intensive care;Laag;Philipsmonitor;6325
+PHILIPSMONITOR - ECG alarm(n) uit;Paediatric intensive care;Laag;Philipsmonitor;4497
+PHILIPSMONITOR - SpO2pr lage PFI;Paediatric intensive care;Laag;Philipsmonitor;3669
+PHILIPSMONITOR - ABP contr.nulling;Paediatric intensive care;Laag;Philipsmonitor;2349
+PHILIPSMONITOR - SpO2przwak signaal;Paediatric intensive care;Laag;Philipsmonitor;2293
+PHILIPSMONITOR - SpO2pr zoekend;Paediatric intensive care;Laag;Philipsmonitor;1544
+PHILIPSMONITOR - CO2 sens.opwarm;Paediatric intensive care;Laag;Philipsmonitor;1507
+PHILIPSMONITOR - Contrl touchscreen;Paediatric intensive care;Laag;Philipsmonitor;1020
+PHILIPSMONITOR - Niet te leren ECG;Paediatric intensive care;Medium;Philipsmonitor;251313
+PHILIPSMONITOR - SpO2 laag ;Paediatric intensive care;Medium;Philipsmonitor;161981
+PHILIPSMONITOR - Resp elektr.los;Paediatric intensive care;Medium;Philipsmonitor;145248
+PHILIPSMONITOR - SpO2 geen pols;Paediatric intensive care;Medium;Philipsmonitor;103863
+PHILIPSMONITOR - Storing in SpO2;Paediatric intensive care;Medium;Philipsmonitor;95542
+PHILIPSMONITOR - HF hoog;Paediatric intensive care;Medium;Philipsmonitor;95752
+PHILIPSMONITOR - ECG alle leads los;Paediatric intensive care;Medium;Philipsmonitor;87821
+PHILIPSMONITOR - ABPm hoog ;Paediatric intensive care;Medium;Philipsmonitor;70307
+PHILIPSMONITOR - CO2 ctr adapter er;Paediatric intensive care;Medium;Philipsmonitor;65930
+PHILIPSMONITOR - Lage hartfreq.;Paediatric intensive care;Medium;Philipsmonitor;41588
+PHILIPSMONITOR - Lage ademfreq.;Paediatric intensive care;Medium;Philipsmonitor;40982
+PHILIPSMONITOR - RF hoog;Paediatric intensive care;Medium;Philipsmonitor;39714
+PHILIPSMONITOR - ABPm laag;Paediatric intensive care;Medium;Philipsmonitor;31963
+PHILIPSMONITOR - SpO2-sensor los ;Paediatric intensive care;Medium;Philipsmonitor;28062
+PHILIPSMONITOR - ABP pulseert niet;Paediatric intensive care;Medium;Philipsmonitor;26406
+PHILIPSMONITOR - NiBD meting faalde;Paediatric intensive care;Medium;Philipsmonitor;25104
+PHILIPSMONITOR - ?? etCO2 hoog;Paediatric intensive care;Medium;Philipsmonitor;23814
+PHILIPSMONITOR - SpO2 geen sensor;Paediatric intensive care;Medium;Philipsmonitor;21330
+PHILIPSMONITOR - NiBD contr. mancht;Paediatric intensive care;Medium;Philipsmonitor;22635
+PHILIPSMONITOR - ECG ruissignaal;Paediatric intensive care;Medium;Philipsmonitor;19328
+PHILIPSMONITOR - ABPs hoog ;Paediatric intensive care;Medium;Philipsmonitor;15105
+PHILIPSMONITOR - SpO2 interferentie;Paediatric intensive care;Medium;Philipsmonitor;14031
+PHILIPSMONITOR - EtCO2 laag;Paediatric intensive care;Medium;Philipsmonitor;14207
+PHILIPSMONITOR - CVDm hoog;Paediatric intensive care;Medium;Philipsmonitor;12954
+PHILIPSMONITOR - Control ECG-kabel;Paediatric intensive care;Medium;Philipsmonitor;11421
+PHILIPSMONITOR - N elektrode los;Paediatric intensive care;Medium;Philipsmonitor;11757
+PHILIPSMONITOR - ABP slecht signaal;Paediatric intensive care;Medium;Philipsmonitor;8628
+PHILIPSMONITOR - Tbloed geen sensor;Paediatric intensive care;Medium;Philipsmonitor;8488
+PHILIPSMONITOR - SpO2 r geen puls;Paediatric intensive care;Medium;Philipsmonitor;6913
+PHILIPSMONITOR - Storing in SpO2 r;Paediatric intensive care;Medium;Philipsmonitor;6670
+PHILIPSMONITOR - SpO2 Pols?;Paediatric intensive care;Medium;Philipsmonitor;6382
+PHILIPSMONITOR - NiBD onderbroken;Paediatric intensive care;Medium;Philipsmonitor;6457
+PHILIPSMONITOR - NiBD defect t;Paediatric intensive care;Medium;Philipsmonitor;6260
+PHILIPSMONITOR - App. contr.;Paediatric intensive care;Medium;Philipsmonitor;6044
+PHILIPSMONITOR - Contr SyncOut-kabl;Paediatric intensive care;Medium;Philipsmonitor;5892
+PHILIPSMONITOR - Trect laag;Paediatric intensive care;Medium;Philipsmonitor;5736
+PHILIPSMONITOR - SpO2 r laag;Paediatric intensive care;Medium;Philipsmonitor;5511
+PHILIPSMONITOR - Control. pat-ID;Paediatric intensive care;Medium;Philipsmonitor;5142
+PHILIPSMONITOR - NiBDm laag;Paediatric intensive care;Medium;Philipsmonitor;5198
+PHILIPSMONITOR - ABPs laag ;Paediatric intensive care;Medium;Philipsmonitor;5122
+PHILIPSMONITOR - SpO2-sensor error ;Paediatric intensive care;Medium;Philipsmonitor;4970
+PHILIPSMONITOR - SpO2 r sensor los;Paediatric intensive care;Medium;Philipsmonitor;4143
+PHILIPSMONITOR - SpO2 hoog;Paediatric intensive care;Medium;Philipsmonitor;3654
+PHILIPSMONITOR - Pols hoog ;Paediatric intensive care;Medium;Philipsmonitor;3291
+PHILIPSMONITOR - Trect geen sensor ;Paediatric intensive care;Medium;Philipsmonitor;3333
+PHILIPSMONITOR - Thuid geen sensor;Paediatric intensive care;Medium;Philipsmonitor;3247
+PHILIPSMONITOR - Temp geen sensor;Paediatric intensive care;Medium;Philipsmonitor;3006
+PHILIPSMONITOR - SpO2 onbk. sensor;Paediatric intensive care;Medium;Philipsmonitor;2819
+PHILIPSMONITOR - Pols laag ;Paediatric intensive care;Medium;Philipsmonitor;2806
+PHILIPSMONITOR - SpO2 r geen sensor;Paediatric intensive care;Medium;Philipsmonitor;2709
+PHILIPSMONITOR - ABP geen transducer;Paediatric intensive care;Medium;Philipsmonitor;2651
+PHILIPSMONITOR - ABP buiten bereik;Paediatric intensive care;Medium;Philipsmonitor;2353
+PHILIPSMONITOR - SpO2 r interferentie;Paediatric intensive care;Medium;Philipsmonitor;2023
+PHILIPSMONITOR - NiBDm hoog;Paediatric intensive care;Medium;Philipsmonitor;1979
+PHILIPSMONITOR - SpO2pr geen puls;Paediatric intensive care;Medium;Philipsmonitor;1799
+PHILIPSMONITOR - ?? awRF hoog g;Paediatric intensive care;Medium;Philipsmonitor;1817
+PHILIPSMONITOR - ?? SpO2pr laag;Paediatric intensive care;Medium;Philipsmonitor;1752
+PHILIPSMONITOR - Storing in SpO2pr;Paediatric intensive care;Medium;Philipsmonitor;1724
+PHILIPSMONITOR - CO2 Occlusie;Paediatric intensive care;Medium;Philipsmonitor;1719
+PHILIPSMONITOR - Temp laag;Paediatric intensive care;Medium;Philipsmonitor;1430
+PHILIPSMONITOR - Trect hoog;Paediatric intensive care;Medium;Philipsmonitor;1474
+PHILIPSMONITOR - ABPd hoog;Paediatric intensive care;Medium;Philipsmonitor;1690
+PHILIPSMONITOR - ABPd laag;Paediatric intensive care;Medium;Philipsmonitor;1467
+PHILIPSMONITOR - ?? imCO2 hoog;Paediatric intensive care;Medium;Philipsmonitor;1472
+PHILIPSMONITOR - CO2 geen sensor or;Paediatric intensive care;Medium;Philipsmonitor;1244
+PHILIPSMONITOR - CVD geen transducer;Paediatric intensive care;Medium;Philipsmonitor;1232
+PHILIPSMONITOR - App. contr. conf.;Paediatric intensive care;Medium;Philipsmonitor;1185
+PHILIPSMONITOR - Tkern geen sensor ;Paediatric intensive care;Medium;Philipsmonitor;1061
+PHILIPSMONITOR - ST-II hoog;Paediatric intensive care;Medium;Philipsmonitor;1014
+PHILIPSMONITOR - ?? Thuid laag;Paediatric intensive care;Medium;Philipsmonitor;936
+PHILIPSMONITOR - SpO2pr sensor los;Paediatric intensive care;Medium;Philipsmonitor;928
+PHILIPSMONITOR - PAP geen puls;Paediatric intensive care;Medium;Philipsmonitor;847
+PHILIPSMONITOR - ?? CVDm laag g;Paediatric intensive care;Medium;Philipsmonitor;1012
+PHILIPSMONITOR - EC10 ontkoppeld;Paediatric intensive care;Medium;Philipsmonitor;753
+PHILIPSMONITOR - SpO2pr intrfrentie;Paediatric intensive care;Medium;Philipsmonitor;737
+PHILIPSMONITOR - ?? awRF laag g;Paediatric intensive care;Medium;Philipsmonitor;758
+PHILIPSMONITOR - MMX losgekop. p.;Paediatric intensive care;Medium;Philipsmonitor;709
+PHILIPSMONITOR - CO2 wast uit;Paediatric intensive care;Medium;Philipsmonitor;695
+PHILIPSMONITOR - SIGNAL QUALITY ;Paediatric intensive care;Medium;Philipsmonitor;728
+PRISMAFLEX - Algemene systeemfout ;Paediatric intensive care;Hoog;Prismax;0
+PRISMAFLEX - Verbinding verbroken;Paediatric intensive care;Hoog;Prismax;0
+SERVOU - Exp. minuutvol. laag;Paediatric intensive care;Hoog;ServoU;39440
+SERVOU - Beademingsdruk hoog;Paediatric intensive care;Hoog;ServoU;22006
+SERVOU - Te veel lekkage;Paediatric intensive care;Hoog;ServoU;8866
+SERVOU - Patintcircuit los;Paediatric intensive care;Hoog;ServoU;8562
+SERVOU - Grensalarm;Paediatric intensive care;Hoog;ServoU;5550
+SERVOU - Insp. druk hoog;Paediatric intensive care;Hoog;ServoU;5139
+SERVOU - Verbinding verbroken;Paediatric intensive care;Hoog;ServoU;998
+SERVOU - Volume uit blokkade;Paediatric intensive care;Laag;ServoU;87084
+SERVOU - Ademfrequentie hoog;Paediatric intensive care;Medium;ServoU;28329
+SERVOU - PEEP laag;Paediatric intensive care;Medium;ServoU;16487
+SERVOU - Exp. minuutvol. hoog;Paediatric intensive care;Medium;ServoU;15340
+SERVOU - Grensalarm;Paediatric intensive care;Medium;ServoU;11820
+SERVOU - Ademfrequentie laag;Paediatric intensive care;Medium;ServoU;9182
+SERVOU - PEEP hoog;Paediatric intensive care;Medium;ServoU;2740
+SERVOU - Geen patintactiv.;Paediatric intensive care;Medium;ServoU;1991
+SERVOU - Te veel lekkage;Paediatric intensive care;Medium;ServoU;1784
+SERVOU - CPAP laag;Paediatric intensive care;Medium;ServoU;743
+TRILOGY - 0x79;Paediatric intensive care;Hoog;Trilogy;121
+TRILOGY - Hoge ademfrequentie;Paediatric intensive care;Hoog;Trilogy;26
+TRILOGY - Lage VTe;Paediatric intensive care;Hoog;Trilogy;9
+TRILOGY - Verbinding verbroken;Paediatric intensive care;Hoog;Trilogy;6
+TRILOGY - Lage inademingsdruk;Paediatric intensive care;Hoog;Trilogy;2
+TRILOGY - Netspanning afwezig;Paediatric intensive care;Medium;Trilogy;5
