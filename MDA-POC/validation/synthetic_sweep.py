@@ -1,6 +1,6 @@
 """
 synthetic_sweep.py — end-to-end test of the full pipeline (poc_main ->
-logs -> table4_stats) on synthetic patients whose outcome is known.
+logs -> Table 4 of manuscript_tables.py) on synthetic patients whose outcome is known.
 
 Every verification case (validation/cases/*.yaml, each confirmed by
 engine/regression.py) becomes a SEGMENT of a long patient stream, plus a few
@@ -23,7 +23,7 @@ Checks (non-zero exit on any failure):
      killed after its first chunk then resumed — each give, per segment,
      exactly the isolated result shifted in time, and no row mixes alarms
      of two segments (no leakage);
-  3. table4_stats on the stitched run: the extras land where they should
+  3. Table 4 (manuscript_tables.py) on the stitched run: the extras land where they should
      (filter, no blueprint, tie), and its counts agree with the logs.
 
   cd MDA-POC/engine && python3 regression.py      # writes the case events
@@ -287,15 +287,13 @@ def compare(name: str, got: dict, want: dict, segments: list, problems: list) ->
 
 def table4(run: Path, problems: list) -> dict:
     sys.path.insert(0, str(ROOT.parent / "CODE" / "reporting"))
-    import table4_stats as T
-    T.MANIFEST = run / "run.json"
-    T.OUT_PATH = run / "table4_stats.csv"
+    import manuscript_tables as T
     import contextlib
     import io
     with contextlib.redirect_stdout(io.StringIO()):
-        T.main()
-    return {(r["Unit"], r["Key"]): r["Value"] for r in csv.DictReader(T.OUT_PATH.open(encoding="utf-8"),
-                                                                       delimiter=";")}
+        rows = T.table4_rows(manifest=run / "run.json")
+    # as strings, the way they read back from the CSV
+    return {(u, k): "" if v is None else str(v) for u, k, v, _ in rows}
 
 
 def check_table4(stats: dict, run: Path, patients: dict, problems: list) -> None:
@@ -348,7 +346,7 @@ def check_table4(stats: dict, run: Path, patients: dict, problems: list) -> None
     for unit in ("PICU", "NICU", "ALL"):
         if not (val(unit, "filter_also_n") or 0) >= 1:
             problems.append(f"table4 {unit}/filter_also_n: the silenced-and-filtered path was not exercised")
-    print(f"  table4_stats: {len(ok)} count(s) agree with the logs and the stream "
+    print(f"  Table 4: {len(ok)} count(s) agree with the logs and the stream "
           f"({', '.join(ok[:6])}, ...)")
 
 
@@ -395,7 +393,7 @@ def main() -> None:
         compare(f"stitched_resume {p}", _patient_view(run, p, offsets, iri_map, problems), iso_logs, seg_list,
                 problems)
 
-    print("3. table4_stats on the stitched run")
+    print("3. Table 4 (manuscript_tables.py) on the stitched run")
     stats = table4(OUT / "stitched_serial", problems)
     check_table4(stats, OUT / "stitched_serial", patients, problems)
 

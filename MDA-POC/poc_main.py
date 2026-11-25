@@ -105,7 +105,7 @@ SETTINGS = {
     # The two logs (engine/event_log.py).
     "event_log": ROOT / "_scratch" / "clinical_events.csv",
     "firing_log": ROOT / "_scratch" / "rule_firings.csv",
-    # For Table 4 (CODE/reporting/table4_stats.py): processing time per
+    # For Table 4 (CODE/reporting/manuscript_tables.py): processing time per
     # arriving alarm (histogram per patient), and what was run.
     "arrival_times": ROOT / "_scratch" / "arrival_times.csv",
     "run_manifest": ROOT / "_scratch" / "run.json",

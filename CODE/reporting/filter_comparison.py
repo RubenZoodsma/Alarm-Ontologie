@@ -15,8 +15,9 @@ From one MDA-POC run (poc_main.py) it writes
 and prints all three.
 
 Base case = Table 4. The keys filter_also_*, filter_passed_*, filter_passed_high_*
-and filter_only_n use exactly the definitions of table4_stats.py (same run, same
-blueprint filter, same unit assignment); when table4_stats.csv exists the base
+and filter_only_n use exactly the definitions of manuscript_tables.py's Table 4
+(same run, same blueprint filter, same unit assignment); when manuscript_tables.csv
+exists the base
 case is checked against it and any difference is reported.
 
 Additions beyond Table 4
@@ -54,18 +55,16 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 POC = ROOT / "MDA-POC"
-sys.path.insert(0, str(POC / "engine"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import mint as M  # noqa: E402
-import stream as S  # noqa: E402
-from table4_stats import CHUNK_SIZE, SILENCE_RULES, alarm_id, norm, pct, read_chunk  # noqa: E402
+# the engine modules and Table 4's helpers, loaded the way manuscript_tables.py does
+from manuscript_tables import M, S, CHUNK_SIZE, SILENCE_RULES, alarm_id, norm, pct, read_chunk  # noqa: E402
 
 MANIFEST = Path(sys.argv[1]) if len(sys.argv) > 1 else POC / "_scratch" / "run.json"
 OUT_DIR = ROOT / "MANUSCRIPT" / "table_drafts"
 OUT_MAIN = OUT_DIR / "filter_comparison.csv"
 OUT_RULES = OUT_DIR / "filter_comparison_rules.csv"
 OUT_TEXT = OUT_DIR / "filter_comparison.txt"
-TABLE4 = OUT_DIR / "table4_stats.csv"
+TABLE4 = OUT_DIR / "manuscript_tables.csv"   # its "Table 4" rows
 
 BASE_DELAY = 5
 BASE_PRIORITIES = frozenset({"laag", "medium"})
@@ -84,7 +83,7 @@ WORK_DIR = ROOT / "CODE" / "reporting" / "_scratch_filter"
 
 
 def load():
-    """One patient at a time, as table4_stats.py: the dataset is split into
+    """One patient at a time, as manuscript_tables.py (Table 4): the dataset is split into
     chunks of CHUNK_SIZE patients in one streaming pass. Kept per unit: a
     histogram {(priority, duration_s): n} of all replayed alarms (enough for
     every filter variant and delay) and one record per silenced alarm
@@ -180,7 +179,7 @@ def main():
         res[unit] = (base, rem)
         d = BASE_DELAY
         main_rows += [
-            # --- Table 4 rows (identical definitions to table4_stats.py)
+            # --- Table 4 rows (identical definitions to manuscript_tables.py)
             (unit, "filter_also_n", base["also"], f"Silenced alarms also suppressed by the {d}-s delay filter"),
             (unit, "filter_also_pct", pct(base["also"], base["silenced"]), "Also suppressed, % of distinct alarms (0-100)"),
             (unit, "filter_passed_n", base["passed"], "Silenced alarms the filter would pass"),
@@ -237,12 +236,13 @@ def main():
     # consistency with Table 4 (only meaningful when both come from the same run)
     if TABLE4.exists():
         t4 = pd.read_csv(TABLE4, sep=";", dtype=str)
+        t4 = t4[t4.Table == "Table 4"]
         t4 = {(u, k): v for u, k, v in zip(t4.Unit, t4.Key, t4.Value)}
         mine = {(u, k): str(v) for u, k, v, _ in main_rows if k in TABLE4_KEYS}
         diff = [(uk, mine[uk], t4.get(uk)) for uk in mine if t4.get(uk) is not None and t4[uk] != mine[uk]]
         if diff:
             print(f"NOTE: {len(diff)} base-case values differ from {TABLE4.name} "
-                  "(different run, or table4_stats.py changed):")
+                  "(different run, or manuscript_tables.py changed):")
             for (u, k), a, b in diff:
                 print(f"  {u:5} {k:24} here {a:>10}  table4 {b:>10}")
             print()

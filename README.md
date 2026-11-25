@@ -29,7 +29,7 @@ The ontology is published at <https://w3id.org/mda/ontology>; the documentation 
 3. **Framework build.** `python3 CODE/framework_build/build_framework.py` → `FRAMEWORK/KNOWLEDGE_BASE/kg_generated.ttl` and `FRAMEWORK/VOCABULARY/vocab_generated.ttl`. Then `python3 CODE/framework_build/entity_seed.py` → `DATA/POC_EVENTS/entities.ttl`.
 4. **Competency questions CQ1–7.** `cd CODE/evaluation_cq && python3 cq_QA.py` → `EVALUATION/CQs/cq_report.md`.
 5. **MDA-POC.** Copy the framework files into `MDA-POC/data/` (the regression test fails when they differ), then `cd MDA-POC/engine && python3 regression.py`. The reasoning competency questions CQ8–10 are answered by the POC's rules; the mapping is in [`MDA-POC/README.md`](MDA-POC/README.md#competency-questions).
-6. **Manuscript tables.** `CODE/reporting/framework_stats_table.py` (framework statistics), `table4_stats.py` (Table 4, from a real-data POC run), and the figure scripts next to them.
+6. **Manuscript tables.** `python3 CODE/reporting/manuscript_tables.py` computes every number of Table 3 (framework statistics) and Table 4 (from a real-data POC run) into one CSV, `MANUSCRIPT/table_drafts/manuscript_tables.csv`; the workbook `Table4_occurrence.xlsx` loads it with Power Query (`CODE/reporting/manuscript_tables.pq`). Figure scripts are next to it.
 
 ## Installation
 
@@ -37,7 +37,7 @@ The ontology is published at <https://w3id.org/mda/ontology>; the documentation 
 pip install -r requirements.txt
 ```
 
-Python 3.9 or later. Java is needed only for the HermiT consistency check in `framework_stats_table.py` (skip it with `--no-hermit`); see `requirements.txt` for the other non-Python tools.
+Python 3.9 or later. Java is needed only for the HermiT consistency check in `manuscript_tables.py` (skip it with `--no-hermit`); see `requirements.txt` for the other non-Python tools.
 
 ## Reproducibility and data availability
 

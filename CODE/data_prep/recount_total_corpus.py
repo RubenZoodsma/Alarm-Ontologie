@@ -3,8 +3,8 @@ recount_total_corpus.py
 
 Recounts the PICU and NICU rows of DATA/CORPUS/Total_corpus.csv from the
 locked full dataset (DATA/POC_EVENTS/DATA_FINAL_20261016.csv), the single
-source of truth for alarm volume. Table 3 (framework_stats_table.py, via the
-Pareto cut in build_corpus_cutoffs.py) and Table 4 (table4_stats.py) then count
+source of truth for alarm volume. Table 3 (manuscript_tables.py, via the
+Pareto cut in build_corpus_cutoffs.py) and Table 4 (manuscript_tables.py) then count
 the same alarms.
 
 Rules
