@@ -25,6 +25,14 @@
 #                                monitor's minute volume and the ServoU's
 #                                expiratory minute volume). Related metrics
 #                                of one property are CAT2a's business.
+#                                Both metrics must have a metric type: a
+#                                blueprint that annotates a metric without
+#                                one is minted as plain mda:Metric, which
+#                                every metric type refines, so it would
+#                                match every metric (added 2026-11-25: one
+#                                such blueprint silenced 61 alarm types in
+#                                rule_coverage.py). An unknown metric is not
+#                                "the same metric" as anything.
 #   "via a different sensor"   — the two alarms' pathways share NO sensor.
 #                                Two sensors are taken to be the same when
 #                                they sit on the same functional unit (the
@@ -92,7 +100,8 @@
 # firing); cat2a_flagged_justifier and cat2a_flagged_incoming (strict, two
 # monitors: a flagged alarm neither justifies nor is silenced, under
 # CAT2a or CAT2b); cat2b_lift and cat3f are silenced and lifted when the
-# justifying alarm ends.
+# justifying alarm ends; cat2b_untyped_active and cat2b_untyped_incoming
+# (strict: an untyped metric, active or incoming, matches nothing).
 ####################################################################
 
 PREFIX mda:      <https://w3id.org/mda/ontology#>
@@ -120,6 +129,8 @@ VALUES ?activeStateProp { mda:hasValueState mda:hasRhythm }
 FILTER NOT EXISTS { GRAPH ?gA { ?active mdapoc:flaggedLikelyFalsePositive ?activeFlagEvidence } }
 BIND(IRI(CONCAT(STR(?active), "#persistent")) AS ?gAP)
 GRAPH ?gAP { ?activeMetric rdf:type ?activeMetricType . }
+# both typed: plain mda:Metric (a metric annotated without a type) matches nothing
+FILTER(?metricType != mda:Metric && ?activeMetricType != mda:Metric)
 # equal, or one refines the other (subClassOf* includes equality)
 { ?activeMetricType rdfs:subClassOf* ?metricType } UNION { ?metricType rdfs:subClassOf+ ?activeMetricType }
 # the same direction, not more severe
