@@ -77,6 +77,16 @@ class Processor:
             else:
                 self.on_arrival(unit[0])
 
+    def forget(self, patient: str) -> None:
+        """Drop a finished patient's window operator, once its stream has
+        ended and close_windows() has closed its windows: it then holds no
+        open alarm and no pending window. Without this, close_windows() loops
+        over every patient ever replayed, at every stream element."""
+        window = self._windows.pop(patient, None)
+        if window is not None and (window.open or window.expiries):
+            raise RuntimeError(f"forget({patient}): the patient still has open alarms or windows")
+        self._arrived.pop(patient, None)
+
     def take_lines(self) -> list:
         """The commands emitted since the last call."""
         lines, self.lines = self.lines, []
@@ -278,6 +288,7 @@ def run_live(kb, patients: dict, scratch_dir: Path, log: LiveLog, stats: RuleSta
         if ok:
             run.proc.close_windows()  # the patient's remaining windows
             ok = run.execute(f"{patient}, closing its windows")
+            run.proc.forget(patient)  # replayed one after another: it does not return
         if progress:
             print()
         if not ok:
@@ -333,16 +344,17 @@ def _worker_init(enabled_rules, scratch_root: str, audit_log: bool, window) -> N
 
 
 def _worker_patient(item) -> tuple:
-    """Replay one patient; return (index, records, firings, rule stats, complete)."""
+    """Replay one chunk of patients, one after another through one store
+    (run_live); return (index, records, firings, rule stats, complete)."""
     from execution import RuleStats as _RuleStats
-    index, patient, events = item
-    scratch = _WORKER["root"] / f"patient_{index:05d}"
+    index, chunk = item
+    scratch = _WORKER["root"] / f"chunk_{index:05d}"
     if scratch.exists():
         shutil.rmtree(scratch)
     scratch.mkdir(parents=True)
-    log = LiveLog({patient: events}, alarm_index(events))
+    log = LiveLog(chunk, alarm_index(e for evs in chunk.values() for e in evs))
     stats = _RuleStats()
-    ok = run_live(_WORKER["kb"], {patient: events}, scratch, log, stats,
+    ok = run_live(_WORKER["kb"], chunk, scratch, log, stats,
                   enabled_rules=_WORKER["rules"], progress=False, audit_log=_WORKER["audit"])
     log.close()
     if not _WORKER["audit"]:
@@ -352,26 +364,33 @@ def _worker_patient(item) -> tuple:
 
 def run_parallel(patients: dict, scratch_root: Path, log: LiveLog, stats: RuleStats, workers: int,
                  enabled_rules=None, progress: bool = True, audit_log: bool = False,
-                 window: str | None = None) -> bool:
-    """Replay `patients`, one task per patient, over `workers` processes.
-    Each worker loads the knowledge base once (`window`: see
-    mint.load_kb); each patient gets its own store. Records and firings are written to `log` in the input order of
-    the patients; rule statistics are merged into `stats`. True if every
+                 window: str | None = None, chunk_size: int = 1) -> bool:
+    """Replay `patients` over `workers` processes, one task per chunk of
+    `chunk_size` consecutive patients. Each worker loads the knowledge base
+    once (`window`: see mint.load_kb); each chunk gets its own store, and its
+    patients are replayed one after another through it (run_live: each
+    patient's windows are closed before the next starts). chunk_size 1 gives
+    every patient its own store; a larger chunk saves the framework load and
+    the task overhead per patient, for many short streams (rule_coverage.py).
+    Records and firings are written to `log` in the input order of the
+    patients; rule statistics are merged into `stats`. True if every
     patient completed without engine errors."""
     from concurrent.futures import ProcessPoolExecutor, as_completed
     rule_names = list(RULES) if enabled_rules is None else list(enabled_rules)
-    items = [(i, p, evs) for i, (p, evs) in enumerate(patients.items())]
-    # Largest patients first, so one long stay does not run alone at the
-    # end. Scheduling only: each patient is still replayed on its own, and
-    # the logs are written in input order below.
-    items.sort(key=lambda item: -len(item[2]))
+    ordered = list(patients.items())
+    items = [(i, dict(ordered[start:start + chunk_size]))
+             for i, start in enumerate(range(0, len(ordered), max(1, chunk_size)))]
+    # Largest chunks first, so one long stay does not run alone at the end.
+    # Scheduling only: the logs are written in input order below.
+    size_of = {i: sum(len(evs) for evs in chunk.values()) for i, chunk in items}
+    items.sort(key=lambda item: -size_of[item[0]])
     results: dict = {}
     complete, t0 = True, time.monotonic()
     with ProcessPoolExecutor(max_workers=workers, initializer=_worker_init,
                              initargs=(rule_names, str(scratch_root), audit_log, window)) as pool:
         futures = [pool.submit(_worker_patient, item) for item in items]
-        total_alarms = sum(len(evs) for _, _, evs in items)
-        size_of = {i: len(evs) for i, _, evs in items}
+        total_alarms = sum(size_of.values())
+        unit = "patients" if chunk_size == 1 else "chunks"
         alarms_done = 0
         for done, future in enumerate(as_completed(futures), start=1):
             index, records, firings, worker_stats, ok = future.result()
@@ -383,7 +402,7 @@ def run_parallel(patients: dict, scratch_root: Path, log: LiveLog, stats: RuleSt
                 elapsed = time.monotonic() - t0
                 rate = alarms_done / elapsed if elapsed > 0 else 0.0
                 eta = (total_alarms - alarms_done) / rate if rate > 0 else 0.0
-                line = (f"  {_progress_bar(alarms_done, total_alarms)} {done}/{len(items)} patients, "
+                line = (f"  {_progress_bar(alarms_done, total_alarms)} {done}/{len(items)} {unit}, "
                         f"{alarms_done:,}/{total_alarms:,} alarms, {rate:,.0f} alarms/s, "
                         f"elapsed {_hms(elapsed)}, remaining ~{_hms(eta)}")
                 # in place on a terminal; a kept line every 10 patients for logs

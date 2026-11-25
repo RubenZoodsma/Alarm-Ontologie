@@ -54,6 +54,10 @@ from stream import Event  # noqa: E402
 SETTINGS = {
     # Parallel worker processes.
     "workers": 8,
+    # Synthetic patients per worker task, replayed one after another through
+    # one store (processor.run_parallel): saves loading the framework and
+    # the task overhead for every two-alarm patient.
+    "chunk_size": 500,
     # Only the first N ordered pairs (None: all); for a quick test.
     "limit": None,
     # The annotated corpus, for the department(s) of each alarm type.
@@ -145,7 +149,8 @@ def main() -> None:
     scratch.mkdir(parents=True)
     log = EL.LiveLog(streams, EL.alarm_index(e for evs in streams.values() for e in evs))
     t0 = time.monotonic()
-    ok = run_parallel(streams, scratch, log, RuleStats(), SETTINGS["workers"], progress=False)
+    ok = run_parallel(streams, scratch, log, RuleStats(), SETTINGS["workers"], progress=False,
+                      chunk_size=SETTINGS["chunk_size"])
     shutil.rmtree(scratch)
     if not ok:
         sys.exit("engine errors: coverage incomplete")
