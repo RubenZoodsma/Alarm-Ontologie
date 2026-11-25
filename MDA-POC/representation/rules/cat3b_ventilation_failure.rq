@@ -2,6 +2,10 @@
 # cat3b_ventilation_failure.rq — CAT3b, clinical event VentilationFailure.
 # HAND-AUTHORED.
 #
+# Answers CQ10 (manuscript Table 1): can coinciding alarms be identified that
+# together form a different clinical meaning than their independent meaning,
+# and for which no individual alarm exists?
+#
 # Criterion (FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl, where the clause-
 # by-clause account of the departure from the NL table is kept):
 #   evidencedBy some ReducedPulmonaryFunction, and evidencedBy some

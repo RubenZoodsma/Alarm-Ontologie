@@ -6,7 +6,8 @@
 *.md
 __pycache__/
 .vscode/*
-/PREVIOUS_STALE**
+/old/PREVIOUS_STALE/
+**/_backup_*/
 *.lic
 # Local run output and reference logs — never committed.
 **/_scratch/
@@ -23,14 +24,14 @@ __pycache__/
 # timestamps — see each directory's README), contain no patient data, and
 # are REQUIRED INPUTS, not outputs:
 #
-# CQ_evaluation/events_data.csv was read by cq_temporal_QA.py for the
-# temporal-CQ page of the docs (retired 2026-11-19: those CQs are answered by
-# MDA-POC, manuscript Section 4); kept for reference.
-!DATA/CQ_evaluation/events_data.csv
+# old/DATA/CQ_evaluation/events_data.csv was read by the retired
+# cq_temporal_QA.py (now in old/; those CQs are answered by the MDA-POC's
+# rules, see MDA-POC/README.md); kept for reference.
+!old/DATA/CQ_evaluation/events_data.csv
 !DATA/CAT_evaluation/events_data.csv
 !DATA/POC_EVENTS/events_data.csv
 # Blueprint identity (device model + label + priority,
-# FRAMEWORK/PLAN_blueprint_identity.md): the gateway-name -> model mapping and
+# old/PLAN_blueprint_identity.md): the gateway-name -> model mapping and
 # the consensus annotation the knowledge base is built from. Alarm labels and
 # expert annotations only, no patient data.
 !DATA/ANNOTATION/device_models.csv

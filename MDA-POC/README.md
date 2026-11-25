@@ -44,9 +44,21 @@ Rule logic lives only in `representation/`, never in Python:
 
 Files use standard `PREFIX` lines; `rules.py` checks they agree and the script declares them once (the session prepends them to each statement). `regression.py` fails if query text appears in the Python sources.
 
+## Competency questions
+
+The reasoning competency questions of the MDA framework (manuscript Table 1, CQ8–10) are answered by the POC's rules, not by standalone SPARQL queries: each needs alarms that coincide in time, which only the stream engine represents. Each rule file's header names its CQ; the verification cases in `validation/cases/` show each one positive and negative, and `validation/cases_appendix.py` reports them per CQ.
+
+| CQ | Question | Rules |
+|---|---|---|
+| CQ8 | Which clinical alarms coincide with alarms carrying a technical condition that reduces the validity of that sensing pathway? | CAT1a `cat1a_signal_quality`, CAT1b `cat1b_asystole_ibp` (withdrawn by `cat1b_withdraw`) |
+| CQ9 | Which alarms coincide with other alarms that likely already convey equivalent clinical or technical information? | CAT2a `cat2a_process_priority`, CAT2b `cat2b_metric_sensor` (lifted by `cat2_lift`) |
+| CQ10 | Can coinciding alarms be identified that together form a different clinical meaning than their independent meaning, and for which no individual alarm exists? | CAT3a `cat3a_cardiorespiratory_arrest`, CAT3b `cat3b_ventilation_failure`, built on the single-alarm events `cardiac_arrest`, `respiratory_arrest`, `reduced_pulmonary_function` |
+
+CQ1–7 (retrieval over the static knowledge base) are SPARQL queries in `EVALUATION/CQs/post_enrichment/`, run by `CODE/evaluation_cq/cq_QA.py`. The earlier standalone temporal queries (then numbered CQ9–11) and the rdflib pipeline they ran on are in `old/`.
+
 ## Input
 
-An events file is `;`-separated with a header: `patientID;label;device_id;start;end;device_name;priority[;alarm_id]`. `device_id` identifies the physical device (minting); `device_name` (the gateway's name, e.g. Caleo) and `priority` identify, with the label, the alarm's blueprint. The engine reads the framework from copies in `data/` (ontology, inference, kg_generated, vocab_generated, clinicalEvent_vocab, priority_rank, and the scaffold entities.ttl): after every build, run `CODE/evaluation_poc/seed/entity_seed.py` (it writes `DATA/POC_EVENTS/entities.ttl` from the catalogue) and copy them all in; `regression.py` fails when they differ. Minting stops with an error on an individuated concept the scaffold lacks.
+An events file is `;`-separated with a header: `patientID;label;device_id;start;end;device_name;priority[;alarm_id]`. `device_id` identifies the physical device (minting); `device_name` (the gateway's name, e.g. Caleo) and `priority` identify, with the label, the alarm's blueprint. The engine reads the framework from copies in `data/` (ontology, inference, kg_generated, vocab_generated, clinicalEvent_vocab, priority_rank, and the scaffold entities.ttl): after every build, run `CODE/framework_build/entity_seed.py` (it writes `DATA/POC_EVENTS/entities.ttl` from the catalogue) and copy them all in; `regression.py` fails when they differ. Minting stops with an error on an individuated concept the scaffold lacks.
 
 ## Running
 

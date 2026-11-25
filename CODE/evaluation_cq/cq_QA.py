@@ -190,14 +190,11 @@ def discover_queries(cqs_dir: Path) -> list:
     ordered by STAGE_ORDER then filename so the report reads pre- before
     post-enrichment, regardless of directory listing order.
 
-    Excludes the temporal/ stage: those queries use `GRAPH ?g {...}` against
-    the per-tick snapshot Dataset that cq_temporal_QA.py builds (via
-    op_knowledge.py's operational pipeline) -- this script's base/reasoned
-    graphs are plain rdflib.Graph objects (TBox + kg_generated.ttl catalogue
-    only), which has no named-graph structure to query. Running a temporal
-    query here raises "operation requiring a dataset ... operating on a
-    single graph". Temporal CQs (9-11) are evaluated by cq_temporal_QA.py
-    and reported in EVALUATION/CQs/temporal_report.md instead.
+    Excludes a temporal/ stage, should one exist: the reasoning CQs (CQ8-10,
+    manuscript Table 1) concern coinciding alarms and are answered by the
+    MDA-POC's rules (MDA-POC/README.md, "Competency questions"), not by
+    queries over this script's static graphs. The earlier temporal queries
+    and the pipeline they ran on are in old/.
     """
     def sort_key(p: Path):
         stage = p.parent.name

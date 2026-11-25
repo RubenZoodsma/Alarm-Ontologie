@@ -25,7 +25,7 @@ import cq_QA as Q
 # The temporal CQs (reasoning over coinciding alarms; CQ8-10 in the
 # manuscript) are answered by the MDA-POC alarm management system (Section 4),
 # not by a static query page. Their page, built from the unused old POC
-# (CODE/evaluation_poc), was retired on 2026-11-19.
+# (now old/CODE/evaluation_poc), was retired on 2026-11-19.
 
 OUT = Q.ROOT / "docs" / "cq" / "index.html"
 MAX_ROWS_SHOWN = 5

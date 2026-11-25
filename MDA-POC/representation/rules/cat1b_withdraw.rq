@@ -1,6 +1,10 @@
 ####################################################################
 # cat1b_withdraw.rq — CAT1b withdrawal condition. HAND-AUTHORED.
 #
+# Part of the answer to CQ8 (manuscript Table 1): which clinical alarms coincide with alarms
+# carrying a technical condition that reduces the validity of that sensing
+# pathway?
+#
 # A CAT1b flag ("asystole while an arterial line is present without alarms
 # on its pathway") is withdrawn when an alarm on that same IBP pathway
 # arrives while the flagged asystole is still active (agreed 2026-09-21),

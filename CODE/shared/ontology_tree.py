@@ -1,9 +1,10 @@
 """
 ontology_tree.py — the class nesting implied by the ontology, derived once.
 
-Shared by CODE/framework_build/build_framework.py (which builds the blueprint)
-and CODE/evaluation_poc/op_knowledge.py (which reads it back).  It belongs to
-no single stage, hence CODE/shared/.
+Used by CODE/framework_build/build_framework.py (which builds the blueprint)
+and CODE/shared/ontology_diagram.py. The MDA-POC keeps its own
+adapted copy (MDA-POC/engine/ontology_tree.py) so it imports nothing from
+outside its folder.
 
 Both stages need the same fact: which object properties, with named domain and
 range, span a tree rooted at mda:Alarm.  Before this module existed the readout

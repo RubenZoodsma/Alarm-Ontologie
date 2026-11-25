@@ -1,6 +1,10 @@
 ####################################################################
 # cat1b_asystole_ibp.rq — CAT1b condition. HAND-AUTHORED.
 #
+# Answers CQ8 (manuscript Table 1): which clinical alarms coincide with alarms
+# carrying a technical condition that reduces the validity of that sensing
+# pathway?
+#
 # NL rule (CAT1): "If an asystole alarm occurs when an invasive blood
 # pressure sensor is present without alarms on that sensing pathway, it may
 # be flagged as likely false positive."

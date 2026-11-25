@@ -1,6 +1,9 @@
 ####################################################################
 # cat2a_process_priority.rq — CAT2a condition. HAND-AUTHORED.
 #
+# Answers CQ9 (manuscript Table 1): which alarms coincide with other alarms that
+# likely already convey equivalent clinical or technical information?
+#
 # NL rule (CAT2, "simultaneous alarms likely carrying overlapping or
 # redundant information"): "If an active alarm of equal or higher priority
 # reports on the same physiological property as an incoming alarm, then

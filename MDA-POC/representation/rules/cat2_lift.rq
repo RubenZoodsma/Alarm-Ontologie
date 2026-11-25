@@ -1,6 +1,9 @@
 ####################################################################
 # cat2_lift.rq — CAT2 lift condition. HAND-AUTHORED.
 #
+# Part of the answer to CQ9 (manuscript Table 1): which alarms coincide with other alarms that
+# likely already convey equivalent clinical or technical information?
+#
 # A CAT2 silence (CAT2a or CAT2b) holds only while an active alarm
 # justifies it (agreed 2026-09-21): every active alarm that justified it at
 # arrival, under either rule, is stored as `incoming mdapoc:silencedBy

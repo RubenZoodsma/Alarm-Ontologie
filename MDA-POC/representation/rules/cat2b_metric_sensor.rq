@@ -1,6 +1,9 @@
 ####################################################################
 # cat2b_metric_sensor.rq — CAT2b condition. HAND-AUTHORED.
 #
+# Answers CQ9 (manuscript Table 1): which alarms coincide with other alarms that
+# likely already convey equivalent clinical or technical information?
+#
 # NL rule (CAT2, "simultaneous alarms likely carrying overlapping or
 # redundant information"): "If an alarm conveys the same metric via a
 # different sensor, an incoming alarm conveying that metric from another

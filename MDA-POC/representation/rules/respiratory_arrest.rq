@@ -1,6 +1,10 @@
 ####################################################################
 # respiratory_arrest.rq — clinical event RespiratoryArrest. HAND-AUTHORED.
 #
+# Constituent event for CQ10 (manuscript Table 1): can coinciding alarms be identified that
+# together form a different clinical meaning than their independent meaning,
+# and for which no individual alarm exists?
+#
 # Criterion (FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl):
 #   evidencedBy some (metric:RespirationRate and hasRhythm value Absent)
 # — a respiration-rate metric with an absent rhythm (apnoea), reported by an

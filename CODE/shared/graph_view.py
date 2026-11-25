@@ -1,11 +1,10 @@
 """
 graph_view.py — render an RDF graph as a Mermaid flowchart.
 
-Shared by CODE/testing/test_concurrent_merge.py (one merged scenario),
-CODE/evaluation_poc/op_visual.py (a timeline of snapshots), and
-CODE/evaluation_qa/archetype_report.py (one archetype's full entailed
-knowledge), so all three draw the same graph the same way and a legend
-cannot drift from the colours actually used.
+Used by CODE/evaluation_qa/archetype_report.py (one archetype's full
+entailed knowledge), so a legend cannot drift from the colours actually used.
+(The retired rdflib POC's op_visual.py and test_concurrent_merge.py, now in
+old/, used it too.)
 
 The default classification (node_kind/KINDS) reads categories off the IRI
 namespaces op_knowledge.py's minting layer assigns — presentation only, no

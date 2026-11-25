@@ -19,8 +19,8 @@ Each alarm yields three graphs (windows.py decides where they go):
   condition_for_event what it reports while active (states, conditions)
   background_for_key  the structural chain, persisting after the alarm
 
-A fork of CODE/evaluation_poc/core/op_knowledge.py (EXTRACTION, MINTING)
-and reasoner/assess.py (add_triggered_by): the POC imports nothing from
+A fork of the retired old/CODE/evaluation_poc/core/op_knowledge.py
+(EXTRACTION, MINTING) and reasoner/assess.py (add_triggered_by): the POC imports nothing from
 outside its folder. No reasoning here — rules read inference.ttl's axioms
 directly (rules.py: NO MATERIALISATION).
 """

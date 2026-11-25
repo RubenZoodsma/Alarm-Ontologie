@@ -1,6 +1,10 @@
 ####################################################################
 # cardiac_arrest.rq — clinical event CardiacArrest. HAND-AUTHORED.
 #
+# Constituent event for CQ10 (manuscript Table 1): can coinciding alarms be identified that
+# together form a different clinical meaning than their independent meaning,
+# and for which no individual alarm exists?
+#
 # Criterion (FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl, revised 2026-11-25):
 #   evidencedBy some (metric:CardiacRhythm and
 #                     (hasRhythm value Absent or hasRhythm value Fibrillation))

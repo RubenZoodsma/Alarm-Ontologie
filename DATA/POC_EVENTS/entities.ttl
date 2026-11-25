@@ -3,8 +3,8 @@
 # One stable scaffold: IRI per individuated particular TYPE in the alarm-
 # type catalogue.  Each carries only base knowledge (rdf:type + label).
 #
-# NOT a store of usable particulars — op_knowledge.py mints owner-scoped
-# entity: IRIs at grounding time (see sensor_iri/signal_iri) and consults
+# NOT a store of usable particulars — the MDA-POC (mint.py) mints owner-
+# scoped entity: IRIs at grounding time (particular_iri) and consults
 # this catalogue only to validate a concept and read its label.  See the
 # module docstring in entity_seed.py for why scaffold: and entity: are
 # kept as separate namespaces.

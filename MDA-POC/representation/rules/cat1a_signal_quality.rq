@@ -1,6 +1,10 @@
 ####################################################################
 # cat1a_signal_quality.rq — CAT1a condition. HAND-AUTHORED.
 #
+# Answers CQ8 (manuscript Table 1): which clinical alarms coincide with alarms
+# carrying a technical condition that reduces the validity of that sensing
+# pathway?
+#
 # NL rule (CAT1): "If a signal supporting a physiological alarm is of
 # insufficient quality or not acquired, the alarm is flagged as likely
 # false positive."

@@ -18,8 +18,8 @@ property is declared; query in the has-direction only).
 A flat, type-keyed IRI cannot carry that owner distinction, so reusing one
 directly as an operational node — across multiple devices, or worse multiple
 patients — asserts a false identity (one physical sensor claimed by several
-devices at once). op_knowledge.py mints owner-scoped `entity:` particulars at
-grounding time instead (see sensor_iri/signal_iri there); it consults this
+devices at once). The MDA-POC's mint.py mints owner-scoped `entity:` particulars
+at grounding time instead (see particular_iri there); it consults this
 catalogue only to check that a concept is a legitimate individuated type, and
 for its label.
 
@@ -28,7 +28,10 @@ the rest of the pipeline.  The output is regenerated from scratch on every run.
 
 Usage
 -----
-  python3 entity_seed.py
+  python3 CODE/framework_build/entity_seed.py
+
+Then copy DATA/POC_EVENTS/entities.ttl to MDA-POC/data/ (regression.py checks
+the copies are in sync).
 """
 
 import re
@@ -40,11 +43,10 @@ from rdflib.namespace import RDF, RDFS, OWL, SKOS
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 #
-# Reads the live FRAMEWORK/ pipeline output (see op_knowledge.py's
-# path-block comment for why) and writes into DATA/POC_EVENTS.
+# Reads the live FRAMEWORK/ pipeline output and writes into DATA/POC_EVENTS.
 
 OP_DIR        = Path(__file__).resolve().parent
-ROOT          = OP_DIR.parent.parent.parent   # CODE/evaluation_poc/seed -> evaluation_poc -> CODE -> repo root
+ROOT          = OP_DIR.parent.parent          # CODE/framework_build -> CODE -> repo root
 FRAMEWORK_DIR = ROOT / "FRAMEWORK"
 ONTOLOGY = FRAMEWORK_DIR / "ONTOLOGY" / "ontology.ttl"
 VOCAB    = FRAMEWORK_DIR / "VOCABULARY" / "vocab_generated.ttl"
@@ -105,8 +107,8 @@ def main() -> None:
     # owl:equivalentClass definition for it. Checking the raw kg would only
     # ever find the base class and silently drop every precoordinated leaf
     # from the scaffold. Broad classes are kept alongside the recovered
-    # leaves (not replaced) since op_knowledge.py's own device-identity
-    # lookup still resolves to the broad class until it gets the same fix.
+    # leaves (not replaced), so a lookup that resolves to the broad class
+    # still finds a scaffold entry.
     reasoned = Graph()
     for g in (onto, vocab, kg):
         for t in g:
@@ -137,8 +139,8 @@ def main() -> None:
         "# One stable scaffold: IRI per individuated particular TYPE in the alarm-\n"
         "# type catalogue.  Each carries only base knowledge (rdf:type + label).\n"
         "#\n"
-        "# NOT a store of usable particulars — op_knowledge.py mints owner-scoped\n"
-        "# entity: IRIs at grounding time (see sensor_iri/signal_iri) and consults\n"
+        "# NOT a store of usable particulars — the MDA-POC (mint.py) mints owner-\n"
+        "# scoped entity: IRIs at grounding time (particular_iri) and consults\n"
         "# this catalogue only to validate a concept and read its label.  See the\n"
         "# module docstring in entity_seed.py for why scaffold: and entity: are\n"
         "# kept as separate namespaces.\n"
