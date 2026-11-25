@@ -60,12 +60,12 @@ EDWARDS - Oximetry: Unstable Baseline (1);x;Hoog;Technical;CardiacMonitor;;Hemos
 EDWARDS - Oximetry: Wedge or Wall Artifact (1);x;Hoog;Technical;CardiacMonitor;;Hemosphere;Edwards;;;FU_IV_Oximetry;OximetryCatheter;;;;OximetryWaveform;;VenousOxygenSaturation;;;;;;;
 EDWARDS - RVEF is below low limit;x;Hoog;Technical;CardiacMonitor;;Hemosphere;Edwards;;;FU_HaemoDynamics;;;;;;;RightVentricleEjectionFraction;;;OutOfRange;;;;
 EDWARDS - RVEF Low Alarm Limit;x;Hoog;Physiological;CardiacMonitor;;Hemosphere;Edwards;;;FU_HaemoDynamics;;;;;;;RightVentricleEjectionFraction;;;Decreased;;;;
-EDWARDS - ScvO2 High Alarm Limit;x;Hoog;Physiological;CardiacMonitor;;Hemosphere;Edwards;;;FU_IV_Oximetry;OximetryCatheter;;;;OximetryWaveform;;VenousOxygenSaturation;;;Increased;;;;
-EDWARDS - ScvO2 Low Alarm Limit;x;Hoog;Physiological;CardiacMonitor;;Hemosphere;Edwards;;;FU_IV_Oximetry;OximetryCatheter;;CentralVenous;;OximetryWaveform;;VenousOxygenSaturation;;;Decreased;;;;
+EDWARDS - ScvO2 High Alarm Limit;x;Hoog;Physiological;CardiacMonitor;;Hemosphere;Edwards;;;FU_IV_Oximetry;OximetryCatheter;;Central;;OximetryWaveform;;VenousOxygenSaturation;;;Increased;;;;
+EDWARDS - ScvO2 Low Alarm Limit;x;Hoog;Physiological;CardiacMonitor;;Hemosphere;Edwards;;;FU_IV_Oximetry;OximetryCatheter;;Central;;OximetryWaveform;;VenousOxygenSaturation;;;Decreased;;;;
 EDWARDS - SV: Heart Rate Signal Loss (2);x;Hoog;Technical;CardiacMonitor;;Hemosphere;Edwards;;;;;;;;;;;;;;;;;
 EDWARDS - SVI Low Alarm Limit;x;Hoog;Physiological;CardiacMonitor;;Hemosphere;Edwards;;;FU_HaemoDynamics;;;;;;;StrokeVolumeIndex;;;Decreased;;;;
-EDWARDS - SvO2 High Alarm Limit;x;Hoog;Physiological;CardiacMonitor;;Hemosphere;Edwards;;;FU_IV_Oximetry;OximetryCatheter;;;;OximetryWaveform;;VenousOxygenSaturation;;;Increased;;;;
-EDWARDS - SvO2 Low Alarm Limit;x;Hoog;Physiological;CardiacMonitor;;Hemosphere;Edwards;;;FU_IV_Oximetry;OximetryCatheter;;MixedVenous;;OximetryWaveform;;VenousOxygenSaturation;;;Decreased;;;;
+EDWARDS - SvO2 High Alarm Limit;x;Hoog;Physiological;CardiacMonitor;;Hemosphere;Edwards;;;FU_IV_Oximetry;OximetryCatheter;;PulmonaryArtery;;OximetryWaveform;;ArterialOxygenSaturation;;;Increased;;;;
+EDWARDS - SvO2 Low Alarm Limit;x;Hoog;Physiological;CardiacMonitor;;Hemosphere;Edwards;;;FU_IV_Oximetry;OximetryCatheter;;PulmonaryArtery;;OximetryWaveform;;ArterialOxygenSaturation;;;Decreased;;;;
 EDWARDS - SVR exceeded high limit;x;Hoog;Technical;CardiacMonitor;;Hemosphere;Edwards;;;FU_HaemoDynamics;;;;;;;SystemicVascularResistance;;;OutOfRange;;;;
 EDWARDS - SVR High Alarm Limit;x;Hoog;Physiological;CardiacMonitor;;Hemosphere;Edwards;;;FU_HaemoDynamics;;;;;;;SystemicVascularResistance;;;Increased;;;;
 EDWARDS - SVR is below low limit;x;Hoog;Technical;CardiacMonitor;;Hemosphere;Edwards;;;FU_HaemoDynamics;;;;;;;SystemicVascularResistance;;;OutOfRange;;;;
@@ -171,7 +171,7 @@ Monitor - Hoge GP1 M;EXCL;Medium;Physiological;PhysiologicalMonitor;;Infinity;Dr
 Monitor - Hoge HR;x;Medium;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_ElectroCardiography;;;;;;;HeartRate;;;Increased;;;ElectricalHeartRate;
 Monitor - Hoge ICP;x;Medium;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_IntraCranialPressure;ICP_transducer;;;;ICP_waveform;;IntraCranialPressure;;;Increased;;;;
 Monitor - Hoge NBPmean;x;Medium;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_NIBP;NIBP_cuff;;;;;;ArterialBloodPressure;Mean;;Increased;;;;
-Monitor - Hoge PA M;x;Medium;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_InvasiveBloodPressure;IBP_transducer;;PulmonaryArtery;;;;ArterialBloodPressure;Mean;;Increased;;;ArterialPressure;
+Monitor - Hoge PA M;x;Medium;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_InvasiveBloodPressure;IBP_transducer;;PulmonaryArtery;;;;ArterialBloodPressure;Mean;;Increased;;;;
 Monitor - Hoge Ta;x;Medium;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_Temperature;;;Axillary;;;;BodyTemperature;;;Increased;;;;
 Monitor - Hoog etCO2;x;Medium;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_Capnograph;;;;;;;CO2;EndExpiratory;;Increased;;;;
 Monitor - HR;EXCL;Hoog;;;;Infinity;;;;;;;;;;;;;;;;;;
@@ -186,7 +186,7 @@ Monitor - Lage GP2 M;EXCL;Medium;;;;Infinity;;;;;;;;;;;;;;;;;;
 Monitor - Lage HR;x;Medium;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_ElectroCardiography;;;;;;;HeartRate;;;Decreased;;;ElectricalHeartRate;
 Monitor - Lage ICP;x;Medium;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_IntraCranialPressure;ICP_transducer;;;;ICP_waveform;;IntraCranialPressure;;;Decreased;;;;
 Monitor - Lage NBPmean;x;Medium;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_NIBP;NIBP_cuff;;;;;;ArterialBloodPressure;Mean;;Decreased;;;;
-Monitor - Lage PA M;x;Medium;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_InvasiveBloodPressure;IBP_transducer;;PulmonaryArtery;;;;ArterialBloodPressure;Mean;;Decreased;;;ArterialPressure;
+Monitor - Lage PA M;x;Medium;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_InvasiveBloodPressure;IBP_transducer;;PulmonaryArtery;;;;ArterialBloodPressure;Mean;;Decreased;;;;
 Monitor - Lage Pols;x;Medium;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_PulseOximetry;;;;;;;PulseRate;;;Decreased;;;;
 Monitor - Lage SpO2;x;Medium;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_PulseOximetry;;;;;;;SpO2;;;Decreased;;;SaO2;PulmonaryOxygenation
 Monitor - Lage Ta;x;Medium;Physiological;PhysiologicalMonitor;;Infinity;Draeger;;;FU_Temperature;;;Axillary;;;;BodyTemperature;;;Decreased;;;;

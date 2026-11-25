@@ -2113,16 +2113,6 @@ anatomicalPosition:Central a skos:Concept ;
     skos:prefLabel "Central"@en,
         "Central"@nl .
 
-anatomicalPosition:CentralVenous a skos:Concept ;
-    rdfs:subClassOf mda:AnatomicalPosition ;
-    skos:broader anatomicalPosition:AnatomicalPosition ;
-    skos:definition "Central Venous"@en,
-        "Central Venous"@nl ;
-    skos:inScheme anatomicalPosition:Scheme ;
-    skos:notation "CentralVenous" ;
-    skos:prefLabel "Central Venous"@en,
-        "Central Venous"@nl .
-
 anatomicalPosition:Core a skos:Concept ;
     rdfs:subClassOf mda:AnatomicalPosition ;
     skos:broader anatomicalPosition:AnatomicalPosition ;
@@ -2142,16 +2132,6 @@ anatomicalPosition:Intravascular a skos:Concept ;
     skos:notation "Intravascular" ;
     skos:prefLabel "Intravascular"@en,
         "Intravascular"@nl .
-
-anatomicalPosition:MixedVenous a skos:Concept ;
-    rdfs:subClassOf mda:AnatomicalPosition ;
-    skos:broader anatomicalPosition:AnatomicalPosition ;
-    skos:definition "Mixed Venous"@en,
-        "Mixed Venous"@nl ;
-    skos:inScheme anatomicalPosition:Scheme ;
-    skos:notation "MixedVenous" ;
-    skos:prefLabel "Mixed Venous"@en,
-        "Mixed Venous"@nl .
 
 anatomicalPosition:Peripheral a skos:Concept ;
     rdfs:subClassOf mda:AnatomicalPosition ;
@@ -2873,6 +2853,16 @@ metric:ArterialBloodPressure_Systolic a skos:Concept ;
     skos:prefLabel "Arterial Blood Pressure_Systolic"@en ;
     mda:hasPhase metricPhase:Systolic .
 
+metric:ArterialOxygenSaturation a skos:Concept ;
+    rdfs:subClassOf mda:Metric ;
+    skos:broader metric:Metric ;
+    skos:definition "Arterial Oxygen Saturation"@en,
+        "Arterial Oxygen Saturation"@nl ;
+    skos:inScheme metric:Scheme ;
+    skos:notation "ArterialOxygenSaturation" ;
+    skos:prefLabel "Arterial Oxygen Saturation"@en,
+        "Arterial Oxygen Saturation"@nl .
+
 metric:BodySurfaceArea a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
     skos:broader metric:Metric ;
@@ -2952,6 +2942,28 @@ metric:CardiacRhythm a skos:Concept ;
     skos:prefLabel "Cardiac Rhythm"@en,
         "Cardiac Rhythm"@nl .
 
+metric:CentralVenousOxygenSaturation a skos:Concept ;
+    rdfs:subClassOf mda:Metric ;
+    skos:broader metric:Metric ;
+    skos:definition "Central Venous Oxygen Saturation"@en,
+        "Central Venous Oxygen Saturation"@nl ;
+    skos:inScheme metric:Scheme ;
+    skos:notation "CentralVenousOxygenSaturation" ;
+    skos:prefLabel "Central Venous Oxygen Saturation"@en,
+        "Central Venous Oxygen Saturation"@nl .
+
+metric:CentralVenousPressure_Mean a skos:Concept ;
+    rdfs:subClassOf metric:CentralVenousPressure ;
+    owl:equivalentClass [ a owl:Class ;
+            owl:intersectionOf ( metric:CentralVenousPressure [ a owl:Restriction ;
+                        owl:hasValue metricPhase:Mean ;
+                        owl:onProperty mda:hasPhase ] ) ] ;
+    skos:broader metric:CentralVenousPressure ;
+    skos:inScheme metric:Scheme ;
+    skos:notation "CentralVenousPressure_Mean" ;
+    skos:prefLabel "Central Venous Pressure_Mean"@en ;
+    mda:hasPhase metricPhase:Mean .
+
 metric:CerebralPerfusionPressure a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
     skos:broader metric:Metric ;
@@ -2961,6 +2973,16 @@ metric:CerebralPerfusionPressure a skos:Concept ;
     skos:notation "CerebralPerfusionPressure" ;
     skos:prefLabel "Cerebral Perfusion Pressure"@en,
         "Cerebral Perfusion Pressure"@nl .
+
+metric:CoreTemperature a skos:Concept ;
+    rdfs:subClassOf mda:Metric ;
+    skos:broader metric:Metric ;
+    skos:definition "Core Temperature"@en,
+        "Core Temperature"@nl ;
+    skos:inScheme metric:Scheme ;
+    skos:notation "CoreTemperature" ;
+    skos:prefLabel "Core Temperature"@en,
+        "Core Temperature"@nl .
 
 metric:DeliveredVolume a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
@@ -3066,15 +3088,27 @@ metric:LinePressure_Entry a skos:Concept ;
     skos:prefLabel "Line Pressure_Entry"@en ;
     mda:hasPhase metricPhase:Entry .
 
-metric:PulmonaryArteryPressure a skos:Concept ;
+metric:PulmonaryArteryOxygenSaturation a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
     skos:broader metric:Metric ;
-    skos:definition "Pulmonary Artery Pressure"@en,
-        "Pulmonary Artery Pressure"@nl ;
+    skos:definition "Pulmonary Artery Oxygen Saturation"@en,
+        "Pulmonary Artery Oxygen Saturation"@nl ;
     skos:inScheme metric:Scheme ;
-    skos:notation "PulmonaryArteryPressure" ;
-    skos:prefLabel "Pulmonary Artery Pressure"@en,
-        "Pulmonary Artery Pressure"@nl .
+    skos:notation "PulmonaryArteryOxygenSaturation" ;
+    skos:prefLabel "Pulmonary Artery Oxygen Saturation"@en,
+        "Pulmonary Artery Oxygen Saturation"@nl .
+
+metric:PulmonaryArteryPressure_Mean a skos:Concept ;
+    rdfs:subClassOf metric:PulmonaryArteryPressure ;
+    owl:equivalentClass [ a owl:Class ;
+            owl:intersectionOf ( metric:PulmonaryArteryPressure [ a owl:Restriction ;
+                        owl:hasValue metricPhase:Mean ;
+                        owl:onProperty mda:hasPhase ] ) ] ;
+    skos:broader metric:PulmonaryArteryPressure ;
+    skos:inScheme metric:Scheme ;
+    skos:notation "PulmonaryArteryPressure_Mean" ;
+    skos:prefLabel "Pulmonary Artery Pressure_Mean"@en ;
+    mda:hasPhase metricPhase:Mean .
 
 metric:PulseFlowIndex a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
@@ -3158,6 +3192,16 @@ metric:STSegment a skos:Concept ;
     skos:prefLabel "ST Segment"@en,
         "ST Segment"@nl .
 
+metric:SkinTemperature a skos:Concept ;
+    rdfs:subClassOf mda:Metric ;
+    skos:broader metric:Metric ;
+    skos:definition "Skin Temperature"@en,
+        "Skin Temperature"@nl ;
+    skos:inScheme metric:Scheme ;
+    skos:notation "SkinTemperature" ;
+    skos:prefLabel "Skin Temperature"@en,
+        "Skin Temperature"@nl .
+
 metric:SpO2 a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
     skos:broader metric:Metric ;
@@ -3167,6 +3211,16 @@ metric:SpO2 a skos:Concept ;
     skos:notation "SpO2" ;
     skos:prefLabel "Sp O2"@en,
         "Sp O2"@nl .
+
+metric:SpO2_PreDuctal a skos:Concept ;
+    rdfs:subClassOf mda:Metric ;
+    skos:broader metric:Metric ;
+    skos:definition "Sp O2_Pre Ductal"@en,
+        "Sp O2_Pre Ductal"@nl ;
+    skos:inScheme metric:Scheme ;
+    skos:notation "SpO2_PreDuctal" ;
+    skos:prefLabel "Sp O2_Pre Ductal"@en,
+        "Sp O2_Pre Ductal"@nl .
 
 metric:StrokeVolume a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
@@ -3218,17 +3272,15 @@ metric:Temperature a skos:Concept ;
     skos:prefLabel "Temperature"@en,
         "Temperature"@nl .
 
-metric:VenousBloodPressure_Mean a skos:Concept ;
-    rdfs:subClassOf metric:VenousBloodPressure ;
-    owl:equivalentClass [ a owl:Class ;
-            owl:intersectionOf ( metric:VenousBloodPressure [ a owl:Restriction ;
-                        owl:hasValue metricPhase:Mean ;
-                        owl:onProperty mda:hasPhase ] ) ] ;
-    skos:broader metric:VenousBloodPressure ;
+metric:VenousBloodPressure a skos:Concept ;
+    rdfs:subClassOf mda:Metric ;
+    skos:broader metric:Metric ;
+    skos:definition "Venous Blood Pressure"@en,
+        "Venous Blood Pressure"@nl ;
     skos:inScheme metric:Scheme ;
-    skos:notation "VenousBloodPressure_Mean" ;
-    skos:prefLabel "Venous Blood Pressure_Mean"@en ;
-    mda:hasPhase metricPhase:Mean .
+    skos:notation "VenousBloodPressure" ;
+    skos:prefLabel "Venous Blood Pressure"@en,
+        "Venous Blood Pressure"@nl .
 
 metric:VenousOxygenSaturation a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
@@ -3740,6 +3792,16 @@ physiologicalProperty:PaCO2 a skos:Concept ;
     skos:prefLabel "Pa CO2"@en,
         "Pa CO2"@nl .
 
+physiologicalProperty:PulmonaryArteryOxygenSaturation a skos:Concept ;
+    rdfs:subClassOf mda:PhysiologicalProperty ;
+    skos:broader physiologicalProperty:PhysiologicalProperty ;
+    skos:definition "Pulmonary Artery Oxygen Saturation"@en,
+        "Pulmonary Artery Oxygen Saturation"@nl ;
+    skos:inScheme physiologicalProperty:Scheme ;
+    skos:notation "PulmonaryArteryOxygenSaturation" ;
+    skos:prefLabel "Pulmonary Artery Oxygen Saturation"@en,
+        "Pulmonary Artery Oxygen Saturation"@nl .
+
 physiologicalProperty:PulmonaryArteryPressure a skos:Concept ;
     rdfs:subClassOf mda:PhysiologicalProperty ;
     skos:broader physiologicalProperty:PhysiologicalProperty ;
@@ -3799,6 +3861,16 @@ physiologicalProperty:SaO2 a skos:Concept ;
     skos:notation "SaO2" ;
     skos:prefLabel "Sa O2"@en,
         "Sa O2"@nl .
+
+physiologicalProperty:SkinTemperature a skos:Concept ;
+    rdfs:subClassOf mda:PhysiologicalProperty ;
+    skos:broader physiologicalProperty:PhysiologicalProperty ;
+    skos:definition "Skin Temperature"@en,
+        "Skin Temperature"@nl ;
+    skos:inScheme physiologicalProperty:Scheme ;
+    skos:notation "SkinTemperature" ;
+    skos:prefLabel "Skin Temperature"@en,
+        "Skin Temperature"@nl .
 
 physiologicalProperty:StrokeVolume a skos:Concept ;
     rdfs:subClassOf mda:PhysiologicalProperty ;
@@ -4269,6 +4341,16 @@ signalAnalysis:ArrhythmiaAnalysis a skos:Concept ;
     skos:notation "ArrhythmiaAnalysis" ;
     skos:prefLabel "Arrhythmia Analysis"@en,
         "Arrhythmia Analysis"@nl .
+
+signalAnalysis:ArterialOxygenSaturationAnalysis a skos:Concept ;
+    rdfs:subClassOf mda:SignalAnalysis ;
+    skos:broader signalAnalysis:SignalAnalysis ;
+    skos:definition "Arterial Oxygen Saturation Analysis"@en,
+        "Arterial Oxygen Saturation Analysis"@nl ;
+    skos:inScheme signalAnalysis:Scheme ;
+    skos:notation "ArterialOxygenSaturationAnalysis" ;
+    skos:prefLabel "Arterial Oxygen Saturation Analysis"@en,
+        "Arterial Oxygen Saturation Analysis"@nl .
 
 signalAnalysis:ArterialPressureAnalysis a skos:Concept ;
     rdfs:subClassOf mda:SignalAnalysis ;
@@ -5492,15 +5574,25 @@ device:Thermoregulator a skos:Concept ;
     skos:prefLabel "Thermoregulator"@en,
         "Thermoregulator"@nl .
 
-metric:VenousBloodPressure a skos:Concept ;
+metric:CentralVenousPressure a skos:Concept ;
     rdfs:subClassOf mda:Metric ;
     skos:broader metric:Metric ;
-    skos:definition "Venous Blood Pressure"@en,
-        "Venous Blood Pressure"@nl ;
+    skos:definition "Central Venous Pressure"@en,
+        "Central Venous Pressure"@nl ;
     skos:inScheme metric:Scheme ;
-    skos:notation "VenousBloodPressure" ;
-    skos:prefLabel "Venous Blood Pressure"@en,
-        "Venous Blood Pressure"@nl .
+    skos:notation "CentralVenousPressure" ;
+    skos:prefLabel "Central Venous Pressure"@en,
+        "Central Venous Pressure"@nl .
+
+metric:PulmonaryArteryPressure a skos:Concept ;
+    rdfs:subClassOf mda:Metric ;
+    skos:broader metric:Metric ;
+    skos:definition "Pulmonary Artery Pressure"@en,
+        "Pulmonary Artery Pressure"@nl ;
+    skos:inScheme metric:Scheme ;
+    skos:notation "PulmonaryArteryPressure" ;
+    skos:prefLabel "Pulmonary Artery Pressure"@en,
+        "Pulmonary Artery Pressure"@nl .
 
 manufacturer:Philips a skos:Concept ;
     skos:broader manufacturer:Manufacturer ;
@@ -5547,15 +5639,6 @@ metricPhase:Expiratory a skos:Concept ;
     skos:prefLabel "Expiratory"@en,
         "Expiratory"@nl .
 
-metricPhase:Mean a skos:Concept ;
-    skos:broader metricPhase:MetricPhase ;
-    skos:definition "Mean"@en,
-        "Mean"@nl ;
-    skos:inScheme metricPhase:Scheme ;
-    skos:notation "Mean" ;
-    skos:prefLabel "Mean"@en,
-        "Mean"@nl .
-
 metricRhythm:VentricularFibrillationOrTachycardia a skos:Concept ;
     skos:broader metricRhythm:Abnormal ;
     skos:definition "Ventricular Fibrillation Or Tachycardia"@en,
@@ -5594,6 +5677,15 @@ manufacturer:Getinge a skos:Concept ;
     skos:notation "Getinge" ;
     skos:prefLabel "Getinge"@en,
         "Getinge"@nl .
+
+metricPhase:Mean a skos:Concept ;
+    skos:broader metricPhase:MetricPhase ;
+    skos:definition "Mean"@en,
+        "Mean"@nl ;
+    skos:inScheme metricPhase:Scheme ;
+    skos:notation "Mean" ;
+    skos:prefLabel "Mean"@en,
+        "Mean"@nl .
 
 metricRhythm:Abnormal a skos:Concept ;
     skos:broader metricRhythm:Rhythm ;

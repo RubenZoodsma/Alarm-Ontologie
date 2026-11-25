@@ -77,6 +77,7 @@ from rdflib.namespace import RDF, RDFS, OWL, SKOS
 sys.path.append(str(Path(__file__).resolve().parent.parent / "shared"))
 from ontology_tree import derive_class_tree, format_tree, local as _local
 from canonical_turtle import serialize_canonical
+from site_refinement import SiteTable, SiteRefinementError
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 
@@ -1360,10 +1361,17 @@ def build_alarmtype_triples(row: pd.Series, kg: Graph, ref: Graph, index: dict,
                             tree: dict, node_kind: dict, node_columns: dict,
                             leaf_specs: list, target_types: dict,
                             metric_recipe: dict, sensor_of_signal: dict,
-                            administers_map: dict, inference_graph: Graph) -> None:
+                            administers_map: dict, inference_graph: Graph,
+                            site_table: "SiteTable | None" = None) -> None:
     """
     Emit one CSV row as an mda:AlarmType, routing triples to two graphs:
     per-alarm particulars to `kg`, deduplicable universals to `ref`.
+
+    The row's Metric is site-refined (`site_table`, inference.ttl's "Site
+    refinements") before anything else uses it: the recipe lookup, the
+    pre-coordination with phase/aggregation, and the node's type all see
+    the refined metric. Raises SiteRefinementError when the base metric and
+    the row's site contradict each other.
     """
     label  = str(row[LABEL_COLUMN]).strip()
     model  = row.get(MODEL_COLUMN)
@@ -1381,14 +1389,39 @@ def build_alarmtype_triples(row: pd.Series, kg: Graph, ref: Graph, index: dict,
             return None
         return str(v).strip()
 
-    def column_concept(cls):
+    refined_metric = {}   # memo: the site refinement is resolved once per row
+
+    def row_sites():
+        """This row's values of the site-carrying sensor properties
+        (mda:refinesParticularIdentity: anatomical position, laterality)."""
+        sites = set()
+        for _dcls, prop, col, _role, scheme in leaf_specs:      # a site bound as a leaf
+            if prop in site_table.site_properties:
+                v = cell(col)
+                if v is not None:
+                    sites.add(resolve(scheme, v, index, col))
+        for cls in site_table.site_classes:                     # ... or as a node column
+            col = node_columns.get(cls)
+            v = cell(col)
+            if v is not None:
+                sites.add(resolve(_scheme_of_column(col), v, index, col))
+        return sites
+
+    def column_concept(cls, refine=True):
         """Vocabulary concept named by cls's node-column in this row, or
         the recipe-derived trace for Sensor/Signal/SignalAnalysis when this
-        row has no column value of its own (see recipe_override)."""
+        row has no column value of its own (see recipe_override). The
+        Metric is the site-refined one unless `refine` is False (its base,
+        as annotated)."""
         col = node_columns.get(cls)
         v = cell(col)
         if v is not None:
-            return resolve(_scheme_of_column(col), v, index, col)
+            concept = resolve(_scheme_of_column(col), v, index, col)
+            if refine and cls == MDA.Metric and site_table is not None:
+                if "metric" not in refined_metric:
+                    refined_metric["metric"] = site_table.resolve(concept, row_sites())
+                return refined_metric["metric"]
+            return concept
         return recipe_override(cls)
 
     def recipe_override(cls):
@@ -1448,6 +1481,13 @@ def build_alarmtype_triples(row: pd.Series, kg: Graph, ref: Graph, index: dict,
                 set(inference_graph.objects(fu_concept, MDA.hasSensor)),
                 inference_graph)
         traces = metric_recipe.get((fu_concept, metric_concept))
+        if not traces:
+            # A site-refined metric the recipe does not name (e.g.
+            # CentralVenousPressure): the pathway is its base's (the
+            # analysis measures the base; the site refines what it means).
+            base_concept = column_concept(MDA.Metric, refine=False)
+            if base_concept != metric_concept:
+                traces = metric_recipe.get((fu_concept, base_concept))
         if not traces:
             return None
         # EACH SLOT RESOLVES INDEPENDENTLY. A composite instrument may pin
@@ -1781,8 +1821,9 @@ def build_alarmtype_triples(row: pd.Series, kg: Graph, ref: Graph, index: dict,
 def build_graphs(df: pd.DataFrame, index: dict, tree: dict, node_kind: dict,
                  node_columns: dict, leaf_specs: list, target_types: dict,
                  metric_recipe: dict, sensor_of_signal: dict, administers_map: dict,
-                 inference_graph: Graph):
-    """Return (kg, ref): per-alarm particulars, and deduplicated universals."""
+                 inference_graph: Graph, site_table: "SiteTable | None" = None):
+    """Return (kg, ref): per-alarm particulars, and deduplicated universals.
+    Stops when a row's base metric and site contradict each other (C2)."""
     kg, ref = Graph(), Graph()
     for g in (kg, ref):
         g.bind("alarmtype", ALARMTYPE)
@@ -1790,20 +1831,46 @@ def build_graphs(df: pd.DataFrame, index: dict, tree: dict, node_kind: dict,
         g.bind("skos", SKOS)
         bind_vocab_prefixes(g)
 
-    failed = []
+    failed, site_errors = [], []
     for i, row in df.iterrows():
         try:
             build_alarmtype_triples(row, kg, ref, index, tree,
                                     node_kind, node_columns, leaf_specs, target_types,
                                     metric_recipe, sensor_of_signal, administers_map,
-                                    inference_graph)
+                                    inference_graph, site_table)
         except KeyError as e:
             failed.append(f"  Row {i + 2}: {e}")
+        except SiteRefinementError as e:
+            site_errors.append(f"  Row {i + 2} ({str(row[LABEL_COLUMN]).strip()}): {e}")
     if failed:
         print("\n[WARN]  Rows skipped:")
         for line in failed:
             print(line)
+    if site_errors:
+        print("\n[ERROR] Base metric and site contradict each other (inference.ttl, "
+              "\"Site refinements\"); fix the annotation or the table:")
+        for line in site_errors:
+            print(line)
+        raise SystemExit(f"{len(site_errors)} row(s) with a site the table does not cover")
     return kg, ref
+
+
+def metric_types_by_alarm(kg: Graph) -> dict:
+    """{alarm type: set of metric concepts in its blueprint} (the types of
+    the objects of mda:producesMetric), for the site-refinement report."""
+    out = {}
+    for at in kg.subjects(RDF.type, MDA.AlarmType):
+        seen, stack, types = set(), [at], set()
+        while stack:
+            node = stack.pop()
+            for p, o in kg.predicate_objects(node):
+                if p == MDA.producesMetric:
+                    types |= {t for t in kg.objects(o, RDF.type) if isinstance(t, URIRef)}
+                if isinstance(o, BNode) and o not in seen:
+                    seen.add(o)
+                    stack.append(o)
+        out[at] = types
+    return out
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
@@ -1924,9 +1991,28 @@ def main() -> None:
     metric_recipe    = build_metric_recipe(tbox)   # tbox: kinds (hierarchy.ttl) are followed
     sensor_of_signal = build_sensor_of_signal(inference)
     administers_map  = build_administers_map(inference)
+    # Site refinements (inference.ttl): C3 before any row is built.
+    site_table = SiteTable(inference, onto, tbox)
+    inheritance_problems = site_table.check_inheritance()
+    if inheritance_problems:
+        for line in inheritance_problems:
+            print(f"[ERROR]  site refinement: {line}")
+        raise SystemExit(f"{len(inheritance_problems)} site refinement(s) inconsistent with the class axioms")
     kg_out, ref_out = build_graphs(df, index, tree, node_kind, node_columns,
                                    leaf_specs, target_types, metric_recipe,
-                                   sensor_of_signal, administers_map, tbox)
+                                   sensor_of_signal, administers_map, tbox, site_table)
+    for line in site_table.report():
+        print(f"[site]   {line}")
+    if KG_OUT_PATH.exists():
+        # Which alarm types' metrics changed against the previous build: the
+        # list to review after a change to the table or the annotation.
+        before = metric_types_by_alarm(Graph().parse(KG_OUT_PATH, format="turtle"))
+        after = metric_types_by_alarm(kg_out)
+        changed = sorted((at for at in after if at in before and before[at] != after[at]), key=str)
+        print(f"[site]   {len(changed)} alarm type(s) with a different metric than the previous build"
+              + "".join(f"\n[site]     {_local(at)}: "
+                        f"{', '.join(sorted(_local(t) for t in before[at])) or '-'} -> "
+                        f"{', '.join(sorted(_local(t) for t in after[at])) or '-'}" for at in changed))
     for t in ref_out:                     # merge the deduplicated universal graph
         vocab_out.add(t)
     pc_edges = link_precoordinated(vocab_out)

@@ -44,7 +44,7 @@
     dc:title                        "Medical Device Alarm Ontology"@en ;
     dcterms:creator                 "Ruben Zoodsma" ;
     dcterms:created                 "2026-07-08"^^xsd:date ;
-    owl:versionInfo                 "1.0.0" ;
+    owl:versionInfo                 "1.1.0" ;
     dc:license                      <https://creativecommons.org/licenses/by/4.0/> ;
     vann:preferredNamespacePrefix   "mda";
     vann:preferredNamespaceUri      "https://w3id.org/mda/ontology#" ;
@@ -1141,6 +1141,35 @@ mda:refinesParticularIdentity a owl:AnnotationProperty ;
     rdfs:label          "refines particular identity"@en, "verfijnt particuliere identiteit"@nl ;
     rdfs:comment        "Marks a leaf property whose value distinguishes one minted particular from another of the same type under the same real-world owner — folded into the particular's IRI at grounding time, not into a vocabulary concept."@en,
                         "Markeert een blad-eigenschap waarvan de waarde één gemunt deeltje onderscheidt van een ander van hetzelfde type onder dezelfde eigenaar in de werkelijke wereld — verwerkt in de IRI van het deeltje bij grondingstijd, niet in een vocabulaireconcept."@nl .
+
+# Site refinement (added 2026-11-25). The annotation names what a method
+# measures (the base metric, e.g. ArterialBloodPressure from an IBP
+# transducer) and where (Sensor.AnatomicalPosition). Where the site changes
+# the physiological meaning, inference.ttl maps (base metric, site) to the
+# metric it then is, e.g. ArterialBloodPressure at PulmonaryArtery is
+# PulmonaryArteryPressure. The build applies the mapping before the metric
+# is pre-coordinated, so every consumer sees an ordinary metric type. The
+# refined metric is a subclass of its base only when it keeps the base's
+# physiological property (it specialises); when the site changes the
+# property it is not (it replaces), so it never inherits the base's
+# mda:approximates axiom. A base without a site keeps its own meaning.
+mda:hasSiteRefinement a owl:AnnotationProperty ;
+    dcterms:identifier  "hasSiteRefinement" ;
+    rdfs:label          "has site refinement"@en, "heeft locatieverfijning"@nl ;
+    rdfs:comment        "Relates a base metric to one site refinement: a node giving the site (mda:atSite) and the metric the base is when measured there (mda:refinedMetric). A build directive, read by build_framework.py."@en,
+                        "Koppelt een basismetriek aan één locatieverfijning: een knoop met de locatie (mda:atSite) en de metriek die de basis is wanneer daar gemeten (mda:refinedMetric). Een bouwinstructie, gelezen door build_framework.py."@nl .
+
+mda:atSite a owl:AnnotationProperty ;
+    dcterms:identifier  "atSite" ;
+    rdfs:label          "at site"@en, "op locatie"@nl ;
+    rdfs:comment        "The site of a site refinement: a value of a particular-identity-refining sensor property (mda:refinesParticularIdentity), such as an anatomical position. A narrower site is covered unless it has a refinement of its own."@en,
+                        "De locatie van een locatieverfijning: een waarde van een sensoreigenschap die de particuliere identiteit verfijnt (mda:refinesParticularIdentity), zoals een anatomische positie. Een nauwere locatie valt eronder tenzij zij een eigen verfijning heeft."@nl .
+
+mda:refinedMetric a owl:AnnotationProperty ;
+    dcterms:identifier  "refinedMetric" ;
+    rdfs:label          "refined metric"@en, "verfijnde metriek"@nl ;
+    rdfs:comment        "The metric a base metric is when measured at the refinement's site. May be the base itself: the site then confirms the base's meaning."@en,
+                        "De metriek die een basismetriek is wanneer gemeten op de locatie van de verfijning. Kan de basis zelf zijn: de locatie bevestigt dan de betekenis van de basis."@nl .
 
 mda:Individuated  a owl:NamedIndividual ; rdfs:label "individuated"@en .
 mda:Referential   a owl:NamedIndividual ; rdfs:label "referential"@en .

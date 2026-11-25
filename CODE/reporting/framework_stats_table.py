@@ -169,7 +169,9 @@ def builder_context(onto, base, inference, df):
                 metric_recipe=R.build_metric_recipe(tbox),
                 sensor_of_signal=R.build_sensor_of_signal(inference),
                 administers_map=R.build_administers_map(inference),
-                inference_graph=tbox)
+                inference_graph=tbox,
+                # the same site refinement as the build (inference.ttl)
+                site_table=R.SiteTable(inference, onto, tbox))
     return args, vocab_out
 
 

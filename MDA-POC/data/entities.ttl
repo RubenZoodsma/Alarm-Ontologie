@@ -244,6 +244,9 @@ scaffold:SignalAnalysis_AirwayPressureAnalysis a signal-analysis:AirwayPressureA
 scaffold:SignalAnalysis_ArrhythmiaAnalysis a signal-analysis:ArrhythmiaAnalysis ;
     rdfs:label "Arrhythmia Analysis (type catalogue entry)"@en .
 
+scaffold:SignalAnalysis_ArterialOxygenSaturationAnalysis a signal-analysis:ArterialOxygenSaturationAnalysis ;
+    rdfs:label "Arterial Oxygen Saturation Analysis (type catalogue entry)"@en .
+
 scaffold:SignalAnalysis_ArterialPressureAnalysis a signal-analysis:ArterialPressureAnalysis ;
     rdfs:label "Arterial Pressure Analysis (type catalogue entry)"@en .
 
@@ -288,6 +291,9 @@ scaffold:SignalAnalysis_LeakAnalysis a signal-analysis:LeakAnalysis ;
 
 scaffold:SignalAnalysis_NIBPAnalysis a signal-analysis:NIBPAnalysis ;
     rdfs:label "NIBP Analysis (type catalogue entry)"@en .
+
+scaffold:SignalAnalysis_PulmonaryArteryPressureAnalysis a signal-analysis:PulmonaryArteryPressureAnalysis ;
+    rdfs:label "Pulmonary Artery Pressure Analysis (type catalogue entry)"@en .
 
 scaffold:SignalAnalysis_PulseAnalysis a signal-analysis:PulseAnalysis ;
     rdfs:label "Pulse Analysis (type catalogue entry)"@en .

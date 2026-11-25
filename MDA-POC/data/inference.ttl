@@ -57,6 +57,7 @@
 @prefix physiologicalProcess:  <https://w3id.org/mda/vocab/physiological-process/> .
 @prefix organ:       <https://w3id.org/mda/vocab/organ/> .
 @prefix organSystem: <https://w3id.org/mda/vocab/organ-system/> .
+@prefix anatomicalPosition: <https://w3id.org/mda/vocab/anatomical-position/> .
 
 
 ####################################################################
@@ -471,11 +472,15 @@ signalAnalysis:PulseFlowIndexAnalysis mda:producesMetric metric:PulseFlowIndex .
 ## Replaces the former ABP_transducer/ABP_waveform and VenousPressureTransducer/
 ## Pressure_waveform pairs (p99 curation round, 2026-11-24). A fluid-filled
 ## pressure transducer does not know where its catheter tip sits, and its
-## waveform is just a pressure trace; what makes a reading arterial, central
-## venous or pulmonary-arterial is (a) where the catheter is placed and (b)
-## which analysis names the result. So the site is carried by the sensor's
-## mda:hasAnatomicalPosition (Arterial, Central, PulmonaryArtery, ...) and the
-## quantity by the metric — never by a site-specific sensor or signal kind.
+## waveform is just a pressure trace. Since 2026-11-25 (site refinement, see
+## "Site refinements" below) the annotation names the compartment by the
+## base metric (ArterialBloodPressure or VenousBloodPressure) and the
+## location by the sensor's mda:hasAnatomicalPosition; the site table maps
+## the pair to the metric it is: ArterialBloodPressure at PulmonaryArtery is
+## PulmonaryArteryPressure, VenousBloodPressure at Central is
+## CentralVenousPressure. Never a site-specific sensor or signal kind. The
+## three analyses below stay: the recipe looks up the refined metric first
+## and falls back to its base.
 ##
 ## Two lines on one patient stay two particulars: hasAnatomicalPosition is
 ## mda:refinesParticularIdentity (ontology.ttl), so grounding folds the site
@@ -624,9 +629,11 @@ signalAnalysis:NIBPAnalysis mda:producesMetric metric:ArterialBloodPressure .
 ## identity, so each site is its own probe particular ("Trect hoog" and
 ## "Trect geen sensor" share the rectal probe; "Temp geen sensor" does not),
 ## and a row without a position is a third, site-less probe. Every row on a
-## site-specific channel needs Sensor.AnatomicalPosition filled. Cost
-## accepted: a bridge cannot differ by site (skin temperature as an
-## indicator of peripheral perfusion is not expressed).
+## site-specific channel needs Sensor.AnatomicalPosition filled. Since
+## 2026-11-25 the site also refines the metric where it changes the meaning
+## (see "Site refinements"): skin temperature is its own metric and
+## property, core temperature (core, rectal, blood) a narrower body
+## temperature; an axillary or unsited reading stays BodyTemperature.
 ##
 ## Not here: the temperature of blood in an extracorporeal circuit
 ## (CARDIOHELP TArt). It is measured after the heat exchanger, so it reports
@@ -686,14 +693,21 @@ signalAnalysis:CardiacOutputAnalysis  mda:producesMetric metric:CardiacOutput . 
 signalAnalysis:RVEFAnalysis           mda:producesMetric metric:RightVentricleEjectionFraction .
 
 ## Trace: Intravascular oximetry (Edwards oximetry cable with a fibre-optic
-## catheter; reflection spectrophotometry). One catheter kind for both
-## mixed venous (SvO2, pulmonary artery) and central venous (ScvO2) oxygen
-## saturation: the site is the sensor's mda:hasAnatomicalPosition, as for
-## the IBP transducer, not a separate sensor or metric.
+## catheter; reflection spectrophotometry). One catheter kind for every
+## intravascular oxygen saturation. As for the IBP transducer, the base
+## metric names the compartment and the sensor's mda:hasAnatomicalPosition
+## the location (2026-11-25, see "Site refinements"): an artery carries
+## blood away from the heart, so a catheter in the pulmonary artery
+## measures ArterialOxygenSaturation at PulmonaryArtery, which is
+## PulmonaryArteryOxygenSaturation (clinically "SvO2"); one in a central
+## vein measures VenousOxygenSaturation at Central, CentralVenousOxygen-
+## Saturation ("ScvO2").
 functionalUnit:FU_IV_Oximetry mda:hasSensor sensor:OximetryCatheter .
 sensor:OximetryCatheter mda:sensorProducesSignal signal:OximetryWaveform .
-signal:OximetryWaveform mda:analyzedBy signalAnalysis:VenousOxygenSaturationAnalysis .
-signalAnalysis:VenousOxygenSaturationAnalysis mda:producesMetric metric:VenousOxygenSaturation .
+signal:OximetryWaveform mda:analyzedBy signalAnalysis:VenousOxygenSaturationAnalysis,
+                                       signalAnalysis:ArterialOxygenSaturationAnalysis .
+signalAnalysis:VenousOxygenSaturationAnalysis  mda:producesMetric metric:VenousOxygenSaturation .
+signalAnalysis:ArterialOxygenSaturationAnalysis mda:producesMetric metric:ArterialOxygenSaturation .
 
 
 ####################################################################
@@ -1310,6 +1324,65 @@ opstate:Monitored a skos:Concept ;
 
 
 ####################################################################
+# Site refinements (2026-11-25; ontology.ttl, mda:hasSiteRefinement)
+####################################################################
+#
+# The annotation names what a method measures (the base metric) and where
+# (Sensor.AnatomicalPosition). Where the site changes the physiological
+# meaning, the base at that site is another metric; build_framework.py
+# applies this table before pre-coordination, so a phase composes on top
+# (ArterialBloodPressure + PulmonaryArtery + Mean ->
+# PulmonaryArteryPressure_Mean) and every consumer sees an ordinary metric.
+#
+# The base names the compartment, the site only the location: an artery
+# carries blood away from the heart (so the pulmonary artery is an artery,
+# for pressure and for saturation alike), and a site never restates a
+# compartment the base contradicts. A base WITH refinements accepts only
+# the sites listed: any other site stops the build (e.g. ArterialBlood-
+# Pressure at Central). A base without a site keeps its own meaning. A base
+# WITHOUT refinements is unaffected: its site only tells sensors apart
+# (mda:refinesParticularIdentity), as before.
+#
+# Whether a refined metric keeps the base's property is stated by the
+# class axioms above, not here: a subclass of its base specialises it and
+# inherits its mda:approximates; a metric that is not a subclass replaces it
+# and has its own. build_framework.py stops when a refined subclass states a
+# different property (it would hold both).
+#
+# A refinement naming the base itself means the site confirms the base.
+
+metric:ArterialBloodPressure mda:hasSiteRefinement
+    [ mda:atSite anatomicalPosition:Arterial ;        mda:refinedMetric metric:ArterialBloodPressure ] ,
+    [ mda:atSite anatomicalPosition:PulmonaryArtery ; mda:refinedMetric metric:PulmonaryArteryPressure ] .
+
+metric:VenousBloodPressure mda:hasSiteRefinement
+    [ mda:atSite anatomicalPosition:Venous ;  mda:refinedMetric metric:VenousBloodPressure ] ,
+    [ mda:atSite anatomicalPosition:Central ; mda:refinedMetric metric:CentralVenousPressure ] .
+
+metric:ArterialOxygenSaturation mda:hasSiteRefinement
+    [ mda:atSite anatomicalPosition:Arterial ;        mda:refinedMetric metric:ArterialOxygenSaturation ] ,
+    [ mda:atSite anatomicalPosition:PulmonaryArtery ; mda:refinedMetric metric:PulmonaryArteryOxygenSaturation ] .
+
+metric:VenousOxygenSaturation mda:hasSiteRefinement
+    [ mda:atSite anatomicalPosition:Venous ;  mda:refinedMetric metric:VenousOxygenSaturation ] ,
+    [ mda:atSite anatomicalPosition:Central ; mda:refinedMetric metric:CentralVenousOxygenSaturation ] .
+
+# Pulse oximetry is peripheral by nature: Peripheral confirms the base.
+metric:SpO2 mda:hasSiteRefinement
+    [ mda:atSite anatomicalPosition:Peripheral ; mda:refinedMetric metric:SpO2 ] ,
+    [ mda:atSite anatomicalPosition:PreDuctal ;  mda:refinedMetric metric:SpO2_PreDuctal ] .
+
+# Axillary is an unreliable estimate of core temperature: it stays
+# BodyTemperature (neither skin nor core).
+metric:BodyTemperature mda:hasSiteRefinement
+    [ mda:atSite anatomicalPosition:Axillary ;      mda:refinedMetric metric:BodyTemperature ] ,
+    [ mda:atSite anatomicalPosition:Skin ;          mda:refinedMetric metric:SkinTemperature ] ,
+    [ mda:atSite anatomicalPosition:Core ;          mda:refinedMetric metric:CoreTemperature ] ,
+    [ mda:atSite anatomicalPosition:Rectal ;        mda:refinedMetric metric:CoreTemperature ] ,
+    [ mda:atSite anatomicalPosition:Intravascular ; mda:refinedMetric metric:CoreTemperature ] .
+
+
+####################################################################
 # Clinical axioms
 ####################################################################
 
@@ -1317,6 +1390,10 @@ opstate:Monitored a skos:Concept ;
 metric:SpO2 rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:SaO2 ] .
+# Pre-ductal SpO2 (Philips "SpO2pr"): SpO2 at site PreDuctal (2026-11-25), a
+# narrower SpO2 (inherits SaO2). No post-ductal counterpart: no alarm in
+# the corpus names one.
+metric:SpO2_PreDuctal rdfs:subClassOf metric:SpO2 .
 
 # ABP and the literal-named "ArterialPressure" metric were two CSV names for
 # the same reading — unified in p75_annotated.csv into ArterialBloodPressure,
@@ -1327,19 +1404,23 @@ metric:ArterialBloodPressure rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:ArterialPressure ] .
 
-# Renamed from VenousPressure in the same unification pass. Central venous
-# pressure (Philips "CVD") is this metric with the transducer at position
-# Central — no separate CentralVenousPressure metric (p99 curation round).
+# Renamed from VenousPressure in the same unification pass.
 metric:VenousBloodPressure rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:VenousPressure ] .
 
+# Central venous pressure (Philips "CVD"): VenousBloodPressure at site
+# Central (site refinement, 2026-11-25). A narrower venous pressure, so it
+# keeps VenousPressure by inheritance.
+metric:CentralVenousPressure rdfs:subClassOf metric:VenousBloodPressure .
+
 # Pulmonary artery pressure (p99: "Hoge/Lage PA M", "PAP geen puls"). Its
-# own metric and property, NOT ArterialBloodPressure at position
-# PulmonaryArtery: that would bridge to the systemic ArterialPressure, and
-# pulmonary artery pressure is governed by the right ventricle and
-# pulmonary vascular resistance, not by systemic resistance. Same
-# transducer and waveform as every other IBP line (see the IBP recipe).
+# own metric and property, reached since 2026-11-25 by annotating
+# ArterialBloodPressure at site PulmonaryArtery (site refinement). It is
+# deliberately NOT a subclass of ArterialBloodPressure: it would inherit the
+# bridge to the systemic ArterialPressure, and pulmonary artery pressure is
+# governed by the right ventricle and pulmonary vascular resistance, not by
+# systemic resistance. Same transducer and waveform as every other IBP line.
 metric:PulmonaryArteryPressure rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:PulmonaryArteryPressure ] .
@@ -1395,6 +1476,22 @@ metric:SystemicVascularResistanceIndex rdfs:subClassOf
 metric:VenousOxygenSaturation rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:VenousOxygenSaturation ] .
+
+# Site refinements of intravascular oxygen saturation (2026-11-25).
+# ArterialOxygenSaturation: an oximetry catheter in an artery (a vessel
+# carrying blood away from the heart); without a site, a systemic artery.
+metric:ArterialOxygenSaturation rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:SaO2 ] .
+# ScvO2: VenousOxygenSaturation at site Central, a narrower venous
+# saturation (inherits VenousOxygenSaturation).
+metric:CentralVenousOxygenSaturation rdfs:subClassOf metric:VenousOxygenSaturation .
+# SvO2: ArterialOxygenSaturation at site PulmonaryArtery. Replaces its base:
+# NOT a subclass of ArterialOxygenSaturation, which would inherit SaO2 —
+# the blood in the pulmonary artery is what the tissues returned.
+metric:PulmonaryArteryOxygenSaturation rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:PulmonaryArteryOxygenSaturation ] .
 # metric:BodySurfaceArea: deliberately no bridge (see Derived metrics).
 # Haemoglobin and haematocrit (p99: "CARDIOHELP - Hb/Hct onder
 # waarschuwingsgrens"; 2026-11-25). Unlike the circuit's temperature (TArt)
@@ -1513,11 +1610,21 @@ metric:AirwayPressure rdfs:subClassOf
 # (device:Incubator administers ThermoRegulationTherapy, which
 # targetsProcess ThermoRegulation, see below).
 
-# Body temperature, at whatever site the probe sits (see the temperature
-# trace).
+# Body temperature without a site, or at a site that does not change its
+# meaning (axillary; see the temperature trace and "Site refinements").
 metric:BodyTemperature rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:Temperature ] .
+# Core temperature: BodyTemperature at site Core, Rectal or Intravascular
+# (2026-11-25). A narrower body temperature (inherits Temperature).
+metric:CoreTemperature rdfs:subClassOf metric:BodyTemperature .
+# Skin temperature: BodyTemperature at site Skin. Replaces its base: skin
+# temperature follows peripheral perfusion as much as heat balance, so a low
+# skin temperature with a normal core is not hypothermia. Not a subclass of
+# BodyTemperature.
+metric:SkinTemperature rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:SkinTemperature ] .
 
 metric:Humidity rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
@@ -1658,6 +1765,10 @@ physiologicalProperty:VenousPressure     mda:isPropertyOf physiologicalProcess:V
 physiologicalProperty:TissuePerfusion    mda:isPropertyOf physiologicalProcess:CardiacContraction,
                                                            physiologicalProcess:ArterialCirculation .
 physiologicalProperty:Temperature        mda:isPropertyOf physiologicalProcess:ThermoRegulation .
+# SkinTemperature (2026-11-25): heat balance at the skin, so ThermoRegulation;
+# its dependence on peripheral perfusion is not (yet) expressed as a second
+# process — a clinical decision left open.
+physiologicalProperty:SkinTemperature    mda:isPropertyOf physiologicalProcess:ThermoRegulation .
 
 # p99 curation round (2026-11-24).
 physiologicalProperty:MyocardialRepolarization mda:isPropertyOf physiologicalProcess:CardiacContraction .
@@ -1701,6 +1812,10 @@ physiologicalProperty:SystemicVascularResistance mda:isPropertyOf physiologicalP
 # existing process to "delivery minus consumption". A dedicated tissue
 # oxygenation process (with no single organ) is the alternative, not taken.
 physiologicalProperty:VenousOxygenSaturation   mda:isPropertyOf physiologicalProcess:BloodCirculation .
+# PulmonaryArteryOxygenSaturation (SvO2, 2026-11-25): the saturation of all
+# returned blood, mixed in the right ventricle — the whole-body balance of
+# delivery and consumption, on the same ground as VenousOxygenSaturation.
+physiologicalProperty:PulmonaryArteryOxygenSaturation mda:isPropertyOf physiologicalProcess:BloodCirculation .
 # OxygenCarryingCapacity (Hb, Hct; 2026-11-25): how much oxygen the blood
 # can carry, one factor of oxygen delivery (DO2 = CO x CaO2, CaO2 ~ Hb x
 # SaO2). Routed to BloodCirculation on the same ground as
