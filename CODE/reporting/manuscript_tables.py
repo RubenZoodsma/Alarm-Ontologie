@@ -242,6 +242,65 @@ def triples_per_row(df, args):
     return counts
 
 
+# Inferred triples that carry no knowledge-base reasoning: not counted.
+TRIVIAL_TYPES = {OWL.Thing, RDFS.Resource, OWL.NamedIndividual}
+
+
+def closure_triples_per_row(df, args, tbox_graphs):
+    """Triples per alarm type after OWL 2 RL closure (owlrl) of all blueprints
+    together with the ontology, vocabulary and knowledge-base axioms
+    (tbox_graphs). A triple belongs to a blueprint when its subject is one of
+    the blueprint's own nodes (its alarm type IRI and blank nodes; blueprints
+    share none). Counted: the asserted triples plus the inferred ones,
+    except the trivial and the hierarchy typing:
+      - x owl:sameAs x;
+      - x rdf:type owl:Thing / rdfs:Resource / owl:NamedIndividual;
+      - x rdf:type C, inferred, where C is a superclass of a type asserted
+        for x (an IBP_transducer is also a Sensor, a Component, ...);
+      - x rdf:type R, inferred, where R is an anonymous class (an OWL
+        restriction such as [hasOperationState value Enabled]): it restates
+        a relation, which is counted itself when inferred. owlrl does not
+        close rdfs:subClassOf through such classes, so the superclass test
+        above misses them.
+    Kept, besides the asserted triples: inferred relations (operation states,
+    components, signals, approximates, ...) and inferred named types that are
+    not superclasses of an asserted type (classification through a
+    definition)."""
+    import owlrl
+
+    g, owned, asserted_types = Graph(), [], defaultdict(set)
+    for _, row in df.iterrows():
+        kg, ref = Graph(), Graph()
+        R.build_alarmtype_triples(row, kg, ref, **args)
+        owned.append(set(kg.subjects()))
+        for s, o in kg.subject_objects(RDF.type):
+            asserted_types[s].add(o)
+        g += kg
+    owner = {n: i for i, nodes in enumerate(owned) for n in nodes}
+    assert len(owner) == sum(map(len, owned)), "blueprints share a node"
+    for t in tbox_graphs:
+        g += t
+    owlrl.DeductiveClosure(owlrl.OWLRL_Semantics, axiomatic_triples=False,
+                           datatype_axioms=False).expand(g)
+
+    counts = [0] * len(owned)
+    for s, p, o in g:
+        i = owner.get(s)
+        if i is None:
+            continue
+        if p == OWL.sameAs and s == o:
+            continue
+        if p == RDF.type:
+            if o in TRIVIAL_TYPES:
+                continue
+            asserted = asserted_types[s]
+            if o not in asserted and (isinstance(o, BNode)
+                                      or any((a, RDFS.subClassOf, o) in g for a in asserted)):
+                continue
+        counts[i] += 1
+    return counts
+
+
 def _terms(g: Graph, node, seen=None) -> set:
     """Every IRI mentioned in a node's class expression (through blank nodes)."""
     seen = seen if seen is not None else set()
@@ -334,6 +393,22 @@ def framework_rows(run_hermit: bool):
     before = triples_per_row(df_logs, args)
     after = triples_per_row(df, args)
 
+    kg, ref = R.build_graphs(df, **args)
+    assert len(kg) == sum(after), "combined build disagrees with the per-row build"
+    for t in ref:
+        vocab_out.add(t)
+    vocab_full = Graph()
+    for g in (base, vocab_out):
+        for t in g:
+            vocab_full.add(t)
+    clinical_events = Graph().parse(R.CLINICAL_EVENTS_PATH, format="turtle")
+
+    # The same TBox as the HermiT check: ontology, vocabulary (with the
+    # pre-coordinated classes), inference axioms, clinical events.
+    tbox_graphs = [onto, vocab_full, inference, clinical_events]
+    before_cl = closure_triples_per_row(df_logs, args, tbox_graphs)
+    after_cl = closure_triples_per_row(df, args, tbox_graphs)
+
     # Per unit: blueprints (model x label x priority) whose alarms occur in
     # that unit's selected corpus. A blueprint raised in several units counts
     # in each, and once in ALL.
@@ -352,6 +427,8 @@ def framework_rows(run_hermit: bool):
         n_excl = sum(1 for k in excl_keys if inside(k))
         b = iqr([before[i] for i in idx])
         a = iqr([after[i] for i in idx])
+        bc = iqr([before_cl[i] for i in idx])
+        ac = iqr([after_cl[i] for i in idx])
         unit_rows += [
             (unit, "annotated_types_n", len(idx) + n_excl, "Distinct alarms in the annotation file (model x label x priority)"),
             (unit, "excluded_types_n", n_excl, "Not annotatable (EXCL)"),
@@ -363,21 +440,18 @@ def framework_rows(run_hermit: bool):
             (unit, "triples_enriched_median", a[0], "Triples per alarm type, enriched, median"),
             (unit, "triples_enriched_q1", a[1], "Triples per alarm type, enriched, Q1"),
             (unit, "triples_enriched_q3", a[2], "Triples per alarm type, enriched, Q3"),
+            (unit, "triples_logs_closure_median", bc[0], "Triples per alarm type, logs only, after closure (excl. trivial and hierarchy typing), median"),
+            (unit, "triples_logs_closure_q1", bc[1], "Triples per alarm type, logs only, after closure, Q1"),
+            (unit, "triples_logs_closure_q3", bc[2], "Triples per alarm type, logs only, after closure, Q3"),
+            (unit, "triples_enriched_closure_median", ac[0], "Triples per alarm type, enriched, after closure (excl. trivial and hierarchy typing), median"),
+            (unit, "triples_enriched_closure_q1", ac[1], "Triples per alarm type, enriched, after closure, Q1"),
+            (unit, "triples_enriched_closure_q3", ac[2], "Triples per alarm type, enriched, after closure, Q3"),
         ]
         if unit != "ALL":
             only = sum(1 for k in kept_keys if units_of.get(k) == {unit})
             unit_rows.append((unit, "blueprints_unit_only_n", only, "Blueprints whose alarms occur only in this unit"))
     assert len(kept_keys) + len(excl_keys) == n_annotated
     assert all(k in units_of for k in kept_keys + excl_keys), "annotated type missing from the selected corpus"
-
-    kg, ref = R.build_graphs(df, **args)
-    assert len(kg) == sum(after), "combined build disagrees with the per-row build"
-    for t in ref:
-        vocab_out.add(t)
-    vocab_full = Graph()
-    for g in (base, vocab_out):
-        for t in g:
-            vocab_full.add(t)
 
     n_blueprints = sum(1 for s in set(kg.subjects()) if str(s).startswith(str(R.ALARMTYPE)))
     kg_disk = Graph().parse(R.KG_OUT_PATH, format="turtle") if R.KG_OUT_PATH.exists() else Graph()
@@ -394,7 +468,6 @@ def framework_rows(run_hermit: bool):
     schemes = set(vocab_full.subjects(RDF.type, SKOS.ConceptScheme))
     defined = {s for s in vocab_full.subjects(OWL.equivalentClass, None)} | \
               {s for s in inference.subjects(OWL.equivalentClass, None)}
-    clinical_events = Graph().parse(R.CLINICAL_EVENTS_PATH, format="turtle")
     ax_inf = axiom_counts([inference])
     ax_ce = axiom_counts([clinical_events])
     ax = {k: ax_inf[k] + ax_ce[k] for k in ax_inf}
