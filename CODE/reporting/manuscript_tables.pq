@@ -13,11 +13,15 @@
 //                             Close & Load To... > Only Create Connection.
 //   2. ManuscriptTables       paste QUERY 2. Only Create Connection.
 //   3. tblTable3              paste QUERY 3. Before loading: on sheet Data_T3,
-//                             clear the old table's contents (Clear All; do
-//                             not delete columns or the sheet, the formulas
-//                             refer to them). Then Close & Load To... > Table >
+//                             select columns A:D and Clear All (do not delete
+//                             the columns or the sheet: the formulas refer to
+//                             them). Then Close & Load To... > Table >
 //                             Existing worksheet: =Data_T3!$A$1.
 //   4. tblTable4              paste QUERY 4. Same, on sheet Data: =Data!$A$1.
+//
+// Until then the two sheets hold the same four columns as plain values,
+// filled from the CSV on 2026-11-25, so the tables are current without the
+// queries; the queries replace exactly those cells.
 //
 // After that: run manuscript_tables.py, then Data > Refresh All. Nothing
 // writes into the workbook any more; do not run scripts that open and save it
