@@ -1,0 +1,25 @@
+id: rpf_hypercapnia
+title: "A raised end-tidal CO2 is reduced pulmonary function (hypercapnia)"
+rule: "events"
+purpose: confirm
+status: active
+review: pending
+rationale:
+  clinical: >
+    Hypercapnia is the direct marker of inadequate ventilation: unlike a low
+    tidal volume or rate, it is not hidden by compensation but is the failure
+    of compensation.
+  technical: >
+    The hypercapnia branch of ReducedPulmonaryFunction (2026-11-25): end-tidal
+    CO2 (metric CO2_EndExpiratory, which approximates PaCO2) with value state
+    Increased, on a physiological alarm. The episode holds while the alarm is
+    active.
+author: "Added 2026-11-25 (hypercapnia branch)"
+strict: true
+
+stream:
+  - {id: a1, device: "DraegerMonitor_00", label: "Monitor - etCO2 Hoog", device_name: "DraegerMonitor", priority: "Medium", start: "08:00:00", end: "08:01:00"}
+
+expect:
+  - {forwarded: a1}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:00", until: "08:01:00", evidence: [a1]}

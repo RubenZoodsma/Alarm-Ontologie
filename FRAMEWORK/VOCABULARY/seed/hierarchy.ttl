@@ -1,0 +1,259 @@
+####################################################################
+# hierarchy.ttl — HAND-AUTHORED.  NOT GENERATED.
+#
+# Every curated "is a narrower case of" placement between vocabulary
+# concepts, in one reviewable place. Created in the p99 curation round
+# (2026-11-24); before that these edges were split over vocab_base.ttl (value
+# states) and inference.ttl (ECG group types, CPAP).
+#
+# This file PLACES concepts; it does not define them. The concepts come from
+# the annotated CSV, vocab_base.ttl or inference.ttl, as before. A concept
+# named here and nowhere else gets a generated stub (and is listed in the
+# build log, so a typo does not pass silently).
+#
+# build_framework.py merges this file into vocab_generated.ttl — consumers
+# load that file and never this one, so no loader can forget it. Per edge it
+# also writes skos:broader (replacing the default edge to the scheme's top
+# concept), so SKOS tools that do not reason show the same tree.
+#
+# THREE SECTIONS, THREE CLAIM KINDS
+#
+#   A. Value refinements    mda:refinesConcept, within one scheme.
+#      For concepts used as the VALUE of a property (states). Through the
+#      property chains in ontology.ttl ("Concept refinement"), a node
+#      bearing the narrower value is entailed to bear the broader one.
+#
+#   B. Kind subclassing     rdfs:subClassOf, within one scheme.
+#      For concepts used as the TYPE of a node (sensor, signal, therapy).
+#      OWL-RL inherits along it natively.
+#
+#   C. Cross-scheme links   skos:broadMatch.
+#      A value in one scheme that falls under a value in ANOTHER scheme
+#      (borne by a different property). Not entailed — for queries
+#      ((skos:broader|skos:broadMatch)*) only.
+#
+# RULES FOR AN EDGE (apply before adding one)
+#   - "Every X is always a Y." If that does not hold in every case, it is
+#     not a refinement.
+#   - Synonyms are MERGED in the annotation, never nested: nesting two names
+#     for one state makes them look like two meanings.
+#   - Annotators record the most specific value the label supports, never
+#     the child and its parent together; the parent is entailed.
+####################################################################
+
+@prefix mda:              <https://w3id.org/mda/ontology#> .
+@prefix rdfs:             <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:             <http://www.w3.org/2004/02/skos/core#> .
+@prefix opstate:          <https://w3id.org/mda/vocab/operation-state/> .
+@prefix qualitystate:     <https://w3id.org/mda/vocab/quality-state/> .
+@prefix metricValueState: <https://w3id.org/mda/vocab/metric-value-state/> .
+@prefix metricRhythm:     <https://w3id.org/mda/vocab/metric-rhythm/> .
+@prefix sensor:           <https://w3id.org/mda/vocab/sensor/> .
+@prefix signal:           <https://w3id.org/mda/vocab/signal/> .
+@prefix signalAnalysis:   <https://w3id.org/mda/vocab/signal-analysis/> .
+@prefix therapeuticModality: <https://w3id.org/mda/vocab/therapeutic-modality/> .
+
+
+####################################################################
+# A. Value refinements (mda:refinesConcept)
+####################################################################
+
+# ── Quality state (signal; also therapy delivery) ────────────────────
+# Impaired is the general "this signal cannot be relied on"; its
+# refinements name the cause the alarm label gives. An alarm whose label
+# gives no cause stays plain Impaired.
+#
+# OutOfRange ("buiten bereik": outside the device's measuring range) placed
+# under Impaired (2026-11-25): a signal outside the range the device can
+# measure cannot be relied on, so an alarm resting on it is suspect (CAT1a).
+# Not placed yet, pending a decision: ScalingError ("wijzig schaal"), which
+# concerns the display range rather than the signal itself.
+qualitystate:OutOfRange    mda:refinesConcept  qualitystate:Impaired .
+qualitystate:Pulseless     mda:refinesConcept  qualitystate:Impaired .
+qualitystate:Weak          mda:refinesConcept  qualitystate:Impaired .
+qualitystate:Interference  mda:refinesConcept  qualitystate:Impaired .
+# Unanalyzable (2026-11-25, p99 "PHILIPSMONITOR - Niet te leren ECG"): the
+# device states it cannot analyse the signal, without naming a cause and
+# without naming which outputs of the analysis are lost. A narrower case of
+# Impaired, so rules written against Impaired also cover it.
+qualitystate:Unanalyzable  mda:refinesConcept  qualitystate:Impaired .
+
+# ── Metric value state ───────────────────────────────────────────────
+# Moved from vocab_base.ttl. A severe deviation is a narrower case of the
+# deviation in its direction: "the same direction and not more severe" is
+# `?active skos:broader* ?incoming` (an active SeverelyDecreased covers an
+# incoming Decreased, not the other way round; the two directions share no
+# ancestor below ValueState). Now also ENTAILED: a SeverelyIncreased metric
+# bears Increased, so axioms keyed on Increased (the circuit-leak therapy
+# delivery axiom in inference.ttl) fire for the severe case too — before
+# this they silently did not.
+metricValueState:SeverelyDecreased  mda:refinesConcept  metricValueState:Decreased .
+metricValueState:SeverelyIncreased  mda:refinesConcept  metricValueState:Increased .
+
+# ── Metric rhythm ────────────────────────────────────────────────────
+# Abnormal: a rhythm that is present but not normal. Scheme-neutral on
+# purpose (the rhythm scheme serves respiration too), so not "Arrhythmia".
+# Absent is NOT under it: an absent rhythm is the extreme low of the value
+# (section C), not an abnormal pattern of a present one.
+metricRhythm:Fibrillation  mda:refinesConcept  metricRhythm:Abnormal .
+metricRhythm:Tachycardia   mda:refinesConcept  metricRhythm:Abnormal .
+# Ventricular rhythms (2026-11-25, p99 ECG fix 3). VF and VT name where the
+# fibrillation or tachycardia arises. VentricularFibrillationOrTachycardia is
+# what "PHILIPSMONITOR - Ventrikel Fibr/Tachy" states: one of the two, not
+# which. Deliberately not "VentricularArrhythmia", which would be wider than
+# the label (it would also cover e.g. ventricular ectopy).
+metricRhythm:VentricularFibrillationOrTachycardia  mda:refinesConcept  metricRhythm:Abnormal .
+metricRhythm:VentricularFibrillation  mda:refinesConcept  metricRhythm:Fibrillation ,
+                                                          metricRhythm:VentricularFibrillationOrTachycardia .
+metricRhythm:VentricularTachycardia   mda:refinesConcept  metricRhythm:Tachycardia ,
+                                                          metricRhythm:VentricularFibrillationOrTachycardia .
+
+# ── Operation state ──────────────────────────────────────────────────
+# Unavailable: temporarily not measuring, without being broken (warming
+# up, purging, an interrupted measurement). Disabled (switched off by the
+# user) is deliberately not placed here yet: that is a choice, not a
+# transient condition.
+#
+# Synonyms merged in the annotation instead of nested (2026-11-24):
+# Failure -> Malfunction, Unconnected -> Disconnected.
+#
+# Malfunction: the component is not working as it should, so what it
+# produces cannot be used. Its refinements name the fault the alarm label
+# gives (2026-11-25, decided with the CAT1a review: a sensor in any of
+# these states is not acquiring its signal). Unrecognized is placed here
+# too: whether the sensor is faulty or the wrong one, it is not delivering.
+opstate:AdapterFault     mda:refinesConcept  opstate:Malfunction .
+opstate:MCableFailure    mda:refinesConcept  opstate:Malfunction .
+opstate:PositionalError  mda:refinesConcept  opstate:Malfunction .
+opstate:Unrecognized     mda:refinesConcept  opstate:Malfunction .
+opstate:Initializing  mda:refinesConcept  opstate:Unavailable .
+opstate:Cleaning      mda:refinesConcept  opstate:Unavailable .
+opstate:Interruption  mda:refinesConcept  opstate:Unavailable .
+
+
+####################################################################
+# B. Kind subclassing (rdfs:subClassOf)
+####################################################################
+
+# ── ECG group types ──────────────────────────────────────────────────
+# Moved from inference.ttl (ECG section of the FunctionalUnit recipes,
+# where the electrode/lead wiring they group still lives).
+#
+# The supertype every ECG electrode and every ECG signal shares. These are
+# not new concepts: they are the two the researchers were already annotating
+# with (sensor:ElectroCardioGraphy_sensor on "ECG afleidingen los" / "ECG
+# alle leads los", signal:ECG_signal on "ECG artefact"), given a formal place
+# rather than left denoting a whole with no relation to its parts.
+# (2026-11-25: the artefact alarms now name signal:ECG_lead instead, see
+# DATA/ANNOTATION/TODO_ecg_annotation_fixes.md, fix 1. ECG_signal stays as
+# the umbrella kind over the raw signals and the leads, which reach it
+# through ECG_raw_signal / ECG_lead below.)
+#
+# Their job is to keep a per-alarm node HONEST when the trace is not
+# determined. Without them, an ECG heart-rate alarm asserted "hasSensor [ a
+# mda:Sensor ]" — the ontology's top sensor class, which a pulse oximeter
+# satisfies just as well as an electrode. build_framework.py's
+# _shared_supertype() reads these edges (from this file) to say "some ECG
+# electrode" instead: exactly what the alarm evidences and nothing more.
+#
+# Expressed as subtyping rather than as a SensorGroup entity with a part-of
+# property: a group here is a KIND of sensor, not a thing that has members,
+# so no new class or property is needed and existing queries over mda:Sensor
+# keep working unchanged.
+sensor:ECG_RA_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_LA_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_LL_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_RL_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_V1_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_V2_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_V3_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_V4_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_V5_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+sensor:ECG_V6_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+# The respiration electrode(s) of impedance pneumography (2026-11-25;
+# inference.ttl, impedance section): physically ECG electrodes, so a state
+# on the group covers them, but their own particular, so an alarm on them
+# reaches only the impedance pathway. Their signal is deliberately NOT
+# under ECG_raw_signal: it feeds no lead derivation, and the impedance
+# signal it yields is not an ECG signal.
+sensor:ECG_Resp_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+
+# The raw signals and leads used to be listed here as direct subclasses of
+# ECG_signal too; removed 2026-11-25 as redundant with the kinds below. The
+# thoracic impedance signal (formerly ECG_lead_Impedance, then a direct
+# subclass of ECG_signal) is NOT an ECG signal: a separate measurement on
+# the same electrodes. It has no kind here (inference.ttl, impedance
+# pneumography).
+
+# Kinds below ECG_signal (p99 curation round, 2026-11-24). signal:ECG_lead
+# is what the heart-rate, arrhythmia and ST analyses take as input
+# (inference.ttl): "an ECG lead", which lead being device configuration.
+# (ECG_raw_signal was also the placeholder input of the thoracic impedance
+# derivation until 2026-11-25; that input is now ECG_Resp_signal from
+# sensor:ECG_Resp_sensor, below.) ECG_raw_signal and
+# ECG_lead_derivation exist so that an alarm on such an analysis gets an
+# honest node per layer of its chain ("some ECG raw signal", "some lead
+# derivation") rather than the bare ontology class. The thoracic impedance
+# signal and its derivation measure something else and stay outside the
+# ECG_signal and ECG_lead_derivation kinds.
+signal:ECG_raw_signal rdfs:subClassOf signal:ECG_signal .
+signal:ECG_lead       rdfs:subClassOf signal:ECG_signal .
+signal:ECG_RA_signal rdfs:subClassOf signal:ECG_raw_signal .
+signal:ECG_LA_signal rdfs:subClassOf signal:ECG_raw_signal .
+signal:ECG_LL_signal rdfs:subClassOf signal:ECG_raw_signal .
+signal:ECG_V1_signal rdfs:subClassOf signal:ECG_raw_signal .
+signal:ECG_V2_signal rdfs:subClassOf signal:ECG_raw_signal .
+signal:ECG_V3_signal rdfs:subClassOf signal:ECG_raw_signal .
+signal:ECG_V4_signal rdfs:subClassOf signal:ECG_raw_signal .
+signal:ECG_V5_signal rdfs:subClassOf signal:ECG_raw_signal .
+signal:ECG_V6_signal rdfs:subClassOf signal:ECG_raw_signal .
+signal:ECG_lead_I   rdfs:subClassOf signal:ECG_lead .
+signal:ECG_lead_II  rdfs:subClassOf signal:ECG_lead .
+signal:ECG_lead_III rdfs:subClassOf signal:ECG_lead .
+signal:ECG_lead_aVR rdfs:subClassOf signal:ECG_lead .
+signal:ECG_lead_aVL rdfs:subClassOf signal:ECG_lead .
+signal:ECG_lead_aVF rdfs:subClassOf signal:ECG_lead .
+signal:ECG_lead_V1  rdfs:subClassOf signal:ECG_lead .
+signal:ECG_lead_V2  rdfs:subClassOf signal:ECG_lead .
+signal:ECG_lead_V3  rdfs:subClassOf signal:ECG_lead .
+signal:ECG_lead_V4  rdfs:subClassOf signal:ECG_lead .
+signal:ECG_lead_V5  rdfs:subClassOf signal:ECG_lead .
+signal:ECG_lead_V6  rdfs:subClassOf signal:ECG_lead .
+
+signalAnalysis:ECG_derivation_I   rdfs:subClassOf signalAnalysis:ECG_lead_derivation .
+signalAnalysis:ECG_derivation_II  rdfs:subClassOf signalAnalysis:ECG_lead_derivation .
+signalAnalysis:ECG_derivation_III rdfs:subClassOf signalAnalysis:ECG_lead_derivation .
+signalAnalysis:ECG_derivation_aVR rdfs:subClassOf signalAnalysis:ECG_lead_derivation .
+signalAnalysis:ECG_derivation_aVL rdfs:subClassOf signalAnalysis:ECG_lead_derivation .
+signalAnalysis:ECG_derivation_aVF rdfs:subClassOf signalAnalysis:ECG_lead_derivation .
+signalAnalysis:ECG_derivation_V1  rdfs:subClassOf signalAnalysis:ECG_lead_derivation .
+signalAnalysis:ECG_derivation_V2  rdfs:subClassOf signalAnalysis:ECG_lead_derivation .
+signalAnalysis:ECG_derivation_V3  rdfs:subClassOf signalAnalysis:ECG_lead_derivation .
+signalAnalysis:ECG_derivation_V4  rdfs:subClassOf signalAnalysis:ECG_lead_derivation .
+signalAnalysis:ECG_derivation_V5  rdfs:subClassOf signalAnalysis:ECG_lead_derivation .
+signalAnalysis:ECG_derivation_V6  rdfs:subClassOf signalAnalysis:ECG_lead_derivation .
+
+# Cardiac output by thermodilution (Swan-Ganz) is one method of computing
+# cardiac output; the generic step stays the one an alarm uses when the
+# method is unknown (inference.ttl, Swan-Ganz trace; p99 curation round).
+signalAnalysis:ThermodilutionAnalysis rdfs:subClassOf signalAnalysis:CardiacOutputAnalysis .
+
+# ── Therapeutic modality ─────────────────────────────────────────────
+# Moved from inference.ttl. CPAP is a mode of ventilation therapy (decision
+# 38): as a subclass it inherits VentilationTherapy's targetsProcess and the
+# therapy-delivery-quality axioms scoped to VentilationTherapy (leak,
+# malfunction, disconnected circuit). Consumers that match rdf:type without
+# reasoning (MDA-POC) must follow rdfs:subClassOf* to see it.
+therapeuticModality:CPAP rdfs:subClassOf therapeuticModality:VentilationTherapy .
+
+
+####################################################################
+# C. Cross-scheme links (skos:broadMatch) — query-time only
+####################################################################
+
+# Moved from vocab_base.ttl. An absent rhythm (asystole, apnoea) is the
+# extreme low of the metric's value: linked across schemes, so it sits below
+# SeverelyDecreased in the value-state hierarchy without leaving the rhythm
+# scheme. Not entailed: hasRhythm Absent does not become hasValueState
+# SeverelyDecreased (that would change the property, not just the value).
+metricRhythm:Absent  skos:broadMatch  metricValueState:SeverelyDecreased .

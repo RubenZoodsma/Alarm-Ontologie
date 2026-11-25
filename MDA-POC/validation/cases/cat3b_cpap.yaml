@@ -9,11 +9,10 @@ rationale:
   technical: >
     A ventilator in CPAP mode (`therapeuticModality:CPAP`, a subclass of
     VentilationTherapy) with a leak, low minute volume on another ventilator —
-    CAT3b positive, 08:00:20–08:01:00. a3 is also silenced by rule 2a: with
-    blueprints identified by device model + label + priority, a3 is the UMCU
-    ServoU alarm (priority Hoog), and CPAP low (Hoog, same process, same
-    direction) is active. Before 2026-11-19 the label-only lookup happened to
-    pick the adult-ICU blueprint (priority Unknown), which rule 2a skips.
+    CAT3b positive, 08:00:20–08:01:00. a3 is NOT silenced by rule 2a: CPAP
+    low approximates RespirationPressure, the minute volume RespirationVolume,
+    and since 2026-11-25 CAT2a requires the same property (under the former
+    process-level rule CPAP low, same process and direction, silenced it).
 author: "Migrated from DATA/CAT_evaluation (README and regression.py), 2026-10-14"
 strict: true
 
@@ -25,6 +24,6 @@ stream:
 expect:
   - {forwarded: a1}
   - {forwarded: a2}
-  - {silenced: a3, reason: redundant, rule: 2a, by: a1}
+  - {forwarded: a3}
   - {interpretation: VentilationFailure, from: "08:00:20", until: "08:01:00", evidence: [a2, a3]}
   - {interpretation: ReducedPulmonaryFunction, from: "08:00:20", until: "08:01:30", evidence: [a3]}

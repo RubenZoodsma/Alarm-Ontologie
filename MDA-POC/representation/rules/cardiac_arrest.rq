@@ -2,18 +2,23 @@
 # cardiac_arrest.rq — clinical event CardiacArrest. HAND-AUTHORED.
 #
 # Criterion (FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl):
-#   evidencedBy some (metric:HeartRate and hasRhythm value Absent)
-# — a heart-rate metric with an absent rhythm (asystole), reported by an
+#   evidencedBy some (metric:CardiacRhythm and hasRhythm value Absent)
+# — a cardiac-rhythm metric with an absent rhythm (asystole), reported by an
 # alarm of this patient that is still active and not CAT1-flagged. An
 # alarm CAT1 flagged as likely false positive supports no clinical event
 # (agreed 2026-09-21): a condition must not rest on an alarm the POC itself
 # believes to be false. A withdrawn CAT1b flag lets the asystole count from
 # the withdrawal on.
 #
-# Everything is matched in ONE alarm's transient graph: its message (hence
-# its patient), its metric and state, and any CAT1 flag on it are inserted
-# there together, so a metric found in that graph is that alarm's metric,
-# reporting that state.
+# GRAPHS (contract: structure persists, states are transient). ?gEv is one
+# alarm's transient graph: its message (hence its patient), the STATE it
+# reports (hasRhythm Absent) and any CAT1 flag on it. A state found there
+# is that alarm's report, on that alarm's metric. The metric's TYPE is
+# structure, read from the same alarm's own persistent graph ?gEvP, so no
+# hop is borrowed from another alarm. The state anchors the match: the
+# transient graph is dropped when the alarm ends, so the condition stops
+# holding then (episode_end.rq), although the metric node itself stays in
+# ?gEvP for the post-alarm window.
 #
 # CONTRACT. Bound on entry: ?patient, ?now. Binds: ?evidence (the metric),
 # ?support (the alarm's graph). Used by the episode actions
@@ -27,6 +32,8 @@ PREFIX metric: <https://w3id.org/mda/vocab/metric/>
 PREFIX rhythm: <https://w3id.org/mda/vocab/metric-rhythm/>
 
 GRAPH ?gEv { ?evAlarm mda:hasMessage ?evMsg . ?evMsg mda:concernsPatient ?patient .
-             ?evidence rdf:type metric:HeartRate . ?evidence mda:hasRhythm rhythm:Absent . }
+             ?evidence mda:hasRhythm rhythm:Absent . }
+BIND(IRI(CONCAT(STR(?evAlarm), "#persistent")) AS ?gEvP)
+GRAPH ?gEvP { ?evidence rdf:type metric:CardiacRhythm . }
 FILTER NOT EXISTS { GRAPH ?gEv { ?evAlarm mdapoc:flaggedLikelyFalsePositive ?why } }
 BIND(?gEv AS ?support)

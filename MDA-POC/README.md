@@ -46,7 +46,7 @@ Files use standard `PREFIX` lines; `rules.py` checks they agree and the script d
 
 ## Input
 
-An events file is `;`-separated with a header: `patientID;label;device_id;start;end;device_name;priority[;alarm_id]`. `device_id` identifies the physical device (minting); `device_name` (the gateway's name, e.g. Caleo) and `priority` identify, with the label, the alarm's blueprint. The engine reads the framework from copies in `data/` (ontology, inference, kg_generated, vocab_generated, clinicalEvent_vocab, priority_rank): copy them from `FRAMEWORK/` after every build; `regression.py` fails when they differ.
+An events file is `;`-separated with a header: `patientID;label;device_id;start;end;device_name;priority[;alarm_id]`. `device_id` identifies the physical device (minting); `device_name` (the gateway's name, e.g. Caleo) and `priority` identify, with the label, the alarm's blueprint. The engine reads the framework from copies in `data/` (ontology, inference, kg_generated, vocab_generated, clinicalEvent_vocab, priority_rank, and the scaffold entities.ttl): after every build, run `CODE/evaluation_poc/seed/entity_seed.py` (it writes `DATA/POC_EVENTS/entities.ttl` from the catalogue) and copy them all in; `regression.py` fails when they differ. Minting stops with an error on an individuated concept the scaffold lacks.
 
 ## Running
 
@@ -56,7 +56,7 @@ Both scripts are configured through a `SETTINGS` dict at the top of the file; th
   ```
   cd engine && python3 regression.py
   ```
-  Besides the cases it checks four engine invariants: no lookahead, no rule logic in Python, blueprint identity (every distinct annotated alarm of the selected corpus resolves to a blueprint of its own) and framework copies in sync. Ends with `N/M assertions passed in K active cases`, writes `validation/results/cases_results.csv` (one row per assertion) and `cases_run.json` (commit and file hashes), and both logs plus `cases_events.csv` to `engine/_scratch/`. `python3 validation/cases_appendix.py` then writes the cases and results as Markdown (`validation/results/cases_appendix.md`).
+  Besides the cases it checks five engine invariants: no lookahead, no rule logic in Python, blueprint identity (every distinct annotated alarm of the selected corpus resolves to a blueprint of its own), framework copies in sync, and minting completeness (every blueprint node and edge below the device is grounded exactly once, counted from the catalogue itself). Ends with `N/M assertions passed in K active cases`, writes `validation/results/cases_results.csv` (one row per assertion) and `cases_run.json` (commit and file hashes), and both logs plus `cases_events.csv` to `engine/_scratch/`. `python3 validation/cases_appendix.py` then writes the cases and results as Markdown (`validation/results/cases_appendix.md`).
 - **Real-corpus run**: `python3 poc_main.py`. Choose the dataset, number of patients, seed, rules, batch size and number of parallel `workers` in `SETTINGS`. `post_alarm_validity` overrides the ontology's post-alarm window (PT15M) for the sensitivity analysis, e.g. `"PT5M"`. Logs go to `_scratch/`. Ends with a per-rule table: invocations, hits, hit rate and Oxigraph time per invocation (rounded to 1 ms).
 
 Validation scripts in `validation/`:

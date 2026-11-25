@@ -1,0 +1,30 @@
+id: cat2a_flagged_justifier
+title: "CAT2a negative: an active alarm flagged likely false positive justifies no silence"
+rule: "2a"
+purpose: falsify
+status: active
+review: pending
+rationale:
+  clinical: >
+    The first oximeter's desaturation rests on an impaired signal; the second
+    oximeter's desaturation may be the only real one and must not be hidden
+    as redundant with an alarm judged false.
+  technical: >
+    A flagged alarm takes part in no other rule (agreed 2026-11-25). a1 is
+    flagged by CAT1a (its PPG signal is impaired, a0); a2 reports the same
+    property (SaO2) in the same direction at equal priority, but a1 is no
+    justification, so a2 is forwarded. a1 is also no evidence for the
+    clinical event; a2 is.
+author: "Claude, 2026-11-25 (CAT2a review)"
+strict: true
+
+stream:
+  - {id: a0, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - Storing in SpO2", device_name: "Philipsmonitor", priority: "Medium", start: "08:00:00", end: "08:05:00"}
+  - {id: a1, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - SpO2 laag", device_name: "Philipsmonitor", priority: "Medium", start: "08:00:30", end: "08:03:00"}
+  - {id: a2, device: "DraegerMonitor_00", label: "Monitor - Lage SpO2", device_name: "DraegerMonitor", priority: "Medium", start: "08:01:00", end: "08:02:00"}
+
+expect:
+  - {forwarded: a0}
+  - {silenced: a1, reason: likely-invalid, rule: 1a, by: [a0]}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:01:00", until: "08:02:00", evidence: [a2]}

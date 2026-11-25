@@ -1,72 +1,110 @@
 # question: Which alarms provide information from a same sensing pathway?
-# rationale: Groups alarms that terminate at the same technical pathway
-#   (functional unit, sensor, signal and metric type), identifying alarms
-#   that originate from an identical sensing pathway.
+# rationale: Groups alarms whose technical pathway, from the functional unit
+#   down to wherever it terminates, is identical, identifying alarms that
+#   originate from the same sensing pathway.
 #
-# A "sensing pathway" is the actual TRACE an alarm's technical chain follows,
-# from FunctionalUnit (the top-level sensing concept) down to wherever it
-# terminates -- not a fixed set of tiers decided in advance. Two alarms
-# share a pathway only if they terminate at the same depth with the same
-# type at every tier reached: some traces stop at Sensor (a connectivity
-# fault, e.g. "Monitor - SpO2 sensor uit" -- no Signal node exists at all),
-# some stop at Signal (a quality fault, e.g. "PHILIPSMONITOR - Storing in
-# SpO2" -- the sensor is enabled and producing a signal, just an unreliable
-# one), and the rest resolve all the way to Metric. A fixed 3-tier signature
-# (FunctionalUnit, Sensor, Metric) wrongly conflates the first two cases --
-# both lack a Metric, but one lacks a Signal entirely and the other doesn't;
-# these are different technical situations, not the same pathway. Grouping
-# on the deepest reached tier, whichever it is, keeps them apart.
+# A "sensing pathway" is the actual TRACE below an alarm's functional unit:
+# every edge reachable from the unit along hasSensor, sensorProducesSignal,
+# analyzedBy, producesSignal and producesMetric, each edge written as the
+# triple (type of parent, property, type of child). The walk is unbounded
+# (`*`), so no depth or tier set is assumed: a trace that stops at a Sensor
+# (a connectivity fault, e.g. "Monitor - SpO2 sensor uit"), at a Signal (a
+# quality fault, e.g. "PHILIPSMONITOR - Storing in SpO2"), at a metric, or
+# runs through any number of derived signals and derived metrics, is simply
+# a smaller or larger set. Since the derivation graphs (2026-11-24) a trace
+# is a DAG, not a chain: a step with several required inputs (impedance
+# respiration from the RA and LA electrodes; EDWARDS EDV) contributes all of
+# them to ONE set, where the earlier per-sensor grouping reported such a
+# pathway once per input.
+#
+# Two alarms share a pathway iff their edge sets are equal. Edges rather
+# than node types, so that the wiring is part of the identity: the same
+# types connected differently (A -> B -> C vs. A -> C, B -> C) are different
+# pathways. The SignalAnalysis tier is part of the set, so the same metric
+# computed by a different step is a different pathway.
+#
+# Set equality is computed by counting, not by serialising the set: two
+# alarms are equal iff the number of edges they share equals the size of
+# each set. A GROUP_CONCAT signature is NOT usable as a key: SPARQL 1.1
+# leaves its order undefined and Oxigraph does emit equal sets in different
+# orders (tested 2026-11-25: 18-24 groups instead of 54 on p99, varying per
+# run). Each alarm takes the smallest IRI of its equivalence class as
+# representative; grouping on it lists every class once. The trace pattern
+# is repeated in each subquery because SPARQL cannot name a pattern; keep
+# the edge lists identical when changing one.
+#
+# Validated 2026-11-25 against a Python ground truth (edge sets grouped by
+# frozenset): exact on p75 (22 groups) and p99 (54 groups), also after
+# appending a 10-layer synthetic derivation (a difference at layer 10 is
+# detected) and for two traces with equal types but different wiring
+# (kept apart; a node-type set wrongly merges them).
 #
 # Anchored on hasFunctionalUnit/hasSensor deliberately: alarms with no
 # sensing component at all (a bare device- or component-level fault, e.g.
 # "CARDIOHELP - Verbinding verbroken") have no sensing pathway to share and
 # are correctly excluded here -- that is CQ5's question, not this one.
 #
-# Signal's own TYPE is not independently discriminating (every Sensor type
-# in this corpus produces exactly one Signal type), but Signal's
-# presence/absence is -- which is why it stays in the grouping key. Metric
-# is the deepest tier that matters (SignalAnalysis type is coarser than
-# Metric -- e.g. one ArterialPressureAnalysis step covers both metric:ABP
-# and metric:ABP_Mean -- so grouping on it instead of Metric would
-# re-introduce the exact conflation this query is designed to avoid).
-#
-# Known limitation, deferred: the three ECG-derived HeartRate archetypes
-# (PHILIPSMONITOR - Extreme Tachy / HF hoog / Lage hartfreq.) carry the
-# generic ontology classes mda:Sensor/mda:Signal instead of the specific
-# sensor:ElectroCardioGraphy_sensor / signal:ECG_signal concepts used
-# elsewhere for the same FunctionalUnit (e.g. "Niet te leren ECG") -- a gap
-# in p50_annotated.csv's Sensor column for those three rows, not a query
-# defect. It doesn't corrupt this result (the three still correctly share
-# a trace with each other), only its readability.
-#
 # Asserted only -- no inference.ttl predicate is involved, so this does not
 # require the OWL-RL closure.
 #
 # Note for reporting: matchCount can exceed the distinct-label count in the
-# result (e.g. Volume_Minute: 4 alarms, 3 distinct labels) when the same
-# label recurs as a separate mda:AlarmType at a different priority.
+# result when the same label recurs as a separate mda:AlarmType at a
+# different priority or on a different device model.
 
 PREFIX mda: <https://w3id.org/mda/ontology#>
-PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
-SELECT ?fuClass ?sensorClass ?signalClass ?metricNotation
-       (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
+SELECT (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
+       (SAMPLE(?pathway) AS ?pathway)
        (COUNT(DISTINCT ?a) AS ?matchCount) WHERE {
-  ?a a mda:AlarmType ; mda:hasLabel ?label ;
-     mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit ?fuNode .
-  ?fuNode a ?fuClass ;
-          mda:hasSensor ?sensorNode .
-  ?sensorNode a ?sensorClass .
-  OPTIONAL {
-    ?sensorNode mda:sensorProducesSignal ?signalNode .
-    ?signalNode a ?signalClass .
-    OPTIONAL {
-      ?signalNode (mda:analyzedBy/mda:producesSignal)*/mda:analyzedBy/mda:producesMetric ?metricNode .
-      ?metricNode a ?metricConcept .
-      ?metricConcept skos:notation ?metricNotation .
-    }
+  {
+    SELECT ?a (MIN(STR(?b)) AS ?rep) WHERE {
+      {
+        SELECT ?a ?b (COUNT(DISTINCT ?edge) AS ?shared) WHERE {
+          { SELECT DISTINCT ?a ?edge WHERE {
+                        ?a a mda:AlarmType ; mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit ?fu .
+                        ?fu mda:hasSensor ?anySensor .
+                        ?fu (mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                        ?x ?p ?y . FILTER(?p IN (mda:hasSensor, mda:sensorProducesSignal, mda:analyzedBy, mda:producesSignal, mda:producesMetric))
+                        ?x a ?tx . ?y a ?ty .
+                        BIND(CONCAT(STR(?tx), " ", STR(?p), " ", STR(?ty)) AS ?edge) } }
+          { SELECT DISTINCT ?b ?edge WHERE {
+                        ?b a mda:AlarmType ; mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit ?fu .
+                        ?fu mda:hasSensor ?anySensor .
+                        ?fu (mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                        ?x ?p ?y . FILTER(?p IN (mda:hasSensor, mda:sensorProducesSignal, mda:analyzedBy, mda:producesSignal, mda:producesMetric))
+                        ?x a ?tx . ?y a ?ty .
+                        BIND(CONCAT(STR(?tx), " ", STR(?p), " ", STR(?ty)) AS ?edge) } }
+        } GROUP BY ?a ?b
+      }
+      { SELECT ?a (COUNT(DISTINCT ?edge) AS ?sizeA) WHERE { { SELECT DISTINCT ?a ?edge WHERE {
+                        ?a a mda:AlarmType ; mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit ?fu .
+                        ?fu mda:hasSensor ?anySensor .
+                        ?fu (mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                        ?x ?p ?y . FILTER(?p IN (mda:hasSensor, mda:sensorProducesSignal, mda:analyzedBy, mda:producesSignal, mda:producesMetric))
+                        ?x a ?tx . ?y a ?ty .
+                        BIND(CONCAT(STR(?tx), " ", STR(?p), " ", STR(?ty)) AS ?edge) } } } GROUP BY ?a }
+      { SELECT ?b (COUNT(DISTINCT ?edge) AS ?sizeB) WHERE { { SELECT DISTINCT ?b ?edge WHERE {
+                        ?b a mda:AlarmType ; mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit ?fu .
+                        ?fu mda:hasSensor ?anySensor .
+                        ?fu (mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                        ?x ?p ?y . FILTER(?p IN (mda:hasSensor, mda:sensorProducesSignal, mda:analyzedBy, mda:producesSignal, mda:producesMetric))
+                        ?x a ?tx . ?y a ?ty .
+                        BIND(CONCAT(STR(?tx), " ", STR(?p), " ", STR(?ty)) AS ?edge) } } } GROUP BY ?b }
+      FILTER(?shared = ?sizeA && ?shared = ?sizeB)
+    } GROUP BY ?a
+  }
+  ?a mda:hasLabel ?label .
+  # Readable pathway of the representative: display only, never the key.
+  {
+    SELECT ?rep (GROUP_CONCAT(DISTINCT ?e; separator=" ; ") AS ?pathway) WHERE {
+      ?r mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit/(mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+      ?x ?p ?y . FILTER(?p IN (mda:hasSensor, mda:sensorProducesSignal, mda:analyzedBy, mda:producesSignal, mda:producesMetric))
+      ?x a ?tx . ?y a ?ty .
+      BIND(STR(?r) AS ?rep)
+      BIND(CONCAT(REPLACE(STR(?tx), "^.*[/#]", ""), " -", STRAFTER(STR(?p), "#"), "-> ", REPLACE(STR(?ty), "^.*[/#]", "")) AS ?e)
+    } GROUP BY ?rep
   }
 }
-GROUP BY ?fuClass ?sensorClass ?signalClass ?metricNotation
+GROUP BY ?rep
 HAVING (COUNT(DISTINCT ?a) > 1)
-ORDER BY ?fuClass ?sensorClass ?signalClass
+ORDER BY DESC(?matchCount)

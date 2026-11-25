@@ -4,37 +4,46 @@
 #   targeted process -> organ) to find every organ an alarm is relevant to,
 #   including alarms with no measurement at all.
 #
-# CORRECTED after a self-audit (see cq_discoveries.md's "audit correction"
-# entry) -- the first version only reached Organ via the DIAGNOSTIC chain
-# (Metric -approximates-> Property -isPropertyOf-> Process -presentIn->
-# Organ). It missed the independent THERAPEUTIC chain inference.ttl also
-# declares as a class-level bridge (Device -administers-> TherapeuticModality
-# -targetsProcess-> Process -presentIn-> Organ, fired from the device's
-# TYPE alone, no Metric needed) -- and, on the strength of that omission,
-# I originally told you organ:Kidneys was "empirically dead in this corpus"
-# because mda:administers is never ASSERTED in kg_generated.ttl. That was
-# wrong: it's ENTAILED, for every archetype on one of five device classes
-# (Dialysator, ExtracorporealMembraneOxygenator, Incubator, Thermoregulator,
-# MechanicalVentilator -- see inference.ttl's Technical axioms section),
-# with or without a Metric.
-#
-# Corrected result: organ:Kidneys now appears (1 alarm -- "PRISMAFLEX -
-# Algemene systeemfout", a Dialysator archetype with no Metric at all,
-# reached purely via administers/RenalReplacementTherapy/RenalFiltration/
-# presentIn), and organ:Lungs grows from 20 to 31 alarms -- every ventilator
-# connectivity/technical fault (e.g. "SERVOU - Volume uit blokkade",
-# "TRILOGY - 0x79") is organ-relevant via device capability even with zero
-# measurement content. organ:BloodVessels (5) and organ:Heart (3) are
-# genuinely unaffected -- no administers-bridged device targets either.
-#
 # reasoning: required
 #
-# Known incomplete, still: of the 15 distinct metrics, 3 don't reach an
-# organ via the diagnostic chain -- metric:Pulse (no approximates bridge
-# at all), metric:Humidity and metric:AirTemperature (dead-end one and two
-# hops short of an organ respectively) -- see cq_discoveries.md. None of
-# their devices (PhysiologicalMonitor) carry an administers bridge either,
-# so this correction does not rescue them.
+# Two independent routes to an organ, either one suffices:
+#
+#   diagnostic   the alarm's OWN metric -approximates-> property
+#                -isPropertyOf-> process -presentIn-> organ
+#   therapeutic  the device -administers-> therapy -targetsProcess-> process
+#                -presentIn-> organ (no metric needed: a ventilator
+#                disconnect is relevant to the lungs)
+#
+# Own metric only: the metric reached through any number of derivation
+# steps that no further step consumes (build_framework.py
+# derivation_graph(), 2026-11-24). An intermediate metric's organ does NOT
+# count: an SVR alarm reports vascular resistance, not the cardiac output it
+# is computed from, so it is relevant to the blood vessels and not, through
+# that input, to the heart (decided in the CQ review of 2026-11-25; the old
+# fixed tail .../analyzedBy/producesMetric stopped at the FIRST metric of a
+# chain and so did the opposite). Which metrics an alarm depends on is a
+# dependency question, CQ6's, not this one.
+#
+# Deliberate asymmetry: organ relevance comes from what is measured or
+# what is administered, not from what a device could have measured. A
+# therapy-device fault reaches its organ through the therapy route, but a
+# monitoring-loss alarm (e.g. "Monitor - SpO2 sensor uit", "PHILIPSMONITOR -
+# ECG alle leads los", a signal-quality fault) has no metric and administers
+# nothing, so it reaches no organ: losing observation of an organ is not an
+# effect on it. Broadening this (functional unit -> the metrics it can
+# produce -> organ) was considered and rejected in the 2026-11-25 review.
+#
+# Metrics without a diagnostic route, at p75: VentilationCircuitLeak and
+# DeliveredVolume (equipment quantities, no physiological property),
+# Humidity (property without a process) and AirTemperature (no property).
+# None loses an organ by it: all sit on a ventilator or incubator and reach
+# Lungs or Skin through the therapeutic route.
+#
+# Validated 2026-11-25 on p75 (Lungs 51, Heart 19, Skin 18, BloodVessels 11,
+# Kidneys 1 alarm types): every physiological alarm reaches an organ.
+# Own-metric vs. first-metric scope makes no difference at p75 (no derived
+# metrics); at p99 it removes 10 (alarm, organ) pairs, all EDWARDS
+# (SVR/SVRI -> Heart, EDV/EDVI/SVI -> BloodVessels).
 
 PREFIX mda: <https://w3id.org/mda/ontology#>
 
@@ -42,7 +51,9 @@ SELECT ?organ (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
        (COUNT(DISTINCT ?a) AS ?matchCount) WHERE {
   ?a a mda:AlarmType ; mda:hasLabel ?label ; mda:hasMessage/mda:triggeredBy ?dev .
   {
-    ?a mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit/mda:hasSensor/mda:sensorProducesSignal/(mda:analyzedBy/mda:producesSignal)*/mda:analyzedBy/mda:producesMetric/mda:approximates/mda:isPropertyOf/mda:presentIn ?organ .
+    ?dev mda:hasFunctionalUnit/mda:hasSensor/mda:sensorProducesSignal/(mda:analyzedBy/(mda:producesSignal|mda:producesMetric))*/mda:analyzedBy/mda:producesMetric ?metricNode .
+    FILTER NOT EXISTS { ?metricNode mda:analyzedBy ?consumer }
+    ?metricNode mda:approximates/mda:isPropertyOf/mda:presentIn ?organ .
   } UNION {
     ?dev mda:administers/mda:targetsProcess/mda:presentIn ?organ .
   }

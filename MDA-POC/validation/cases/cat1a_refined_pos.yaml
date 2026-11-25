@@ -1,0 +1,22 @@
+id: cat1a_refined_pos
+title: "CAT1a positive: a refined sensor fault (MCableFailure, refining Malfunction) flags the metric it feeds"
+rule: "1a"
+purpose: confirm
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: >
+    Value refinement. MCableFailure is not in the rule's fault list; it
+    counts through mda:refinesConcept* to Malfunction (hierarchy.ttl),
+    read from the framework in the default graph.
+author: "Claude, 2026-11-25 (pending fixture from the CAT1a rule header)"
+strict: true
+
+stream:
+  - {id: a1, device: "DraegerMonitor_00", label: "Monitor - CO2 MCable storing", device_name: "DraegerMonitor", priority: "Laag", start: "08:00:00", end: "08:02:00"}
+  - {id: a2, device: "DraegerMonitor_00", label: "Monitor - Hoog etCO2", device_name: "DraegerMonitor", priority: "Medium", start: "08:00:30", end: "08:01:00"}
+
+expect:
+  - {forwarded: a1}
+  - {silenced: a2, reason: likely-invalid, rule: 1a, by: [a1]}

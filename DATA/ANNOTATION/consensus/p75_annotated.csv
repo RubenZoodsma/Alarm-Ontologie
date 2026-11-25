@@ -33,7 +33,7 @@ MEDIBUS - MV ondergrens;x;Unknown;Physiological;MechanicalVentilator;;;Draeger;;
 MEDIBUS - Mattress temperature  setting deviation;x;Medium;Technical;Incubator;;Caleo;Draeger;MattrasHeater;Warning;;;;;;;;;;;;;ThermoRegulationTherapy;;ThermoRegulation
 MEDIBUS - Mattress temperature  setting deviation;REVIEW;Medium;Technical;Incubator;;BabyTherm;Draeger;MattrasHeater;Warning;;;;;;;;;;;;;ThermoRegulationTherapy;;ThermoRegulation
 MEDIBUS - Radiant heater after 15 mins. operation;x;Medium;Technical;Incubator;;Caleo;Draeger;RadiantHeater;Warning;;;;;;;;;;;;;ThermoRegulationTherapy;;ThermoRegulation
-MEDIBUS - Setting alarm limit or ventilation mode changed;x;Medium;Technical;Incubator;;BabyLeo;Draeger;Settings;Warning;;;;;;;;;;;;;;;
+MEDIBUS - Setting, alarm limit or ventilation mode changed;x;Medium;Technical;Incubator;;BabyLeo;Draeger;Settings;Warning;;;;;;;;;;;;;;;
 MEDIBUS - Slagvolume hoog;x;Unknown;Physiological;MechanicalVentilator;;;Draeger;;;FU_PneumoTachograph;;;;;;;RespirationVolume;Tidal;;Increased;;VentilationTherapy;RespirationVolume;PulmonaryVentilation
 MEDIBUS - Ventilator storing;x;Medium;Technical;Incubator;Malfunction;BabyTherm;Draeger;;;;;;;;;;;;;;;;;
 MEDIBUS - Verbinding verbroken;x;Unknown;Technical;MechanicalVentilator;;;Draeger;ConnectionUnit;Disconnected;;;;;;;;;;;;;VentilationTherapy;;PulmonaryVentilation

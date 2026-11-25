@@ -3,50 +3,62 @@
 #
 # NL rule (CAT2, "simultaneous alarms likely carrying overlapping or
 # redundant information"): "If an active alarm of equal or higher priority
-# represents the same biological process of an incoming alarm, then the
-# incoming alarm concerning that process can be silenced."
+# reports on the same physiological property as an incoming alarm, then
+# the incoming alarm can be silenced." (Revised 2026-11-25 from "represents
+# the same biological process": on the p99 knowledge base a process groups
+# properties that carry different information — heart rate and ST segment,
+# PEEP and respiratory rate — so process level silenced 1,282 blueprint
+# pairs, 969 of them across unrelated metrics.)
 #
-# Clause by clause (decisions agreed 2026-09-21):
+# Clause by clause:
 #   "an incoming alarm"        — a PHYSIOLOGICAL alarm, at its arrival.
 #                                Technical alarms that carry a metric
-#                                (e.g. "SpO2 geen pols") report device
-#                                state and are never silenced by CAT2a.
+#                                report device state and are never
+#                                silenced by CAT2a. Not one CAT1 has just
+#                                flagged likely false positive (see
+#                                FLAGGED ALARMS below).
 #   "an active alarm"          — a physiological alarm of the same patient
 #                                whose transient graph is in the store now,
-#                                other than the incoming one.
+#                                other than the incoming one, and not
+#                                flagged likely false positive.
 #   "equal or higher priority" — priorityRank(active) >= priorityRank
-#                                (incoming), priority_rank.ttl. An Unknown
-#                                priority cannot be compared: an alarm with
-#                                it is never silenced and never silences one
-#                                (the two Unknown filters below; an alarm
-#                                without a priority is bound as Unknown).
-#                                Temporary: Unknown priorities are to be
-#                                resolved from incoming data, after which
-#                                both filters go.
-#   "represents the same       — metric -> mda:approximates -> physiological
-#    biological process"         property -> mda:isPropertyOf -> process,
-#                                the approximates hop read from inference.ttl's
-#                                class-level restriction on the metric's type
-#                                or any superclass (no per-alarm fact),
-#                                shared by both alarms. A property belonging
-#                                to MORE than one process (ArterialPressure,
-#                                TissuePerfusion: CardiacContraction and
-#                                ArterialCirculation) matches only itself —
-#                                otherwise a low MAP is hidden behind a
-#                                bradycardia. Properties of a single process
-#                                match each other (heart rate vs pulse rate).
+#                                (incoming), priority_rank.ttl. (The former
+#                                Unknown-priority guards are gone: no p99
+#                                blueprint has priority Unknown, and an
+#                                alarm without a priority matches no
+#                                blueprint.)
+#   "the same physiological    — each metric's type, or a superclass of it,
+#    property"                   carries inference.ttl's class-level
+#                                restriction mda:approximates <property>,
+#                                and the two properties are the SAME. A
+#                                property is the finest level the ontology
+#                                states what a metric measures at: variants
+#                                of one property match (ABP systolic,
+#                                diastolic and mean; SVR and SVRI; PEEP and
+#                                peak pressure; minute and tidal volume),
+#                                different properties never do, not even
+#                                within one process. Deliberately NO curated
+#                                "redundant with" relation between
+#                                properties: no such pairing holds in every
+#                                case (electrical heart rate and pulse rate
+#                                differ exactly when one looks for
+#                                atrioventricular dissociation). A metric
+#                                without an approximates axiom never
+#                                matches.
 #   "overlapping or redundant" — (from the category header) the incoming
 #                                alarm deviates in the SAME direction as the
 #                                active one and is NOT MORE SEVERE: the
-#                                active state is the incoming one or narrower
-#                                in the value-state hierarchy (vocabulary:
-#                                skos:broader, and skos:broadMatch from the
-#                                rhythm Absent to SeverelyDecreased). A reversal
-#                                (tachycardia -> asystole) or an escalation
-#                                (severe bradycardia -> asystole) is new
-#                                information. The NL rule should read "...the
-#                                same biological process, deviating in the
-#                                same direction and not more severely...".
+#                                active state is the incoming one or a
+#                                refinement of it — mda:refinesConcept
+#                                (hierarchy.ttl, section A) and the
+#                                cross-scheme skos:broadMatch from the rhythm
+#                                Absent to SeverelyDecreased (section C). A
+#                                reversal (tachycardia -> bradycardia) or an
+#                                escalation (bradycardia -> severe
+#                                bradycardia) is new information. Rhythms
+#                                follow the same hierarchy: an active VT
+#                                covers an incoming "VF or VT" or "abnormal
+#                                rhythm", never the reverse.
 #   "can be silenced"          — for as long as an alarm that justified it
 #                                at arrival is still active: the silence is
 #                                stored (mdapoc:silencedBy, one link per
@@ -55,17 +67,29 @@
 #                                them ends while the incoming alarm is still
 #                                active (cat2_lift.rq).
 #
-# REPORTED STATE. The compared states are the metric states
-# (hasValueState or hasRhythm) matched INSIDE each alarm's own graph: the
-# metric node is shared by every alarm on that pathway and can carry
-# several states at once, but the copy in an alarm's own graph is the state
-# that alarm reported. This relies on no alarm ever editing another's graph.
+# FLAGGED ALARMS (agreed 2026-11-25, all rules): an alarm flagged likely
+# false positive (CAT1) takes part in no other rule. As the incoming alarm
+# it is not also silenced as redundant: "likely false" already decides it,
+# and a second verdict would count it twice. As an active alarm it
+# justifies no silence: redundancy with an alarm judged false would hide
+# the one alarm that may be real (a valid second oximeter's desaturation
+# silenced by a flagged first one). Both flags sit in the flagged alarm's
+# own transient graph; CAT1 runs before CAT2 at every arrival, so the
+# incoming alarm's flag is already stored, and an active alarm's status is
+# settled (a CAT1b withdrawal removes its flag, after which it counts for
+# later arrivals).
 #
-# GRAPHS. ?gT is the incoming alarm's transient graph, ?gA an active
-# alarm's; everything each alarm contributes is matched inside its own
-# graph, so no hop is borrowed from another alarm. Priority rank, the
-# approximates axioms, process membership and the value-state hierarchy
-# are static facts in the default graph.
+# GRAPHS (contract: structure persists, states are transient). ?gT is the
+# incoming alarm's transient graph, ?gA an active alarm's: each holds the
+# alarm's message and the STATE it reports on its metric (hasValueState or
+# hasRhythm). A state found there is that alarm's report. The metric's
+# TYPE is structure, read from the same alarm's own persistent graph (?gP,
+# ?gAP), so no hop is borrowed from another alarm. The metric node is shared
+# by every alarm on that pathway and may carry several states at once; the
+# state inside an alarm's own transient graph is the one that alarm
+# reported (no alarm ever edits another's graph). Priority rank, the
+# approximates axioms and the state hierarchy are static facts in the
+# default graph.
 #
 # CONTRACT. Bound on entry: ?alarm (the incoming alarm), ?now, ?incomingPrio
 # (its priority: its own hasPriority triple is inserted only after its
@@ -75,50 +99,50 @@
 # Used by actions/check.rq and actions/silence_insert.rq.
 #
 # VALIDATION — engine/regression.py: cat2a_pos (severe bradycardia, then
-# bradycardia) and cat2a_gate (low MAP on two monitors) silence;
-# cat2a_neg, cat2a_opposite, cat2a_escalation, cat2a_reversal, cat2a_hr_map,
-# cat2a_technical and cat2a_unknown do not; cat2a_lift and cat2a_lift_last
-# are silenced and lifted when the last justifying alarm ends.
+# bradycardia), cat2a_gate (low MAP on two monitors) and cat2a_peak (PEEP
+# high, then peak pressure high — same property RespirationPressure)
+# silence; cat2a_neg, cat2a_opposite, cat2a_escalation, cat2a_reversal,
+# cat2a_hr_map and cat2a_technical do not; cat2a_lift and cat2a_lift_last
+# are silenced and lifted when the last justifying alarm ends;
+# cat2a_flagged_justifier (a flagged active alarm justifies nothing) and
+# cat2a_flagged_incoming (a flagged incoming alarm is not also silenced).
 ####################################################################
 
 PREFIX mda:       <https://w3id.org/mda/ontology#>
+PREFIX mdapoc:    <https://w3id.org/mda/poc#>
 PREFIX alarmcat:  <https://w3id.org/mda/vocab/alarm-category/>
-PREFIX alarmprio: <https://w3id.org/mda/vocab/alarm-priority/>
 PREFIX rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl:       <http://www.w3.org/2002/07/owl#>
 PREFIX skos:      <http://www.w3.org/2004/02/skos/core#>
 
-# the incoming alarm (its own graph)
+# the incoming alarm: its report (transient) and its metric's type (persistent)
 GRAPH ?gT { ?alarm mda:hasCategory alarmcat:Physiological .
             ?alarm mda:hasMessage ?msg . ?msg mda:concernsPatient ?patient .
-            ?analysis mda:producesMetric ?metric . ?metric rdf:type ?metricType .
             ?metric ?stateProp ?state . }
 VALUES ?stateProp { mda:hasValueState mda:hasRhythm }
+BIND(IRI(CONCAT(STR(?alarm), "#persistent")) AS ?gP)
+GRAPH ?gP { ?metric rdf:type ?metricType . }
 ?metricType rdfs:subClassOf* ?r . ?r owl:onProperty mda:approximates ; owl:hasValue ?property .
-?property mda:isPropertyOf ?process .
 ?incomingPrio mda:priorityRank ?incomingRank .
+# not flagged likely false positive (CAT1 has just run on it)
+FILTER NOT EXISTS { GRAPH ?gT { ?alarm mdapoc:flaggedLikelyFalsePositive ?incomingFlagEvidence } }
 
-# an active alarm of the same patient (its own graph)
+# an active alarm of the same patient, reporting on the same property
 GRAPH ?gA { ?active mda:hasCategory alarmcat:Physiological .
             ?active mda:hasMessage ?activeMsg . ?activeMsg mda:concernsPatient ?patient .
             ?active mda:hasPriority ?activePrio .
-            ?activeAnalysis mda:producesMetric ?activeMetric .
-            ?activeMetric rdf:type ?activeMetricType .
             ?activeMetric ?activeStateProp ?activeState . }
 VALUES ?activeStateProp { mda:hasValueState mda:hasRhythm }
-?activeMetricType rdfs:subClassOf* ?activeR . ?activeR owl:onProperty mda:approximates ; owl:hasValue ?activeProperty .
-?activeProperty mda:isPropertyOf ?process .
+BIND(IRI(CONCAT(STR(?active), "#persistent")) AS ?gAP)
+GRAPH ?gAP { ?activeMetric rdf:type ?activeMetricType . }
+?activeMetricType rdfs:subClassOf* ?activeR . ?activeR owl:onProperty mda:approximates ; owl:hasValue ?property .
 ?activePrio mda:priorityRank ?activeRank .
+# not flagged likely false positive
+FILTER NOT EXISTS { GRAPH ?gA { ?active mdapoc:flaggedLikelyFalsePositive ?activeFlagEvidence } }
 # the same direction, not more severe
-?activeState (skos:broader|skos:broadMatch)* ?state .
+?activeState (mda:refinesConcept|skos:broadMatch)* ?state .
 
 FILTER(?active != ?alarm)
-FILTER(?incomingPrio != alarmprio:Unknown)
-FILTER(?activePrio != alarmprio:Unknown)
 FILTER(?activeRank >= ?incomingRank)
-# a property of more than one process matches only itself
-FILTER(?property = ?activeProperty || (
-  NOT EXISTS { ?property mda:isPropertyOf ?otherProcess . FILTER(?otherProcess != ?process) } &&
-  NOT EXISTS { ?activeProperty mda:isPropertyOf ?otherProcess2 . FILTER(?otherProcess2 != ?process) }))
 BIND(?gA AS ?witness)

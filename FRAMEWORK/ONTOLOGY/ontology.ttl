@@ -189,14 +189,6 @@ mda:triggeredBy a owl:ObjectProperty, owl:FunctionalProperty ;
     rdfs:domain         mda:AlarmMessage ;
     rdfs:range          mda:Device .
 
-mda:triggeredByStructure a owl:ObjectProperty ;
-    dcterms:identifier  "triggeredByStructure" ;
-    rdfs:label          "triggered by structure"@en,
-                        "veroorzaakt door structuur"@nl ;
-    rdfs:comment        "Relates an alarm message to the specific technical particular (Sensor/Signal/SignalAnalysis/Metric — whichever this alarm's own archetype terminates at) its own reading concerns. Deliberately unranged: Component-family and Signal-family classes below Device are structurally disjoint in this ontology (see mda:SignalAnalysis's own comment), so no single rdfs:range is correct for every alarm's terminus, and nothing downstream needs range-based type inference here — consumers walk further via already-typed properties (hasSensor, analyzedBy, producesMetric, ...). NOT owl:FunctionalProperty: a small number of archetypes populate more than one parallel branch (e.g. FU_InvasiveBloodPressure's two sensors), so a message may legitimately anchor to more than one terminus. NOT owl:InverseFunctionalProperty: two different alarms on the same pathway (e.g. a measurement and a coinciding signal-quality fault) must be able to anchor to the SAME particular without being entailed owl:sameAs — this is exactly the coincidence CQ9/CQ10 test for."@en,
-                        "Koppelt een alarmbericht aan het specifieke technische deeltje (Sensor/Signaal/Signaalanalyse/Metriek — wat dit alarm zelf als eindpunt heeft) waarop de eigen meting betrekking heeft. Doelbewust zonder bereik: de Component-familie en de Signaal-familie zijn in deze ontologie structureel gescheiden, dus geen enkel rdfs:range dekt elk mogelijk eindpunt. Niet owl:FunctionalProperty: sommige archetypes bevolken meer dan één parallelle tak. Niet owl:InverseFunctionalProperty: twee verschillende alarmen op hetzelfde pad moeten naar hetzelfde deeltje kunnen verwijzen zonder als owl:sameAs te worden afgeleid."@nl ;
-    rdfs:domain         mda:AlarmMessage .
-
 mda:hasCategory a owl:ObjectProperty ;
     dcterms:identifier  "hasCategory" ;
     rdfs:label          "has category"@en,
@@ -487,8 +479,8 @@ mda:producesSignal a owl:ObjectProperty, owl:InverseFunctionalProperty ;
     dcterms:identifier  "producesSignal" ;
     rdfs:label          "produces signal"@en,
                         "produceert signaal"@nl ;
-    rdfs:comment        "Relates a sensor OR a signal-analysis step to the signal it produces — a sensor's raw signal, or an analysis step's derived/intermediate signal (e.g. augmented lead aVF, combined from other leads). Inverse-functional: a signal has at most one producer, whichever kind produced it. Its domain is a union; ontology_tree.py's derive_class_tree expands union domains, but leaves the Sensor member to mda:sensorProducesSignal, the single-domain sub-property that carries that edge — so the CSV/tree derivation in CODE/framework_build/build_framework.py attaches Signal under Sensor exactly once. A signal-analysis step's own derived-signal output (the aVF case) is only ever hand-authored in inference.ttl, never CSV-driven, so it uses this general property directly and needs no sub-property of its own."@en,
-                        "Koppelt een sensor OF een signaalanalysestap aan het signaal dat het produceert — het ruwe signaal van een sensor, of het afgeleide/tussenliggende signaal van een analysestap (bijv. versterkte afleiding aVF, gecombineerd uit andere afleidingen). Invers-functioneel: een signaal heeft hoogstens één producent, ongeacht het soort."@nl ;
+    rdfs:comment        "Relates a sensor OR a signal-analysis step to the signal it produces — a sensor's raw signal, or an analysis step's derived/intermediate signal (e.g. a lead such as aVF, derived from the electrodes' raw signals). Inverse-functional: a signal has at most one producer, whichever kind produced it. Its domain is a union; ontology_tree.py's derive_class_tree expands union domains, but leaves the Sensor member to mda:sensorProducesSignal, the single-domain sub-property that carries that edge — so the CSV/tree derivation in CODE/framework_build/build_framework.py attaches Signal under Sensor exactly once. A signal-analysis step's own derived-signal output (the aVF case) is only ever hand-authored in inference.ttl, never CSV-driven, so it uses this general property directly and needs no sub-property of its own."@en,
+                        "Koppelt een sensor OF een signaalanalysestap aan het signaal dat het produceert — het ruwe signaal van een sensor, of het afgeleide/tussenliggende signaal van een analysestap (bijv. een afleiding zoals aVF, afgeleid uit de ruwe signalen van de elektroden). Invers-functioneel: een signaal heeft hoogstens één producent, ongeacht het soort."@nl ;
     rdfs:domain         [ owl:unionOf ( mda:Sensor mda:SignalAnalysis ) ] ;
     rdfs:range          mda:Signal .
 
@@ -549,16 +541,16 @@ mda:Signal a owl:Class ;
     dcterms:identifier  "Signal" ;
     rdfs:label          "Signal"@en,
                         "Signaal"@nl ;
-    rdfs:comment        "A signal — either raw, produced by a sensor, or derived/intermediate, produced by a mda:SignalAnalysis step from other signals (e.g. augmented lead aVF, combined from ECG leads I and II). No structural distinction between the two: a later analysis step consuming a signal doesn't need to know whether it came from a sensor or from an earlier analysis."@en,
-                        "Een signaal — ofwel ruw, geproduceerd door een sensor, ofwel afgeleid/tussenliggend, geproduceerd door een mda:SignalAnalysis-stap uit andere signalen (bijv. versterkte afleiding aVF, gecombineerd uit ECG-afleidingen I en II). Geen structureel onderscheid tussen beide: een latere analysestap die een signaal verbruikt hoeft niet te weten of het van een sensor komt of van een eerdere analyse."@nl .
+    rdfs:comment        "A signal — either raw, produced by a sensor, or derived/intermediate, produced by a mda:SignalAnalysis step from other signals (e.g. augmented lead aVF, derived from the RA, LA and LL raw signals). No structural distinction between the two: a later analysis step consuming a signal doesn't need to know whether it came from a sensor or from an earlier analysis."@en,
+                        "Een signaal — ofwel ruw, geproduceerd door een sensor, ofwel afgeleid/tussenliggend, geproduceerd door een mda:SignalAnalysis-stap uit andere signalen (bijv. versterkte afleiding aVF, afgeleid uit de ruwe RA-, LA- en LL-signalen). Geen structureel onderscheid tussen beide: een latere analysestap die een signaal verbruikt hoeft niet te weten of het van een sensor komt of van een eerdere analyse."@nl .
 
 mda:analyzedBy a owl:ObjectProperty ;
     dcterms:identifier  "analyzedBy" ;
     rdfs:label          "analyzed by"@en,
                         "geanalyseerd door"@nl ;
-    rdfs:comment        "Relates a signal to the signal-analysis step that consumes it. The only edge reaching mda:SignalAnalysis — deliberately not also reachable directly from mda:FunctionalUnit (no performsAnalysis-style shortcut exists), so there is exactly one path to an analysis step, always through the specific signal(s) it actually consumes. A second, shorter path would let ontology_tree.py's shortest-path class-tree derivation silently prefer it over the precise one (the same failure mode mda:administers was introduced to avoid for mda:TherapeuticModality — see the Technical axioms note in inference.ttl). Not functional: the same signal can feed more than one analysis step (e.g. ECG lead II feeds both a heart-rate computation and an aVF derivation)."@en,
-                        "Koppelt een signaal aan de signaalanalysestap die het verbruikt. De enige weg naar mda:SignalAnalysis — bewust niet ook rechtstreeks bereikbaar vanaf mda:FunctionalUnit (er bestaat geen performsAnalysis-achtige kortere weg), zodat er precies één pad naar een analysestap bestaat, altijd via het specifieke signaal (de specifieke signalen) dat het daadwerkelijk verbruikt. Functioneel niet: hetzelfde signaal kan meer dan één analysestap voeden."@nl ;
-    rdfs:domain         mda:Signal ;
+    rdfs:comment        "Relates a signal, or a metric, to the analysis step that consumes it. A metric input makes the step a derivation: stroke volume computed from cardiac output and heart rate, an indexed value from its unindexed value and body surface area (see the Derived metrics section in inference.ttl). The union domain does not let a reasoner type anything as a Signal or a Metric from this edge, which matters because inference.ttl asserts it on punned metric concepts. ontology_tree.py's derive_class_tree ignores the Metric member: mda:SignalAnalysis is already reached through mda:Signal, at a shallower depth, so the archetype tree is unchanged. The only edge reaching mda:SignalAnalysis — deliberately not also reachable directly from mda:FunctionalUnit (no performsAnalysis-style shortcut exists), so there is exactly one path to an analysis step, always through the specific signal(s) it actually consumes. A second, shorter path would let ontology_tree.py's shortest-path class-tree derivation silently prefer it over the precise one (the same failure mode mda:administers was introduced to avoid for mda:TherapeuticModality — see the Technical axioms note in inference.ttl). Not functional: the same signal can feed more than one analysis step (e.g. the LL raw signal feeds the derivations of leads II, III and aVF)."@en,
+                        "Koppelt een signaal, of een metriek, aan de analysestap die het verbruikt. Een metriek als invoer maakt de stap een afleiding (bijv. slagvolume uit hartminuutvolume en hartfrequentie). De enige weg naar mda:SignalAnalysis — bewust niet ook rechtstreeks bereikbaar vanaf mda:FunctionalUnit (er bestaat geen performsAnalysis-achtige kortere weg), zodat er precies één pad naar een analysestap bestaat, altijd via het specifieke signaal (de specifieke signalen) dat het daadwerkelijk verbruikt. Functioneel niet: hetzelfde signaal kan meer dan één analysestap voeden."@nl ;
+    rdfs:domain         [ owl:unionOf ( mda:Signal mda:Metric ) ] ;
     rdfs:range          mda:SignalAnalysis .
 
 
@@ -570,8 +562,8 @@ mda:SignalAnalysis a owl:Class ;
     dcterms:identifier  "SignalAnalysis" ;
     rdfs:label          "Signal analysis"@en,
                         "Signaalanalyse"@nl ;
-    rdfs:comment        "One computation step of a functional unit: consumes one or more signals (reached via the inverse of mda:analyzedBy) and produces either a metric (mda:producesMetric) or a further, derived signal (mda:producesSignal) that a later step can itself consume. Not itself a mda:Component — it's the computation a functional unit performs, not a physical part."@en,
-                        "Eén berekeningsstap van een functionele eenheid: verbruikt één of meer signalen (bereikt via de inverse van mda:analyzedBy) en produceert ofwel een metriek (mda:producesMetric) ofwel een verder afgeleid signaal (mda:producesSignal) dat een latere stap op zijn beurt kan verbruiken. Zelf geen mda:Component — het is de berekening die een functionele eenheid uitvoert, geen fysiek onderdeel."@nl .
+    rdfs:comment        "One computation step of a functional unit: consumes one or more signals and/or metrics (reached via the inverse of mda:analyzedBy) and produces either a metric (mda:producesMetric) or a further, derived signal (mda:producesSignal) that a later step can itself consume. Not itself a mda:Component — it's the computation a functional unit performs, not a physical part. A step with metric inputs produces exactly one metric: one step with several inputs and several outputs would lose which input feeds which output. The class keeps the name SignalAnalysis for its signal-consuming origin; renaming it would touch every consumer for no change in meaning."@en,
+                        "Eén berekeningsstap van een functionele eenheid: verbruikt één of meer signalen en/of metrieken (bereikt via de inverse van mda:analyzedBy) en produceert ofwel een metriek (mda:producesMetric) ofwel een verder afgeleid signaal (mda:producesSignal) dat een latere stap op zijn beurt kan verbruiken. Zelf geen mda:Component — het is de berekening die een functionele eenheid uitvoert, geen fysiek onderdeel."@nl .
 
 mda:producesMetric a owl:ObjectProperty ;
     dcterms:identifier  "producesMetric" ;
@@ -591,8 +583,8 @@ mda:Metric a owl:Class ;
     dcterms:identifier  "Metric" ;
     rdfs:label          "Metric"@en,
                         "Metriek"@nl ;
-    rdfs:comment        "A measurable quantity, computed from one or more signals by a mda:SignalAnalysis step."@en,
-                        "Een meetbare grootheid, berekend uit één of meer signalen door een mda:SignalAnalysis-stap."@nl .
+    rdfs:comment        "A measurable quantity, computed by a mda:SignalAnalysis step from one or more signals, or derived from other metrics (a metric can itself be the input of a further step, via mda:analyzedBy)."@en,
+                        "Een meetbare grootheid, berekend door een mda:SignalAnalysis-stap uit één of meer signalen, of afgeleid uit andere metrieken."@nl .
 
 mda:approximates a owl:ObjectProperty ;
     dcterms:identifier  "approximates" ;
@@ -1194,8 +1186,8 @@ mda:Laterality         mda:nodeKind mda:Referential .
 # into mda:PhysiologicalProperty once an archetype's metric carried its own
 # mda:approximates edge, and minted a property particular per alarm, keyed on
 # the device's sensing chain: two monitors measuring one patient's saturation
-# would report two different "SaO2"s, and the alarm's triggeredByStructure
-# anchor moved off its metric.
+# would report two different "SaO2"s, and the alarm's pathway no longer
+# ended at its metric.
 #
 # Revisit when patient-level data enters (the EHR extension): patient-
 # specific anatomy or state — one lung, a transplanted kidney, circulation
@@ -1290,6 +1282,73 @@ mda:hasValueState       mda:valuesFromScheme    metricValueState:Scheme .
 mda:hasRhythm           mda:valuesFromScheme    metricRhythm:Scheme .
 mda:hasDeviceType       mda:valuesFromScheme    deviceType:Scheme .
 mda:hasManufacturer     mda:valuesFromScheme    manufacturer:Scheme .
+
+#################################################################
+# Concept refinement — hierarchies of VALUE concepts
+#
+# Two kinds of hierarchy exist in the vocabulary, and they need different
+# machinery:
+#
+#   kinds of THINGS   (a sensor, signal, metric, device, therapy concept that
+#                     types a node) — rdfs:subClassOf. The concept is used as
+#                     a class, and OWL-RL inherits along it natively
+#                     (ECG_RA_sensor ⊑ ElectroCardioGraphy_sensor).
+#
+#   kinds of VALUES   (a state concept that is the OBJECT of a property:
+#                     hasQualityState Pulseless) — mda:refinesConcept.
+#                     The concept is used as an individual, and a hierarchy
+#                     between individuals entails nothing on its own:
+#                     "Pulseless skos:broader Impaired" does not give a
+#                     Pulseless signal the value Impaired.
+#
+# The property chains below close that gap, once per value property rather
+# than once per hierarchy edge: whoever bears value X also bears every value
+# X refines, at any depth (the chain re-applies). The annotation keeps the
+# most specific value the alarm label supports; the parent is entailed, so a
+# query or an axiom keyed on the parent (e.g. the leak axiom on
+# hasValueState Increased) also matches every refinement of it. The edges
+# themselves are data, curated in FRAMEWORK/VOCABULARY/seed/hierarchy.ttl.
+#
+# A DEDICATED property, not skos:broader: every generated concept carries
+# skos:broader to its scheme's top concept, so a chain over skos:broader
+# would hand every node the top concept as a value — the "a chain copies
+# whatever it finds" failure recorded under mda:hasOperationState above.
+# Only curated edges are refinesConcept. It is a sub-property of
+# skos:broader, so skos:broader* queries keep working.
+#
+# Deliberately NOT chained:
+#   hasAnatomicalPosition, hasLaterality — owl:FunctionalProperty. A chain
+#     would give one sensor two positions, and prp-fp would then entail the
+#     two position concepts owl:sameAs each other. A position hierarchy, if
+#     ever needed, is queried via skos:broader* only.
+#   hasPhase, hasAggregation, hasDeviceType, hasManufacturer — they
+#     pre-coordinate universal identity (mda:refinesUniversalIdentity); add a
+#     chain only together with a check of what it does to the generated
+#     pre-coordinated concepts.
+#   Links ACROSS schemes (metricRhythm:Absent skos:broadMatch
+#     metricValueState:SeverelyDecreased) change the property, not just the
+#     value; they stay skos:broadMatch, for queries.
+#################################################################
+
+mda:refinesConcept a owl:ObjectProperty ;
+    dcterms:identifier  "refinesConcept" ;
+    rdfs:label          "refines concept"@en,
+                        "verfijnt concept"@nl ;
+    rdfs:comment        "Relates a value concept to the broader value concept it is always a case of, within one scheme (e.g. quality state Pulseless to Impaired). Through the property chains declared on the value properties, a node bearing the narrower value also bears the broader one. Curated in FRAMEWORK/VOCABULARY/seed/hierarchy.ttl."@en,
+                        "Koppelt een waardeconcept aan het bredere waardeconcept waarvan het altijd een geval is, binnen één schema (bijv. kwaliteitsstatus Pulseless aan Impaired). Via de eigenschapsketens op de waarde-eigenschappen draagt een knoop met de nauwere waarde ook de bredere."@nl ;
+    rdfs:subPropertyOf  skos:broader ;
+    rdfs:domain         skos:Concept ;
+    rdfs:range          skos:Concept .
+
+mda:hasOperationState          owl:propertyChainAxiom ( mda:hasOperationState          mda:refinesConcept ) .
+mda:hasDeviceOperationState    owl:propertyChainAxiom ( mda:hasDeviceOperationState    mda:refinesConcept ) .
+mda:hasSensorOperationState    owl:propertyChainAxiom ( mda:hasSensorOperationState    mda:refinesConcept ) .
+mda:hasComponentOperationState owl:propertyChainAxiom ( mda:hasComponentOperationState mda:refinesConcept ) .
+mda:hasMetricOperationState    owl:propertyChainAxiom ( mda:hasMetricOperationState    mda:refinesConcept ) .
+mda:hasQualityState            owl:propertyChainAxiom ( mda:hasQualityState            mda:refinesConcept ) .
+mda:hasTherapyDeliveryQuality  owl:propertyChainAxiom ( mda:hasTherapyDeliveryQuality  mda:refinesConcept ) .
+mda:hasValueState              owl:propertyChainAxiom ( mda:hasValueState              mda:refinesConcept ) .
+mda:hasRhythm                  owl:propertyChainAxiom ( mda:hasRhythm                  mda:refinesConcept ) .
 
 device:Scheme                   mda:instantiatesClass   mda:Device .
 component:Scheme                mda:instantiatesClass   mda:Component .

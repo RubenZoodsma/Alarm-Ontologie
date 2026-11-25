@@ -9,7 +9,7 @@ DraegerMonitor;Infinity;
 Edwards;Hemosphere;gateway name is the manufacturer
 LeoniPlus;LeoniPlus;was annotated Hulbus (communication protocol)
 Medibus;;communication protocol, Draeger ventilator model unknown
-Philipsmonitor;;Philips patient monitor, model unknown
+Philipsmonitor;IntelliVue;Philips patient monitor family, individual model not in the gateway export
 Prismax;Prismax;
 ServoI;ServoI;
 ServoU;ServoU;

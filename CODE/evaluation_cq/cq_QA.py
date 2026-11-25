@@ -64,7 +64,7 @@ Usage
 import re
 from pathlib import Path
 
-from rdflib import Graph, Namespace, URIRef
+from rdflib import Dataset, Graph, Namespace, URIRef
 import owlrl
 
 import sparql_engine
@@ -108,6 +108,10 @@ ENT = Namespace("https://w3id.org/mda/entity/")
 INST = Namespace("https://w3id.org/mda/instance/")
 SNAP = Namespace("https://w3id.org/mda/snapshot/")
 
+# Named graph holding the ASSERTED graph next to the closure, for reasoned
+# queries (see reasoned_dataset()).
+ASSERTED_GRAPH = URIRef("https://w3id.org/mda/graph/asserted")
+
 
 def load_base() -> Graph:
     """Parse the live pipeline's TBox + archetype catalogue into one graph, namespaces bound."""
@@ -135,6 +139,38 @@ def prepare_graph(g: Graph = None) -> Graph:
     g = load_base() if g is None else g
     owlrl.DeductiveClosure(owlrl.OWLRL_Semantics).expand(g)
     return g
+
+
+_DATASETS: dict = {}
+
+
+def reasoned_dataset(base: Graph, reasoned: Graph) -> Dataset:
+    """
+    What a `# reasoning: required` query runs against: the OWL-RL closure as
+    the DEFAULT graph (so a query that names no graph sees exactly the
+    closure, as before) plus the asserted graph as the named graph
+    ASSERTED_GRAPH.
+
+    Why both: inside the closure an asserted type cannot be told apart from
+    an entailed one (a node typed metric:AirwayPressure_Peak is also typed
+    metric:AirwayPressure, and OWL-RL entails sibling pre-coordinated types
+    through hasValue restrictions without entailing the subclass edge that
+    would let a query pick the most specific one). A CQ that needs entailed
+    facts (organ reachability) AND the identity of what was annotated
+    (CQ6's pathway identity) reads the first from the default graph and the
+    second inside GRAPH <https://w3id.org/mda/graph/asserted> { ... }.
+    Built once per (base, reasoned) pair.
+    """
+    key = (id(base), len(base), id(reasoned), len(reasoned))
+    if key not in _DATASETS:
+        ds = Dataset()
+        for t in reasoned:
+            ds.add(t)
+        asserted = ds.graph(ASSERTED_GRAPH)
+        for t in base:
+            asserted.add(t)
+        _DATASETS[key] = ds
+    return _DATASETS[key]
 
 
 def _label(term, g: Graph) -> str:
@@ -188,7 +224,9 @@ def run_query(query_path: Path, base: Graph, reasoned: Graph) -> dict:
 
     # Executed on Oxigraph (sparql_engine.py: rdflib's evaluator has no
     # query planner); the graph itself is still built and reasoned here.
-    names, result_rows = sparql_engine.select(graph, text)
+    # A reasoned query also sees the asserted graph, as a named graph.
+    target = reasoned_dataset(base, reasoned) if used_reasoning else base
+    names, result_rows = sparql_engine.select(target, text)
     rows = [[_label(t, graph) for t in row] for row in result_rows]
     print(f"[cq_QA] {query_path.parent.name}/{query_path.name}: {len(rows)} row(s) "
           f"({'reasoned' if used_reasoning else 'base'})")

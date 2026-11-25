@@ -4,69 +4,149 @@
 #   alarms from different manufacturers convey identical meaning.
 #
 # Strictest of the seven: two alarms "convey the same meaning" here only if
-# their ENTIRE asserted content matches -- category, and every node's
-# identity (rdf:type) and value (hasQualityState/hasRate/hasComponent-
-# OperationState/hasSensorOperationState/hasDeviceOperationState/
-# hasAnatomicalPosition/hasPhase/hasRhythm) along the full technical chain
-# from the device down, not just a shared endpoint the way CQ2/CQ4/CQ6 test.
-# Same method as the retired CQ5-style "identical semantic content" check,
-# now restricted to groups spanning more than one hasManufacturer value.
+# their ENTIRE asserted content is equal, not just a shared endpoint the way
+# CQ2/CQ4/CQ6 test. An alarm's content is the set of facts:
+#   - its category;
+#   - the type of every node on its technical chain, walked from the device
+#     along hasFunctionalUnit, hasComponent, hasSensor, sensorProducesSignal,
+#     analyzedBy, producesSignal and producesMetric (unbounded, so derivation
+#     DAGs of any depth are covered);
+#   - every edge between two such nodes, as (type of parent, property, type
+#     of child), so the wiring counts, as in CQ2;
+#   - every value on such a node, as (type of node, property, value): value
+#     state, quality state, operation states, anatomical position, phase,
+#     rhythm, rate.
+# Edges and values are taken GENERICALLY (any predicate except an explicit
+# exclusion list) rather than from a list of value predicates. The earlier
+# hand-written list missed mda:hasValueState, so "SERVOI - Ademfrequentie:
+# Hoog" and "...: Laag", or "VTexp Low" and "Vte high", came out as the same
+# meaning; a new state predicate is now included without editing this query.
+# Values are attached to their node type, so "Impaired" on a signal and
+# "Impaired" on a lead are different facts.
 #
-# mda:hasPriority is deliberately EXCLUDED from the signature. Priority is
-# an operational/triage attribute imposed on top of an alarm's meaning (how
-# urgently to respond), not part of what it clinically or technically
-# represents -- two "SpO2 is low" alarms mean the same thing whether one
-# site's threshold flags it Medium and another's flags it Hoog. Verified
-# this matters: including hasPriority drops the genuinely clean "Monitor -
-# Lage SpO2" (Draeger) / "PHILIPSMONITOR - SpO2 laag" (Philips) pair from
-# the result purely because they sit at different priority tiers, which
-# would be the wrong call for a "same meaning" question (it is the right
-# call for a stricter "identical alarm record" question, which this isn't).
+# Excluded, deliberately:
+#   - mda:hasManufacturer, mda:hasDeviceType: what CQ7 asks to look past.
+#   - mda:hasPriority (not walked): an operational/triage attribute imposed
+#     on top of an alarm's meaning, not part of it -- "Monitor - Lage SpO2"
+#     (Draeger) and "PHILIPSMONITOR - SpO2 laag" (Philips) mean the same
+#     thing at different priority tiers.
+#   - mda:approximates and mda:administers: device context and clinical
+#     bridge, which belong to the knowledge base, not to what the alarm
+#     states. Both are also annotated per row and inconsistently (2026-11-25:
+#     approximates on some metric nodes of a device type and not others;
+#     ServoI rows administer VentilationTherapy or MechanicalVentilation), so
+#     including them would split genuine matches on annotation noise.
 #
-# HAVING requires signature size > 2 (i.e. more than just hasCategory + the
-# device's own class) to exclude sparse false positives: "HULBUS - 345" and
-# "TRILOGY - 0x79" match on full signature but ONLY because neither has been
-# annotated beyond device class and category -- two unresolved vendor error
-# codes, not a genuine equivalence claim. Logged in ../cq_discoveries.md;
-# not treated as a CQ7 result.
+# Set equality is computed by counting, as in CQ2: two alarms are equal iff
+# the number of facts they share equals the size of each set. A
+# GROUP_CONCAT signature is NOT usable as a key: its order is undefined and
+# the earlier version of this query returned a different result on each run
+# (tested 2026-11-25, three runs, three outputs). Each alarm takes the
+# smallest IRI of its equivalence class as representative. The fact pattern
+# is repeated in each subquery because SPARQL cannot name a pattern; keep the
+# copies identical when changing one.
 #
-# Asserted only -- no inference.ttl predicate is involved (the signature is
-# built entirely from kg_generated.ttl's own asserted structure), so this
-# does not require the OWL-RL closure.
+# Size > 2 (more than category + the device's own class) excludes sparse
+# false positives: "HULBUS - 345" and "TRILOGY - 0x79" would match only
+# because neither is annotated beyond device class and category -- two
+# unresolved vendor error codes, not an equivalence claim. Logged in
+# ../cq_discoveries.md; not treated as a CQ7 result. Both rows are now EXCL
+# in the annotation and absent from the KG, so the guard removes nothing at
+# p75 or p99 (checked 2026-11-25); it stays for the next unresolved code.
+#
+# A group must span more than one hasManufacturer value. An alarm without
+# an annotated manufacturer is listed but not counted (p99: "TRILOGY -
+# Verbinding verbroken", Device.Manufacturer empty), shown as
+# "(not annotated)".
+#
+# Validated 2026-11-25 against a Python ground truth (fact sets grouped by
+# frozenset, compared by alarm IRI): exact on p75 (13 groups) and p99 (40
+# groups); identical output over repeated runs.
+#
+# Asserted only -- no inference.ttl predicate is involved, so this does not
+# require the OWL-RL closure.
 
 PREFIX mda: <https://w3id.org/mda/ontology#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
 SELECT (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
-       (GROUP_CONCAT(DISTINCT ?manufacturer; separator=" | ") AS ?manufacturers)
+       (GROUP_CONCAT(DISTINCT COALESCE(?manufacturerName, "(not annotated)"); separator=" | ") AS ?manufacturers)
        (COUNT(DISTINCT ?manufacturer) AS ?manufacturerCount)
        (COUNT(DISTINCT ?a) AS ?matchCount) WHERE {
   {
-    SELECT ?a ?label ?manufacturer
-           (GROUP_CONCAT(DISTINCT ?fact; separator="^") AS ?signature)
-           (COUNT(DISTINCT ?fact) AS ?sigSize) WHERE {
-      ?a a mda:AlarmType ; mda:hasLabel ?label .
-      OPTIONAL { ?a mda:hasMessage/mda:triggeredBy/mda:hasManufacturer ?manufacturer . }
+    SELECT ?a (MIN(STR(?b)) AS ?rep) WHERE {
       {
-        ?a mda:hasCategory ?v .
-        BIND(CONCAT("hasCategory=", STR(?v)) AS ?fact)
-      } UNION {
-        ?a mda:hasMessage/mda:triggeredBy/(mda:hasFunctionalUnit|mda:hasComponent|mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesMetric)* ?node .
-        ?node rdf:type ?t . ?t a skos:Concept .
-        BIND(CONCAT("type=", STR(?t)) AS ?fact)
-      } UNION {
-        ?a mda:hasMessage/mda:triggeredBy/(mda:hasFunctionalUnit|mda:hasComponent|mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesMetric)* ?node .
-        ?node ?p ?v .
-        FILTER(?p IN (mda:hasQualityState, mda:hasRate, mda:hasComponentOperationState,
-                       mda:hasSensorOperationState, mda:hasDeviceOperationState,
-                       mda:hasAnatomicalPosition, mda:hasPhase, mda:hasRhythm))
-        BIND(CONCAT(STRAFTER(STR(?p), "#"), "=", STR(?v)) AS ?fact)
+        SELECT ?a ?b (COUNT(DISTINCT ?fact) AS ?shared) WHERE {
+          { SELECT DISTINCT ?a ?fact WHERE {
+                        ?a a mda:AlarmType .
+                        { ?a mda:hasCategory ?c . BIND(CONCAT("category ", STR(?c)) AS ?fact) }
+                        UNION { ?a mda:hasMessage/mda:triggeredBy/(mda:hasFunctionalUnit|mda:hasComponent|mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                                ?x a ?tx . ?tx a skos:Concept .
+                                BIND(STR(?tx) AS ?fact) }
+                        UNION { ?a mda:hasMessage/mda:triggeredBy/(mda:hasFunctionalUnit|mda:hasComponent|mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                                ?x a ?tx . ?tx a skos:Concept .
+                                ?x ?p ?y . FILTER(isBlank(?y) && ?p NOT IN (rdf:type, mda:hasManufacturer, mda:hasDeviceType, mda:approximates, mda:administers))
+                                ?y a ?ty . ?ty a skos:Concept .
+                                BIND(CONCAT(STR(?tx), " ", STR(?p), " ", STR(?ty)) AS ?fact) }
+                        UNION { ?a mda:hasMessage/mda:triggeredBy/(mda:hasFunctionalUnit|mda:hasComponent|mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                                ?x a ?tx . ?tx a skos:Concept .
+                                ?x ?p ?val . FILTER(!isBlank(?val) && ?p NOT IN (rdf:type, mda:hasManufacturer, mda:hasDeviceType, mda:approximates, mda:administers))
+                                BIND(CONCAT(STR(?tx), " ", STR(?p), " = ", STR(?val)) AS ?fact) } } }
+          { SELECT DISTINCT ?b ?fact WHERE {
+                        ?b a mda:AlarmType .
+                        { ?b mda:hasCategory ?c . BIND(CONCAT("category ", STR(?c)) AS ?fact) }
+                        UNION { ?b mda:hasMessage/mda:triggeredBy/(mda:hasFunctionalUnit|mda:hasComponent|mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                                ?x a ?tx . ?tx a skos:Concept .
+                                BIND(STR(?tx) AS ?fact) }
+                        UNION { ?b mda:hasMessage/mda:triggeredBy/(mda:hasFunctionalUnit|mda:hasComponent|mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                                ?x a ?tx . ?tx a skos:Concept .
+                                ?x ?p ?y . FILTER(isBlank(?y) && ?p NOT IN (rdf:type, mda:hasManufacturer, mda:hasDeviceType, mda:approximates, mda:administers))
+                                ?y a ?ty . ?ty a skos:Concept .
+                                BIND(CONCAT(STR(?tx), " ", STR(?p), " ", STR(?ty)) AS ?fact) }
+                        UNION { ?b mda:hasMessage/mda:triggeredBy/(mda:hasFunctionalUnit|mda:hasComponent|mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                                ?x a ?tx . ?tx a skos:Concept .
+                                ?x ?p ?val . FILTER(!isBlank(?val) && ?p NOT IN (rdf:type, mda:hasManufacturer, mda:hasDeviceType, mda:approximates, mda:administers))
+                                BIND(CONCAT(STR(?tx), " ", STR(?p), " = ", STR(?val)) AS ?fact) } } }
+        } GROUP BY ?a ?b
       }
-    }
-    GROUP BY ?a ?label ?manufacturer
+      { SELECT ?a (COUNT(DISTINCT ?fact) AS ?sizeA) WHERE { { SELECT DISTINCT ?a ?fact WHERE {
+                        ?a a mda:AlarmType .
+                        { ?a mda:hasCategory ?c . BIND(CONCAT("category ", STR(?c)) AS ?fact) }
+                        UNION { ?a mda:hasMessage/mda:triggeredBy/(mda:hasFunctionalUnit|mda:hasComponent|mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                                ?x a ?tx . ?tx a skos:Concept .
+                                BIND(STR(?tx) AS ?fact) }
+                        UNION { ?a mda:hasMessage/mda:triggeredBy/(mda:hasFunctionalUnit|mda:hasComponent|mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                                ?x a ?tx . ?tx a skos:Concept .
+                                ?x ?p ?y . FILTER(isBlank(?y) && ?p NOT IN (rdf:type, mda:hasManufacturer, mda:hasDeviceType, mda:approximates, mda:administers))
+                                ?y a ?ty . ?ty a skos:Concept .
+                                BIND(CONCAT(STR(?tx), " ", STR(?p), " ", STR(?ty)) AS ?fact) }
+                        UNION { ?a mda:hasMessage/mda:triggeredBy/(mda:hasFunctionalUnit|mda:hasComponent|mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                                ?x a ?tx . ?tx a skos:Concept .
+                                ?x ?p ?val . FILTER(!isBlank(?val) && ?p NOT IN (rdf:type, mda:hasManufacturer, mda:hasDeviceType, mda:approximates, mda:administers))
+                                BIND(CONCAT(STR(?tx), " ", STR(?p), " = ", STR(?val)) AS ?fact) } } } } GROUP BY ?a }
+      { SELECT ?b (COUNT(DISTINCT ?fact) AS ?sizeB) WHERE { { SELECT DISTINCT ?b ?fact WHERE {
+                        ?b a mda:AlarmType .
+                        { ?b mda:hasCategory ?c . BIND(CONCAT("category ", STR(?c)) AS ?fact) }
+                        UNION { ?b mda:hasMessage/mda:triggeredBy/(mda:hasFunctionalUnit|mda:hasComponent|mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                                ?x a ?tx . ?tx a skos:Concept .
+                                BIND(STR(?tx) AS ?fact) }
+                        UNION { ?b mda:hasMessage/mda:triggeredBy/(mda:hasFunctionalUnit|mda:hasComponent|mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                                ?x a ?tx . ?tx a skos:Concept .
+                                ?x ?p ?y . FILTER(isBlank(?y) && ?p NOT IN (rdf:type, mda:hasManufacturer, mda:hasDeviceType, mda:approximates, mda:administers))
+                                ?y a ?ty . ?ty a skos:Concept .
+                                BIND(CONCAT(STR(?tx), " ", STR(?p), " ", STR(?ty)) AS ?fact) }
+                        UNION { ?b mda:hasMessage/mda:triggeredBy/(mda:hasFunctionalUnit|mda:hasComponent|mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                                ?x a ?tx . ?tx a skos:Concept .
+                                ?x ?p ?val . FILTER(!isBlank(?val) && ?p NOT IN (rdf:type, mda:hasManufacturer, mda:hasDeviceType, mda:approximates, mda:administers))
+                                BIND(CONCAT(STR(?tx), " ", STR(?p), " = ", STR(?val)) AS ?fact) } } } } GROUP BY ?b }
+      FILTER(?shared = ?sizeA && ?shared = ?sizeB && ?sizeA > 2)
+    } GROUP BY ?a
   }
+  ?a mda:hasLabel ?label .
+  OPTIONAL { ?a mda:hasMessage/mda:triggeredBy/mda:hasManufacturer ?manufacturer .
+              BIND(STRAFTER(STR(?manufacturer), "manufacturer/") AS ?manufacturerName) }
 }
-GROUP BY ?signature
-HAVING (COUNT(DISTINCT ?a) > 1 && COUNT(DISTINCT ?manufacturer) > 1 && SAMPLE(?sigSize) > 2)
-ORDER BY DESC(?matchCount)
+GROUP BY ?rep
+HAVING (COUNT(DISTINCT ?a) > 1 && COUNT(DISTINCT ?manufacturer) > 1)
+ORDER BY DESC(?matchCount) ?rep

@@ -8,6 +8,12 @@ Minting grounds that blueprint for one occurrence: concrete IRIs scoped to
 (mda:nodeKind, mda:refinesParticularIdentity, mda:refinesUniversalIdentity).
 No per-label code.
 
+Minting follows the blueprint's own nodes (ontology_tree.walk_blueprint),
+not the class tree: a chain may repeat a class (sensor -> raw signal -> lead
+derivation -> lead -> analysis -> metric; metric -> derivation -> metric)
+and a node may have several parents (two electrodes feeding one lead
+derivation). See particular_iri for how such nodes are named.
+
 Each alarm yields three graphs (windows.py decides where they go):
   alarm_message       the alarm, its message, patient, triggeredBy
   condition_for_event what it reports while active (states, conditions)
@@ -31,7 +37,7 @@ from rdflib import Graph, URIRef, Literal, Namespace
 from rdflib.namespace import RDF, RDFS, SKOS, XSD, DCTERMS, OWL
 
 sys.path.append(str(Path(__file__).resolve().parent))
-from ontology_tree import derive_class_tree, walk_instances
+from ontology_tree import BlueprintNode, class_edges, derive_class_tree, walk_blueprint
 
 # ── Paths: copies of the framework files, under MDA-POC/data/ ──────
 
@@ -71,7 +77,8 @@ class KB:
     model_of: dict            # gateway device name → device model ("" when unknown)
     scaffold_concepts: set    # concepts declared in the scaffold type catalogue
     window: timedelta         # post-alarm validity (PostAlarmValidScheme)
-    tree: dict                # class nesting derived from the ontology
+    tree: dict                # class nesting derived from the ontology (no longer used for minting)
+    edges: dict               # class -> [(property, range class)], the edges a blueprint walk may follow
     node_kind: dict           # class → "individuated"|"referential"|"stateful", from mda:nodeKind
     archetype_cache: dict = field(default_factory=dict)  # type_iri -> Archetype, memoised
     refining_props_cache: dict = field(default_factory=dict)  # cls -> refining_properties(kb, cls)
@@ -101,6 +108,7 @@ def load_kb(window: str | None = None) -> KB:
     onto = Graph()
     onto.parse(ONTOLOGY, format="turtle")
     tree = derive_class_tree(onto, MDA.Alarm)
+    edges = class_edges(onto)
 
     catalogue = Graph()
     catalogue.parse(CATALOGUE, format="turtle")
@@ -119,7 +127,7 @@ def load_kb(window: str | None = None) -> KB:
     if dur is None:
         raise ValueError("ontology states no mda:postAlarmValidityDuration on mda:PostAlarmValidScheme")
     return KB(static, catalogue, type_index, model_of, scaffold_concepts,
-              parse_duration(window or str(dur)), tree, node_kinds(static))
+              parse_duration(window or str(dur)), tree, edges, node_kinds(static))
 
 
 def _norm(s) -> str:
@@ -179,39 +187,71 @@ def parse_duration(s: str) -> timedelta:
 
 @dataclass
 class Archetype:
-    """One alarm type's blueprint: its node per class in the catalogue."""
-    nodes: dict          # class IRI → node in the catalogue
+    """One alarm type's blueprint: its nodes, parents before children.
+
+    concept(cls)/value(cls, prop) answer for a class that occurs ONCE in the
+    blueprint (Alarm, Device, FunctionalUnit) and raise for one that occurs
+    more than once (Signal, SignalAnalysis, Metric in a derived chain):
+    a caller must then look at the nodes themselves (node_concept,
+    node_value)."""
+    nodes: list          # [BlueprintNode], topological
     catalogue: Graph
     vocab: Graph
+    by_class: dict = field(default_factory=dict, repr=False)   # class IRI -> [BlueprintNode]
     # concept() and value() read only the blueprint, which is fixed for the
     # run (the catalogue and vocabulary are never written after loading), so
     # their answers are kept. Nothing from the stream enters these caches:
     # per-patient identity is resolved in particular_iri, per arrival.
     _concepts: dict = field(default_factory=dict, repr=False)
-    _values: dict = field(default_factory=dict, repr=False)
+
+    def __post_init__(self):
+        for bn in self.nodes:
+            self.by_class.setdefault(bn.cls, []).append(bn)
 
     def node(self, cls: URIRef):
-        return self.nodes.get(cls)
+        """The single node of class `cls`, or None. Raises when there are several."""
+        found = self.by_class.get(cls, [])
+        if len(found) > 1:
+            raise ValueError(f"blueprint has {len(found)} {_local(cls)} nodes: ask for a node, not a class")
+        return found[0] if found else None
+
+    def node_concept(self, bn: BlueprintNode):
+        if id(bn) not in self._concepts:
+            self._concepts[id(bn)] = next(
+                (t for t in self.catalogue.objects(bn.node, RDF.type)
+                 if (t, RDF.type, SKOS.Concept) in self.vocab), None)
+        return self._concepts[id(bn)]
+
+    def node_value(self, bn: BlueprintNode, prop: URIRef):
+        return next(self.catalogue.objects(bn.node, prop), None)
 
     def concept(self, cls: URIRef):
-        if cls not in self._concepts:
-            node = self.nodes.get(cls)
-            self._concepts[cls] = None if node is None else next(
-                (t for t in self.catalogue.objects(node, RDF.type)
-                 if (t, RDF.type, SKOS.Concept) in self.vocab), None)
-        return self._concepts[cls]
+        bn = self.node(cls)
+        return None if bn is None else self.node_concept(bn)
 
     def value(self, cls: URIRef, prop: URIRef):
-        if (cls, prop) not in self._values:
-            node = self.nodes.get(cls)
-            self._values[(cls, prop)] = None if node is None else next(self.catalogue.objects(node, prop), None)
-        return self._values[(cls, prop)]
+        bn = self.node(cls)
+        return None if bn is None else self.node_value(bn, prop)
+
+    def under(self, cls: URIRef) -> list:
+        """The nodes strictly below the single `cls` node, topological."""
+        top = self.node(cls)
+        if top is None:
+            return []
+        below, todo = set(), [top]
+        while todo:
+            for _prop, child in todo.pop().children:
+                if id(child) not in below:
+                    below.add(id(child))
+                    todo.append(child)
+        return [bn for bn in self.nodes if id(bn) in below]
 
 
 def archetype_structure(kb: KB, type_iri: URIRef) -> Archetype:
     """The blueprint of an alarm type (memoised)."""
     if type_iri not in kb.archetype_cache:
-        nodes = walk_instances(kb.catalogue, kb.tree, type_iri, MDA.Alarm)
+        nodes = walk_blueprint(kb.catalogue, kb.edges, type_iri, MDA.Alarm,
+                               stop=lambda cls: kb.node_kind.get(cls) == "referential")
         kb.archetype_cache[type_iri] = Archetype(nodes, kb.catalogue, kb.reasoning_static)
     return kb.archetype_cache[type_iri]
 
@@ -274,30 +314,46 @@ def _refined_suffix(concept: URIRef, refinements: dict) -> str:
     return suffix
 
 
-def particular_iri(kb: KB, arch: "Archetype", patient_id: str, device_id: str, cls: URIRef,
-                    identity: dict = None) -> URIRef:
-    """The IRI of the `cls` particular of this alarm: patient, device and
-    the refined concept of every class from `cls` up to the device. None
-    when the blueprint has no such class."""
-    identity = identity or {}
-    if cls == MDA.Device:
+def node_refinements(kb: KB, arch: "Archetype", patient_id: str, device_id: str,
+                     bn: BlueprintNode, identity: dict = None) -> dict:
+    """The identity refinements of one blueprint node for this (patient,
+    device): what the identity tracker has resolved for its concept, else
+    the blueprint's own values."""
+    concept = arch.node_concept(bn)
+    own = {p: v for p in refining_properties(kb, bn.cls) if (v := arch.node_value(bn, p)) is not None}
+    return (identity or {}).get(bn.cls, {}).get((patient_id, device_id, concept), own)
+
+
+def particular_iri(kb: KB, arch: "Archetype", patient_id: str, device_id: str,
+                   bn: BlueprintNode, identity: dict = None, _memo: dict = None) -> URIRef:
+    """The IRI of the particular for blueprint node `bn` of this alarm:
+    {Class}_{patient}_{device}_{suffix}. The suffix names the node by the
+    nodes above it, up to the device:
+
+      one parent       the parent's suffix, then the node's own refined
+                       concept — for a single chain exactly the IRIs of the
+                       former class-tree minting
+      several parents  the parents' suffixes, sorted and joined by '+',
+                       then the node's own refined concept — a derivation
+                       with two inputs is ONE particular, however many
+                       paths reach it
+
+    Readable on purpose: the logs name these IRIs."""
+    if bn.cls == MDA.Device:
         return device_iri(patient_id, device_id)
-    if arch.node(cls) is None:
-        return None
+    memo = {} if _memo is None else _memo
 
-    def own_refinements(c: URIRef) -> dict:
-        concept = arch.concept(c)
-        own = {p: v for p in refining_properties(kb, c) if (v := arch.value(c, p)) is not None}
-        return identity.get(c, {}).get((patient_id, device_id, concept), own)
+    def suffix(node: BlueprintNode) -> str:
+        if id(node) in memo:
+            return memo[id(node)]
+        concept = arch.node_concept(node)
+        own = (_refined_suffix(concept, node_refinements(kb, arch, patient_id, device_id, node, identity))
+               if concept is not None else _local(node.cls))
+        above = sorted({suffix(p) for p, _prop in node.parents if p.cls != MDA.Device})
+        memo[id(node)] = f"{'+'.join(above)}_{own}" if above else own
+        return memo[id(node)]
 
-    suffixes, node_cls = [], cls
-    while node_cls is not None and node_cls != MDA.Device:
-        concept = arch.concept(node_cls)
-        suffixes.append(_refined_suffix(concept, own_refinements(node_cls))
-                         if concept is not None else _local(node_cls))
-        link = kb.tree.get(node_cls)
-        node_cls = link[0] if link else None
-    return ENTITY[f"{_local(cls)}_{_clean(patient_id)}_{_clean(device_id)}_" + "_".join(reversed(suffixes))]
+    return ENTITY[f"{_local(bn.cls)}_{_clean(patient_id)}_{_clean(device_id)}_{suffix(bn)}"]
 
 
 def alarm_key(ev) -> str:
@@ -328,44 +384,59 @@ def event_iri(kind: str, patient_id: str, start, number: int) -> str:
 
 def ground_chain(kb: KB, arch: "Archetype", patient_id: str, device_id: str,
                   identity: dict = None) -> tuple:
-    """Walk the class tree from the device down the blueprint: (background
-    graph — structure, condition graph — stateful nodes and leaf
-    properties, leaves — the deepest particulars reached)."""
-    background, condition, leaves = Graph(), Graph(), []
+    """Ground every blueprint node below the device: (background graph —
+    every node, its type, its identity refinements and every edge between
+    nodes; condition graph — the leaf properties, i.e. the states the alarm
+    reports).
 
-    def walk(parent_cls: URIRef, parent_particular) -> None:
-        had_child = False
-        for child_cls, link in kb.tree.items():
-            if link is None or link[0] != parent_cls:
-                continue
-            prop = link[1]
-            kind = kb.node_kind.get(child_cls)
-            if kind == "referential" or arch.node(child_cls) is None:
-                continue
-            concept = arch.concept(child_cls)
-            if kind == "individuated" and concept is not None and concept not in kb.scaffold_concepts:
-                continue
-            particular = particular_iri(kb, arch, patient_id, device_id, child_cls, identity)
-            if particular is None:
-                continue
-            had_child = True
-            target = condition if kind == "stateful" else background
-            target.add((parent_particular, prop, particular))
-            target.add((particular, RDF.type, concept if concept is not None else child_cls))
-            for rprop in refining_properties(kb, child_cls):
-                v = arch.value(child_cls, rprop)
-                if v is not None:
-                    target.add((particular, rprop, v))
-            for lprop in leaf_properties(kb, child_cls):
-                v = arch.value(child_cls, lprop)
-                if v is not None:
-                    condition.add((particular, lprop, v))
-            walk(child_cls, particular)
-        if not had_child and parent_cls != MDA.Device:
-            leaves.append((parent_cls, parent_particular))
-
-    walk(MDA.Device, device_iri(patient_id, device_id))
-    return background, condition, leaves
+    CONTRACT (agreed 2026-11-25, TODO_derivation_graphs.md): structure
+    persists, states are transient. A metric is a node like a signal or a
+    sensor: it and its edges are in <alarm#persistent>; its hasValueState /
+    hasRhythm is in <alarm#transient>, as a signal's hasQualityState is.
+    mda:Stateful (a universal identity carrying a per-alarm state) is
+    honoured by where the STATE goes, not the node. So the whole pathway,
+    sensor to the alarm's own metric, intermediate metrics included, is one
+    graph, and a rule finds the alarm's own metric in it: the metric no
+    step consumes (no mda:analyzedBy out of it). mda:triggeredByStructure,
+    a pointer from the message to those termini, is retired (2026-11-25):
+    the persistent graph already scopes the pathway to the alarm. No rule
+    may conclude anything from a metric lacking a state: after the alarm
+    ends, its metric node stays for the post-alarm window without one.
+    Referential nodes are not grounded. An individuated
+    node whose concept the scaffold (entities.ttl) does not declare is an
+    error, not a skip: a stale scaffold used to cut the chain silently."""
+    background, condition = Graph(), Graph()
+    dev = device_iri(patient_id, device_id)
+    device_bn = arch.node(MDA.Device)
+    if device_bn is None:
+        return background, condition
+    minted = {id(device_bn): dev}
+    memo = {}
+    for bn in arch.under(MDA.Device):
+        kind = kb.node_kind.get(bn.cls)
+        if kind == "referential":
+            continue
+        grounded_parents = [(p, prop) for p, prop in bn.parents if id(p) in minted]
+        if not grounded_parents:
+            continue
+        concept = arch.node_concept(bn)
+        if kind == "individuated" and concept is not None and concept not in kb.scaffold_concepts:
+            raise ValueError(f"{_local(concept)} ({_local(bn.cls)}) is not in the scaffold "
+                             f"{ENTITIES.name}: regenerate it (entity_seed.py) and copy it to data/")
+        particular = particular_iri(kb, arch, patient_id, device_id, bn, identity, memo)
+        minted[id(bn)] = particular
+        for p, prop in grounded_parents:
+            background.add((minted[id(p)], prop, particular))
+        background.add((particular, RDF.type, concept if concept is not None else bn.cls))
+        for rprop in refining_properties(kb, bn.cls):
+            v = arch.node_value(bn, rprop)
+            if v is not None:
+                background.add((particular, rprop, v))
+        for lprop in leaf_properties(kb, bn.cls):
+            v = arch.node_value(bn, lprop)
+            if v is not None:
+                condition.add((particular, lprop, v))
+    return background, condition
 
 
 def background_for_key(kb: KB, patient_id: str, ev, device_id: str, identity: dict) -> Graph:
@@ -380,7 +451,7 @@ def background_for_key(kb: KB, patient_id: str, ev, device_id: str, identity: di
     if device_type:
         g.add((dev, RDF.type, device_type))
         g.add((dev, DCTERMS.identifier, Literal(device_id)))
-    bg, _, _ = ground_chain(kb, arch, patient_id, device_id, identity)
+    bg, _ = ground_chain(kb, arch, patient_id, device_id, identity)
     g += bg
     # The device's own state (hasDeviceOperationState) is mda:persistsPostAlarm:
     # it stays visible for the post-alarm window. condition_for_event also
@@ -390,7 +461,7 @@ def background_for_key(kb: KB, patient_id: str, ev, device_id: str, identity: di
 
 
 def alarm_message(kb: KB, ev, identity: dict = None) -> Graph:
-    """The alarm, its message, patient and triggeredByStructure."""
+    """The alarm, its message and patient."""
     g = Graph()
     type_iri = type_of(kb, ev)
     if type_iri is None:
@@ -408,22 +479,19 @@ def alarm_message(kb: KB, ev, identity: dict = None) -> Graph:
     g.add((a, MDA.hasMessage, msg))
     g.add((msg, RDF.type, MDA.AlarmMessage))
     g.add((msg, MDA.concernsPatient, patient))
-    _, _, leaves = ground_chain(kb, arch, ev.patient, ev.device_id, identity)
-    for _cls, particular in leaves:
-        g.add((msg, MDA.triggeredByStructure, particular))
     return g
 
 
 def condition_for_event(kb: KB, patient_id: str, ev, device_id: str,
                          identity: dict = None) -> Graph:
-    """What the alarm reports while active: stateful nodes and every leaf
-    property, including the device's state (CAT3b needs a ventilator fault
+    """What the alarm reports while active: every leaf property (the states;
+    the nodes they sit on are in background_for_key), including the device's state (CAT3b needs a ventilator fault
     only while its alarm is active)."""
     type_iri = type_of(kb, ev)
     if type_iri is None:
         return Graph()
     arch = archetype_structure(kb, type_iri)
-    _, condition, _ = ground_chain(kb, arch, patient_id, device_id, identity)
+    _, condition = ground_chain(kb, arch, patient_id, device_id, identity)
     ground_leaf_properties(condition, kb, arch, MDA.Device, device_iri(patient_id, device_id))
     return condition
 
@@ -463,8 +531,11 @@ def update_identity(kb: KB, event, tracker: IdentityTracker) -> None:
     if type_iri is None:
         return
     arch = archetype_structure(kb, type_iri)
-    for cls in tracker.state:
-        concept = arch.concept(cls)
+    for bn in arch.nodes:
+        cls = bn.cls
+        if cls not in tracker.state:
+            continue
+        concept = arch.node_concept(bn)
         if concept is None:
             continue
         ik = (event.patient, event.device_id, concept)
@@ -472,7 +543,7 @@ def update_identity(kb: KB, event, tracker: IdentityTracker) -> None:
             continue
         values_by_prop = tracker.state[cls].setdefault(ik, {})
         refinements = {p: v for p in tracker.refiners[cls]
-                       if (v := arch.value(cls, p)) is not None}
+                       if (v := arch.node_value(bn, p)) is not None}
         for p, v in refinements.items():
             values_by_prop.setdefault(p, set()).add(v)
         conflicting = any(len(vs) > 1 for vs in values_by_prop.values())

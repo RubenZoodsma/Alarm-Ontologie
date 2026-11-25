@@ -1,5 +1,5 @@
 id: cat2a_peak
-title: "Same process"
+title: "Same process, different properties: not silenced"
 rule: "2a"
 purpose: edge
 status: active
@@ -7,9 +7,11 @@ review: pending
 rationale:
   clinical: ""
   technical: >
-    Same process (pulmonary ventilation), same direction, equal priority — CAT2a
-    silences the peak-pressure alarm. Exercises the `AirwayPressure_Peak` bridge
-    (decision 39)
+    Same process (pulmonary ventilation), same direction, equal priority, but
+    different physiological properties: tidal volume approximates
+    RespirationVolume, peak pressure RespirationPressure. Since 2026-11-25
+    CAT2a requires the same property, so the peak-pressure alarm is NOT
+    silenced (it was under the former process-level rule, decision 39).
 author: "Migrated from DATA/CAT_evaluation (README and regression.py), 2026-10-14"
 strict: true
 
@@ -19,4 +21,4 @@ stream:
 
 expect:
   - {forwarded: a1}
-  - {silenced: a2, reason: redundant, rule: 2a, by: [a1]}
+  - {forwarded: a2}

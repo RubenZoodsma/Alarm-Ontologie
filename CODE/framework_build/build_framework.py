@@ -84,8 +84,9 @@ ROOT            = SCRIPT_DIR.parent.parent   # CODE/framework_build -> CODE -> R
 FRAMEWORK_DIR   = ROOT / "FRAMEWORK"
 ONTOLOGY_PATH   = FRAMEWORK_DIR / "ONTOLOGY" / "ontology.ttl"
 VOCAB_BASE_PATH = FRAMEWORK_DIR / "VOCABULARY" / "seed" / "vocab_base.ttl"
+HIERARCHY_PATH  = FRAMEWORK_DIR / "VOCABULARY" / "seed" / "hierarchy.ttl"
 CLINICAL_EVENT_VOCAB_PATH = FRAMEWORK_DIR / "VOCABULARY" / "seed" / "clinicalEvent_vocab.ttl"
-CSV_PATH        = ROOT / "DATA" / "ANNOTATION" / "consensus" / "p75_annotated.csv"
+CSV_PATH        = ROOT / "DATA" / "ANNOTATION" / "consensus" / "p99_annotated.csv"
 VOCAB_OUT_PATH  = FRAMEWORK_DIR / "VOCABULARY" / "vocab_generated.ttl"
 KG_OUT_PATH     = FRAMEWORK_DIR / "KNOWLEDGE_BASE" / "kg_generated.ttl"
 INFERENCE_PATH  = FRAMEWORK_DIR / "KNOWLEDGE_BASE" / "inference.ttl"
@@ -130,7 +131,7 @@ MODEL_COLUMN     = "Device.Type"
 # A blueprint is identified by device model + label + priority
 # (FRAMEWORK/PLAN_blueprint_identity.md). The selected corpus names devices by
 # their gateway name; device_models.csv maps that name to the model.
-CORPUS_PATH       = ROOT / "DATA" / "CORPUS" / "Annotation_corpus_75.csv"
+CORPUS_PATH       = ROOT / "DATA" / "CORPUS" / "Annotation_corpus_99.csv"
 DEVICE_MODELS_PATH = ROOT / "DATA" / "ANNOTATION" / "device_models.csv"
 
 COLUMN_SCHEMES = {
@@ -516,11 +517,242 @@ def build_metric_recipe(inference: Graph) -> dict:
             if signal in seen:
                 continue
             seen.add(signal)
-            for analysis in inference.objects(signal, MDA.analyzedBy):
+            # A step that takes a KIND of signal (signal:ECG_lead) consumes
+            # every signal of that kind: follow rdfs:subClassOf up from the
+            # signal (hierarchy.ttl section B — so `inference` must be the
+            # merged TBox, as main() passes it).
+            for analysis in _consumers(inference, signal):
                 for metric in inference.objects(analysis, MDA.producesMetric):
                     recipe.setdefault((fu, metric), set()).add((sensor, signal, analysis))
+                    _walk_derived(inference, recipe, fu, sensor, signal, metric)
                 frontier.extend(inference.objects(analysis, MDA.producesSignal))
     return recipe
+
+
+def _consumers(inference: Graph, signal):
+    """The steps that consume `signal`: those it is analyzedBy, and those
+    any of its superclasses (a kind such as signal:ECG_lead) is analyzedBy."""
+    seen, frontier, steps = {signal}, [signal], []
+    while frontier:
+        c = frontier.pop()
+        steps.extend(inference.objects(c, MDA.analyzedBy))
+        for parent in inference.objects(c, RDFS.subClassOf):
+            if isinstance(parent, URIRef) and parent not in seen:
+                seen.add(parent); frontier.append(parent)
+    return steps
+
+
+def _walk_derived(inference: Graph, recipe: dict, fu, sensor, signal, metric):
+    """
+    Continue build_metric_recipe()'s walk from a metric into the analysis
+    steps that take it as INPUT (metric mda:analyzedBy step — inference.ttl's
+    "Derived metrics" section), recording each derived metric under the same
+    functional unit with the trace (sensor, start signal, final step).
+
+    That triple only RESOLVES THE SLOTS (which sensor, which start signal,
+    which final step). It is not what the archetype asserts between them:
+    build_alarmtype_triples() replaces the direct "start signal analyzedBy
+    final step" edge, which would be false (the cardiac-index step consumes
+    cardiac output, not the temperature curve), by the full local
+    derivation graph from derivation_graph() — every intermediate step and
+    metric, including many-to-one steps (end-diastolic volume from stroke
+    volume AND ejection fraction). Only inputs reachable from this
+    functional unit's own sensors appear: heart rate from the bedside
+    monitor and body surface area from entered data do not, so the graph is
+    incomplete but every edge in it is true.
+
+    Side effect, harmless: walks from other units reach the same steps
+    (FU_ElectroCardiography's heart rate feeds StrokeVolumeAnalysis), giving
+    keys such as (FU_ElectroCardiography, StrokeVolume). A key is only used
+    when an alarm row names that exact (FunctionalUnit, Metric) pair.
+    """
+    frontier, seen = [metric], set()
+    while frontier:
+        m = frontier.pop()
+        if m in seen:
+            continue
+        seen.add(m)
+        for step in inference.objects(m, MDA.analyzedBy):
+            for derived in inference.objects(step, MDA.producesMetric):
+                recipe.setdefault((fu, derived), set()).add((sensor, signal, step))
+                frontier.append(derived)
+
+
+def derivation_graph(tbox: Graph, fu, metric, named_signal=None):
+    """
+    The local derivation graph of `metric` on functional unit `fu`: every
+    sensing and computation step between the unit's own sensors and the
+    metric, as (edges, types, root). An edge is (subject_key, property,
+    object_key); "FU" is the key of the functional unit itself, types[key]
+    is the concept a key's node is typed by, and root is the key of
+    `metric` itself. None when the metric cannot be traced from this unit's
+    sensors, or not unambiguously.
+
+    `metric` may also be a SIGNAL: a row with no metric that names one (a
+    signal-quality alarm) gets the pathway up to that signal the same way —
+    an "ECG artefact" annotated on signal:ECG_lead becomes "some ECG
+    electrode -> some raw signal -> some lead derivation -> some ECG lead",
+    the very lead node a heart-rate alarm on the same monitor analyses, so
+    the two share a particular when grounded.
+
+    Built BACKWARDS from the metric, so that only what the alarm's metric
+    depends on is written:
+
+      - an input produced by a computation step: recurse into the step;
+      - an input produced by a sensor: stop, if the unit has that sensor;
+      - every mda:analyzedBy edge into a step is a REQUIRED input, so a
+        many-to-one step keeps all its inputs (end-diastolic volume from
+        stroke volume and ejection fraction; ECG lead II from the RA and LL
+        raw signals), and an input reached through two paths is one node
+        (the LL raw signal feeding leads II and III);
+      - an input branch that does not reach this unit's sensors is pruned
+        (heart rate and pressures from the bedside monitor, body surface
+        area from entered data, on the HemoSphere);
+      - an input that is a KIND, produced by nothing itself but by each of
+        its subclasses (signal:ECG_lead, the input of the heart-rate and ST
+        steps), is collapsed per layer: one node per layer of its members'
+        chains, typed by what all members share there ("some ECG electrode
+        -> some ECG raw signal -> some lead derivation -> some ECG lead").
+        The kind is how a step that works on any one of several signals is
+        written without modelling the device's choice between them. If the
+        row names a concrete member (signal:ECG_lead_II on an ST alarm),
+        that member replaces the kind and its own chain is written in full;
+      - a metric with several producing steps, one a superclass of the
+        others (cardiac output: CardiacOutputAnalysis and its subclass
+        ThermodilutionAnalysis), is produced by the GENERAL step, unless
+        the row names a signal on a specific step's route. The specific
+        steps are known methods; which one the device used is not known;
+      - a step with no stated input (CardiacOutputAnalysis: the method,
+        and so the input, is unknown) is fed by a blank signal from a blank
+        sensor of the unit, typed only mda:Signal and mda:Sensor. The unit
+        keeps a sensor, but no particular sensor is claimed.
+
+    A linear pathway (pulse oximetry, a pressure line) comes out as the same
+    single chain the class tree gives, so its archetype does not change.
+    """
+    sensors = set(tbox.objects(fu, MDA.hasSensor))
+
+    def ancestors(c):
+        out, frontier = set(), [c]
+        while frontier:
+            for parent in tbox.objects(frontier.pop(), RDFS.subClassOf):
+                if isinstance(parent, URIRef) and parent not in out:
+                    out.add(parent); frontier.append(parent)
+        return out
+
+    def descendants(c):
+        out, frontier = set(), [c]
+        while frontier:
+            for child in tbox.subjects(RDFS.subClassOf, frontier.pop()):
+                if isinstance(child, URIRef) and child not in out:
+                    out.add(child); frontier.append(child)
+        return out
+
+    def producers(x):
+        return ([(MDA.sensorProducesSignal, s) for s in tbox.subjects(MDA.sensorProducesSignal, x)]
+                + [(MDA.producesSignal, s) for s in tbox.subjects(MDA.producesSignal, x)]
+                + [(MDA.producesMetric, s) for s in tbox.subjects(MDA.producesMetric, x)])
+
+    def shared(concepts):
+        concepts = set(concepts)
+        if len(concepts) == 1:
+            return next(iter(concepts))
+        return _shared_supertype(concepts, tbox)
+
+    def up(x, stack):
+        """(key, edges, types) for x and everything upstream of it, or None."""
+        if x in stack:
+            return None
+        if named_signal is not None and named_signal != x and x in ancestors(named_signal):
+            x = named_signal
+        found = []                               # (producer, (key, edges, types))
+        for prop, p in producers(x):
+            if prop == MDA.sensorProducesSignal:
+                if p in sensors:
+                    found.append((p, (x, {("FU", MDA.hasSensor, p), (p, prop, x)}, {x: x, p: p})))
+                continue
+            sub = step_up(p, stack + (x,))
+            if sub is not None:
+                edges, types = sub
+                found.append((p, (x, edges | {(p, prop, x)}, {**types, x: x})))
+        if not found and not producers(x):
+            members = [m for m in descendants(x) if producers(m)]
+            if members:
+                return collapse(x, members, stack)
+        if len(found) > 1:
+            found = choose(found)
+        return found[0][1] if len(found) == 1 else None
+
+    def choose(found):
+        """Several producers of one concept: the general step, unless the
+        row's signal is on a specific step's route. Unrelated producers
+        stay ambiguous."""
+        if named_signal is not None:
+            on_route = [f for f in found if named_signal in f[1][2]]
+            if len(on_route) == 1:
+                return on_route
+        general = [f for f in found
+                   if all(g is f or f[0] in ancestors(g[0]) for g in found)]
+        return general if len(general) == 1 else found
+
+    def step_up(step, stack):
+        edges, types = set(), {step: step}
+        if next(tbox.subjects(MDA.analyzedBy, step), None) is None:
+            sensor, signal = ("open", step, "sensor"), ("open", step, "signal")
+            return ({("FU", MDA.hasSensor, sensor),
+                     (sensor, MDA.sensorProducesSignal, signal),
+                     (signal, MDA.analyzedBy, step)},
+                    {step: step, sensor: MDA.Sensor, signal: MDA.Signal})
+        for inp in tbox.subjects(MDA.analyzedBy, step):
+            r = up(inp, stack + (step,))
+            if r is not None:
+                key, e, t = r
+                edges |= e | {(key, MDA.analyzedBy, step)}
+                types.update(t)
+        return (edges, types) if edges else None
+
+    def collapse(kind, members, stack):
+        subs = [r for r in (up(m, stack + (kind,)) for m in members) if r is not None]
+        if len(subs) <= 1:
+            return subs[0] if subs else None
+        layer_concepts, layer_props, depths = {}, {}, set()
+        for key, edges, types in subs:
+            depth, frontier = {key: 0}, [key]
+            while frontier:                      # breadth-first, upstream
+                nxt = []
+                for b in frontier:
+                    for a, p, o in edges:
+                        if o != b or a == "FU":
+                            continue
+                        if a not in depth:
+                            depth[a] = depth[b] + 1; nxt.append(a)
+                        elif depth[a] != depth[b] + 1:
+                            return None          # one node at two depths
+                        layer_props.setdefault(depth[b], set()).add(p)
+                frontier = nxt
+            for k, d in depth.items():
+                layer_concepts.setdefault(d, set()).add(types[k])
+            depths.add(max(depth.values()))
+        if len(depths) != 1 or any(len(ps) != 1 for ps in layer_props.values()):
+            return None                          # members' chains not parallel
+        top = depths.pop()
+        edges, types = {("FU", MDA.hasSensor, ("kind", kind, top))}, {}
+        for d in range(top + 1):
+            t = shared(layer_concepts[d])
+            if t is None:
+                return None
+            types[("kind", kind, d)] = t
+            if d < top:
+                edges.add((("kind", kind, d + 1), next(iter(layer_props[d])), ("kind", kind, d)))
+        return ("kind", kind, 0), edges, types
+
+    r = up(metric, ())
+    if r is None:
+        return None
+    root, edges, types = r
+    if not edges:
+        return None
+    return edges, types, root
 
 
 def build_sensor_of_signal(inference: Graph) -> dict:
@@ -530,8 +762,10 @@ def build_sensor_of_signal(inference: Graph) -> dict:
 
     recipe_override()'s fallback for a TECHNICAL row that names a Signal but
     no Metric, where build_metric_recipe()'s key cannot apply: e.g.
-    "Monitor - ECG artefact" (signal:ECG_signal, no metric) or
     "PHILIPSMONITOR - SpO2 zwak signaal" (signal:PPG_waveform, no metric).
+    ("Monitor - ECG artefact" was the first such case, then annotated
+    signal:ECG_signal; since 2026-11-25 it names signal:ECG_lead and is
+    built by derivation_graph() instead.)
     Which sensor produced a given signal on a given functional unit is
     already fully determined by the recipe, so leaving those rows with a
     generic mda:Sensor node was a gap rather than a limitation — this is
@@ -606,6 +840,82 @@ def build_administers_map(inference: Graph) -> dict:
     """
     return {device: modality
             for device, modality in inference.subject_objects(MDA.administers)}
+
+
+# ── Curated hierarchy (seed/hierarchy.ttl) ────────────────────────────────────
+#
+# Every curated is-a placement between vocabulary concepts lives in one seed
+# file, in three sections (see its header): value refinements
+# (mda:refinesConcept, entailed through the property chains in
+# ontology.ttl), kind subclassing (rdfs:subClassOf) and cross-scheme links
+# (skos:broadMatch). This script is the only reader: it merges the edges into
+# vocab_generated.ttl, so every consumer gets them by loading that file.
+
+HIERARCHY_PREDICATES = {MDA.refinesConcept, RDFS.subClassOf, SKOS.broadMatch}
+
+
+def load_hierarchy(path: Path) -> Graph:
+    """The seed hierarchy, validated: only the three section predicates, both
+    ends /vocab/ concepts, and refinement/subclassing within one scheme
+    (crossing schemes is what skos:broadMatch is for)."""
+    g = Graph()
+    if not path.exists():
+        return g
+    g.parse(path, format="turtle")
+    errors = []
+    for s, p, o in g:
+        if p not in HIERARCHY_PREDICATES:
+            errors.append(f"unexpected predicate {p} on {s}")
+            continue
+        if not (isinstance(s, URIRef) and isinstance(o, URIRef)
+                and str(s).startswith(VOCAB) and str(o).startswith(VOCAB)):
+            errors.append(f"not a vocabulary-to-vocabulary edge: {s} {_local(p)} {o}")
+            continue
+        same_scheme = str(s).rsplit("/", 1)[0] == str(o).rsplit("/", 1)[0]
+        if p != SKOS.broadMatch and not same_scheme:
+            errors.append(f"{_local(p)} crosses schemes (use skos:broadMatch): {s} -> {o}")
+        if p == SKOS.broadMatch and same_scheme:
+            errors.append(f"skos:broadMatch within one scheme (use a refinement): {s} -> {o}")
+    if errors:
+        raise ValueError(f"{path.name} is malformed:\n  " + "\n  ".join(errors))
+    return g
+
+
+def apply_hierarchy(vocab: Graph, hierarchy: Graph, base: Graph) -> int:
+    """Merge the seed hierarchy into the generated vocabulary. Per refinement
+    or subclass edge also writes skos:broader to the parent and drops the
+    child's default skos:broader to its scheme's top concept, so the SKOS tree
+    matches. Returns the number of edges merged."""
+    tops = set(base.subjects(SKOS.topConceptOf, None))
+    n = 0
+    for s, p, o in hierarchy:
+        vocab.add((s, p, o))
+        n += 1
+        if p in (MDA.refinesConcept, RDFS.subClassOf):
+            for t in list(vocab.objects(s, SKOS.broader)):
+                if t in tops:
+                    vocab.remove((s, SKOS.broader, t))
+            vocab.add((s, SKOS.broader, o))
+    return n
+
+
+def report_unplaced_values(vocab: Graph, hierarchy: Graph, onto: Graph) -> None:
+    """List, per value scheme whose property carries a refinesConcept
+    chain, the concepts the hierarchy does not place (neither child nor
+    parent). Informational: many are legitimately top-level (Enabled,
+    Increased); the point is that a NEW annotator term is seen once."""
+    chained = set()
+    for prop, chain in onto.subject_objects(OWL.propertyChainAxiom):
+        if MDA.refinesConcept in set(Collection(onto, chain)):
+            chained |= set(onto.objects(prop, MDA.valuesFromScheme))
+    placed = set(hierarchy.subjects(MDA.refinesConcept, None)) | \
+             set(hierarchy.objects(None, MDA.refinesConcept))
+    for scheme in sorted(chained, key=str):
+        tops = set(vocab.subjects(SKOS.topConceptOf, scheme))
+        loose = sorted(_local(c) for c in vocab.subjects(SKOS.inScheme, scheme)
+                       if c not in placed and c not in tops)
+        if loose:
+            print(f"[hier]   not placed in {_local(str(scheme).rsplit('/', 1)[0])}: {', '.join(loose)}")
 
 
 def build_inference_concept_stubs(concepts: set, base: Graph, onto: Graph) -> Graph:
@@ -722,10 +1032,69 @@ def alarmtype_iri(label: str, priority: str, model: str = "") -> URIRef:
     left out when unknown (gateway names such as Medibus, Philipsmonitor).
     'ServoU' + 'SERVOU - PEEP laag' + 'Medium' → alarmtype:ServoU_ServouPeepLaag_Medium
     """
+    return ALARMTYPE[_alarmtype_local(label, priority, model)
+                     + _IRI_SUFFIX.get(("type", model.strip(), label.strip(), priority.strip()), "")]
+
+
+def _alarmtype_local(label: str, priority: str, model: str = "") -> str:
     clean_label    = re.sub(r"[^A-Za-z0-9]+", "", label.title().replace(" ", ""))
     clean_priority = re.sub(r"[^A-Za-z0-9]+", "_", priority).strip("_")
     clean_model    = re.sub(r"[^A-Za-z0-9]+", "", model)
-    return ALARMTYPE[f"{clean_model + '_' if clean_model else ''}{clean_label}_{clean_priority}"]
+    return f"{clean_model + '_' if clean_model else ''}{clean_label}_{clean_priority}"
+
+
+def _label_local(label: str) -> str:
+    return re.sub(r"[^A-Za-z0-9]+", "", label.title().replace(" ", ""))
+
+
+# IRI local names keep only A-Z, a-z and 0-9, so distinct labels can collide
+# ("PHILIPSMONITOR - ??? Desaturatie" / "PHILIPSMONITOR - Desaturatie";
+# "SERVOU - Patiëntcircuit los" / "SERVOU - Patintcircuit los"). Distinct
+# labels are documented distinctly: within a colliding group the most
+# complete spelling keeps the plain IRI and the others get _1, _2, ... in a
+# fixed order: most letters/digits first (Unicode, so 'ë' counts and '???'
+# does not), then the shorter label, then the label itself. Filled once per
+# build from the whole CSV by assign_unique_iris(); read by alarmtype_iri()
+# and label_concept_iri().
+_IRI_SUFFIX: dict = {}
+
+
+def _completeness(label: str) -> tuple:
+    return (-sum(ch.isalnum() for ch in label), len(label), label)
+
+
+def assign_unique_iris(df: pd.DataFrame) -> list:
+    """Suffix map for colliding alarm-type and label-concept IRIs; returns
+    the collisions resolved, for the build log."""
+    _IRI_SUFFIX.clear()
+    resolved = []
+
+    def resolve(kind, keys, local_of, label_of):
+        groups = {}
+        for k in keys:
+            groups.setdefault(local_of(k), set()).add(k)
+        for local_name, members in sorted(groups.items()):
+            if len(members) < 2:
+                continue
+            ranked = sorted(members, key=lambda k: _completeness(label_of(k)))
+            for n, k in enumerate(ranked):
+                if n:
+                    _IRI_SUFFIX[(kind,) + k] = f"_{n}"
+            resolved.append((kind, local_name, [label_of(k) for k in ranked]))
+
+    def val(row, col):
+        v = row.get(col)
+        return "" if v is None or pd.isna(v) else str(v).strip()
+
+    types = {(val(r, MODEL_COLUMN), val(r, LABEL_COLUMN), val(r, PRIORITY_COLUMN))
+             for _, r in df.iterrows() if val(r, LABEL_COLUMN)}
+    resolve("type", types, lambda k: _alarmtype_local(k[1], k[2], k[0]), lambda k: k[1])
+    labels = {(k[1],) for k in types}
+    resolve("label", labels, lambda k: _label_local(k[0]), lambda k: k[0])
+    for kind, local_name, ranked in resolved:
+        print(f"[iri]    {kind} IRI {local_name} shared by distinct labels -> "
+              + ", ".join(f"{lab!r}{'' if i == 0 else f' (_{i})'}" for i, lab in enumerate(ranked)))
+    return resolved
 
 
 def _norm(s) -> str:
@@ -797,8 +1166,7 @@ def label_concept_iri(label: str) -> URIRef:
     see mda:hasLabel's comment in ontology.ttl. Keyed on the label alone, so
     every archetype sharing a label points at the same one concept.
     """
-    clean = re.sub(r"[^A-Za-z0-9]+", "", label.title().replace(" ", ""))
-    return ALARM_LABEL[clean]
+    return ALARM_LABEL[_label_local(label) + _IRI_SUFFIX.get(("label", label.strip()), "")]
 
 
 def build_label_vocab(labels: set, base: Graph) -> Graph:
@@ -930,6 +1298,63 @@ def precoordinate(ref: Graph, concept: URIRef, refs: list) -> URIRef:
     return sc
 
 
+def link_precoordinated(vocab: Graph) -> list:
+    """
+    Place every pre-coordinated concept under the pre-coordinated concepts it
+    refines (decided 2026-11-25): a concept pre-coordinated with refinements
+    R is a narrower case of the one with any proper subset of R, on the same
+    base — metric:RespirationVolume_Minute_Expiratory (aggregation Minute,
+    phase Expiratory) under metric:RespirationVolume_Minute (aggregation
+    Minute). A refinement by definition: precoordinate() defines each concept
+    as owl:equivalentClass (base ⊓ restriction per refinement), so the edge
+    is already entailed; this writes it out for consumers that do not reason
+    (the MDA-POC follows rdfs:subClassOf* without a reasoner).
+
+    Only DIRECT edges, and only between concepts that exist (no concept is
+    minted for an unused subset). Adds rdfs:subClassOf, and replaces the
+    concept's skos:broader edge to its base with skos:broader to its
+    pre-coordinated parent(s), so SKOS tools show the same tree. The
+    rdfs:subClassOf to the base stays (entailed, harmless).
+
+    Returns [(child, parent)] for the build log.
+    """
+    defs = {}
+    for sc, d in vocab.subject_objects(OWL.equivalentClass):
+        members_node = vocab.value(d, OWL.intersectionOf)
+        if not isinstance(sc, URIRef) or members_node is None:
+            continue
+        members = list(Collection(vocab, members_node))
+        if not members or not isinstance(members[0], URIRef):
+            continue
+        refs = set()
+        for m in members[1:]:
+            p, v = vocab.value(m, OWL.onProperty), vocab.value(m, OWL.hasValue)
+            if p is None or v is None:
+                refs = None
+                break
+            refs.add((p, v))
+        if refs:
+            defs[sc] = (members[0], frozenset(refs))
+
+    by_base = {}
+    for sc, (base, refs) in defs.items():
+        by_base.setdefault(base, []).append((sc, refs))
+
+    edges = []
+    for base, group in by_base.items():
+        for child, crefs in group:
+            above = [(p, prefs) for p, prefs in group if prefs < crefs]
+            direct = [p for p, prefs in above
+                      if not any(prefs < qrefs for _q, qrefs in above)]
+            for parent in sorted(direct, key=str):
+                vocab.add((child, RDFS.subClassOf, parent))
+                vocab.add((child, SKOS.broader, parent))
+                edges.append((child, parent))
+            if direct:
+                vocab.remove((child, SKOS.broader, base))
+    return edges
+
+
 def build_alarmtype_triples(row: pd.Series, kg: Graph, ref: Graph, index: dict,
                             tree: dict, node_kind: dict, node_columns: dict,
                             leaf_specs: list, target_types: dict,
@@ -1012,9 +1437,10 @@ def build_alarmtype_triples(row: pd.Series, kg: Graph, ref: Graph, index: dict,
                     return sensor_c
             # Last resort: the row names no Metric, and no specific sensor is
             # determined — but if every sensor this FunctionalUnit reads from
-            # shares a supertype, that much IS known. "Monitor - ECG artefact"
-            # names signal:ECG_signal, the group type, so no single electrode
-            # follows; "an ECG electrode" still does. Returns None where the
+            # shares a supertype, that much IS known. A row naming the group
+            # type signal:ECG_signal (as "Monitor - ECG artefact" did until
+            # 2026-11-25) determines no single electrode; "an ECG electrode"
+            # still follows. Returns None where the
             # unit's sensors share nothing (FU_InvasiveBloodPressure's arterial
             # and venous transducers), leaving the node generic as before.
             return _shared_supertype(
@@ -1254,6 +1680,91 @@ def build_alarmtype_triples(row: pd.Series, kg: Graph, ref: Graph, index: dict,
     for cls in active:
         resolve_node(cls)
 
+    # The sensing pathway as a graph, not a chain. The class tree gives one
+    # node per class (one Sensor -> Signal -> SignalAnalysis -> Metric), so
+    # wherever the pathway is not a single chain it can only state something
+    # false: "temperature curve analyzedBy cardiac-index step" (that step
+    # consumes cardiac output), or "one ECG electrode produces the very lead
+    # heart rate is computed from". derivation_graph() gives the pathway as
+    # it is, and replaces the tree's Sensor/Signal/SignalAnalysis nodes
+    # below the functional unit. The tree's Metric node stays, so the row's
+    # state lands on the alarm's own metric: in an archetype that is the
+    # metric node with no outgoing mda:analyzedBy (intermediate metrics,
+    # such as cardiac output under a cardiac-index alarm, carry none of the
+    # row's state). A linear pathway comes out unchanged.
+    #
+    # Kept as the tree builds it (with an [INFO] line) when the row names a
+    # Sensor or Signal the graph does not contain, or carries Sensor/Signal
+    # states and the graph has no single node of that class to put them on.
+    #
+    # A row with no metric but a Signal of its own (a signal-quality alarm)
+    # gets the pathway up to that signal the same way (see derivation_graph).
+    def own(cls):
+        col = node_columns.get(cls)
+        v = cell(col)
+        return resolve(_scheme_of_column(col), v, index, col) if v is not None else None
+    fu_c, met_c = column_concept(MDA.FunctionalUnit), column_concept(MDA.Metric)
+    named = {MDA.Sensor: own(MDA.Sensor), MDA.Signal: own(MDA.Signal)}
+    # The signal anchor only where the row has no Metric node at all: a
+    # Metric node without a metric type (a row annotating only the
+    # physiological property) hangs below the signal and must not be cut off.
+    anchor = MDA.Metric if met_c is not None else (None if MDA.Metric in nodes else MDA.Signal)
+    goal = met_c if met_c is not None else (named[MDA.Signal] if anchor else None)
+    if fu_c is not None and goal is not None and anchor in nodes \
+            and MDA.FunctionalUnit in nodes:
+        graph = derivation_graph(inference_graph, fu_c, goal, named[MDA.Signal])
+        problem, target = None, {}
+        if graph is not None:
+            edges, types, root = graph
+            role = {MDA.Sensor: {o for _, p, o in edges if p == MDA.hasSensor},
+                    MDA.Signal: {o for _, p, o in edges
+                                 if p in (MDA.sensorProducesSignal, MDA.producesSignal)}}
+            def is_a(c, sup):
+                seen, frontier = {c}, [c]
+                while frontier:
+                    for parent in inference_graph.objects(frontier.pop(), RDFS.subClassOf):
+                        if parent not in seen:
+                            seen.add(parent); frontier.append(parent)
+                return sup in seen
+            for cls in (MDA.Sensor, MDA.Signal):
+                keys = role[cls]
+                if named[cls] is not None:
+                    keys = {k for k in keys if is_a(types[k], named[cls])}
+                    if not keys:
+                        problem = f"names {_local(named[cls])}, not on the traced pathway"
+                has_state = any(dcls == cls and r != "identity" and cell(col) is not None
+                                for dcls, _, col, r, _ in leaf_specs)
+                if has_state and not problem:
+                    if len(keys) != 1:
+                        problem = f"{_local(cls)} state, but {len(keys)} {_local(cls)} nodes"
+                    else:
+                        target[cls] = next(iter(keys))
+            if anchor == MDA.Signal and not problem:
+                target[MDA.Signal] = root          # the row's own signal
+            tree_nodes = [nodes[c] for c in (MDA.Sensor, MDA.Signal, MDA.SignalAnalysis)
+                          if c in nodes]
+            structural = {RDF.type, MDA.sensorProducesSignal, MDA.analyzedBy, MDA.producesMetric}
+            if not problem and any(p not in structural for n in tree_nodes
+                                   for p, _ in kg.predicate_objects(n)):
+                problem = "identity refinements on the tree's own Sensor/Signal nodes"
+            if problem:
+                print(f"[INFO]   pathway kept as a chain ({problem}): {label}")
+            else:
+                for n in tree_nodes:
+                    kg.remove((n, None, None)); kg.remove((None, None, n))
+                node_of = {"FU": nodes[MDA.FunctionalUnit]}
+                if anchor == MDA.Metric:
+                    node_of[root] = nodes[MDA.Metric]
+                def node(k):
+                    if k not in node_of:
+                        node_of[k] = BNode()
+                        kg.add((node_of[k], RDF.type, types[k]))
+                    return node_of[k]
+                for a, p, o in edges:
+                    kg.add((node(a), p, node(o)))
+                for cls, k in target.items():
+                    nodes[cls] = node(k)
+
     # Attach leaf properties (identity leaves already folded into the concept)
     for dcls, prop, col, role, scheme in leaf_specs:
         if role == "identity":
@@ -1309,6 +1820,12 @@ def main() -> None:
     base.parse(CLINICAL_EVENT_VOCAB_PATH, format="turtle")
     inference = Graph()
     inference.parse(INFERENCE_PATH, format="turtle")
+    hierarchy = load_hierarchy(HIERARCHY_PATH)
+    # The hand-authored TBox the KG expansion consults: inference.ttl's
+    # recipes plus the curated subclass edges (the ECG group types that
+    # _shared_supertype() resolves an undetermined trace to live in
+    # hierarchy.ttl since 2026-11-24).
+    tbox = inference + hierarchy
 
     # 2. Derive the nesting tree from the ontology and show it
     tree = derive_class_tree(onto, ROOT_CLASS)
@@ -1326,6 +1843,7 @@ def main() -> None:
     print(f"[csv]    {excluded.sum()} row(s) marked '{EXCLUSION_VALUE}' (not annotatable) — excluded from readout; "
           f"{(status == REVIEW_VALUE).sum()} row(s) marked '{REVIEW_VALUE}' — built, pending annotation")
     df = df.loc[~excluded].drop(columns=[EXCLUSION_COLUMN])
+    assign_unique_iris(df)
     columns = [c for c in df.columns if c in COLUMN_SCHEMES]
     print(f"[csv]    Read {len(df)} row(s) from {CSV_PATH.name}; "
           f"vocabulary columns: {', '.join(columns)}")
@@ -1387,21 +1905,35 @@ def main() -> None:
     # exists instead of a hand-kept registration list.
     already_known = {s for s in vocab_out.subjects(RDF.type, SKOS.Concept)}
     inferred_concepts = collect_inference_concepts(inference, base, onto, already_known)
-    inferred_stubs = build_inference_concept_stubs(inferred_concepts, base, onto)
+    # hierarchy.ttl may name a concept nothing else does yet (a parent such as
+    # opstate:Unavailable, or a value no row uses yet): stub it the same way,
+    # but list it — a typo in a placement must not pass silently.
+    hierarchy_only = collect_inference_concepts(hierarchy, base, onto,
+                                                already_known | inferred_concepts)
+    inferred_stubs = build_inference_concept_stubs(inferred_concepts | hierarchy_only, base, onto)
     for t in inferred_stubs:
         vocab_out.add(t)
     print(f"[vocab]  {len(inferred_concepts)} concept stub(s) from inference.ttl")
+    if hierarchy_only:
+        print(f"[vocab]  {len(hierarchy_only)} concept stub(s) named only in {HIERARCHY_PATH.name}: "
+              + ", ".join(sorted(_local(c) for c in hierarchy_only)))
 
     # 6. KG expansion — particulars → kg_generated; universals → vocab_generated
     index            = build_notation_index(base, vocab_out)
-    metric_recipe    = build_metric_recipe(inference)
+    metric_recipe    = build_metric_recipe(tbox)   # tbox: kinds (hierarchy.ttl) are followed
     sensor_of_signal = build_sensor_of_signal(inference)
     administers_map  = build_administers_map(inference)
     kg_out, ref_out = build_graphs(df, index, tree, node_kind, node_columns,
                                    leaf_specs, target_types, metric_recipe,
-                                   sensor_of_signal, administers_map, inference)
+                                   sensor_of_signal, administers_map, tbox)
     for t in ref_out:                     # merge the deduplicated universal graph
         vocab_out.add(t)
+    pc_edges = link_precoordinated(vocab_out)
+    print(f"[pc]     {len(pc_edges)} pre-coordinated concept(s) placed under a less refined one"
+          + "".join(f"\n[pc]       {_local(c)} ⊑ {_local(p)}" for c, p in sorted(pc_edges, key=str)))
+    n_hier = apply_hierarchy(vocab_out, hierarchy, base)
+    print(f"[hier]   {n_hier} curated edge(s) merged from {HIERARCHY_PATH.name}")
+    report_unplaced_values(vocab_out, hierarchy, onto)
     check_approximates_axioms(kg_out, inference, vocab_out)
     check_model_axioms(df, index, inference)
 

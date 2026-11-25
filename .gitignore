@@ -42,3 +42,6 @@ __pycache__/
 *.DS_Store
 *.docx
 *.pdf
+
+# Local work-in-progress annotation preview (preview_annotations.py) — never committed.
+EVALUATION/WIP_ANNOTATION/

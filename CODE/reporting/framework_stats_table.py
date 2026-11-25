@@ -38,7 +38,8 @@ import build_framework as R  # noqa: E402  (reuse the real builder)
 ROOT = R.ROOT
 OUT_PATH = ROOT / "MANUSCRIPT" / "table_drafts" / "framework_stats.csv"
 TOTAL_CORPUS_PATH = ROOT / "DATA" / "CORPUS" / "Total_corpus.csv"
-CUTOFF_PCT = int(R.CSV_PATH.stem.split("_")[0].lstrip("p"))
+ANNOTATION_PATH = R.CSV_PATH      # the annotation file build_framework.py builds from
+CUTOFF_PCT = int(ANNOTATION_PATH.stem.split("_")[0].lstrip("p"))
 CUTOFF_CORPUS_PATH = ROOT / "DATA" / "CORPUS" / f"Annotation_corpus_{CUTOFF_PCT}.csv"
 
 # What an alarm log provides (manuscript 3.3: "label, priority, originating
@@ -92,7 +93,7 @@ def corpus_rows():
     # Not annotatable: rows marked EXCL in the annotation file (label conveys
     # no interpretable alarm condition: a raw device code, or a metric without
     # direction). They get no blueprint, so their volume is not covered.
-    ann = pd.read_csv(R.CSV_PATH, sep=";", dtype=str)
+    ann = pd.read_csv(ANNOTATION_PATH, sep=";", dtype=str)
     ann.columns = ann.columns.str.strip()
     excl = {R.blueprint_key(l, p, m) for l, p, m, e in
             zip(ann[R.LABEL_COLUMN], ann[R.PRIORITY_COLUMN], ann[R.MODEL_COLUMN], ann[R.EXCLUSION_COLUMN])
@@ -125,6 +126,9 @@ def corpus_rows():
 # ── Knowledge base, replayed with build_framework.py's own steps ────────────
 
 def builder_context(onto, base, inference, df):
+    # The TBox the builder consults, as build_framework.main() assembles it:
+    # inference.ttl plus the curated kinds and subclass edges of hierarchy.ttl.
+    tbox = inference + R.load_hierarchy(R.HIERARCHY_PATH)
     """build_framework.main() steps 2-6, without writing files."""
     tree = R.derive_class_tree(onto, R.ROOT_CLASS)
     columns = [c for c in df.columns if c in R.COLUMN_SCHEMES]
@@ -149,6 +153,7 @@ def builder_context(onto, base, inference, df):
     for prop, extra in onto.subject_objects(R.MDA.targetType):
         target_types.setdefault(prop, []).append(extra)
 
+    R.assign_unique_iris(df)          # as build_framework.main(): distinct labels, distinct IRIs
     index = R.build_notation_index(base)
     vocab_out = R.build_vocab_graph(R.collect_missing(df, columns, bindings, index), bindings, base)
     labels = {str(v).strip() for v in df[R.LABEL_COLUMN].dropna() if str(v).strip()}
@@ -161,10 +166,10 @@ def builder_context(onto, base, inference, df):
 
     args = dict(index=R.build_notation_index(base, vocab_out), tree=tree, node_kind=node_kind,
                 node_columns=node_columns, leaf_specs=leaf_specs, target_types=target_types,
-                metric_recipe=R.build_metric_recipe(inference),
+                metric_recipe=R.build_metric_recipe(tbox),
                 sensor_of_signal=R.build_sensor_of_signal(inference),
                 administers_map=R.build_administers_map(inference),
-                inference_graph=inference)
+                inference_graph=tbox)
     return args, vocab_out
 
 
@@ -251,7 +256,7 @@ def framework_rows(run_hermit: bool):
     base.parse(R.CLINICAL_EVENT_VOCAB_PATH, format="turtle")
     inference = Graph().parse(R.INFERENCE_PATH, format="turtle")
 
-    df = pd.read_csv(R.CSV_PATH, sep=";", dtype=str)
+    df = pd.read_csv(ANNOTATION_PATH, sep=";", dtype=str)
     df.columns = df.columns.str.strip()
     n_annotated = len(df)
     df_all = df

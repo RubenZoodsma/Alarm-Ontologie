@@ -11,14 +11,17 @@ review: pending
 rationale:
   clinical: ""
   technical: >
+    (2026-11-25: the leak alarm is "MEDIBUS - Lekkage"; p99 annotates the
+    former "MEDIBUS - Volume niet constant" as an irregular delivered volume,
+    no longer as a circuit leak.)
     A circuit leak compromises the ventilation therapy while minute
     volume is low — CAT3b positive: ventilation failure 08:00:30–08:01:00
 author: "Migrated from DATA/CAT_evaluation (README and regression.py), 2026-10-14"
 strict: true
 
 stream:
-  - {id: a1, device: "Medibus_00", label: "MEDIBUS - Volume niet constant", device_name: "Medibus", priority: "Unknown", start: "08:00:00", end: "08:01:00"}
-  - {id: a2, device: "Medibus_00", label: "MEDIBUS - MV ondergrens", device_name: "Medibus", priority: "Unknown", start: "08:00:30", end: "08:01:30"}
+  - {id: a1, device: "Medibus_00", label: "MEDIBUS - Lekkage", device_name: "Medibus", priority: "Medium", start: "08:00:00", end: "08:01:00"}
+  - {id: a2, device: "Medibus_00", label: "MEDIBUS - MV ondergrens", device_name: "Medibus", priority: "Hoog", start: "08:00:30", end: "08:01:30"}
 
 expect:
   - {forwarded: a1}

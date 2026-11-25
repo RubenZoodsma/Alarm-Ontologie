@@ -1,11 +1,12 @@
 """
 regression.py — every verification case in MDA-POC/validation/cases/
 (one YAML file per case: its alarms, expected conclusions and rationale;
-see cases.py for the format), plus three engine-wide invariants: no
+see cases.py for the format), plus engine-wide invariants: no
 lookahead (prefix invariance, no engine needed), no rule logic in Python,
 blueprint identity (every distinct annotated alarm resolves to a
-blueprint of its own), and framework copies in sync (MDA-POC/data/ holds the
-framework files the build wrote).
+blueprint of its own), framework copies in sync (MDA-POC/data/ holds the
+framework files the build wrote, and the scaffold), and minting
+completeness (every blueprint node and edge is grounded once).
 
 Prints a PASS/FAIL line per assertion and writes
   validation/results/cases_results.csv   one row per assertion
@@ -155,26 +156,79 @@ def _hash(paths) -> str:
     return h.hexdigest()[:12]
 
 
-# MDA-POC/data/ file -> the framework file it copies (synced by hand).
+# MDA-POC/data/ file -> the file it copies, relative to the repository root
+# (synced by hand). entities.ttl is the scaffold entity_seed.py writes from
+# kg_generated.ttl: a stale copy makes minting stop at the first individuated
+# node whose concept it lacks.
 FRAMEWORK_COPIES = {
-    "ontology.ttl": "ONTOLOGY/ontology.ttl",
-    "inference.ttl": "KNOWLEDGE_BASE/inference.ttl",
-    "kg_generated.ttl": "KNOWLEDGE_BASE/kg_generated.ttl",
-    "vocab_generated.ttl": "VOCABULARY/vocab_generated.ttl",
-    "clinicalEvent_vocab.ttl": "VOCABULARY/seed/clinicalEvent_vocab.ttl",
-    "priority_rank.ttl": "VOCABULARY/priority_rank.ttl",
+    "ontology.ttl": "FRAMEWORK/ONTOLOGY/ontology.ttl",
+    "inference.ttl": "FRAMEWORK/KNOWLEDGE_BASE/inference.ttl",
+    "kg_generated.ttl": "FRAMEWORK/KNOWLEDGE_BASE/kg_generated.ttl",
+    "vocab_generated.ttl": "FRAMEWORK/VOCABULARY/vocab_generated.ttl",
+    "clinicalEvent_vocab.ttl": "FRAMEWORK/VOCABULARY/seed/clinicalEvent_vocab.ttl",
+    "priority_rank.ttl": "FRAMEWORK/VOCABULARY/priority_rank.ttl",
+    "entities.ttl": "DATA/POC_EVENTS/entities.ttl",
 }
 
 
 def framework_copy_issues() -> list:
     """The POC must reason over the framework as built: each copy in
     MDA-POC/data/ is byte-identical to its FRAMEWORK/ source."""
-    framework = M.DATA_DIR.parent.parent / "FRAMEWORK"
+    root = M.DATA_DIR.parent.parent
     issues = []
     for copy, source in FRAMEWORK_COPIES.items():
-        a, b = M.DATA_DIR / copy, framework / source
+        a, b = M.DATA_DIR / copy, root / source
         if not a.exists() or not b.exists() or a.read_bytes() != b.read_bytes():
-            issues.append(f"MDA-POC/data/{copy} differs from FRAMEWORK/{source}: copy it")
+            issues.append(f"MDA-POC/data/{copy} differs from {source}: copy it")
+    return issues
+
+
+def minting_completeness_issues(kb) -> list:
+    """Every blueprint, minted for one (patient, device), grounds each of its
+    nodes below the device exactly once, and each edge between them exactly
+    once. Counted from the catalogue's blank nodes, not from the walk that
+    minting uses, so a walk that drops a node (one per class, one child per
+    property) or a scaffold that cuts a chain fails here. Referential nodes
+    are vocabulary IRIs, not blank nodes, and are not counted. Also checks
+    the graph contract: the condition graph holds only states (no node
+    types, no edges between nodes), each on a node the background declares."""
+    from rdflib import BNode
+    from rdflib.namespace import RDF
+    issues = []
+    for t in sorted(set(kb.type_index.values()), key=str):
+        devices = [d for msg in kb.catalogue.objects(t, M.MDA.hasMessage)
+                   for d in kb.catalogue.objects(msg, M.MDA.triggeredBy)]
+        if len(devices) != 1:
+            continue
+        nodes, edges, todo = set(), set(), [devices[0]]
+        while todo:
+            n = todo.pop()
+            for p, o in kb.catalogue.predicate_objects(n):
+                if isinstance(o, BNode):
+                    edges.add((n, p, o))
+                    if o not in nodes:
+                        nodes.add(o)
+                        todo.append(o)
+        try:
+            bg, cond = M.ground_chain(kb, M.archetype_structure(kb, t), "P", "D", {})
+        except Exception as e:      # an error here is the finding
+            issues.append(f"{M._local(t)}: {e}")
+            continue
+        g = bg + cond
+        grounded = {s for s, _, _ in g.triples((None, RDF.type, None))}
+        links = [(s, p, o) for s, p, o in g if p != RDF.type and str(o).startswith(str(M.ENTITY))]
+        if len(grounded) != len(nodes) or len(links) != len(edges):
+            issues.append(f"{M._local(t)}: {len(grounded)}/{len(nodes)} nodes, {len(links)}/{len(edges)} edges grounded")
+        # Contract: structure persists, states are transient. The condition
+        # graph holds only states on nodes the background graph declares.
+        structural = [(s, p, o) for s, p, o in cond if p == RDF.type or str(o).startswith(str(M.ENTITY))]
+        if structural:
+            issues.append(f"{M._local(t)}: {len(structural)} node/edge triple(s) in the condition graph, "
+                          f"e.g. {M._local(structural[0][1])}")
+        undeclared = {s for s, _, _ in cond} - grounded - {M.device_iri("P", "D")}
+        if undeclared:
+            issues.append(f"{M._local(t)}: state on a node the background graph does not declare: "
+                          f"{M._local(next(iter(undeclared)))}")
     return issues
 
 
@@ -186,9 +240,9 @@ def blueprint_identity_issues(kb) -> list:
     silently merging alarms of different devices or priorities."""
     import pandas as pd
     from types import SimpleNamespace
-    corpus = pd.read_csv(M.DEVICE_MODELS.parent.parent / "CORPUS" / "Annotation_corpus_75.csv",
+    corpus = pd.read_csv(M.DEVICE_MODELS.parent.parent / "CORPUS" / "Annotation_corpus_99.csv",
                          sep=";", encoding="utf-8-sig", dtype=str)
-    ann = pd.read_csv(M.DEVICE_MODELS.parent / "consensus" / "p75_annotated.csv", sep=";", dtype=str)
+    ann = pd.read_csv(M.DEVICE_MODELS.parent / "consensus" / "p99_annotated.csv", sep=";", dtype=str)
     excl = {M.blueprint_key(m, l, p) for l, p, m, s in
             zip(ann.alarmLabel, ann.alarmPriority, ann["Device.Type"], ann.reviewStatus)
             if str(s).strip() == "EXCL"}
@@ -255,11 +309,14 @@ def run():
     hits = rule_logic_outside_rule_files()
     identity = blueprint_identity_issues(kb)
     copies = framework_copy_issues()
+    completeness = minting_completeness_issues(kb)
     for name, issues in (("no lookahead: at every instant, the script so far is independent of the stream "
                           "after it", problems), ("no rule logic in Python sources", hits),
                          ("blueprint identity: every distinct annotated alarm (device, label, priority) "
                           "resolves to a blueprint of its own", identity),
-                         ("framework copies: MDA-POC/data/ equals the FRAMEWORK/ files", copies)):
+                         ("framework copies: MDA-POC/data/ equals the FRAMEWORK/ and scaffold files", copies),
+                         ("minting completeness: every blueprint grounds each of its nodes and edges once",
+                          completeness)):
         result = "FAIL" if issues else "PASS"
         rows.append(["(engine)", "engine", "invariant", "active", "done", 0, name, result,
                      "; ".join(issues) or "none"])

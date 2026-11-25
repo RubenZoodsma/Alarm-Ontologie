@@ -49,6 +49,7 @@
 @prefix signal:      <https://w3id.org/mda/vocab/signal/> .
 @prefix signalAnalysis: <https://w3id.org/mda/vocab/signal-analysis/> .
 @prefix metric:      <https://w3id.org/mda/vocab/metric/> .
+@prefix metricPhase: <https://w3id.org/mda/vocab/metric-phase/> .
 @prefix metricValueState: <https://w3id.org/mda/vocab/metric-value-state/> .
 @prefix metricRhythm: <https://w3id.org/mda/vocab/metric-rhythm/> .
 @prefix qualitystate: <https://w3id.org/mda/vocab/quality-state/> .
@@ -134,9 +135,13 @@ device:MechanicalVentilator             mda:administers therapeuticModality:Vent
 # under two categories makes the knowledge base inconsistent, which is the
 # intended check (build_framework.py also lists such conflicts).
 #
-# Gateway names without a known model (Medibus: a protocol; Philipsmonitor)
-# have no axiom; their category stays as annotated. Mapping from gateway name
-# to model: DATA/ANNOTATION/device_models.csv.
+# Gateway names without a known model (Medibus: a protocol) have no axiom;
+# their category stays as annotated. Mapping from gateway name to model:
+# DATA/ANNOTATION/device_models.csv.
+#
+# Philipsmonitor: the family name IntelliVue, not a single model (p99
+# curation round, 2026-11-24) — the gateway does not say which IntelliVue
+# model raised an alarm, and the family is uniformly a patient monitor.
 #
 # BabyLeo and BabyTherm: written as Incubator although one alarm each is
 # annotated as MechanicalVentilator (ventilation function of the warmer);
@@ -156,6 +161,8 @@ device:MechanicalVentilator             mda:administers therapeuticModality:Vent
 [ a owl:Restriction ; owl:onProperty mda:hasDeviceType ; owl:hasValue deviceType:Hemosphere ]
     rdfs:subClassOf device:CardiacMonitor .
 [ a owl:Restriction ; owl:onProperty mda:hasDeviceType ; owl:hasValue deviceType:Infinity ]
+    rdfs:subClassOf device:PhysiologicalMonitor .
+[ a owl:Restriction ; owl:onProperty mda:hasDeviceType ; owl:hasValue deviceType:IntelliVue ]
     rdfs:subClassOf device:PhysiologicalMonitor .
 [ a owl:Restriction ; owl:onProperty mda:hasDeviceType ; owl:hasValue deviceType:LeoniPlus ]
     rdfs:subClassOf device:MechanicalVentilator .
@@ -362,92 +369,89 @@ signal:ECG_LA_signal mda:analyzedBy signalAnalysis:ECG_derivation_V6 .
 signal:ECG_LL_signal mda:analyzedBy signalAnalysis:ECG_derivation_V6 .
 signalAnalysis:ECG_derivation_V6 mda:producesSignal signal:ECG_lead_V6 .
 
-## Interpretation -> metric. HeartRateAnalysis ingests the RHYTHM LEADS,
-## not the whole twelve. Continuous monitoring derives rate and arrhythmia
-## from a designated primary lead with a secondary for confirmation, II and
-## III conventionally; the precordials and augmented leads exist for
-## morphology (ST segment, axis), which no alarm in this corpus reports. A
-## future metric such as ST elevation collapses onto its own leads the same
-## way, by adding its own analysis here — that is what this layer is for.
+## Interpretation -> metric. HeartRateAnalysis analyses AN ECG LEAD: the
+## input is the kind signal:ECG_lead (hierarchy.ttl, section B), not a list
+## of specific leads (p99 curation round, 2026-11-24; this replaces the
+## former edges from leads II and III). HeartRateAnalysis gives the RATE
+## only; the rhythm comes from ArrhythmiaAnalysis (below, 2026-11-25).
+## Which lead a monitor uses for rate
+## and rhythm — one selected primary lead, a primary plus a secondary, or
+## several at once — and what it does when that lead fails (continue on
+## another, switch, alarm) is vendor- and configuration-specific device
+## logic, and is deliberately NOT modelled. Listing leads II and III here
+## said more than that, and the wrong thing: every mda:analyzedBy edge is
+## a required input, so two edges claimed rate needs BOTH leads, from all
+## three limb electrodes.
 ##
-## Narrowing this is what lets the SIGNAL slot of an ECG heart-rate alarm
-## resolve to something real instead of the ontology's bare mda:Signal.
-## Which of the two leads a given alarm used is still not determined, so
-## that slot lands on their shared supertype (signal:ECG_signal) rather than
-## on one of them — see build_metric_recipe()/recipe_override().
-signal:ECG_lead_II mda:analyzedBy signalAnalysis:HeartRateAnalysis .
-signal:ECG_lead_III mda:analyzedBy signalAnalysis:HeartRateAnalysis .
+## In an archetype the kind becomes one chain, a node per layer typed by
+## what every lead shares there: some ECG electrode -> some ECG raw signal
+## -> some lead derivation -> some ECG lead -> HeartRateAnalysis
+## (build_framework.py, derivation_graph()). An alarm that names its lead
+## refines the kind and gets that lead's chain written out in full.
+signal:ECG_lead mda:analyzedBy signalAnalysis:HeartRateAnalysis .
 signalAnalysis:HeartRateAnalysis mda:producesMetric metric:HeartRate .
 
-## GROUP TYPES — the supertype every ECG electrode and every ECG signal
-## shares. These are not new concepts: they are the two the researchers were
-## already annotating with (sensor:ElectroCardioGraphy_sensor on "ECG
-## afleidingen los" / "ECG alle leads los", signal:ECG_signal on "ECG
-## artefact"), given a formal place rather than left denoting a whole with
-## no relation to its parts.
-##
-## Their job is to keep a per-alarm node HONEST when the trace is not
-## determined. Before this, an ECG heart-rate alarm asserted "hasSensor [ a
-## mda:Sensor ]" — the ontology's top sensor class, which a pulse oximeter
-## satisfies just as well as an electrode. Saying "some ECG electrode"
-## claims exactly what the alarm does evidence and nothing more.
-##
-## Expressed as subtyping rather than as a SensorGroup entity with a
-## part-of property: a group here is a KIND of sensor, not a thing that has
-## members, so no new class or property is needed and existing queries over
-## mda:Sensor keep working unchanged.
-sensor:ECG_RA_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
-sensor:ECG_LA_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
-sensor:ECG_LL_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
-sensor:ECG_RL_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
-sensor:ECG_V1_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
-sensor:ECG_V2_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
-sensor:ECG_V3_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
-sensor:ECG_V4_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
-sensor:ECG_V5_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
-sensor:ECG_V6_sensor rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
-sensor:ECG_lead_Resp rdfs:subClassOf sensor:ElectroCardioGraphy_sensor .
+## GROUP TYPES (sensor:ElectroCardioGraphy_sensor over every electrode,
+## signal:ECG_signal over every raw and lead signal, and below it the kinds
+## signal:ECG_raw_signal and signal:ECG_lead; signalAnalysis:
+## ECG_lead_derivation over the lead derivations) moved to
+## FRAMEWORK/VOCABULARY/seed/hierarchy.ttl, section B (2026-11-24), with
+## every other curated is-a edge. build_framework.py reads them from there
+## for _shared_supertype(), so ECG alarms without a determined trace still
+## land on "some ECG electrode" / "some ECG signal".
 
-signal:ECG_RA_signal rdfs:subClassOf signal:ECG_signal .
-signal:ECG_LA_signal rdfs:subClassOf signal:ECG_signal .
-signal:ECG_LL_signal rdfs:subClassOf signal:ECG_signal .
-signal:ECG_V1_signal rdfs:subClassOf signal:ECG_signal .
-signal:ECG_V2_signal rdfs:subClassOf signal:ECG_signal .
-signal:ECG_V3_signal rdfs:subClassOf signal:ECG_signal .
-signal:ECG_V4_signal rdfs:subClassOf signal:ECG_signal .
-signal:ECG_V5_signal rdfs:subClassOf signal:ECG_signal .
-signal:ECG_V6_signal rdfs:subClassOf signal:ECG_signal .
-signal:ECG_lead_I rdfs:subClassOf signal:ECG_signal .
-signal:ECG_lead_II rdfs:subClassOf signal:ECG_signal .
-signal:ECG_lead_III rdfs:subClassOf signal:ECG_signal .
-signal:ECG_lead_aVR rdfs:subClassOf signal:ECG_signal .
-signal:ECG_lead_aVL rdfs:subClassOf signal:ECG_signal .
-signal:ECG_lead_aVF rdfs:subClassOf signal:ECG_signal .
-signal:ECG_lead_V1 rdfs:subClassOf signal:ECG_signal .
-signal:ECG_lead_V2 rdfs:subClassOf signal:ECG_signal .
-signal:ECG_lead_V3 rdfs:subClassOf signal:ECG_signal .
-signal:ECG_lead_V4 rdfs:subClassOf signal:ECG_signal .
-signal:ECG_lead_V5 rdfs:subClassOf signal:ECG_signal .
-signal:ECG_lead_V6 rdfs:subClassOf signal:ECG_signal .
-signal:ECG_lead_Impedance rdfs:subClassOf signal:ECG_signal .
-
-## Impedance pneumography reuses the RA and LA electrodes, measuring
-## transthoracic impedance across them rather than potential.
-signal:ECG_RA_signal mda:analyzedBy signalAnalysis:ECG_derivation_Impedance .
-signal:ECG_LA_signal mda:analyzedBy signalAnalysis:ECG_derivation_Impedance .
-signalAnalysis:ECG_derivation_Impedance mda:producesSignal signal:ECG_lead_Impedance .
-signal:ECG_lead_Impedance mda:analyzedBy signalAnalysis:ImpedanceRespirationAnalysis .
+## Impedance pneumography reuses ECG electrodes, measuring transthoracic
+## impedance across two of them rather than potential (the monitor drives a
+## small current through them). It is a separate measurement, not an ECG
+## signal: ThoracicImpedance_signal is not under signal:ECG_signal
+## (2026-11-25; formerly ECG_lead_Impedance / ECG_derivation_Impedance).
+## Which two electrodes is vendor- and configuration-specific (RA-LA or
+## RA-LL) and is NOT modelled (the former RA + LA edges claimed a pair we
+## cannot back up). The input is the respiration electrode(s) in their own
+## right, sensor:ECG_Resp_sensor (2026-11-25): the devices report them
+## separately ("PHILIPSMONITOR - Resp elektr.los"), and an alarm about them
+## must reach only the impedance pathway. Before, the input was the kind
+## signal:ECG_raw_signal ("some ECG electrode"); that made the respiration
+## electrode the same particular as the electrode group a heart-rate alarm
+## rests on, so "resp electrode loose" read as "heart-rate electrode loose".
+## ECG_Resp_sensor is a kind of ECG electrode (hierarchy.ttl, section B),
+## so a state stated on the group ("ECG alle leads los") also covers it:
+## rules read that through rdfs:subClassOf* (CAT1a).
+functionalUnit:FU_ElectroCardiography mda:hasSensor sensor:ECG_Resp_sensor .
+sensor:ECG_Resp_sensor mda:sensorProducesSignal signal:ECG_Resp_signal .
+signal:ECG_Resp_signal mda:analyzedBy signalAnalysis:ThoracicImpedanceDerivation .
+signalAnalysis:ThoracicImpedanceDerivation mda:producesSignal signal:ThoracicImpedance_signal .
+signal:ThoracicImpedance_signal mda:analyzedBy signalAnalysis:ImpedanceRespirationAnalysis .
 signalAnalysis:ImpedanceRespirationAnalysis mda:producesMetric metric:RespirationRate .
 
-# PER-ALARM CONSEQUENCE, and the reason build_metric_recipe() now resolves
-# to a SET: metric:HeartRate is reachable from nine different electrodes
-# here, so no heart-rate alarm determines which one it evidences. The
-# builder asserts a trace only where the set is a singleton, and otherwise
-# stops at the FunctionalUnit — see that function's docstring. Naming one
-# electrode on a high-heart-rate alarm would be a fabrication, not a
-# simplification. Contrast FU_InvasiveBloodPressure, whose two lines are
-# genuine ALTERNATIVES: there, an alarm naming one metric does pick out one
-# trace. The ECG lead set is not alternatives; it is one instrument.
+# PER-ALARM CONSEQUENCE. No heart-rate alarm determines an electrode, a
+# raw signal or a lead; naming one would be a fabrication, not a
+# simplification. The derivation steps themselves ARE required-input
+# steps (lead II needs both RA and LL), so an alarm naming lead II gets
+# both electrodes. Contrast FU_InvasiveBloodPressure, whose analyses are
+# alternatives for different METRICS: an alarm naming one metric picks out
+# one trace.
+
+## ST analysis (p99 curation round, "PHILIPSMONITOR - ST-II hoog"). Per lead:
+## the lead is carried by the alarm's Signal (signal:ECG_lead_II), not
+## folded into a per-lead metric name (the former annotation value
+## "ST_II"). As for heart rate, the input is the kind signal:ECG_lead
+## (which leads a monitor runs ST analysis on is configuration): an ST alarm
+## naming its lead gets that lead's chain in full; one that does not gets
+## the per-layer chain over the kind.
+signal:ECG_lead mda:analyzedBy signalAnalysis:STAnalysis .
+signalAnalysis:STAnalysis mda:producesMetric metric:STSegment .
+
+## Rhythm (2026-11-25): a separate analysis of the lead, not a property of
+## the heart-rate metric. Arrhythmia detection and rate computation are
+## different outputs of ECG analysis; a monitor can lose one without the
+## other ("Cannot analyze ECG" does not say which). Rhythm alarms annotate
+## metric:CardiacRhythm with Metric.Rhythm: asystole (Absent), VF, VT,
+## VentricularFibrillationOrTachycardia, an unspecified arrhythmia
+## (Abnormal). Replaces the former rule that put the rhythm on
+## metric:HeartRate. Same kind input as heart rate and ST.
+signal:ECG_lead mda:analyzedBy signalAnalysis:ArrhythmiaAnalysis .
+signalAnalysis:ArrhythmiaAnalysis mda:producesMetric metric:CardiacRhythm .
 
 
 ####################################################################
@@ -462,15 +466,44 @@ signalAnalysis:SpO2Analysis           mda:producesMetric metric:SpO2 .
 signalAnalysis:PulseAnalysis          mda:producesMetric metric:PulseRate .
 signalAnalysis:PulseFlowIndexAnalysis mda:producesMetric metric:PulseFlowIndex .
 
-## Trace: Invasive blood pressure sensing pathway
-functionalUnit:FU_InvasiveBloodPressure mda:hasSensor sensor:ABP_transducer, sensor:VenousPressureTransducer .
-sensor:ABP_transducer mda:sensorProducesSignal signal:ABP_waveform .
-signal:ABP_waveform    mda:analyzedBy signalAnalysis:ArterialPressureAnalysis .
-signalAnalysis:ArterialPressureAnalysis mda:producesMetric metric:ArterialBloodPressure .
+## Trace: Invasive blood pressure sensing pathway — ONE transducer kind
+##
+## Replaces the former ABP_transducer/ABP_waveform and VenousPressureTransducer/
+## Pressure_waveform pairs (p99 curation round, 2026-11-24). A fluid-filled
+## pressure transducer does not know where its catheter tip sits, and its
+## waveform is just a pressure trace; what makes a reading arterial, central
+## venous or pulmonary-arterial is (a) where the catheter is placed and (b)
+## which analysis names the result. So the site is carried by the sensor's
+## mda:hasAnatomicalPosition (Arterial, Central, PulmonaryArtery, ...) and the
+## quantity by the metric — never by a site-specific sensor or signal kind.
+##
+## Two lines on one patient stay two particulars: hasAnatomicalPosition is
+## mda:refinesParticularIdentity (ontology.ttl), so grounding folds the site
+## into each transducer's entity IRI. The flip side is that an IBP row WITHOUT
+## a position grounds to a third, site-less particular that links to neither
+## — every site-specific IBP row needs Sensor.AnatomicalPosition filled.
+##
+## Each metric still has exactly one trace (one transducer, one waveform, one
+## analysis), so build_metric_recipe() resolves every (FU_InvasiveBloodPressure,
+## Metric) pair to a singleton as before.
+functionalUnit:FU_InvasiveBloodPressure mda:hasSensor sensor:IBP_transducer .
+sensor:IBP_transducer mda:sensorProducesSignal signal:IBP_waveform .
+signal:IBP_waveform   mda:analyzedBy signalAnalysis:ArterialPressureAnalysis,
+                                     signalAnalysis:VenousPressureAnalysis,
+                                     signalAnalysis:PulmonaryArteryPressureAnalysis .
 
-sensor:VenousPressureTransducer mda:sensorProducesSignal signal:Pressure_waveform .
-signal:Pressure_waveform         mda:analyzedBy signalAnalysis:VenousPressureAnalysis .
-signalAnalysis:VenousPressureAnalysis mda:producesMetric metric:VenousBloodPressure .
+signalAnalysis:ArterialPressureAnalysis        mda:producesMetric metric:ArterialBloodPressure .
+signalAnalysis:VenousPressureAnalysis          mda:producesMetric metric:VenousBloodPressure .
+signalAnalysis:PulmonaryArteryPressureAnalysis mda:producesMetric metric:PulmonaryArteryPressure .
+
+## Trace: Intracranial pressure sensing pathway (p99, "Monitor - Lage ICP").
+## Its own transducer kind, unlike the vascular lines above: an ICP probe
+## (intraparenchymal or ventricular) is a different device from a
+## fluid-filled vascular transducer, not the same one placed elsewhere.
+functionalUnit:FU_IntraCranialPressure mda:hasSensor sensor:ICP_transducer .
+sensor:ICP_transducer mda:sensorProducesSignal signal:ICP_waveform .
+signal:ICP_waveform   mda:analyzedBy signalAnalysis:ICPAnalysis .
+signalAnalysis:ICPAnalysis mda:producesMetric metric:IntraCranialPressure .
 
 ## Trace: Airway pressure sensing pathway
 functionalUnit:FU_AirwayPressure mda:hasSensor sensor:AW_transducer .
@@ -489,6 +522,16 @@ signalAnalysis:AirwayPressureAnalysis mda:producesMetric metric:AirwayPressure .
 # distinction is clinically real is kept, now on the therapy rather than on
 # the metric. See CURATION_LOG.md, decision 38.
 
+## Trace: Edi sensing pathway (2026-11-25, p99 "SERVOU - Edi storing door
+## ECG"). Edi is the electrical activity of the diaphragm, picked up by the
+## electrodes of the Servo-U's NAVA catheter in the oesophagus; the catheter
+## is modelled as one sensor. FU_Edi, not FU_NAVA: NAVA is the ventilation
+## mode that uses the signal, Edi is the measurement. No analysis or metric
+## yet: the only Edi alarm in the corpus is about the signal itself (ECG
+## interference picked up by the catheter), not about an Edi value.
+functionalUnit:FU_Edi mda:hasSensor sensor:Edi_catheter .
+sensor:Edi_catheter mda:sensorProducesSignal signal:Edi_signal .
+
 ## Trace: Ventilation volume sensing pathway
 functionalUnit:FU_PneumoTachograph mda:hasSensor sensor:PneumoTachograph .
 
@@ -500,6 +543,13 @@ signal:AirwayFlow_waveform mda:analyzedBy signalAnalysis:VolumeAnalysis,
 
 signalAnalysis:VolumeAnalysis          mda:producesMetric metric:RespirationVolume .
 signalAnalysis:RespiratoryRateAnalysis mda:producesMetric metric:RespirationRate .
+
+# Delivered volume (the "volume not achieved / not constant / blocked"
+# alarms) is integrated from the same flow waveform as the respiration
+# volumes. Without a producing step its archetypes fell back to whatever the
+# CSV row named (generic mda:Sensor/mda:Signal on rows with a blank Sensor)
+# and split one pathway in two (CQ2). CURATION_LOG.md, decision 40.
+signalAnalysis:VolumeAnalysis          mda:producesMetric metric:DeliveredVolume .
 
 # LeakAnalysis added in the 2026-09 curation round. metric:VentilationCircuit
 # Leak used to be annotated under TWO functional units — FU_PneumoTachograph
@@ -522,8 +572,14 @@ signalAnalysis:LeakAnalysis            mda:producesMetric metric:VentilationCirc
 functionalUnit:FU_Capnograph mda:hasSensor sensor:Capnometer .
 
 sensor:Capnometer mda:sensorProducesSignal signal:Capnogram_waveform .
+
+## Trace: CO2 sensing pathway
 signal:Capnogram_waveform mda:analyzedBy signalAnalysis:CO2Analysis .
 signalAnalysis:CO2Analysis mda:producesMetric metric:CO2 .
+
+## Trace: awRF sensing pathway
+signal:Capnogram_waveform mda:analyzedBy signalAnalysis:awRFAnalysis .
+signalAnalysis:awRFAnalysis mda:producesMetric metric:RespirationRate .
 
 ## Trace: Humidity sensing pathway
 functionalUnit:FU_Humidity mda:hasSensor sensor:Humidity_sensor .
@@ -532,47 +588,188 @@ sensor:Humidity_sensor mda:sensorProducesSignal signal:Humidity_signal .
 signal:Humidity_signal mda:analyzedBy signalAnalysis:HumidityAnalysis .
 signalAnalysis:HumidityAnalysis mda:producesMetric metric:Humidity .
 
-## Trace: Temperature sensing pathways — TWO probes, not one
-##
-## FU_Temperature serves two different readings that were previously served
-## by one chain, which is why the two patient-temperature alarms
-## (PHILIPSMONITOR - ?? Temp hoog / Temp laag) dead-ended on a bare
-## mda:Sensor: the recipe is keyed on (FunctionalUnit, Metric), and the only
-## chain here produced metric:AirTemperature, so the key
-## (FU_Temperature, Temperature) matched nothing.
-##
-## They are two probes because they are two probes in the room. An incubator
-## air probe hangs in the hood; a patient probe is on or in the patient.
-## Nothing about one is derivable from the other, and neither is an
-## aggregate or a phase of the other — so this is the FU_InvasiveBloodPressure
-## pattern (arterial and venous transducers on one unit), not the
-## FU_ElectroCardiography pattern (one electrode set, many derived leads).
-##
-## The former sensor:Temperature_sensor is renamed to make that split
-## legible: a bare "Temperature_sensor" producing specifically an AIR
-## temperature was the ambiguity that hid this. Both names are
-## inference-authored only — no CSV row names either — so the rename costs
-## nothing downstream.
-##
-## The patient probe is deliberately unqualified. Peripheral and core
-## temperature are clinically different readings, but the alarm export does
-## not say which this is, so the framework must not assume one. Should a
-## corpus ever distinguish them, they refine off metric:Temperature the same
-## way the pre-coordinated metrics do.
+## Trace: NIBP sensing pathway
+functionalUnit:FU_NIBP mda:hasSensor sensor:NIBP_cuff .
 
-## Trace: Temperature sensing pathway — incubator air
+sensor:NIBP_cuff mda:sensorProducesSignal signal:NIBP_signal .
+signal:NIBP_signal mda:analyzedBy signalAnalysis:NIBPAnalysis .
+signalAnalysis:NIBPAnalysis mda:producesMetric metric:ArterialBloodPressure .
+
+## Trace: Temperature sensing pathways — TWO probe kinds, not one
+##
+## FU_Temperature serves two different readings: the temperature of the
+## patient's body, and the temperature of the air around the patient (the
+## incubator hood). They are two probes because they are two probes in the
+## room: nothing about one is derivable from the other, and neither is an
+## aggregate or a phase of the other. So this is the FU_InvasiveBloodPressure
+## pattern (several transducers on one unit), not the FU_ElectroCardiography
+## pattern (one electrode set, many derived leads).
+##
+## Naming (p99 curation round, 2026-11-24). The body probe was
+## PatientTemperature_sensor and its metric metric:Temperature. "Patient" is
+## dropped (no other sensor says whose signal it is: there is no
+## PatientHeartRate_sensor), and the metric is named for what it measures,
+## BODY temperature, against AIR temperature. The annotation workbook had
+## four ad-hoc names for the body probe (TemperatureSensor,
+## BodyTemperatureSensor, BloodTemperatureSensor, BloodTemperature_Sensor);
+## all are now sensor:BodyTemperature_sensor.
+##
+## WHERE ON THE BODY: the probe's mda:hasAnatomicalPosition, as for the IBP
+## transducer, never a site-specific sensor or metric. Skin, core, rectal and
+## blood temperature are one quantity measured at different sites; the alarm
+## label names the site (Philips Thuid / Tkern / Trect / Tbloed), so the
+## annotation carries it on the probe: Skin, Core, Rectal, Intravascular.
+## Intravascular, not PulmonaryArtery: a blood-temperature channel does not
+## say which catheter feeds it. hasAnatomicalPosition refines particular
+## identity, so each site is its own probe particular ("Trect hoog" and
+## "Trect geen sensor" share the rectal probe; "Temp geen sensor" does not),
+## and a row without a position is a third, site-less probe. Every row on a
+## site-specific channel needs Sensor.AnatomicalPosition filled. Cost
+## accepted: a bridge cannot differ by site (skin temperature as an
+## indicator of peripheral perfusion is not expressed).
+##
+## Not here: the temperature of blood in an extracorporeal circuit
+## (CARDIOHELP TArt). It is measured after the heat exchanger, so it reports
+## the device's thermal output rather than the body, and "Arterial" there
+## names the circuit's line, not the patient's anatomy. It belongs with the
+## CardioHelp recipe, still to be written.
+
+## Trace: Temperature sensing pathway — air (incubator hood)
 functionalUnit:FU_Temperature mda:hasSensor sensor:AirTemperature_sensor .
 
 sensor:AirTemperature_sensor mda:sensorProducesSignal signal:AirTemperature_signal .
 signal:AirTemperature_signal mda:analyzedBy signalAnalysis:AirTemperatureAnalysis .
 signalAnalysis:AirTemperatureAnalysis mda:producesMetric metric:AirTemperature .
 
-## Trace: Temperature sensing pathway — patient body
-functionalUnit:FU_Temperature mda:hasSensor sensor:PatientTemperature_sensor .
+## Trace: Temperature sensing pathway — body
+functionalUnit:FU_Temperature mda:hasSensor sensor:BodyTemperature_sensor .
 
-sensor:PatientTemperature_sensor mda:sensorProducesSignal signal:PatientTemperature_signal .
-signal:PatientTemperature_signal mda:analyzedBy signalAnalysis:PatientTemperatureAnalysis .
-signalAnalysis:PatientTemperatureAnalysis mda:producesMetric metric:Temperature .
+sensor:BodyTemperature_sensor mda:sensorProducesSignal signal:BodyTemperature_signal .
+signal:BodyTemperature_signal mda:analyzedBy signalAnalysis:BodyTemperatureAnalysis .
+signalAnalysis:BodyTemperatureAnalysis mda:producesMetric metric:BodyTemperature .
+
+## Trace: Pulmonary artery catheter thermodilution (Edwards HemoSphere,
+## Swan-Ganz module; p99 curation round, 2026-11-24). The catheter's thermal
+## filament heats the blood in pulses; its thermistor, further downstream,
+## records the resulting blood-temperature curve. The catheter is the
+## sensor (as sensor:OximetryCatheter is for oximetry); the filament is a
+## part of it, not a second sensor. From the one curve come the two values
+## the module actually MEASURES: cardiac output, and right-ventricular
+## ejection fraction (from the curve's beat-to-beat decay, which is why the
+## RVEF step also takes heart rate, see Derived metrics below). Everything
+## else the module shows is computed from these.
+##
+## Cardiac output by THERMODILUTION is one method among several: the
+## HemoSphere can also take cardiac output from an arterial pressure
+## waveform (FloTrac) or a finger cuff (ClearSight). The corpus has no
+## alarms from those, so whether they are used here is unknown, and they
+## are not modelled. What is stated instead (p99 curation round,
+## 2026-11-24):
+##   - signalAnalysis:CardiacOutputAnalysis produces cardiac output, with
+##     NO stated input: "cardiac output is computed on this unit, from a
+##     signal we do not know". An alarm on cardiac output, or on a metric
+##     derived from it, gets that step fed by a blank sensor and signal of
+##     the functional unit (build_framework.py, derivation_graph()), so it
+##     does not claim that a Swan-Ganz catheter is attached.
+##   - signalAnalysis:ThermodilutionAnalysis (a subclass, hierarchy.ttl) is
+##     the Swan-Ganz method, with the blood-temperature curve as its
+##     required input. It is used only where the row names something on
+##     its route.
+## RVEF has no other method: an RVEF alarm (and so EDV/EDVI, which take
+## RVEF) does reach the Swan-Ganz catheter, through RVEFAnalysis.
+functionalUnit:FU_HaemoDynamics mda:hasSensor sensor:SwanGanzCatheter .
+sensor:SwanGanzCatheter mda:sensorProducesSignal signal:BloodTemperature_waveform .
+signal:BloodTemperature_waveform mda:analyzedBy signalAnalysis:ThermodilutionAnalysis,
+                                                signalAnalysis:RVEFAnalysis .
+signalAnalysis:ThermodilutionAnalysis mda:producesMetric metric:CardiacOutput .
+signalAnalysis:CardiacOutputAnalysis  mda:producesMetric metric:CardiacOutput .   # input not stated: method unknown
+signalAnalysis:RVEFAnalysis           mda:producesMetric metric:RightVentricleEjectionFraction .
+
+## Trace: Intravascular oximetry (Edwards oximetry cable with a fibre-optic
+## catheter; reflection spectrophotometry). One catheter kind for both
+## mixed venous (SvO2, pulmonary artery) and central venous (ScvO2) oxygen
+## saturation: the site is the sensor's mda:hasAnatomicalPosition, as for
+## the IBP transducer, not a separate sensor or metric.
+functionalUnit:FU_IV_Oximetry mda:hasSensor sensor:OximetryCatheter .
+sensor:OximetryCatheter mda:sensorProducesSignal signal:OximetryWaveform .
+signal:OximetryWaveform mda:analyzedBy signalAnalysis:VenousOxygenSaturationAnalysis .
+signalAnalysis:VenousOxygenSaturationAnalysis mda:producesMetric metric:VenousOxygenSaturation .
+
+
+####################################################################
+# Derived metrics: analysis steps that take METRICS as input
+####################################################################
+#
+# A metric that a device computes from other metrics rather than from a
+# signal of its own: cardiac index from cardiac output and body surface
+# area, systemic vascular resistance from cardiac output and the arterial
+# and venous pressures. Expressed with the same vocabulary as the sensing
+# pathways: the input metric mda:analyzedBy an analysis step, which
+# mda:producesMetric the derived metric (mda:analyzedBy's domain is
+# Signal OR Metric, see ontology.ttl). An analysis may mix the two kinds of
+# input: RVEF comes from the thermodilution curve AND heart rate.
+#
+# RULES
+#   - Every mda:analyzedBy edge into a step is a REQUIRED input (here and
+#     in every sensing pathway). A step that works on any one of several
+#     signals takes their kind as its single input (the ECG heart-rate step
+#     takes signal:ECG_lead), so no device switching logic is modelled.
+#   - One output metric per analysis step. A step with several inputs and
+#     several outputs would lose which input feeds which output (cardiac
+#     output feeds the cardiac index, stroke volume feeds the stroke volume
+#     index; one shared "indexation" step could not say so).
+#   - The input metric is a concept, so qualifiers are not expressed: SVR
+#     uses MEAN arterial pressure and CENTRAL venous pressure, which this
+#     level cannot say. Accepted (p99 curation round).
+#   - An input may come from another device. HemoSphere takes heart rate,
+#     arterial and central venous pressure from the bedside monitor
+#     ("EDV: Heart Rate Signal Loss"), and body surface area from the height
+#     and weight a nurse enters. The edges record the dependency; they do
+#     not put the other device's sensor into this device's trace, because
+#     build_metric_recipe() walks only from the functional unit's own
+#     sensors.
+#   - metric:BodySurfaceArea is an input only: no sensing pathway, no
+#     approximates bridge (it describes the patient's size, not a
+#     physiological function).
+#
+# HOW AN ALARM USES THIS. An alarm on a derived metric gets the derivation
+# written out in its archetype, every edge a true one: a cardiac-index alarm
+# on FU_HaemoDynamics reads (some sensor) -> (some signal) ->
+# CardiacOutputAnalysis -> CardiacOutput -> CardiacIndexAnalysis ->
+# CardiacIndex (the cardiac-output method is unknown, see the Swan-Ganz
+# trace above), and an end-diastolic-volume alarm keeps both inputs of its
+# many-to-one step (stroke volume, itself from cardiac output, and the
+# ejection fraction, from the Swan-Ganz catheter). Only inputs that start at
+# the functional unit's own sensors appear (build_framework.py:
+# derivation_graph()). The alarm's own metric is the one metric node with
+# no outgoing mda:analyzedBy; intermediate metric nodes carry no state from
+# the alarm, and are the same particulars a cardiac-output alarm on the
+# same device concerns.
+
+metric:CardiacOutput mda:analyzedBy signalAnalysis:CardiacIndexAnalysis,
+                                    signalAnalysis:StrokeVolumeAnalysis,
+                                    signalAnalysis:SVRAnalysis .
+metric:HeartRate     mda:analyzedBy signalAnalysis:StrokeVolumeAnalysis,
+                                    signalAnalysis:RVEFAnalysis .
+metric:StrokeVolume  mda:analyzedBy signalAnalysis:StrokeVolumeIndexAnalysis,
+                                    signalAnalysis:EndDiastolicVolumeAnalysis .
+metric:RightVentricleEjectionFraction mda:analyzedBy signalAnalysis:EndDiastolicVolumeAnalysis .
+metric:EndDiastolicVolume mda:analyzedBy signalAnalysis:EndDiastolicVolumeIndexAnalysis .
+metric:ArterialBloodPressure mda:analyzedBy signalAnalysis:SVRAnalysis .
+metric:VenousBloodPressure   mda:analyzedBy signalAnalysis:SVRAnalysis .
+metric:SystemicVascularResistance mda:analyzedBy signalAnalysis:SVRIAnalysis .
+metric:BodySurfaceArea mda:analyzedBy signalAnalysis:CardiacIndexAnalysis,
+                                      signalAnalysis:StrokeVolumeIndexAnalysis,
+                                      signalAnalysis:EndDiastolicVolumeIndexAnalysis,
+                                      signalAnalysis:SVRIAnalysis .
+
+signalAnalysis:CardiacIndexAnalysis            mda:producesMetric metric:CardiacIndex .               # CO / BSA
+signalAnalysis:StrokeVolumeAnalysis            mda:producesMetric metric:StrokeVolume .               # CO / HR
+signalAnalysis:StrokeVolumeIndexAnalysis       mda:producesMetric metric:StrokeVolumeIndex .          # SV / BSA
+signalAnalysis:EndDiastolicVolumeAnalysis      mda:producesMetric metric:EndDiastolicVolume .         # SV / RVEF
+signalAnalysis:EndDiastolicVolumeIndexAnalysis mda:producesMetric metric:EndDiastolicVolumeIndex .    # EDV / BSA
+signalAnalysis:SVRAnalysis                     mda:producesMetric metric:SystemicVascularResistance . # 80 (MAP - CVP) / CO
+signalAnalysis:SVRIAnalysis                    mda:producesMetric metric:SystemicVascularResistanceIndex . # SVR x BSA
 
 
 ####################################################################
@@ -668,7 +865,12 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
                 [ a owl:Class ; owl:intersectionOf ( metric:PulseRate
                     [ a owl:Restriction ; owl:onProperty mda:hasRhythm ; owl:hasValue metricRhythm:Absent ] ) ] ] ) ] ] )
 ] rdfs:subClassOf
-  [ a owl:Restriction ; owl:onProperty mda:hasQualityState ; owl:hasValue qualitystate:Impaired ] .
+  [ a owl:Restriction ; owl:onProperty mda:hasQualityState ; owl:hasValue qualitystate:Pulseless ] .
+# Entails Pulseless, the specific cause, rather than plain Impaired (p99
+# curation round, 2026-11-24): a pulse-rate analysis finding no pulse is a
+# PPG without pulsatility. Impaired still follows, through
+# qualitystate:Pulseless mda:refinesConcept qualitystate:Impaired
+# (seed/hierarchy.ttl) and the hasQualityState chain in ontology.ttl.
 
 [ a owl:Class ; owl:intersectionOf ( mda:Signal
     [ a owl:Restriction ; owl:onProperty mda:analyzedBy ;
@@ -733,7 +935,7 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
 # No owl:intersectionOf at any hop, unlike the Signal quality axioms above —
 # deliberately, not an oversight. Every intermediate hop's type is ALREADY
 # guaranteed by rdfs:domain/rdfs:range (sensorProducesSignal is domain
-# Sensor/range Signal, analyzedBy is domain Signal/range SignalAnalysis,
+# Sensor/range Signal, analyzedBy is range SignalAnalysis,
 # producesMetric is domain SignalAnalysis/range Metric — see their own
 # declarations in ontology.ttl), so wrapping each someValuesFrom target in
 # an owl:intersectionOf with that same class was asking OWL-RL's cls-int1/
@@ -754,6 +956,29 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
       owl:someValuesFrom
         [ a owl:Restriction ; owl:onProperty mda:producesMetric ;
           owl:someValuesFrom mda:Metric ] ]
+] rdfs:subClassOf
+  [ a owl:Restriction ; owl:onProperty mda:hasSensorOperationState ; owl:hasValue opstate:Enabled ] .
+
+# The same evidence one derivation layer further out (p99 curation round,
+# 2026-11-24): a sensor whose raw signal is first turned into a derived
+# signal, and only that is analysed into a metric — an ECG electrode, whose
+# raw signal becomes a lead (build_framework.py now writes that layer out
+# instead of collapsing it, so the axiom above no longer reaches the
+# electrode). For a heart-rate alarm this gives "some ECG electrode is
+# Enabled", which is all the alarm evidences: which electrodes the monitor
+# actually used is not modelled (see the ECG pathway). The derived metrics
+# of the HemoSphere need no deeper variant: their chain starts with a
+# measured metric, which the axiom above already matches.
+[ a owl:Restriction ; owl:onProperty mda:sensorProducesSignal ;
+  owl:someValuesFrom
+    [ a owl:Restriction ; owl:onProperty mda:analyzedBy ;
+      owl:someValuesFrom
+        [ a owl:Restriction ; owl:onProperty mda:producesSignal ;
+          owl:someValuesFrom
+            [ a owl:Restriction ; owl:onProperty mda:analyzedBy ;
+              owl:someValuesFrom
+                [ a owl:Restriction ; owl:onProperty mda:producesMetric ;
+                  owl:someValuesFrom mda:Metric ] ] ] ]
 ] rdfs:subClassOf
   [ a owl:Restriction ; owl:onProperty mda:hasSensorOperationState ; owl:hasValue opstate:Enabled ] .
 
@@ -842,6 +1067,9 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
 # sensor, not on the functional unit, not on the device — because the
 # baseline axiom only fires on a pathway that reaches a Metric and those
 # three reach none. A judged signal is proof the sensor produced it.
+# (Since 2026-11-25 the ECG artefact alarms put the quality state on the
+# derived lead, not on the electrode's own signal; the derived-signal
+# variant of the quality rung below reaches them.)
 #
 # Each remaining rung looks exactly one hop down and asserts on itself, so
 # the chain composes without any rung needing to know the pathway's depth.
@@ -875,6 +1103,28 @@ component:PowerUnit      rdfs:subClassOf mda:CriticalComponent .
       owl:someValuesFrom
         [ a owl:Restriction ; owl:onProperty mda:hasQualityState ;
           owl:someValuesFrom owl:Thing ] ] )
+] rdfs:subClassOf
+  [ a owl:Restriction ; owl:onProperty mda:hasSensorOperationState ; owl:hasValue opstate:Enabled ] .
+
+# The same evidence one derivation layer further out (2026-11-25): a sensor
+# whose raw signal is turned into a derived signal, and the DERIVED signal
+# carries the quality state. The ECG artefact alarms (Monitor - ECG
+# artefact, PHILIPSMONITOR - ECG ruissignaal, PHILIPSMONITOR - Niet te leren
+# ECG) annotate the lead, not the electrode's raw signal, so the rung above
+# no longer reaches the electrode. Mirrors the derived-signal variant of the
+# sensor baseline axiom. Gives "some ECG electrode is Enabled": the lead was
+# produced and judged, so the electrodes it is derived from delivered.
+# Interim: a property chain over "feeds signal" is to replace both variants
+# (any depth) in a later round.
+[ a owl:Class ; owl:intersectionOf ( mda:Sensor
+    [ a owl:Restriction ; owl:onProperty mda:sensorProducesSignal ;
+      owl:someValuesFrom
+        [ a owl:Restriction ; owl:onProperty mda:analyzedBy ;
+          owl:someValuesFrom
+            [ a owl:Restriction ; owl:onProperty mda:producesSignal ;
+              owl:someValuesFrom
+                [ a owl:Restriction ; owl:onProperty mda:hasQualityState ;
+                  owl:someValuesFrom owl:Thing ] ] ] ] )
 ] rdfs:subClassOf
   [ a owl:Restriction ; owl:onProperty mda:hasSensorOperationState ; owl:hasValue opstate:Enabled ] .
 
@@ -1077,10 +1327,94 @@ metric:ArterialBloodPressure rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:ArterialPressure ] .
 
-# Renamed from VenousPressure in the same unification pass.
+# Renamed from VenousPressure in the same unification pass. Central venous
+# pressure (Philips "CVD") is this metric with the transducer at position
+# Central — no separate CentralVenousPressure metric (p99 curation round).
 metric:VenousBloodPressure rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:VenousPressure ] .
+
+# Pulmonary artery pressure (p99: "Hoge/Lage PA M", "PAP geen puls"). Its
+# own metric and property, NOT ArterialBloodPressure at position
+# PulmonaryArtery: that would bridge to the systemic ArterialPressure, and
+# pulmonary artery pressure is governed by the right ventricle and
+# pulmonary vascular resistance, not by systemic resistance. Same
+# transducer and waveform as every other IBP line (see the IBP recipe).
+metric:PulmonaryArteryPressure rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:PulmonaryArteryPressure ] .
+
+# Intracranial pressure (p99: "Monitor - Lage ICP").
+metric:IntraCranialPressure rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:IntraCranialPressure ] .
+# Cerebral perfusion pressure (p99: "Monitor - Hoge CPP", "Monitor - Lage
+# CPP"; 2026-11-25). Its own property, as planned in the IntraCranialPressure
+# note below: CPP = MAP - ICP is the pressure gradient driving cerebral
+# blood flow, not ICP and not arterial pressure. Bridged so that CAT2a (same
+# property) and other consumers can reach it. Still open: the derived-metric
+# recipe (an analysis step consuming ArterialBloodPressure and
+# IntraCranialPressure, see Derived metrics).
+metric:CerebralPerfusionPressure rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:CerebralPerfusionPressure ] .
+
+# Haemodynamics (Edwards HemoSphere; p99 curation round, 2026-11-24). An
+# indexed metric (divided by body surface area) approximates the SAME
+# property as its unindexed metric: indexing corrects for body size, it does
+# not measure something else. Not placed under the unindexed metric in
+# hierarchy.ttl either, since "every cardiac index is a cardiac output"
+# fails on its unit. The shared property is what groups them.
+metric:CardiacOutput rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:CardiacOutput ] .
+metric:CardiacIndex rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:CardiacOutput ] .
+metric:StrokeVolume rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:StrokeVolume ] .
+metric:StrokeVolumeIndex rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:StrokeVolume ] .
+metric:EndDiastolicVolume rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:VentricularPreload ] .
+metric:EndDiastolicVolumeIndex rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:VentricularPreload ] .
+metric:RightVentricleEjectionFraction rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:VentricularEjectionFraction ] .
+metric:SystemicVascularResistance rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:SystemicVascularResistance ] .
+metric:SystemicVascularResistanceIndex rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:SystemicVascularResistance ] .
+metric:VenousOxygenSaturation rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:VenousOxygenSaturation ] .
+# metric:BodySurfaceArea: deliberately no bridge (see Derived metrics).
+# Haemoglobin and haematocrit (p99: "CARDIOHELP - Hb/Hct onder
+# waarschuwingsgrens"; 2026-11-25). Unlike the circuit's temperature (TArt)
+# or pressures, the blood in an extracorporeal circuit IS the patient's
+# blood, so these are patient measurements. Both measure the red-cell mass
+# that carries oxygen, so both approximate ONE property: they differ in unit
+# (concentration vs volume fraction), not in what they say about the
+# patient. Consequence, intended: under CAT2a (same property) a low Hb and
+# a low Hct silence each other.
+metric:Hemoglobin rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:OxygenCarryingCapacity ] .
+metric:Hematocrit rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:OxygenCarryingCapacity ] .
+# metric:LinePressure (and LinePressure_Entry, "CARDIOHELP - pInt"):
+# deliberately no bridge (2026-11-25), on the same ground as
+# VentilationCircuitLeak, AirTemperature and inspired CO2: a pressure inside
+# the extracorporeal circuit (pump, oxygenator) describes the circuit, not a
+# physiological property of the patient.
 
 metric:PulseFlowIndex rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
@@ -1089,6 +1423,20 @@ metric:PulseFlowIndex rdfs:subClassOf
 metric:HeartRate rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:ElectricalHeartRate ] .
+
+# Cardiac rhythm (2026-11-25): the ECG-derived rhythm, separate from rate.
+metric:CardiacRhythm rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:ElectricalCardiacRhythm ] .
+
+# ST segment (p99: "PHILIPSMONITOR - ST-II hoog"). Approximates myocardial
+# repolarisation; routed to CardiacContraction below. Clinically an ST
+# deviation is read as ischaemia, i.e. a myocardial oxygen-supply question —
+# a CoronaryPerfusion process was considered and not introduced for one
+# alarm; revisit if more ST alarms enter the corpus.
+metric:STSegment rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty mda:approximates ;
+      owl:hasValue physiologicalProperty:MyocardialRepolarization ] .
 
 # Renamed from Pulse in p75_annotated.csv's unification pass — the metric
 # now shares its local name with physiologicalProperty:PulseRate (distinct
@@ -1101,16 +1449,32 @@ metric:PulseRate rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:PulseRate ] .
 
-# CO2Analysis (FunctionalUnit recipes above) produces plain metric:CO2, not
-# a phase-refined concept — bridge the base, not a hand-typed "CO2_EndTidal"
-# that nothing in the pipeline actually instantiates (its suffix doesn't
-# even match a real metricPhase: notation — only EndExpiratory/Mean/Minute/
-# Tidal exist). Found while auditing this file: the previous axiom bridged
-# a concept the KG generator can never produce, so a CO2 alarm would have
-# dead-ended with no approximates link at all.
-metric:CO2 rdfs:subClassOf
-    [ a owl:Restriction ; owl:onProperty mda:approximates ;
-      owl:hasValue physiologicalProperty:PaCO2 ] .
+# CO2: the bridge sits on the END-EXPIRATORY concept, not on metric:CO2
+# (p99 curation round, 2026-11-24; previously on the base). For most metrics
+# the phase only says WHEN in the breath a value is read and every phase
+# approximates the same property — AirwayPressure_Peak and _EndExpiratory
+# both inherit RespirationPressure from the base below. CO2 is the
+# exception: the phase selects WHICH GAS is sampled. End-expiratory gas is
+# alveolar gas, equilibrated with arterial blood, and that equilibrium is
+# the only reason etCO2 approximates PaCO2. Inspired CO2 ("imCO2 hoog") is
+# circuit gas — rebreathing, dead space — and approximates no patient
+# property at all. Under OWL-RL a bridge on the base is inherited by every
+# phase-refined subclass and cannot be overridden, so a base bridge made
+# imCO2 claim PaCO2.
+#
+# The concept is defined here by hand (CO2 with phase EndExpiratory) rather
+# than relying on the generator's identically-shaped pre-coordinated
+# concept, so the bridge does not hang on a generated IRI: if the phase
+# notation is ever renamed, build_framework.py's approximates check warns
+# about an unbridged metric instead of the link vanishing silently.
+metric:CO2_EndExpiratory
+    owl:equivalentClass
+        [ a owl:Class ; owl:intersectionOf ( metric:CO2
+            [ a owl:Restriction ; owl:onProperty mda:hasPhase ;
+              owl:hasValue metricPhase:EndExpiratory ] ) ] ;
+    rdfs:subClassOf
+        [ a owl:Restriction ; owl:onProperty mda:approximates ;
+          owl:hasValue physiologicalProperty:PaCO2 ] .
 
 # Renamed from RespiratoryRate — p75_annotated.csv had briefly carried both
 # spellings (a genuine typo on one Datex-Ohmeda row, not a distinct
@@ -1141,14 +1505,17 @@ metric:AirwayPressure rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:RespirationPressure ] .
 
-metric:AirTemperature rdfs:subClassOf
-    [ a owl:Restriction ; owl:onProperty mda:approximates ;
-      owl:hasValue physiologicalProperty:Temperature ] .
+# metric:AirTemperature is deliberately left unbridged (p99 curation round,
+# 2026-11-24), on the same ground as VentilationCircuitLeak: the air in an
+# incubator hood is the patient's environment, not a physiological
+# measurement of the patient. An incubator alarm still reaches
+# ThermoRegulation honestly, through the therapy the device administers
+# (device:Incubator administers ThermoRegulationTherapy, which
+# targetsProcess ThermoRegulation, see below).
 
-# Patient body temperature (PhysiologicalMonitor), as opposed to
-# AirTemperature's ambient/incubator reading — both approximate the same
-# Temperature property today; a future model may want to split them.
-metric:Temperature rdfs:subClassOf
+# Body temperature, at whatever site the probe sits (see the temperature
+# trace).
+metric:BodyTemperature rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:approximates ;
       owl:hasValue physiologicalProperty:Temperature ] .
 
@@ -1208,12 +1575,9 @@ therapeuticModality:VentilationTherapy rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:targetsProcess ;
       owl:hasValue physiologicalProcess:PulmonaryVentilation ] .
 
-# CPAP is a mode of ventilation therapy (decision 38): as a subclass it
-# inherits VentilationTherapy's targetsProcess above and the therapy-
-# delivery-quality axioms scoped to VentilationTherapy (leak, malfunction,
-# disconnected circuit). Consumers that match rdf:type without reasoning
-# (MDA-POC) must follow rdfs:subClassOf* to see it.
-therapeuticModality:CPAP rdfs:subClassOf therapeuticModality:VentilationTherapy .
+# CPAP ⊑ VentilationTherapy (decision 38) moved to FRAMEWORK/VOCABULARY/seed/
+# hierarchy.ttl, section B (2026-11-24). It still inherits the targetsProcess
+# above and the therapy-delivery-quality axioms scoped to VentilationTherapy.
 
 therapeuticModality:ThermoRegulationTherapy rdfs:subClassOf
     [ a owl:Restriction ; owl:onProperty mda:targetsProcess ;
@@ -1266,6 +1630,7 @@ physiologicalProperty:RespirationRate    mda:isPropertyOf physiologicalProcess:P
 physiologicalProperty:RespirationVolume  mda:isPropertyOf physiologicalProcess:PulmonaryVentilation .
 physiologicalProperty:RespirationPressure mda:isPropertyOf physiologicalProcess:PulmonaryVentilation .
 physiologicalProperty:ElectricalHeartRate mda:isPropertyOf physiologicalProcess:CardiacContraction .
+physiologicalProperty:ElectricalCardiacRhythm mda:isPropertyOf physiologicalProcess:CardiacContraction .
 physiologicalProperty:PulseRate          mda:isPropertyOf physiologicalProcess:CardiacContraction .
 
 # SystemicCirculation split into its arterial and venous sides — distinct
@@ -1293,6 +1658,55 @@ physiologicalProperty:VenousPressure     mda:isPropertyOf physiologicalProcess:V
 physiologicalProperty:TissuePerfusion    mda:isPropertyOf physiologicalProcess:CardiacContraction,
                                                            physiologicalProcess:ArterialCirculation .
 physiologicalProperty:Temperature        mda:isPropertyOf physiologicalProcess:ThermoRegulation .
+
+# p99 curation round (2026-11-24).
+physiologicalProperty:MyocardialRepolarization mda:isPropertyOf physiologicalProcess:CardiacContraction .
+
+# PulmonaryArteryPressure: a property of the pulmonary circulation (right
+# ventricular output against pulmonary vascular resistance), deliberately
+# not of CardiacContraction — the same restraint as VenousPressure above.
+physiologicalProperty:PulmonaryArteryPressure mda:isPropertyOf physiologicalProcess:PulmonaryCirculation .
+
+# IntraCranialPressure: the pressure of the intracranial compartment, set
+# (Monro–Kellie) by the volumes of brain tissue, blood and cerebrospinal
+# fluid — so a property of the two processes that move those volumes, the
+# cerebral blood circulation and the CSF circulation. Cerebral perfusion is
+# deliberately NOT a target here: CPP = MAP − ICP is DERIVED, with ICP as one
+# input. A future CPP alarm gets a derived metric (an analysis step taking
+# ArterialBloodPressure and IntraCranialPressure, see Derived metrics) and
+# its own CerebralPerfusionPressure property.
+physiologicalProperty:IntraCranialPressure mda:isPropertyOf physiologicalProcess:CerebralCirculation,
+                                                             physiologicalProcess:CerebrospinalFluidCirculation .
+# CerebralPerfusionPressure (2026-11-25): the driving pressure of the
+# cerebral blood flow, so a property of the cerebral circulation only (not of
+# the CSF circulation, which ICP also reflects).
+physiologicalProperty:CerebralPerfusionPressure mda:isPropertyOf physiologicalProcess:CerebralCirculation .
+
+# Haemodynamics (p99 curation round, 2026-11-24).
+# CardiacOutput: the heart's ejection, and the flow of the whole circulation
+# (output of the heart = flow through the systemic circuit).
+physiologicalProperty:CardiacOutput            mda:isPropertyOf physiologicalProcess:CardiacContraction,
+                                                                 physiologicalProcess:BloodCirculation .
+physiologicalProperty:StrokeVolume             mda:isPropertyOf physiologicalProcess:CardiacContraction .
+# VentricularPreload (end-diastolic volume): the filling the contraction
+# starts from (Frank-Starling).
+physiologicalProperty:VentricularPreload       mda:isPropertyOf physiologicalProcess:CardiacContraction .
+physiologicalProperty:VentricularEjectionFraction mda:isPropertyOf physiologicalProcess:CardiacContraction .
+# SystemicVascularResistance: arteriolar tone, the arterial side (see the
+# ArterialPressure note above: MAP ~ CO x SVR).
+physiologicalProperty:SystemicVascularResistance mda:isPropertyOf physiologicalProcess:ArterialCirculation .
+# VenousOxygenSaturation: what is left of the oxygen after the tissues have
+# taken theirs, so the balance between delivery and consumption. A property
+# of the whole circulation, arterial and venous side together: the closest
+# existing process to "delivery minus consumption". A dedicated tissue
+# oxygenation process (with no single organ) is the alternative, not taken.
+physiologicalProperty:VenousOxygenSaturation   mda:isPropertyOf physiologicalProcess:BloodCirculation .
+# OxygenCarryingCapacity (Hb, Hct; 2026-11-25): how much oxygen the blood
+# can carry, one factor of oxygen delivery (DO2 = CO x CaO2, CaO2 ~ Hb x
+# SaO2). Routed to BloodCirculation on the same ground as
+# VenousOxygenSaturation above: the closest existing process to oxygen
+# delivery; no dedicated oxygen-transport process exists.
+physiologicalProperty:OxygenCarryingCapacity   mda:isPropertyOf physiologicalProcess:BloodCirculation .
 
 # ── process → organ ──────────────────────────────────────────────
 physiologicalProcess:PulmonaryVentilation  mda:presentIn organ:Lungs .
@@ -1343,9 +1757,36 @@ physiologicalProcess:BloodCirculation      mda:presentIn organ:BloodVessels, org
 # covered renal physiology at all. Worth a domain-expert check on naming.
 physiologicalProcess:RenalFiltration       mda:presentIn organ:Kidneys .
 
+# p99 curation round (2026-11-24).
+#
+# PulmonaryCirculation: the third leg of the loop next to the arterial and
+# venous sides above, and part of BloodCirculation the same way. Present in
+# the lungs (where the pulmonary vascular bed is) and the blood vessels.
+physiologicalProcess:PulmonaryCirculation  mda:presentIn organ:Lungs, organ:BloodVessels ;
+                                           mda:processPartOf physiologicalProcess:BloodCirculation .
+
+# CerebralCirculation is part of BloodCirculation, so an ICP alarm also
+# reaches the cardiovascular system through it — intended: cerebral blood
+# volume is circulatory. CSF circulation is not part of the blood loop.
+physiologicalProcess:CerebralCirculation           mda:presentIn organ:Brain ;
+                                                   mda:processPartOf physiologicalProcess:BloodCirculation .
+physiologicalProcess:CerebrospinalFluidCirculation mda:presentIn organ:Brain .
+
+# ThermoRegulation: closes the dead end recorded in EVALUATION/CQs/
+# cq_discoveries.md. Cause and effect sit in different places: the
+# regulation is driven centrally (hypothalamus) but EFFECTUATED in the skin
+# (vasomotor tone, sweating, heat exchange with the environment — the
+# exchange an incubator or warming mattress acts on). presentIn names where
+# a process takes place, as for every other process here, so only the skin
+# is asserted. The central control is deliberately left out: asserting it
+# would make every temperature alarm answer "nervous system" in the CQs.
+physiologicalProcess:ThermoRegulation      mda:presentIn organ:Skin .
+
 # ── organ → organ system ─────────────────────────────────────────
 organ:Lungs        mda:organPartOfSystem organSystem:Pulmonary .
 organ:Heart        mda:organPartOfSystem organSystem:CardioVascular .
 organ:BloodVessels mda:organPartOfSystem organSystem:CardioVascular .
 organ:Kidneys      mda:organPartOfSystem organSystem:Renal .
+organ:Brain        mda:organPartOfSystem organSystem:Nervous .
+organ:Skin         mda:organPartOfSystem organSystem:Integumentary .
 

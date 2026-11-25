@@ -9,8 +9,10 @@ rationale:
   technical: >
     The refinement splits one physical sensor into two identities; still the same
     functional unit and sensor type, so NOT "a different sensor" — no CAT2b firing
-    (forbidden firing). The patient still fires: a genuine CAT2a silence, and a
-    CAT1a flag (the SpO2 fault is active)
+    (forbidden firing). The patient still fires a CAT1a flag on a3 (the SpO2
+    fault is active). Until 2026-11-25 a3 was also silenced by CAT2a (redundant
+    with a1); a flagged alarm now takes part in no other rule, so that second
+    verdict is gone.
 author: "Migrated from DATA/CAT_evaluation (README and regression.py), 2026-10-14"
 strict: true
 
@@ -23,5 +25,4 @@ expect:
   - {forwarded: a1}
   - {forwarded: a2}
   - {silenced: a3, reason: likely-invalid, rule: 1a, by: [a2]}
-  - {silenced: a3, reason: redundant, rule: 2a, by: [a1]}
   - {interpretation: ReducedPulmonaryFunction, from: "08:00:00", until: "08:05:00", evidence: [a1]}

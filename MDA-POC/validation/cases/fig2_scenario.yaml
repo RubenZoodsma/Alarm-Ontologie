@@ -18,7 +18,7 @@ stream:
   - {id: a1, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - SpO2 zwak signaal", device_name: "Philipsmonitor", priority: "Laag", start: "08:02:00", end: "08:03:30"}
   - {id: a2, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - SpO2 laag", device_name: "Philipsmonitor", priority: "Medium", start: "08:02:20", end: "08:02:50"}
   - {id: a3, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - Lage ademfreq.", device_name: "Philipsmonitor", priority: "Medium", start: "08:21:00", end: "08:22:30"}
-  - {id: a4, device: "ServoU_00", label: "SERVOU - Ademfrequentie laag", device_name: "ServoU", priority: "Unknown", start: "08:21:10", end: "08:22:20"}
+  - {id: a4, device: "ServoU_00", label: "SERVOU - Ademfrequentie laag", device_name: "ServoU", priority: "Medium", start: "08:21:10", end: "08:22:20"}
   - {id: a5, device: "ServoU_00", label: "SERVOU - Te veel lekkage", device_name: "ServoU", priority: "Hoog", start: "08:40:00", end: "08:42:30"}
   - {id: a6, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - SpO2 laag", device_name: "Philipsmonitor", priority: "Medium", start: "08:40:30", end: "08:41:40"}
 

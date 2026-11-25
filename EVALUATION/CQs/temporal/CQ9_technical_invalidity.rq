@@ -1,3 +1,4 @@
+# STATUS 2026-11-25: BROKEN until rewritten. mda:triggeredByStructure is retired (ontology.ttl, op_knowledge.py); the joins below that use it match nothing. To be refined later.
 # question: Which clinical alarms coincide with a technical condition that reduces their validity?
 # rationale: Tests, using a structural proxy (a signal-quality fault
 #   co-located with a metric from the same signal), whether a coinciding
@@ -121,7 +122,11 @@ SELECT ?patient ?g ?clinicalLabel
     FILTER(?quality != qualitystate:Good)
     ?analysis mda:producesMetric ?myMetric .
   }
-  ?signal mda:analyzedBy ?analysis .
+  # Any number of derived-signal layers between the faulty signal and the
+  # step producing the metric (an ECG raw signal -> lead -> heart-rate
+  # step; 2026-11-24, derivation_graph()): every input of a step is
+  # required, so a fault upstream invalidates what is derived from it.
+  ?signal (mda:analyzedBy/mda:producesSignal)*/mda:analyzedBy ?analysis .
 }
 GROUP BY ?patient ?g ?clinicalLabel
 ORDER BY ?patient

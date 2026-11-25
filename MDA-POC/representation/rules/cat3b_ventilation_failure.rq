@@ -15,19 +15,36 @@
 # short: "mechanical ventilation alarm" -> the ventilation therapy is
 # compromised (a circuit leak, a malfunctioning ventilator, a disconnected
 # patient circuit); "reduced function of pulmonary processes" ->
-# ReducedPulmonaryFunction (low minute volume); "within 180 s" -> at the
-# same time; any ventilator of the patient.
+# ReducedPulmonaryFunction (see reduced_pulmonary_function.rq: low minute
+# volume, low oxygenation or raised CO2, from a physiological alarm);
+# "within 180 s" -> at the same time; any ventilator of the patient.
+#
+# Same purpose as ReducedPulmonaryFunction, one step further (agreed
+# 2026-11-25): RPF says the patient's breathing is affected (impact);
+# VentilationFailure says it is affected AND the ventilation therapy is the
+# likely cause. The impact half is the RPF event itself, so every revision
+# of RPF applies here unchanged; the cause half is by nature a TECHNICAL
+# alarm (the device reports on itself), so no category restriction there.
 #
 # hasTherapyDeliveryQuality is not materialised by the engine: the three
 # inference.ttl axioms that entail it are inlined as the UNION's branches.
-# Each branch anchors on a device-scoped node reported by the active alarm
-# (?gV: the leak's analysis, the device, the component), so the therapy
-# found is that alarm's device's therapy. Structure (the analysis chain,
-# hasComponent, administers) comes from a persistent graph; any copy in the
-# store carries the same IRIs. A mode of ventilation therapy
-# (therapeuticModality:CPAP) counts as ventilation therapy: the engine does not
-# reason over rdfs:subClassOf here, so the therapy's type is walked up the
-# hierarchy (inference.ttl, default graph) explicitly.
+# Each axiom is keyed on a state (leak Increased, device Malfunction,
+# airway circuit Disconnected); the engine does not reason, so a state is
+# matched with mda:refinesConcept* to cover its refinements (e.g. a
+# SeverelyIncreased leak), as the ontology's property chains would entail.
+#
+# GRAPHS (contract: structure persists, states are transient). ?gV is the
+# active ventilator alarm's transient graph: its message, the device it is
+# triggered by, and the STATE it reports. ?gVP is the SAME alarm's
+# persistent graph: the leak metric's type, the device's components and the
+# therapy it administers. So the device, the faulty part and the therapy
+# are all that one alarm's, and no hop is borrowed from another alarm. (The
+# former leak branch walked sensor -> signal -> analysis in one fixed hop;
+# the device now comes from the message's mda:triggeredBy, so no chain
+# length is assumed.) A mode of ventilation therapy (therapeuticModality:
+# CPAP) counts as ventilation therapy: the therapy's type is walked up the
+# hierarchy (rdfs:subClassOf*, default graph) explicitly, as are the leak
+# metric's and the component's types.
 #
 # CONTRACT. Bound on entry: ?patient, ?now. Binds: ?evidence and ?support
 # (the ReducedPulmonaryFunction event, and the therapy with the graph of
@@ -54,23 +71,27 @@ PREFIX clinicalEvent:       <https://w3id.org/mda/vocab/clinical-event/>
 GRAPH ?gRpf { ?rpf rdf:type clinicalEvent:ReducedPulmonaryFunction . ?rpf mda:concernsPatient ?patient .
               FILTER NOT EXISTS { ?rpf mda:hasEnd ?rpf_end } }
 # an active alarm of this patient compromising a ventilation therapy
-GRAPH ?gV { ?vAlarm mda:hasMessage ?vMsg . ?vMsg mda:concernsPatient ?patient . }
+GRAPH ?gV { ?vAlarm mda:hasMessage ?vMsg . ?vMsg mda:concernsPatient ?patient .
+            ?vMsg mda:triggeredBy ?vDev . }
+BIND(IRI(CONCAT(STR(?vAlarm), "#persistent")) AS ?gVP)
 {
   # a circuit leak
-  GRAPH ?gV { ?leakAnalysis mda:producesMetric ?leak .
-              ?leak rdf:type metric:VentilationCircuitLeak .
-              ?leak mda:hasValueState valuestate:Increased . }
-  GRAPH ?gVS { ?vDev mda:hasFunctionalUnit ?vFu . ?vFu mda:hasSensor ?vSensor .
-               ?vSensor mda:sensorProducesSignal ?vSignal . ?vSignal mda:analyzedBy ?leakAnalysis . }
+  GRAPH ?gV { ?leak mda:hasValueState ?leakState . }
+  ?leakState mda:refinesConcept* valuestate:Increased .
+  GRAPH ?gVP { ?leak rdf:type ?leakType . }
+  ?leakType rdfs:subClassOf* metric:VentilationCircuitLeak .
 } UNION {
   # a malfunctioning ventilator
-  GRAPH ?gV { ?vDev mda:hasDeviceOperationState opstate:Malfunction . }
+  GRAPH ?gV { ?vDev mda:hasDeviceOperationState ?devState . }
+  ?devState mda:refinesConcept* opstate:Malfunction .
 } UNION {
   # a disconnected patient circuit
-  GRAPH ?gV { ?vComp mda:hasComponentOperationState opstate:Disconnected . }
-  GRAPH ?gVS { ?vDev mda:hasComponent ?vComp . ?vComp rdf:type component:AirwayCircuit . }
+  GRAPH ?gV { ?vComp mda:hasComponentOperationState ?compState . }
+  ?compState mda:refinesConcept* opstate:Disconnected .
+  GRAPH ?gVP { ?vDev mda:hasComponent ?vComp . ?vComp rdf:type ?compType . }
+  ?compType rdfs:subClassOf* component:AirwayCircuit .
 }
-GRAPH ?gVT { ?vDev mda:administers ?therapy . ?therapy rdf:type ?therapyType . }
+GRAPH ?gVP { ?vDev mda:administers ?therapy . ?therapy rdf:type ?therapyType . }
 ?therapyType rdfs:subClassOf* therapeuticModality:VentilationTherapy .
 VALUES ?which { 1 2 }
 BIND(IF(?which = 1, ?rpf, ?therapy) AS ?evidence)

@@ -14,7 +14,7 @@ strict: true
 
 stream:
   - {id: a1, device: "ServoU_00", label: "SERVOU - Te veel lekkage", device_name: "ServoU", priority: "Hoog", start: "08:00:00", end: "08:02:00"}
-  - {id: a2, device: "ServoU_00", label: "SERVOU - Ademfrequentie laag", device_name: "ServoU", priority: "Unknown", start: "08:00:30", end: "08:01:30"}
+  - {id: a2, device: "ServoU_00", label: "SERVOU - Ademfrequentie laag", device_name: "ServoU", priority: "Medium", start: "08:00:30", end: "08:01:30"}
 
 expect:
   - {forwarded: a1}

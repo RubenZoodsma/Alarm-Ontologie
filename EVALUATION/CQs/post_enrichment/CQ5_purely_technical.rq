@@ -3,52 +3,68 @@
 #   therapeutic route (see CQ3/CQ4), i.e. conveys no clinical implication
 #   whatsoever.
 #
-# CORRECTED after a self-audit (see cq_discoveries.md's "audit correction"
-# entry) -- the first version of this query only checked whether an alarm's
-# Metric crosses mda:approximates (the DIAGNOSTIC bridge). It missed the
-# SECOND, independent class-level bridge inference.ttl declares: Device
-# -administers-> TherapeuticModality, restricted onto five device classes
-# (Dialysator, ExtracorporealMembraneOxygenator, Incubator, Thermoregulator,
-# MechanicalVentilator -- see inference.ttl's Technical axioms section).
-# That bridge fires from the device's TYPE alone, with no Metric required --
-# a bare "SERVOU - Volume uit blokkade" (no Metric at all) still entails
-# administers/VentilationTherapy purely because it's a MechanicalVentilator
-# archetype. An alarm therefore only has ZERO encoded clinical implication
-# if it crosses NEITHER bridge.
+# reasoning: required
 #
-# This roughly TRIPLED the size of the "has clinical implications" set
-# versus the uncorrected version (24/55 purely-technical dropped to 7/55).
-# The corrected 7 are exactly the alarms on device:PhysiologicalMonitor or
-# device:CardiacMonitor -- the two device classes with no administers
-# bridge at all, which makes clinical sense: a monitor observes, it doesn't
-# administer therapy, so its technical faults really do carry nothing
-# clinical either way.
+# An alarm has an encoded clinical implication if it crosses either bridge:
+#
+#   diagnostic   its OWN metric (reached through any number of derivation
+#                steps, the one no further step consumes; build_framework.py
+#                derivation_graph(), 2026-11-24) has an mda:approximates
+#                edge to a physiological property
+#   therapeutic  its device administers a therapy (mda:administers; at
+#                present Dialysator, ExtracorporealMembraneOxygenator,
+#                Incubator, Thermoregulator, MechanicalVentilator, see
+#                inference.ttl's Technical axioms section), with or
+#                without a metric
+#
+# and is purely technical if it crosses neither. Both are tested with
+# FILTER NOT EXISTS over ALL of the alarm's own metrics, so an alarm with
+# one bridged and one unbridged metric is not reported (an OPTIONAL with a
+# per-solution !BOUND filter would report it; no alarm has two own metrics
+# today, p75 or p99, so this changed no result on 2026-11-25).
 #
 # Two situations reported:
-#   - "no measurement, no therapeutic implication": the technical chain
-#     never reaches a Metric, AND the device has no administers bridge.
-#   - "measurement without clinical bridge": a Metric exists but has no
-#     approximates axiom at all -- currently only metric:Pulse (see
-#     cq_discoveries.md).
+#   - "no measurement, no therapeutic implication": no own metric at all,
+#     on a device that administers nothing -- sensor and connection faults
+#     and signal-quality faults on monitors.
+#   - "measurement without clinical bridge": an own metric exists but has
+#     no approximates edge. On a well-curated catalogue this row should be
+#     EMPTY: it lists metrics missing their approximates axiom, so it is
+#     the place to look for them. At p75 it is empty. At p99 (2026-11-25)
+#     it holds 12 alarms that are clinical by any reading -- ventricular
+#     fibrillation/tachycardia (metric:VentricularRhythm), ST-II, CPP,
+#     SpO2 "geen puls" -- plus the PA/GP1 mean-pressure rows whose Metric
+#     column is still blank: curation gaps, not purely technical alarms.
 #
-# The administers bridge, like approximates, only fires under the OWL-RL
-# closure (cls-hv1).
+# The bridge test is presence of approximates, not reaching an organ: a
+# metric whose property dead-ends (e.g. Humidity, a property without a
+# process) still counts as bridged here, while CQ3 finds no organ for it.
 #
-# reasoning: required
+# Signal-quality faults ("Monitor - ECG artefact", "PHILIPSMONITOR -
+# Storing in SpO2", ...) are reported here: they say nothing about the
+# patient. Their encoded implication is on the VALIDITY of concurrent
+# alarms from the same signal (CQ9, CAT1a), which is not a clinical
+# implication in the sense of this question.
+#
+# Validated 2026-11-25 on p75: 16 alarms, all on a PhysiologicalMonitor or
+# CardiacMonitor (the device classes without an administers bridge), all
+# in the first situation.
 
 PREFIX mda: <https://w3id.org/mda/ontology#>
 
 SELECT ?situation (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
        (COUNT(DISTINCT ?a) AS ?matchCount) WHERE {
   ?a a mda:AlarmType ; mda:hasLabel ?label ; mda:hasMessage/mda:triggeredBy ?dev .
-  OPTIONAL {
-    ?a mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit/mda:hasSensor/mda:sensorProducesSignal/(mda:analyzedBy/mda:producesSignal)*/mda:analyzedBy/mda:producesMetric ?metricNode .
-    OPTIONAL { ?metricNode mda:approximates ?property . }
+  FILTER NOT EXISTS { ?dev mda:administers ?modality }
+  FILTER NOT EXISTS {
+    ?dev mda:hasFunctionalUnit/mda:hasSensor/mda:sensorProducesSignal/(mda:analyzedBy/(mda:producesSignal|mda:producesMetric))*/mda:analyzedBy/mda:producesMetric ?bridged .
+    FILTER NOT EXISTS { ?bridged mda:analyzedBy ?c1 }
+    ?bridged mda:approximates ?property .
   }
-  OPTIONAL { ?dev mda:administers ?modality . }
-  FILTER(!BOUND(?property))
-  FILTER(!BOUND(?modality))
-  BIND(IF(BOUND(?metricNode), "measurement without clinical bridge", "no measurement, no therapeutic implication") AS ?situation)
+  BIND(IF(EXISTS {
+         ?dev mda:hasFunctionalUnit/mda:hasSensor/mda:sensorProducesSignal/(mda:analyzedBy/(mda:producesSignal|mda:producesMetric))*/mda:analyzedBy/mda:producesMetric ?own .
+         FILTER NOT EXISTS { ?own mda:analyzedBy ?c2 }
+       }, "measurement without clinical bridge", "no measurement, no therapeutic implication") AS ?situation)
 }
 GROUP BY ?situation
 ORDER BY ?situation

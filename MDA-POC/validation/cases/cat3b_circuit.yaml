@@ -13,7 +13,7 @@ author: "Migrated from DATA/CAT_evaluation (README and regression.py), 2026-10-1
 strict: true
 
 stream:
-  - {id: a1, device: "ServoU_00", label: "SERVOU - Patiëntcircuit los", device_name: "ServoU", priority: "Unknown", start: "08:00:00", end: "08:01:00"}
+  - {id: a1, device: "ServoU_00", label: "SERVOU - Patiëntcircuit los", device_name: "ServoU", priority: "Hoog", start: "08:00:00", end: "08:01:00"}
   - {id: a2, device: "ServoU_00", label: "SERVOU - Exp. minuutvol. laag", device_name: "ServoU", priority: "Hoog", start: "08:00:10", end: "08:00:40"}
 
 expect:

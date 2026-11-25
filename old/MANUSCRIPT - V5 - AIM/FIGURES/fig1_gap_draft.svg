@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1205" height="520" viewBox="0 0 1205 520" font-family="Arial, Helvetica, sans-serif">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker>
+<marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8A8A8A"/></marker>
+<marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#009E73"/></marker>
+</defs>
+<rect width="1205" height="520" fill="#fff"/>
+<rect x="150" y="20" width="510" height="480" rx="8" fill="#F7F7F7" stroke="#E2E2E2"/>
+<text x="162" y="42" font-size="13.5" fill="#222" text-anchor="start" font-weight="bold">Level 0 · Medical device</text>
+<text x="162" y="59" font-size="11" fill="#666" text-anchor="start" font-style="italic">specialized, certified interpreter of its own signals</text>
+<rect x="672" y="20" width="283" height="480" rx="8" fill="#F7F7F7" stroke="#E2E2E2"/>
+<text x="684" y="42" font-size="13.5" fill="#222" text-anchor="start" font-weight="bold">Level 1 · Alarm management system</text>
+<text x="684" y="59" font-size="11" fill="#666" text-anchor="start" font-style="italic">receives the conclusions of all devices around a patient</text>
+<rect x="967" y="20" width="223" height="480" rx="8" fill="#F7F7F7" stroke="#E2E2E2"/>
+<text x="979" y="42" font-size="13.5" fill="#222" text-anchor="start" font-weight="bold">Level 2 · Healthcare provider</text>
+<text x="979" y="59" font-size="11" fill="#666" text-anchor="start" font-style="italic">interprets in full context and acts</text>
+<g transform="translate(0,-48)">
+<rect x="15" y="150" width="120" height="92" rx="6" fill="#FFF4DD" stroke="#E69F00" stroke-width="1.2"/>
+<text x="75.0" y="177.5" font-size="13" fill="#222" text-anchor="middle" font-weight="bold">Patient</text>
+<text x="75.0" y="192.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">physiology, e.g.</text>
+<text x="75.0" y="207.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">arterial oxygen</text>
+<text x="75.0" y="222.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">saturation</text>
+<rect x="165" y="160" width="90" height="70" rx="6" fill="#E8F1FA" stroke="#0072B2" stroke-width="1.2"/>
+<text x="210.0" y="191.5" font-size="12" fill="#222" text-anchor="middle" font-weight="bold">Sensor</text>
+<text x="210.0" y="206.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">pulse oximeter</text>
+<rect x="265" y="160" width="90" height="70" rx="6" fill="#E8F1FA" stroke="#0072B2" stroke-width="1.2"/>
+<text x="310.0" y="184.0" font-size="12" fill="#222" text-anchor="middle" font-weight="bold">Signal</text>
+<text x="310.0" y="199.0" font-size="11" fill="#555" text-anchor="middle" font-style="italic">photo-</text>
+<text x="310.0" y="214.0" font-size="11" fill="#555" text-anchor="middle" font-style="italic">plethysmogram</text>
+<rect x="365" y="160" width="90" height="70" rx="6" fill="#E8F1FA" stroke="#0072B2" stroke-width="1.2"/>
+<text x="410.0" y="184.0" font-size="12" fill="#222" text-anchor="middle" font-weight="bold">Analysis</text>
+<text x="410.0" y="199.0" font-size="11" fill="#555" text-anchor="middle" font-style="italic">proprietary</text>
+<text x="410.0" y="214.0" font-size="11" fill="#555" text-anchor="middle" font-style="italic">algorithm</text>
+<rect x="465" y="160" width="90" height="70" rx="6" fill="#E8F1FA" stroke="#0072B2" stroke-width="1.2"/>
+<text x="510.0" y="184.0" font-size="12" fill="#222" text-anchor="middle" font-weight="bold">Interpretation</text>
+<text x="510.0" y="199.0" font-size="11" fill="#555" text-anchor="middle" font-style="italic">SpO2 below</text>
+<text x="510.0" y="214.0" font-size="11" fill="#555" text-anchor="middle" font-style="italic">its limit</text>
+<line x1="135" y1="195" x2="163" y2="195" stroke="#444" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M 75 242 L 75 279 L 163 279" fill="none" stroke="#444" stroke-width="1.4" marker-end="url(#a)"/>
+<line x1="255" y1="195" x2="263" y2="195" stroke="#444" stroke-width="1.4" marker-end="url(#a)"/>
+<line x1="355" y1="195" x2="363" y2="195" stroke="#444" stroke-width="1.4" marker-end="url(#a)"/>
+<line x1="455" y1="195" x2="463" y2="195" stroke="#444" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="400" y="148" font-size="11" fill="#0072B2" text-anchor="middle" font-style="italic">how the device reaches its conclusion</text>
+<rect x="572" y="170" width="84" height="50" rx="6" fill="#fff" stroke="#333" stroke-width="1.2"/>
+<text x="614.0" y="191.5" font-size="12.5" fill="#222" text-anchor="middle" font-weight="bold">'SpO2 low'</text>
+<text x="614.0" y="206.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">label, priority</text>
+<line x1="555" y1="195" x2="570" y2="195" stroke="#444" stroke-width="1.4" marker-end="url(#a)"/>
+<rect x="165" y="262" width="390" height="34" rx="6" fill="#E8F1FA" stroke="#0072B2" stroke-width="1.2"/>
+<text x="360.0" y="283.0" font-size="11.5" fill="#222" text-anchor="middle">Ventilator: sensor → signal → analysis → interpretation</text>
+<rect x="572" y="256" width="84" height="46" rx="6" fill="#fff" stroke="#333" stroke-width="1.2"/>
+<text x="614.0" y="275.5" font-size="12" fill="#222" text-anchor="middle" font-weight="bold">'Leak high'</text>
+<text x="614.0" y="290.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">label, priority</text>
+<line x1="555" y1="279" x2="570" y2="279" stroke="#444" stroke-width="1.4" marker-end="url(#a)"/>
+<rect x="165" y="330" width="390" height="86" rx="6" fill="#FBEFF5" stroke="#CC79A7" stroke-width="1.2" stroke-dasharray="5 3"/>
+<text x="360.0" y="354.5" font-size="12.5" fill="#222" text-anchor="middle" font-weight="bold">Knowledge behind each conclusion</text>
+<text x="360.0" y="369.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">which pathway it rests on · what it means physiologically</text>
+<text x="360.0" y="384.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">how long it remains valid</text>
+<text x="360.0" y="399.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">implicit: in the device design and the clinician's head</text>
+<line x1="555" y1="373" x2="680" y2="373" stroke="#C0392B" stroke-width="2" stroke-dasharray="4 3"/>
+<text x="612" y="366" font-size="20" fill="#C0392B" text-anchor="middle" font-weight="bold">✕</text>
+<text x="612" y="396" font-size="11.5" fill="#C0392B" text-anchor="middle" font-weight="bold">not conveyed</text>
+<text x="612" y="411" font-size="11" fill="#C0392B" text-anchor="middle">(the gap)</text>
+<rect x="684" y="150" width="258" height="66" rx="6" fill="#EFEFEF" stroke="#8A8A8A" stroke-width="1.2"/>
+<text x="813.0" y="172.0" font-size="12.5" fill="#222" text-anchor="middle" font-weight="bold">Today: route and filter</text>
+<text x="813.0" y="187.0" font-size="11" fill="#555" text-anchor="middle" font-style="italic">on priority and duration only;</text>
+<text x="813.0" y="202.0" font-size="11" fill="#555" text-anchor="middle" font-style="italic">conclusions passed on as received</text>
+<line x1="656" y1="195" x2="667" y2="195" stroke="#444" stroke-width="1.4"/>
+<line x1="656" y1="279" x2="667" y2="279" stroke="#444" stroke-width="1.4"/>
+<line x1="667" y1="183" x2="667" y2="338" stroke="#444" stroke-width="1.4"/>
+<line x1="667" y1="183" x2="682" y2="183" stroke="#8A8A8A" stroke-width="1.4" marker-end="url(#ag)"/>
+<rect x="684" y="300" width="258" height="76" rx="6" fill="#E6F5EF" stroke="#009E73" stroke-width="1.2"/>
+<text x="813.0" y="319.5" font-size="12.5" fill="#222" text-anchor="middle" font-weight="bold">With MDA: re-evaluate conclusions</text>
+<text x="813.0" y="334.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">weighed as evidence across devices,</text>
+<text x="813.0" y="349.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">for example: valid? already known?</text>
+<text x="813.0" y="364.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">what else does it mean?</text>
+<line x1="667" y1="338" x2="682" y2="338" stroke="#009E73" stroke-width="1.4" marker-end="url(#ab)"/>
+<rect x="684" y="414" width="258" height="84" rx="6" fill="#fff" stroke="#009E73" stroke-width="1.2"/>
+<text x="813.0" y="437.5" font-size="12.5" fill="#222" text-anchor="middle" font-weight="bold">MDA framework</text>
+<text x="813.0" y="452.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">ontology · vocabulary · knowledge base</text>
+<text x="813.0" y="467.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">the knowledge behind each conclusion,</text>
+<text x="813.0" y="482.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">made explicit and machine-interpretable</text>
+<line x1="813" y1="414" x2="813" y2="378" stroke="#009E73" stroke-width="1.6" marker-end="url(#ab)"/>
+<path d="M 360 416 C 380 505, 600 520, 682 468" fill="none" stroke="#009E73" stroke-width="1.6" stroke-dasharray="6 3" marker-end="url(#ab)"/>
+<text x="500" y="512" font-size="11" fill="#009E73" text-anchor="middle" font-style="italic">elicited from real-world alarms with intensivists</text>
+<rect x="979" y="150" width="196" height="66" rx="6" fill="#EFEFEF" stroke="#8A8A8A" stroke-width="1.2"/>
+<text x="1077.0" y="172.0" font-size="12.5" fill="#222" text-anchor="middle" font-weight="bold">Every alarm</text>
+<text x="1077.0" y="187.0" font-size="11" fill="#555" text-anchor="middle" font-style="italic">re-interpreted manually,</text>
+<text x="1077.0" y="202.0" font-size="11" fill="#555" text-anchor="middle" font-style="italic">one by one</text>
+<line x1="942" y1="183" x2="977" y2="183" stroke="#8A8A8A" stroke-width="1.4" marker-end="url(#ag)"/>
+<rect x="979" y="300" width="196" height="76" rx="6" fill="#E6F5EF" stroke="#009E73" stroke-width="1.2"/>
+<text x="1077.0" y="319.5" font-size="12.5" fill="#222" text-anchor="middle" font-weight="bold">Alarms in context</text>
+<text x="1077.0" y="334.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">flagged, silenced, or</text>
+<text x="1077.0" y="349.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">supporting a derived event;</text>
+<text x="1077.0" y="364.5" font-size="11" fill="#555" text-anchor="middle" font-style="italic">device conclusions kept</text>
+<line x1="942" y1="338" x2="977" y2="338" stroke="#009E73" stroke-width="1.4" marker-end="url(#ab)"/>
+<text x="1077" y="252" font-size="12" fill="#009E73" text-anchor="middle" font-weight="bold">automated support</text>
+<text x="1077" y="268" font-size="11" fill="#555" text-anchor="middle" font-style="italic">where conclusions</text>
+<text x="1077" y="282" font-size="11" fill="#555" text-anchor="middle" font-style="italic">of all devices meet</text>
+</g>
+</svg>

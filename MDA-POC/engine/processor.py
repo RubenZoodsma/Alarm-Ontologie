@@ -132,9 +132,10 @@ class Processor:
         now = dt(e.start)
         invocation = next(self._invocations)
         # Check, then store the flag: clinical events ignore flagged alarms.
-        # cat1b is gated on heart-rate alarms (its condition needs one).
+        # cat1b is gated on asystole-capable alarms: a CardiacRhythm metric
+        # (the asystole criterion, clinicalEvents.ttl, revised 2026-11-25).
         for name in self.flag_rules:
-            if name == "cat1b" and "HeartRate" not in _alarm_metric_types(kb, e):
+            if name == "cat1b" and "CardiacRhythm" not in _alarm_metric_types(kb, e):
                 continue
             bindings = values(alarm=iri(alarm), now=now)
             number = next(self._check_numbers)
@@ -149,7 +150,9 @@ class Processor:
             select, delete = flag_withdraw(alarm)
             self.lines += timed("cat1b_withdraw", invocation,
                                 [*trace_block(f"withdraw {patient} {e.start.isoformat()}", select), delete])
-            withdraw_kinds = kinds_supported_by_metric("HeartRate", self.event_rules)
+            # The withdrawn flag was on an asystole alarm, whose metric is
+            # CardiacRhythm (clinicalEvents.ttl, CardiacArrest, 2026-11-25).
+            withdraw_kinds = kinds_supported_by_metric("CardiacRhythm", self.event_rules, kb)
 
         # CAT2: the condition is evaluated once, by the insert; the links it
         # stored are then read back for the firing log (always, so the

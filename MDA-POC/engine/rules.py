@@ -195,18 +195,14 @@ def _alarm_metric_types(kb, event) -> frozenset:
 
 
 def _blueprint_metric_types(kb, type_iri) -> frozenset:
+    """Every metric concept in the blueprint, inputs of a derivation
+    included (a gate may over-include)."""
     arch = M.archetype_structure(kb, type_iri)
     found = set()
-
-    def walk(cls):
-        concept = arch.concept(cls)
+    for bn in arch.under(M.MDA.Device):
+        concept = arch.node_concept(bn)
         if concept is not None and "vocab/metric/" in str(concept):
             found.add(str(concept).rsplit("/", 1)[-1])
-        for child_cls, link in kb.tree.items():
-            if link and link[0] == cls:
-                walk(child_cls)
-
-    walk(M.MDA.Device)
     return frozenset(found)
 
 
@@ -214,27 +210,29 @@ def _blueprint_metric_types(kb, type_iri) -> frozenset:
 # relevant_kinds). Combined kinds are relevant whenever one of their
 # constituents is, plus — for ventilation failure — any ventilator alarm.
 _METRIC_FOR_KIND = {
-    "CardiacArrest": frozenset({"HeartRate"}),
+    "CardiacArrest": frozenset({"CardiacRhythm"}),
     "RespiratoryArrest": frozenset({"RespirationRate"}),
     "ReducedPulmonaryFunction": frozenset({"RespirationVolume_Minute"}),
 }
 
 # ReducedPulmonaryFunction also admits any metric approximating a property
-# of pulmonary oxygenation (rules/reduced_pulmonary_function.rq). The gate
+# of pulmonary oxygenation, and any metric approximating PaCO2
+# (hypercapnia, 2026-11-25; rules/reduced_pulmonary_function.rq). The gate
 # reads those metrics from inference.ttl rather than naming them, so a new
-# oxygenation metric is never gated out.
+# oxygenation or CO2 metric is never gated out.
 _OXYGENATION = M.URIRef("https://w3id.org/mda/vocab/physiological-process/PulmonaryOxygenation")
+_PACO2 = M.URIRef("https://w3id.org/mda/vocab/physiological-property/PaCO2")
 _OWL = M.Namespace("http://www.w3.org/2002/07/owl#")
 _oxygenation_cache: dict = {}
 
 
 def _oxygenation_metrics(kb) -> frozenset:
     """Metric concept names whose type (or a superclass) approximates a
-    property of pulmonary oxygenation, read from inference.ttl."""
+    property of pulmonary oxygenation, or PaCO2, read from inference.ttl."""
     key = id(kb)
     if key not in _oxygenation_cache:
         g = kb.reasoning_static
-        properties = set(g.subjects(M.MDA.isPropertyOf, _OXYGENATION))
+        properties = set(g.subjects(M.MDA.isPropertyOf, _OXYGENATION)) | {_PACO2}
         names = set()
         for r in g.subjects(_OWL.onProperty, M.MDA.approximates):
             if g.value(r, _OWL.hasValue) in properties:
@@ -245,8 +243,30 @@ def _oxygenation_metrics(kb) -> frozenset:
     return _oxygenation_cache[key]
 
 
+_METRIC_NS = "https://w3id.org/mda/vocab/metric/"
+_narrower_cache: dict = {}
+
+
+def _with_narrower(kb, names: frozenset) -> frozenset:
+    """`names` plus every metric concept below them (rdfs:subClassOf*), so a
+    narrower pre-coordination (RespirationVolume_Minute_Expiratory under
+    RespirationVolume_Minute) is never gated out; the rules match the same
+    way."""
+    key = (id(kb), names)
+    if key not in _narrower_cache:
+        g = kb.reasoning_static
+        out = set(names)
+        for n in names:
+            out |= {str(m).rsplit("/", 1)[-1]
+                    for m in g.transitive_subjects(M.RDFS.subClassOf, M.URIRef(_METRIC_NS + n))}
+        _narrower_cache[key] = frozenset(out)
+    return _narrower_cache[key]
+
+
 def _metrics_for_kind(kb, kind: str) -> frozenset:
     metrics = _METRIC_FOR_KIND[kind]
+    if kb is not None:
+        metrics = _with_narrower(kb, metrics)
     if kind == "ReducedPulmonaryFunction" and kb is not None:
         metrics = metrics | _oxygenation_metrics(kb)
     return metrics

@@ -5,79 +5,130 @@
 # pressure sensor is present without alarms on that sensing pathway, it may
 # be flagged as likely false positive."
 #
-# Clause by clause (decisions agreed 2026-09-21):
-#   "an asystole alarm"        — the arriving alarm's OWN metric (?gT, its
-#                                transient graph) is a heart rate with an
-#                                absent rhythm. Never read from another
-#                                alarm's graph: that let e.g. "Lage
-#                                hartfreq." be flagged while an asystole
-#                                was active.
-#   "an invasive blood         — an ARTERIAL transducer (sensor:
-#    pressure sensor"            ABP_transducer) on the IBP functional unit
-#                                of a PATIENT MONITOR (device:
-#                                PhysiologicalMonitor or a subclass: Philips,
-#                                Draeger, ...). Deliberately narrower than
-#                                the NL wording, which should read
+# Clause by clause (decisions agreed 2026-09-21, revised 2026-11-25):
+#   "an asystole alarm"        — the arriving alarm's OWN metric is a
+#                                cardiac rhythm (metric:CardiacRhythm or a
+#                                kind of it) reported Absent (or a
+#                                refinement of Absent). The metric is read
+#                                from the alarm's own persistent graph (?gP:
+#                                the metric no step consumes), its rhythm
+#                                from its own transient graph (?gT). Never
+#                                read from another alarm's graph: that let
+#                                e.g. "Lage hartfreq." be flagged while an
+#                                asystole was active. (Was metric:HeartRate
+#                                until 2026-11-25; p99 annotates asystole on
+#                                CardiacRhythm.)
+#   "an invasive blood         — an ARTERIAL line on the IBP functional unit
+#    pressure sensor"            of a PATIENT MONITOR (device:
+#                                PhysiologicalMonitor or a subclass).
+#                                Arterial = the line's pathway produces a
+#                                metric that approximates
+#                                physiologicalProperty:ArterialPressure
+#                                (inference.ttl's restriction, as CAT2a reads
+#                                it): ArterialBloodPressure and its phases.
+#                                Recognised by what the line measures, not by
+#                                the transducer's anatomical position, which
+#                                the physiological ABP/ART blueprints do not
+#                                state (2026-11-25). Deliberately narrower
+#                                than the NL wording, which should read
 #                                "invasive ARTERIAL blood pressure": ECMO
-#                                circuit pressures (CARDIOHELP pArt/pVen) and
-#                                venous pressure do not show that the heart
-#                                is beating — on VA-ECMO a real asystole
+#                                circuit pressures (CARDIOHELP pArt/pVen,
+#                                excluded by the device kind) and venous
+#                                pressure do not show that the heart is
+#                                beating — on VA-ECMO a real asystole
 #                                coexists with a stable pressure.
 #   "is present"               — observable only through the line's own
-#                                alarms: an IBP alarm's persistent graph
-#                                (?gIbp, holding the whole patient -> device
-#                                -> functional unit -> transducer chain)
-#                                remains in the store until 15 minutes after
-#                                that alarm ended (ontology.ttl's
-#                                postAlarmValidityDuration). After 15 minutes
-#                                of silence the line is no longer known to be
-#                                there, and an asystole is not flagged — the
-#                                safe error for a rule that downgrades one.
-#   "without alarms on that    — literally: no current alarm is triggered by
-#    sensing pathway"            that IBP functional unit (NOT EXISTS).
+#                                alarms, and only through one whose pathway
+#                                DELIVERED an arterial pressure (it carries
+#                                the metric): its persistent graph (?gIbp,
+#                                holding patient -> device -> functional unit
+#                                -> transducer -> ... -> metric) remains in
+#                                the store until 15 minutes after that alarm
+#                                ended (ontology.ttl's
+#                                postAlarmValidityDuration). An alarm
+#                                without the metric ("ABP losgeraakt", "ART
+#                                statische druk", "ABP artefact") shows a
+#                                line exists but not that it works, and does
+#                                not count. After 15 minutes of silence the
+#                                line is no longer known to be there, and an
+#                                asystole is not flagged — the safe error for
+#                                a rule that downgrades one. Which pressure
+#                                the evidence alarm reported (high or low) is
+#                                deliberately not checked: what counts is that
+#                                the line is silent NOW (agreed 2026-11-25).
+#   "without alarms on that    — no current alarm is triggered by that IBP
+#    sensing pathway"            FUNCTIONAL UNIT (NOT EXISTS): checked per
+#                                unit, not per transducer, so an active CVD
+#                                or PAP alarm on the same monitor also blocks
+#                                the flag (agreed 2026-11-25: the safe side;
+#                                per transducer needs the location fix).
 #   "it may be flagged"        — flagged at onset, and WITHDRAWN if an alarm
-#                                on that same IBP pathway arrives while the
+#                                on that same IBP unit arrives while the
 #                                asystole is still active: in a genuine
 #                                asystole the pressure alarm follows the ECG
 #                                alarm by seconds. See cat1b_withdraw.rq.
+#
+# FLAGGED ALARMS (agreed 2026-11-25, all rules): an alarm flagged likely
+# false positive takes part in no other rule. An asystole CAT1a has already
+# flagged (e.g. "ECG alle leads los" active) is not flagged a second time
+# here. An IBP alarm flagged by CAT1a cannot serve as presence evidence
+# while it is active (it then blocks the flag through NOT EXISTS, as does
+# the technical alarm that caused its flag); once it has ended its flag is
+# gone with its transient graph, so its persistent graph still counts as
+# presence for the post-alarm window (OPEN, 2026-11-25).
 #
 # CONTRACT. Bound on entry: ?alarm (the arriving alarm), ?now.
 # Binds: ?evidence (the IBP functional unit) and ?witness (the IBP alarm's
 # persistent graph, hence the causing alarm).
 # Used by actions/check.rq and actions/flag_insert.rq. The engine only
-# evaluates it for alarms carrying a heart-rate metric (a cheap gate; this
-# condition decides).
+# evaluates it for alarms carrying a CardiacRhythm metric (a cheap gate;
+# this condition decides).
 #
-# VALIDATION — engine/regression.py: cat1b_pos (arterial line alarmed 10
-# min earlier) and cat1b_other_monitor (arterial line on a Draeger monitor)
-# flag; cat1b_neg (arterial line alarming now) and cat1b_ecmo (ECMO circuit
-# pressure only) do not; cat1b_withdraw is flagged and withdrawn when the
+# VALIDATION — engine/regression.py: cat1b_pos (arterial pressure alarm
+# ended 10 min earlier), cat1b_other_monitor (arterial line on a Draeger
+# monitor, a low-pressure alarm) and cat1b_range (a technical alarm that
+# carries the arterial metric) flag; cat1b_neg (arterial line alarming
+# now), cat1b_ecmo (ECMO circuit pressure only), cat1b_nometric (only a
+# disconnect alarm on the line), cat1b_expired (evidence ended 20 min
+# earlier), cat1b_venous (only a CVD line) and cat1b_unit (CVD alarm active
+# on the same unit) do not; cat1b_withdraw is flagged and withdrawn when the
 # arterial line alarms 8 s after onset; cat1b_borrow flags the asystole but
-# not a heart-rate alarm arriving during it.
+# not a heart-rate alarm arriving during it; cat1b_flagged_incoming (an
+# asystole already flagged by CAT1a is not flagged again).
 ####################################################################
 
-PREFIX mda:            <https://w3id.org/mda/ontology#>
-PREFIX mdapoc:         <https://w3id.org/mda/poc#>
-PREFIX rdf:            <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs:           <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX metric:         <https://w3id.org/mda/vocab/metric/>
-PREFIX rhythm:         <https://w3id.org/mda/vocab/metric-rhythm/>
-PREFIX functionalUnit: <https://w3id.org/mda/vocab/functional-unit/>
-PREFIX sensor:         <https://w3id.org/mda/vocab/sensor/>
-PREFIX device:         <https://w3id.org/mda/vocab/device/>
+PREFIX mda:                   <https://w3id.org/mda/ontology#>
+PREFIX mdapoc:                <https://w3id.org/mda/poc#>
+PREFIX rdf:                   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:                  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:                   <http://www.w3.org/2002/07/owl#>
+PREFIX metric:                <https://w3id.org/mda/vocab/metric/>
+PREFIX rhythm:                <https://w3id.org/mda/vocab/metric-rhythm/>
+PREFIX functionalUnit:        <https://w3id.org/mda/vocab/functional-unit/>
+PREFIX device:                <https://w3id.org/mda/vocab/device/>
+PREFIX physiologicalProperty: <https://w3id.org/mda/vocab/physiological-property/>
 
-# an asystole alarm (its own metric)
+# an asystole alarm: its own metric is a cardiac rhythm, reported absent
 GRAPH ?gT { ?alarm mda:hasMessage ?msg . ?msg mda:concernsPatient ?patient .
-            ?analysis mda:producesMetric ?metric . ?metric rdf:type metric:HeartRate .
-            ?metric mda:hasRhythm rhythm:Absent . }
-# an arterial line on a patient monitor, known present
+            ?metric mda:hasRhythm ?rhythm . }
+?rhythm mda:refinesConcept* rhythm:Absent .
+BIND(IRI(CONCAT(STR(?alarm), "#persistent")) AS ?gP)
+GRAPH ?gP { ?analysis mda:producesMetric ?metric . ?metric rdf:type ?metricType .
+            FILTER NOT EXISTS { ?metric mda:analyzedBy ?nextStep } }
+?metricType rdfs:subClassOf* metric:CardiacRhythm .
+# not already flagged likely false positive (by CAT1a, which runs first)
+FILTER NOT EXISTS { GRAPH ?gT { ?alarm mdapoc:flaggedLikelyFalsePositive ?earlierFlagEvidence } }
+# an arterial line on a patient monitor, known present: an IBP alarm whose
+# pathway delivered an arterial pressure, still in the store
 GRAPH ?gIbp { ?patient mda:isMonitoredBy ?ibpDevice . ?ibpDevice rdf:type ?ibpDeviceType .
               ?ibpDevice mda:hasFunctionalUnit ?ibpFunctionalUnit .
               ?ibpFunctionalUnit rdf:type functionalUnit:FU_InvasiveBloodPressure .
-              ?ibpFunctionalUnit mda:hasSensor ?ibpSensor .
-              ?ibpSensor rdf:type sensor:ABP_transducer . }
+              ?ibpStep mda:producesMetric ?ibpMetric . ?ibpMetric rdf:type ?ibpMetricType . }
 ?ibpDeviceType rdfs:subClassOf* device:PhysiologicalMonitor .
-# without a current alarm on that pathway
+?ibpMetricType rdfs:subClassOf* ?arterialRestriction .
+?arterialRestriction owl:onProperty mda:approximates ;
+                     owl:hasValue physiologicalProperty:ArterialPressure .
+# without a current alarm on that pathway (the IBP functional unit)
 FILTER NOT EXISTS {
   GRAPH ?gOther { ?other mda:hasMessage ?otherMsg . ?otherMsg mda:triggeredBy ?ibpDevice . }
   BIND(IRI(CONCAT(STR(?other), "#persistent")) AS ?gOtherP)

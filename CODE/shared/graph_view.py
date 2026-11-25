@@ -66,7 +66,24 @@ def node_kind(iri: str) -> str:
     return "other"
 
 
-def to_mermaid(g: Graph, classify=node_kind, kinds: dict = KINDS, label_of=None) -> str:
+def _wrap(text: str, width: int) -> str:
+    """Break a label at word boundaries into lines of about `width` characters
+    (Mermaid renders <br> as a line break)."""
+    out = []
+    for part in text.split("<br>"):
+        line = ""
+        for word in part.split():
+            if line and len(line) + 1 + len(word) > width:
+                out.append(line)
+                line = word
+            else:
+                line = f"{line} {word}".strip()
+        out.append(line)
+    return "<br>".join(out)
+
+
+def to_mermaid(g: Graph, classify=node_kind, kinds: dict = KINDS, label_of=None,
+               direction: str = "LR", sort_key=None, wrap: int = None, dashed=None) -> str:
     """
     A Mermaid `graph LR` for the object-property structure of `g`.
 
@@ -86,33 +103,50 @@ def to_mermaid(g: Graph, classify=node_kind, kinds: dict = KINDS, label_of=None)
     `label_of`, if given, overrides a node's displayed text (default: its
     IRI's local name) — e.g. a concept's skos:prefLabel instead of its
     notation.
+
+    Optional, all off by default (output then unchanged):
+    `direction`  Mermaid flow direction, "LR" (default) or "TD".
+    `sort_key`   term -> sortable key; nodes and edges are then emitted in a
+                 fixed order instead of the graph's iteration order (which for
+                 blank nodes can differ between builds), so the layered layout
+                 is reproducible.
+    `wrap`       break labels into lines of about this many characters.
+    `dashed`     term -> bool; such nodes get a dashed border.
     """
     node_id, lines, styles, edges = {}, [], [], []
+
+    dashed_ids = []
 
     def nid(term):
         s = str(term)
         if s not in node_id:
             node_id[s] = f"n{len(node_id)}"
             label = (label_of(term) if label_of else local(term)).replace('"', "'")
+            if wrap:
+                label = _wrap(label, wrap)
             lines.append(f'    {node_id[s]}["{label}"]')
             styles.append((node_id[s], classify(term)))
+            if dashed and dashed(term):
+                dashed_ids.append(node_id[s])
         return node_id[s]
 
-    for s, p, o in g:
-        if not isinstance(o, (URIRef, BNode)):
-            continue
-        if p == RDF.type and "/vocab/" not in str(o):
-            continue
+    triples = [(s, p, o) for s, p, o in g if isinstance(o, (URIRef, BNode))
+               and not (p == RDF.type and "/vocab/" not in str(o))]
+    if sort_key:
+        triples.sort(key=lambda t: (sort_key(t[0]), local(t[1]), sort_key(t[2])))
+    for s, p, o in triples:
         edges.append(f'    {nid(s)} -->|{local(p)}| {nid(o)}')
 
     if not edges:
-        return 'graph LR\n    empty["no situational awareness at this instant"]'
+        return f'graph {direction}\n    empty["no situational awareness at this instant"]'
 
-    out = ["graph LR"] + lines + edges
+    out = [f"graph {direction}"] + lines + edges
     for kind, (_, style) in kinds.items():
         out.append(f"    classDef {kind} {style},color:#111;")
     for n, kind in styles:
         out.append(f"    class {n} {kind};")
+    for n in dashed_ids:
+        out.append(f"    style {n} stroke-dasharray:4 3;")
     return "\n".join(out)
 
 

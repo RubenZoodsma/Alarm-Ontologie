@@ -1,0 +1,25 @@
+id: cat1b_flagged_incoming
+title: "CAT1b: an asystole already flagged by CAT1a is not flagged a second time"
+rule: "1b"
+purpose: edge
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: >
+    A flagged alarm takes part in no other rule (agreed 2026-11-25). The
+    arterial line is known present and silent (ABPs hoog ended 5 min
+    earlier), so CAT1b would flag the asystole; but all ECG leads are off
+    (a1), so CAT1a has already flagged it and CAT1b adds no second verdict.
+author: "Claude, 2026-11-25 (CAT2a review: flagged-alarm principle)"
+strict: true
+
+stream:
+  - {id: a0, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - ABPs hoog", device_name: "Philipsmonitor", priority: "Medium", start: "07:55:00", end: "07:55:20"}
+  - {id: a1, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - ECG alle leads los", device_name: "Philipsmonitor", priority: "Medium", start: "07:59:50", end: "08:01:00"}
+  - {id: a2, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - Asystolie", device_name: "Philipsmonitor", priority: "Hoog", start: "08:00:00", end: "08:00:20"}
+
+expect:
+  - {forwarded: a0}
+  - {forwarded: a1}
+  - {silenced: a2, reason: likely-invalid, rule: 1a, by: [a1]}

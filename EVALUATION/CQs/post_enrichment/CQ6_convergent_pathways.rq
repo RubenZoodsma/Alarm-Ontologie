@@ -1,128 +1,115 @@
 # question: Can alarms with different technical pathways provide information about the same clinical concept?
-# rationale: Groups alarms by ORGAN rather than physiological process --
-#   the coarser clinical concept reached via .../isPropertyOf/presentIn --
-#   then filters to organs reached via more than one distinct technical
-#   pathway, identifying genuine multi-modal convergence rather than
-#   repeated measurements along a single pathway.
-#
-# Rescoped from process-level to organ-level (see git history for the
-# process-level version and its now-superseded VascularCompliance/
-# PulmonaryVentilation numbers, which do not carry over: organ pools
-# alarms across every process presentIn it, so its group sizes and
-# pathway counts are not comparable to the process-level query's).
-#
-# Scope note (carried over from the process-level version, still applies
-# after a self-audit corrected CQ4's numbers, see ../cq_discoveries.md's
-# "Audit correction" entry): this query is deliberately narrower than
-# CQ4's now-broader "shares a process by either the diagnostic OR the
-# therapeutic chain" definition. CQ6 asks about MEASUREMENT convergence
-# specifically -- different technical pathways independently arriving at
-# the same clinical target -- so it only ever counts alarms with an
-# actual FunctionalUnit/Sensor/Metric signature. Alarms that reach an
-# organ purely via the therapeutic bridge (device TYPE administers a
-# modality, no Metric at all) have no technical pathway to compare in
-# the first place and are correctly out of scope here.
-#
-# An organ only qualifies here if the alarms reaching it do so through at
-# least two DISTINCT technical pathways (the (FunctionalUnit, Sensor,
-# Metric) signature established in CQ2), not merely because the same
-# measurement recurs across several alarms at different priorities, and
-# not merely because two different processes under the same organ each
-# resolve through their own single pathway.
-#
-# One organ passes this bar in the current corpus: organ:Lungs, via 3
-# distinct pathways across 10 alarms --
-#   - FU_AirwayPressure/AW_transducer/AirwayPressure (5 alarms: peak
-#     airway pressure, from GE Healthcare's Datex-Ohmeda, Getinge's
-#     Servo-U, and Loewenstein Medical's Hulbus ventilators)
-#   - FU_AirwayPressure/AW_transducer/AirwayPressure_EndExpiratory
-#     (1 alarm, Getinge's "SERVOU - PEEP laag" -- also counted in the
-#     pathway above, its blueprint carries both metric nodes)
-#   - FU_PulseOximetry/PulseOximeter/SpO2 (4 alarms, from Philips and
-#     Draeger physiological monitors)
-# This is the organ-level analogue of the process-level query's former
-# PulmonaryVentilation result, now genuinely multi-modal: it combines a
-# ventilator-side pressure pathway with an independent pulse-oximetry
-# pathway on the same organ, rather than two metric variants of one
-# sensor. No other organ reaches this bar in the current corpus: Heart
-# and BloodVessels each resolve through exactly 1 technical pathway (1
-# matching alarm apiece), and Kidneys does not appear in this query's
-# diagnostic-chain pattern at all -- per CQ3, it is reached only via the
-# therapeutic bridge (device administers a modality, no Metric), which
-# has no technical pathway to compare in the first place.
-#
-# ?fuClass/?sensorClass/?metricClass are each guarded with "a skos:Concept"
-# -- required correctness, not stylistic: without it, `?node a ?class`
-# against the OWL-RL closure returns every entailed superclass/anonymous
-# restriction-class membership for that node (all the way to owl:Thing),
-# not just its one real vocabulary type, which silently explodes
-# ?distinctPathways into nonsense. The two-stage cross-check and
-# hand-derived verification described below were run against the
-# process-level version of this query, before the organ rescope above;
-# they have not yet been independently re-run against the current
-# organ-level numbers, though the guard logic itself is unchanged. A
-# namespace-prefix filter was tried as a faster alternative to the
-# skos:Concept join and rejected: it let entailed BROADER metric types
-# through alongside the correct asserted one (e.g. a CO2_EndTidal
-# instance is also entailed into the generic metric:CO2 used elsewhere
-# in inference.ttl's technical axioms), silently double-counting a
-# single alarm as having two pathways. Verified (at the process level)
-# against two independent implementations before finalising this
-# single-query form: a two-stage version (process-resolution and
-# pathway-signature computed as separate queries, joined in Python) and
-# a hand-derived cross-check from CQ1/CQ2/CQ4's already-established
-# per-metric technical associations. Both agreed exactly with the
-# process-level numbers this query produced before the organ rescope.
+# rationale: Groups alarms by ORGAN (the clinical concept reached via
+#   .../approximates/isPropertyOf/presentIn) and keeps the organs reached
+#   through more than one distinct technical pathway, identifying genuine
+#   multi-modal convergence rather than repeated measurements along a
+#   single pathway.
 #
 # reasoning: required
 #
-# Same known-incomplete chain as CQ3/CQ4 (see ../cq_discoveries.md):
-# metric:Pulse and metric:Humidity never reach a physiological property
-# with an isPropertyOf bridge, so they never reach an organ either, and
-# are silently absent below.
+# Three parts, each read from the graph that can answer it (cq_QA.py's
+# reasoned_dataset(): the OWL-RL closure is the default graph, the asserted
+# graph is the named graph <https://w3id.org/mda/graph/asserted>):
 #
-# Performance note (fixed): the original form joined three separately
-# concept-typed nodes via `?class a skos:Concept` -- a graph join, not a
-# value check. Under the OWL-RL closure, `?node a ?class` with ?class
-# unbound returns every entailed superclass of that node (all the way to
-# owl:Thing), so each of the three `a ?class . ?class a skos:Concept` pairs
-# forces rdflib's non-reordering nested-loop join to materialise and filter
-# a much larger candidate set than the one real vocabulary type per node --
-# chained three times plus the Kleene-star hop in between, this measured
-# 30+ minutes with rdflib+owlrl on this corpus, against ~5s for the OWL-RL
-# closure itself and <0.1s for every other CQ.
+#   1. Pathway identity -- ASSERTED graph. Exactly CQ2's: the set of edges
+#      (type of parent, property, type of child) below the alarm's
+#      functional unit, unbounded depth, compared by counting; each alarm
+#      gets the smallest IRI of its equivalence class as ?rep. A step with
+#      several inputs (impedance respiration from RA + LA) is one pathway.
+#      Read from the asserted graph because the closure cannot tell an
+#      asserted type from an entailed one: there a node typed
+#      metric:AirwayPressure_Peak is also metric:AirwayPressure, and OWL-RL
+#      entails sibling pre-coordinated types (RespirationVolume_Tidal on a
+#      ..._Tidal_Expiratory node) through hasValue restrictions without
+#      entailing the subclass edge, so not even "most specific type" works.
+#      The previous version keyed on (FU, sensor, metric) per sensor node in
+#      the closure and so counted entailed superclasses and each electrode
+#      as pathways of their own: Lungs 13 instead of 9 at p75.
 #
-# Fixed by two semantics-preserving changes:
-#   1. `?class a skos:Concept` (a graph join) replaced with
-#      `FILTER(STRSTARTS(STR(?class), "https://w3id.org/mda/vocab/"))` (a
-#      value check on the already-bound IRI, no further graph lookup).
-#      Every skos:Concept in this framework lives under the vocab:
-#      namespace and nothing else does (checked against
-#      vocab_generated.ttl), so this is equivalent to the original guard.
-#   2. The `approximates/isPropertyOf` hop -- the one genuinely entailment-
-#      dependent step, and the only one that can fail (metric:Pulse has no
-#      bridge at all, see ../cq_discoveries.md) -- moved immediately after
-#      ?metricNode is bound, before the three type filters, so alarms that
-#      can never reach a ?process are dropped before any class-typing work
-#      runs on them.
-# Re-verified after the fix against the same two independent cross-checks
-# already documented above: identical row/pathway counts, now well under a
-# second.
+#   2. Organ -- REASONED graph. The alarm's OWN metric (reached through any
+#      number of derivation steps, the one no further step consumes) ->
+#      approximates -> isPropertyOf -> presentIn. Needs the closure: at p75
+#      41 (alarm, organ) pairs without it, 62 with it.
+#
+#   3. Only a defined measurement counts -- ASSERTED graph. The own metric
+#      must carry a metric type. Rows that annotate a PhysiologicalProperty
+#      without a Metric get an untyped metric node with an approximates edge
+#      (build_framework.py's "[WARN] approximates" list; at p75 "MEDIBUS -
+#      Drukbegrensd", "DATEXOHMEDACOMVENTILATOR - Plimit Reached",
+#      "PHILIPSMONITOR - ABP verkleinen"). They stay organ-relevant in
+#      CQ3/CQ4, but a "pathway" without a defined measurement is no pathway
+#      that converges on anything (decided in the CQ review of 2026-11-25).
+#
+# distinctPathways = number of distinct ?rep among the alarms reaching the
+# organ; matchCount = number of those alarms.
+#
+# Measurement convergence only: alarms that reach an organ purely through
+# the therapeutic route (device administers a therapy, no metric) have no
+# technical pathway to compare and are out of scope here (CQ3 covers them).
+#
+# Validated 2026-11-25 against a Python ground truth (edge sets grouped on
+# the asserted graph, organs from the closure): exact on p75 and p99.
+# p75: Lungs 9 pathways / 32 alarms, Heart 5 / 15, BloodVessels 4 / 9.
+# The p75 and p99 closures contain no owl:sameAs between distinct nodes,
+# so no alarm's pathway can leak into another's.
 
 PREFIX mda: <https://w3id.org/mda/ontology#>
 
 SELECT ?organ (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
-       (COUNT(DISTINCT ?a) AS ?matchCount) (COUNT(DISTINCT ?pathway) AS ?distinctPathways) WHERE {
-  ?a a mda:AlarmType ; mda:hasLabel ?label ;
-     mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit ?fuNode .
-  ?fuNode mda:hasSensor ?sensorNode .
-  ?sensorNode mda:sensorProducesSignal/(mda:analyzedBy/mda:producesSignal)*/mda:analyzedBy/mda:producesMetric ?metricNode .
+       (COUNT(DISTINCT ?a) AS ?matchCount)
+       (COUNT(DISTINCT ?rep) AS ?distinctPathways) WHERE {
+  # 1. Each alarm's sensing-pathway class, on ASSERTED types (CQ2's edge-set
+  #    identity, verbatim): ?rep = smallest IRI among alarms with an equal set.
+  {
+    SELECT ?a (MIN(STR(?b)) AS ?rep) WHERE {
+      {
+        SELECT ?a ?b (COUNT(DISTINCT ?edge) AS ?shared) WHERE {
+          { SELECT DISTINCT ?a ?edge WHERE { GRAPH <https://w3id.org/mda/graph/asserted> {
+                        ?a a mda:AlarmType ; mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit ?fu .
+                        ?fu mda:hasSensor ?anySensor .
+                        ?fu (mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                        ?x ?p ?y . FILTER(?p IN (mda:hasSensor, mda:sensorProducesSignal, mda:analyzedBy, mda:producesSignal, mda:producesMetric))
+                        ?x a ?tx . ?y a ?ty .
+                        BIND(CONCAT(STR(?tx), " ", STR(?p), " ", STR(?ty)) AS ?edge) } } }
+          { SELECT DISTINCT ?b ?edge WHERE { GRAPH <https://w3id.org/mda/graph/asserted> {
+                        ?b a mda:AlarmType ; mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit ?fu .
+                        ?fu mda:hasSensor ?anySensor .
+                        ?fu (mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                        ?x ?p ?y . FILTER(?p IN (mda:hasSensor, mda:sensorProducesSignal, mda:analyzedBy, mda:producesSignal, mda:producesMetric))
+                        ?x a ?tx . ?y a ?ty .
+                        BIND(CONCAT(STR(?tx), " ", STR(?p), " ", STR(?ty)) AS ?edge) } } }
+        } GROUP BY ?a ?b
+      }
+      { SELECT ?a (COUNT(DISTINCT ?edge) AS ?sizeA) WHERE { { SELECT DISTINCT ?a ?edge WHERE { GRAPH <https://w3id.org/mda/graph/asserted> {
+                        ?a a mda:AlarmType ; mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit ?fu .
+                        ?fu mda:hasSensor ?anySensor .
+                        ?fu (mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                        ?x ?p ?y . FILTER(?p IN (mda:hasSensor, mda:sensorProducesSignal, mda:analyzedBy, mda:producesSignal, mda:producesMetric))
+                        ?x a ?tx . ?y a ?ty .
+                        BIND(CONCAT(STR(?tx), " ", STR(?p), " ", STR(?ty)) AS ?edge) } } } } GROUP BY ?a }
+      { SELECT ?b (COUNT(DISTINCT ?edge) AS ?sizeB) WHERE { { SELECT DISTINCT ?b ?edge WHERE { GRAPH <https://w3id.org/mda/graph/asserted> {
+                        ?b a mda:AlarmType ; mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit ?fu .
+                        ?fu mda:hasSensor ?anySensor .
+                        ?fu (mda:hasSensor|mda:sensorProducesSignal|mda:analyzedBy|mda:producesSignal|mda:producesMetric)* ?x .
+                        ?x ?p ?y . FILTER(?p IN (mda:hasSensor, mda:sensorProducesSignal, mda:analyzedBy, mda:producesSignal, mda:producesMetric))
+                        ?x a ?tx . ?y a ?ty .
+                        BIND(CONCAT(STR(?tx), " ", STR(?p), " ", STR(?ty)) AS ?edge) } } } } GROUP BY ?b }
+      FILTER(?shared = ?sizeA && ?shared = ?sizeB)
+    } GROUP BY ?a
+  }
+  # 2. The organ, through the alarm's OWN metric, on the REASONED graph.
+  ?a mda:hasLabel ?label ;
+     mda:hasMessage/mda:triggeredBy/mda:hasFunctionalUnit/mda:hasSensor/mda:sensorProducesSignal/(mda:analyzedBy/(mda:producesSignal|mda:producesMetric))*/mda:analyzedBy/mda:producesMetric ?metricNode .
+  FILTER NOT EXISTS { ?metricNode mda:analyzedBy ?consumer }
+  # 3. Only a defined measurement counts: the own metric has a metric type
+  #    of its own in the ASSERTED graph (not merely an approximates edge on
+  #    an untyped node, see the header).
+  GRAPH <https://w3id.org/mda/graph/asserted> {
+    ?metricNode a ?metricType .
+    FILTER(STRSTARTS(STR(?metricType), "https://w3id.org/mda/vocab/metric/"))
+  }
   ?metricNode mda:approximates/mda:isPropertyOf/mda:presentIn ?organ .
-  ?fuNode a ?fuClass . FILTER(STRSTARTS(STR(?fuClass), "https://w3id.org/mda/vocab/"))
-  ?sensorNode a ?sensorClass . FILTER(STRSTARTS(STR(?sensorClass), "https://w3id.org/mda/vocab/"))
-  ?metricNode a ?metricClass . FILTER(STRSTARTS(STR(?metricClass), "https://w3id.org/mda/vocab/"))
-  BIND(CONCAT(STR(?fuClass),"|",STR(?sensorClass),"|",STR(?metricClass)) AS ?pathway)
 }
 GROUP BY ?organ
-HAVING (COUNT(DISTINCT ?pathway) > 1)
+HAVING (COUNT(DISTINCT ?rep) > 1)
 ORDER BY DESC(?distinctPathways)

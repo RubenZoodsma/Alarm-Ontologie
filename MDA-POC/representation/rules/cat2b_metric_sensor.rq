@@ -6,36 +6,52 @@
 # different sensor, an incoming alarm conveying that metric from another
 # sensor can be silenced."
 #
-# Clause by clause (decisions agreed 2026-09-21):
-#   "an incoming alarm"        — a PHYSIOLOGICAL alarm, at its arrival.
+# Clause by clause (revised 2026-11-25):
+#   "an incoming alarm"        — a PHYSIOLOGICAL alarm, at its arrival, not
+#                                one CAT1 has just flagged likely false
+#                                positive (see FLAGGED ALARMS below).
 #   "an alarm" (active)        — a physiological alarm of the same patient
 #                                whose transient graph is in the store now,
-#                                other than the incoming one.
-#   "the same metric"          — the same metric type, exactly (heart rate
-#                                is not pulse rate, systolic ABP is not MAP;
-#                                related metrics are CAT2a's business).
-#   "via a different sensor"   — a different functional unit, or a
-#                                different sensor type. Not the sensor IRI:
-#                                sensor refinements (anatomical position)
-#                                come only from technical alarms ("Storing
-#                                in SpO2", "ART buiten bereik laag", "ART
-#                                statische druk") and split ONE physical
-#                                sensor into two identities depending on
-#                                arrival order. No physiological alarm
-#                                carries a refinement, so two same-type
-#                                sensors on one functional unit (e.g. pre-
-#                                and post-ductal SpO2) cannot be told apart
-#                                in this catalogue anyway.
+#                                other than the incoming one, and not
+#                                flagged likely false positive. An active
+#                                alarm that is itself silenced by CAT2 still
+#                                justifies: it is redundant, not false.
+#   "the same metric"          — the same metric type, or one is a
+#                                pre-coordinated refinement of the other
+#                                (rdfs:subClassOf+, either way; e.g. the
+#                                monitor's minute volume and the ServoU's
+#                                expiratory minute volume). Related metrics
+#                                of one property are CAT2a's business.
+#   "via a different sensor"   — the two alarms' pathways share NO sensor.
+#                                Two sensors are taken to be the same when
+#                                they sit on the same functional unit (the
+#                                same particular: patient, device, unit) and
+#                                their types are equal or one refines the
+#                                other ("some ECG electrode" may be RA).
+#                                Anatomical position and laterality play no
+#                                part: a patient does not carry two sensors
+#                                of one kind on one device, so e.g. an
+#                                unpositioned and a pre-ductal SpO2 probe on
+#                                one monitor are the same probe. A pre-ductal
+#                                probe on one monitor and a post-ductal one
+#                                on another are different sensors (another
+#                                functional unit). "No sensor in common"
+#                                rather than "some pair differs": an alarm
+#                                on two electrodes (ST-II: RA and LL) twice
+#                                on one monitor shares both.
 #   "overlapping or redundant" — (from the category header, as CAT2a) the
 #                                incoming alarm deviates in the SAME
-#                                direction and is NOT MORE SEVERE (the
-#                                value-state hierarchy, as CAT2a): two sensors that
+#                                direction and is NOT MORE SEVERE: the
+#                                active state is the incoming one or a
+#                                refinement of it (mda:refinesConcept, and
+#                                skos:broadMatch from the rhythm Absent to
+#                                SeverelyDecreased). Two sensors that
 #                                disagree (SpO2 low vs high) or an escalation
 #                                (low SpO2 -> desaturation) is information.
-#                                No priority condition — the NL rule has
-#                                none. The NL rule should read "...via a
-#                                different sensor, deviating in the same
-#                                direction and not more severely, ...".
+#                                No priority condition — the NL rule names
+#                                none (kept 2026-11-25: unlike CAT2a, a
+#                                lower-priority alarm on one device may
+#                                silence a higher-priority one on another).
 #   "can be silenced"          — for as long as an alarm that justified it
 #                                at arrival is still active, shared with
 #                                CAT2a: one silence per alarm, lifted when
@@ -43,56 +59,80 @@
 #                                rule ends (cat2_lift.rq; logged as
 #                                cat2_lifted).
 #
-# REPORTED STATE. As CAT2a: the metric state is matched inside each alarm's
-# own graph, which relies on no alarm editing another's graph.
+# FLAGGED ALARMS (agreed 2026-11-25, all rules; as cat2a): an alarm flagged
+# likely false positive (CAT1) takes part in no other rule. As the incoming
+# alarm it is not also silenced as redundant: "likely false" already
+# decides it, and a second verdict would count it twice. As an active alarm
+# it justifies no silence: redundancy with an alarm judged false would hide
+# the one alarm that may be real. Both flags sit in the flagged alarm's own
+# transient graph; CAT1 runs before CAT2 at every arrival, so the incoming
+# alarm's flag is already stored, and an active alarm's status is settled
+# (a CAT1b withdrawal removes its flag, after which it counts for later
+# arrivals).
 #
-# GRAPHS. ?gT/?gA: the incoming/active alarm's transient graph. ?gP/?gAP: a
-# persistent copy of its sensor chain, anchored on its own analysis, so the
-# sensor is the one that produced its metric.
+# GRAPHS (contract: structure persists, states are transient). ?gT/?gA:
+# the incoming/active alarm's transient graph — its message, the STATE it
+# reports on its metric, and any CAT1 flag. ?gP/?gAP: the same alarm's own
+# persistent graph — its metric's type and its whole pathway, sensor to
+# metric, however many steps (lead derivations, derived metrics). So every
+# hop is the alarm's own; none is borrowed from another alarm.
 #
 # CONTRACT. Bound on entry: ?alarm (the incoming alarm), ?now. Binds:
 # ?active (one row per active alarm justifying the silence; all are stored)
 # and ?witness (that alarm's transient graph).
 # Used by actions/check.rq and actions/silence_insert.rq.
 #
-# VALIDATION — engine/regression.py: cat2b_pos (low SpO2 on two monitors)
-# silences; cat2b_neg, cat2b_opposite and cat2b_escalation do not;
-# cat2b_same_sensor never fires CAT2b (forbidden firing); cat2b_lift and
-# cat3f are silenced and lifted when the justifying alarm ends.
+# VALIDATION — engine/regression.py: cat2b_pos (low SpO2 on two monitors),
+# cat2a_gate (low MAP on two monitors), cat2a_lift_last (low HR on two
+# monitors), cat3f and fig2_scenario silence; cat2b_neg, cat2b_opposite and
+# cat2b_escalation do not; cat2b_same_sensor never fires CAT2b (forbidden
+# firing); cat2a_flagged_justifier and cat2a_flagged_incoming (strict, two
+# monitors: a flagged alarm neither justifies nor is silenced, under
+# CAT2a or CAT2b); cat2b_lift and cat3f are silenced and lifted when the
+# justifying alarm ends.
 ####################################################################
 
 PREFIX mda:      <https://w3id.org/mda/ontology#>
+PREFIX mdapoc:   <https://w3id.org/mda/poc#>
 PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:     <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX alarmcat: <https://w3id.org/mda/vocab/alarm-category/>
 PREFIX skos:     <http://www.w3.org/2004/02/skos/core#>
 
-# the incoming alarm (its own graphs)
+# the incoming alarm: its report (transient), its metric's type (persistent)
 GRAPH ?gT { ?alarm mda:hasCategory alarmcat:Physiological .
             ?alarm mda:hasMessage ?msg . ?msg mda:concernsPatient ?patient .
-            ?msg mda:triggeredBy ?device .
-            ?analysis mda:producesMetric ?metric . ?metric rdf:type ?metricType .
             ?metric ?stateProp ?state . }
 VALUES ?stateProp { mda:hasValueState mda:hasRhythm }
 BIND(IRI(CONCAT(STR(?alarm), "#persistent")) AS ?gP)
-GRAPH ?gP { ?device mda:hasFunctionalUnit ?fu . ?fu mda:hasSensor ?sensor . ?sensor mda:sensorProducesSignal ?signal .
-            ?signal mda:analyzedBy ?analysis . ?sensor rdf:type ?sensorType . }
+GRAPH ?gP { ?metric rdf:type ?metricType . }
+# not flagged likely false positive (CAT1 has just run on it)
+FILTER NOT EXISTS { GRAPH ?gT { ?alarm mdapoc:flaggedLikelyFalsePositive ?incomingFlagEvidence } }
 
-# an active alarm of the same patient, same metric type (its own graphs)
+# an active, unflagged alarm of the same patient conveying the same metric
 GRAPH ?gA { ?active mda:hasCategory alarmcat:Physiological .
             ?active mda:hasMessage ?activeMsg . ?activeMsg mda:concernsPatient ?patient .
-            ?activeMsg mda:triggeredBy ?activeDevice .
-            ?activeAnalysis mda:producesMetric ?activeMetric . ?activeMetric rdf:type ?metricType .
             ?activeMetric ?activeStateProp ?activeState . }
 VALUES ?activeStateProp { mda:hasValueState mda:hasRhythm }
+FILTER NOT EXISTS { GRAPH ?gA { ?active mdapoc:flaggedLikelyFalsePositive ?activeFlagEvidence } }
 BIND(IRI(CONCAT(STR(?active), "#persistent")) AS ?gAP)
-GRAPH ?gAP { ?activeDevice mda:hasFunctionalUnit ?activeFu . ?activeFu mda:hasSensor ?activeSensor .
-             ?activeSensor mda:sensorProducesSignal ?activeSignal .
-             ?activeSignal mda:analyzedBy ?activeAnalysis .
-             ?activeSensor rdf:type ?activeSensorType . }
+GRAPH ?gAP { ?activeMetric rdf:type ?activeMetricType . }
+{ FILTER(?activeMetricType = ?metricType) }
+UNION { ?activeMetricType rdfs:subClassOf+ ?metricType }
+UNION { ?metricType rdfs:subClassOf+ ?activeMetricType }
 # the same direction, not more severe
-?activeState (skos:broader|skos:broadMatch)* ?state .
+?activeState (mda:refinesConcept|skos:broadMatch)* ?state .
+
+# via a different sensor: no sensor behind the active metric can be one behind the incoming metric
+FILTER NOT EXISTS {
+  GRAPH ?gP  { ?fu mda:hasSensor ?s . ?s rdf:type ?st .
+               ?s mda:sensorProducesSignal/mda:analyzedBy/((mda:producesSignal|mda:producesMetric)/mda:analyzedBy)* ?an .
+               ?an mda:producesMetric ?metric . }
+  GRAPH ?gAP { ?fu mda:hasSensor ?as . ?as rdf:type ?ast .
+               ?as mda:sensorProducesSignal/mda:analyzedBy/((mda:producesSignal|mda:producesMetric)/mda:analyzedBy)* ?aan .
+               ?aan mda:producesMetric ?activeMetric . }
+  { FILTER(?st = ?ast) } UNION { ?st rdfs:subClassOf+ ?ast } UNION { ?ast rdfs:subClassOf+ ?st }
+}
 
 FILTER(?active != ?alarm)
-# a different sensor: another functional unit, or another sensor type
-FILTER(?activeFu != ?fu || ?activeSensorType != ?sensorType)
 BIND(?gA AS ?witness)

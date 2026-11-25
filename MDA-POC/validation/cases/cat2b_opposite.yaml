@@ -13,7 +13,7 @@ author: "Migrated from DATA/CAT_evaluation (README and regression.py), 2026-10-1
 strict: true
 
 stream:
-  - {id: a1, device: "DraegerMonitor_00", label: "Monitor - Lage SpO2", device_name: "DraegerMonitor", priority: "Unknown", start: "08:00:00", end: "08:02:00"}
+  - {id: a1, device: "DraegerMonitor_00", label: "Monitor - Lage SpO2", device_name: "DraegerMonitor", priority: "Medium", start: "08:00:00", end: "08:02:00"}
   - {id: a2, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - SpO2 hoog", device_name: "Philipsmonitor", priority: "Medium", start: "08:00:30", end: "08:01:00"}
 
 expect:

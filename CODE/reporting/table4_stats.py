@@ -19,11 +19,16 @@ Definitions
 Replayed alarm   an alarm with a blueprint (device model + label + priority).
                  Alarms without one are ignored throughout, as in the POC;
                  they appear only in "without a blueprint".
-Unit             a patient's unit is the department of most of its alarms;
-                 every count of that patient goes to that unit.
+Unit             each alarm counts in its own department (the events file's
+                 `department` column), as in Table 3 and Total_corpus.csv. A
+                 patient with alarms in both units is a case in both (ALL
+                 counts it once); a clinical event goes to the unit of its
+                 first supporting alarm.
 Non-empty state  at arrival, another replayed alarm of the patient arrived
                  earlier and ended less than the post-alarm window ago (or is
                  still active): exactly what the engine's patient state holds.
+                 The state is per patient, across units; the alarm counts in
+                 its own unit.
 Silenced by rule the alarm is the subject of a firing of that rule (1a, 1b,
                  2a, 2b) at any time; lifted = its silence lifted (2a, 2b) or
                  its flag withdrawn (1b) before the alarm ended.
@@ -32,11 +37,14 @@ Removed          silenced, and still silenced when it ended: a 1a flag, a 1b
 Alarm rate       per patient: replayed alarms / clock hours with at least one
                  active replayed alarm (denominator from the complete stream,
                  before silencing); "with silences" leaves out removed alarms.
-                 Median [IQR] over the unit's patients.
+                 Per patient-unit stay (a patient's alarms in one unit, hours
+                 from those alarms); median [IQR] over the unit's stays (ALL:
+                 per patient, all its alarms).
 Filter           a 5-second delay: low or medium priority alarms shorter than
                  5 s are suppressed; high and unknown priority never.
 Processing time  per arriving alarm (engine/execution.py, wall clock),
-                 median [IQR] over the unit's alarms.
+                 median [IQR]. The timing log is per patient, not per alarm:
+                 a patient's timings go to the unit of most of its alarms.
 
 Memory: computed one patient at a time (chunks of CHUNK_SIZE patients, split
 from the dataset in one streaming pass); the full run fits in a few GB.
@@ -115,6 +123,26 @@ def alarm_id(e) -> str:
     return str(M.alarm_iri(e)).rsplit("/", 1)[-1]
 
 
+def run_device_models(run: dict, current: dict) -> dict:
+    """The gateway -> device model mapping the run used: device_models.csv at
+    the run's commit (run.json), so blueprints are matched as the engine
+    matched them, even if the mapping changed after the run."""
+    import subprocess
+    commit = (run.get("git") or {}).get("commit")
+    rel = M.DEVICE_MODELS.resolve().relative_to(ROOT).as_posix()
+    if not commit:
+        print("WARNING: run.json has no commit; using the current device_models.csv.")
+        return current
+    text = subprocess.run(["git", "-C", str(ROOT), "show", f"{commit}:{rel}"],
+                          capture_output=True, text=True, check=True).stdout
+    used = {r["gateway_name"]: r["model"] for r in csv.DictReader(text.splitlines(), delimiter=";")}
+    if used != current:
+        changed = sorted(k for k in used.keys() | current.keys() if used.get(k) != current.get(k))
+        print(f"NOTE: device_models.csv changed since the run ({commit[:7]}): {changed}; "
+              f"using the run's mapping.")
+    return used
+
+
 def read_chunk(path: Path) -> dict:
     """{patient: [(Event, department), ...]} in input order (the stream's
     order at one instant)."""
@@ -147,6 +175,7 @@ def main():
             raise SystemExit(f"{p.name} is empty or missing: the run has not written its logs yet "
                              f"(complete: {run.get('complete')}). Wait for poc_main.py to finish.")
     kb = M.load_kb()
+    kb.model_of = run_device_models(run, kb.model_of)
     window = parse_window(run["post_alarm_validity"])
     dataset = Path(run["dataset"])
     patients = list(run["patients"])
@@ -169,32 +198,52 @@ def main():
             elif r["rule"] == "cat1b_withdrawn":
                 withdrawn_at[subject] = min(t, withdrawn_at.get(subject, t))
 
-    # per unit: counts, per-patient rates, the patients with each kind of hit
+    # clinical events: the supporting alarm whose department places the event
+    event_alarm = {}                      # first supporting alarm id -> [kind, ...]
+    with Path(run["event_log"]).open(encoding="utf-8") as fh:
+        for r in csv.DictReader(fh, delimiter=";"):
+            if r["kind"] in EVENT_RULES and r["alarm_ids"]:
+                event_alarm.setdefault(r["alarm_ids"].split()[0], []).append((r["patient"], r["kind"]))
+    ev_n, ev_cases = defaultdict(Counter), defaultdict(lambda: defaultdict(set))
+
+    # per unit: counts, per-stay rates, the patients with each kind of hit
     tot = defaultdict(Counter)            # unit -> key -> n
     cases = defaultdict(lambda: defaultdict(set))   # unit -> key -> {patient}
     rates = defaultdict(lambda: ([], []))           # unit -> (without, with)
-    unit_of = {}
+    unit_of = {}                          # patient -> unit of most alarms (timing log only)
+
+    def rate(alarms, n_removed):
+        hours = set()
+        for e in alarms:
+            h = e.start.replace(minute=0, second=0, microsecond=0)
+            while h <= e.end:
+                hours.add(h)
+                h += timedelta(hours=1)
+        return len(alarms) / len(hours), (len(alarms) - n_removed) / len(hours)
 
     shutil.rmtree(WORK_DIR, ignore_errors=True)
     chunks = [patients[i:i + CHUNK_SIZE] for i in range(0, len(patients), CHUNK_SIZE)]
     paths = S.partition_by_patient(dataset, chunks, WORK_DIR)
     for k, path in enumerate(paths, start=1):
         for pid, rows in read_chunk(path).items():
-            unit = Counter(d for _, d in rows).most_common(1)[0][0]
-            unit_of[pid] = unit
-            evs = [e for e, _ in rows]
-            rep = [e for e in evs if M.type_of(kb, e) is not None]
-            t = tot[unit]
-            t["corpus"] += len(evs)
-            t["replayed"] += len(rep)
+            unit_of[pid] = Counter(d for _, d in rows).most_common(1)[0][0]
+            for e, d in rows:
+                tot[d]["corpus"] += 1
+            rep = [(e, d) for e, d in rows if M.type_of(kb, e) is not None]
+            for e, d in rep:
+                tot[d]["replayed"] += 1
             if not rep:
                 continue
+            for e, d in rep:
+                for patient, kind in event_alarm.get(alarm_id(e), ()):
+                    ev_n[d][kind] += 1
+                    ev_cases[d][kind].add(patient)
 
-            # non-empty state, in arrival order
+            # non-empty state, in arrival order (state per patient, across units)
             reach = None   # latest (end + window) among earlier arrivals
-            for e in sorted(rep, key=lambda x: x.start):   # stable: input order at one instant
+            for e, d in sorted(rep, key=lambda x: x[0].start):   # stable: input order at one instant
                 if reach is not None and reach > e.start:
-                    t["nonempty"] += 1
+                    tot[d]["nonempty"] += 1
                 r = e.end + window
                 reach = r if reach is None or r > reach else reach
 
@@ -205,19 +254,23 @@ def main():
                     return a in lifted_at and lifted_at[a] < end
                 return False
 
-            silenced_any, n_removed = set(), 0
-            for e in rep:
+            removed = Counter()               # unit -> alarms removed
+            stays = defaultdict(list)          # unit -> this patient's alarms there
+            for e, d in rep:
+                t = tot[d]
+                stays[d].append(e)
                 a = alarm_id(e)
                 rs = rules_of.get(a, ())
                 for rule in rs:
                     t[f"{rule}_n"] += 1
-                    cases[unit][rule].add(pid)
+                    cases[d][rule].add(pid)
                     if rule != "1a" and lifted(a, e.end, rule):
                         t[f"{rule}_lifted"] += 1
                 if rs:
-                    silenced_any.add(a)
+                    t["distinct"] += 1
+                    cases[d]["distinct"].add(pid)
                     if any(not lifted(a, e.end, rule) for rule in rs):
-                        n_removed += 1
+                        removed[d] += 1
                 filtered = (norm(e.priority) in FILTER_PRIORITIES
                             and (e.end - e.start).total_seconds() < FILTER_SECONDS)
                 if rs and filtered:
@@ -228,43 +281,32 @@ def main():
                         t["filter_passed_high"] += 1
                 elif filtered:
                     t["filter_only"] += 1
-            t["distinct"] += len(silenced_any)
-            if silenced_any:
-                cases[unit]["distinct"].add(pid)
 
-            # alarm rate per alarm-active clock hour
-            hours = set()
-            for e in rep:
-                h = e.start.replace(minute=0, second=0, microsecond=0)
-                while h <= e.end:
-                    hours.add(h)
-                    h += timedelta(hours=1)
-            rates[unit][0].append(len(rep) / len(hours))
-            rates[unit][1].append((len(rep) - n_removed) / len(hours))
+            # alarm rate per alarm-active clock hour: per stay, and per patient for ALL
+            for d, alarms in stays.items():
+                w, s = rate(alarms, removed[d])
+                rates[d][0].append(w)
+                rates[d][1].append(s)
+            w, s = rate([e for e, _ in rep], sum(removed.values()))
+            rates["ALL"][0].append(w)
+            rates["ALL"][1].append(s)
         print(f"  chunk {k}/{len(paths)} ({len(unit_of)} patient(s))", flush=True)
     shutil.rmtree(WORK_DIR, ignore_errors=True)
 
-    # clinical events and processing times, streamed and counted per unit
-    ev_n, ev_cases = defaultdict(Counter), defaultdict(lambda: defaultdict(set))
-    with Path(run["event_log"]).open(encoding="utf-8") as fh:
-        for r in csv.DictReader(fh, delimiter=";"):
-            if r["kind"] in EVENT_RULES and r["patient"] in unit_of:
-                u = unit_of[r["patient"]]
-                ev_n[u][r["kind"]] += 1
-                ev_cases[u][r["kind"]].add(r["patient"])
+    # processing times: per patient in the log, so by the patient's main unit
     hist = defaultdict(Counter)
     with Path(run["arrival_times"]).open(encoding="utf-8") as fh:
         for r in csv.DictReader(fh, delimiter=";"):
             if r["patient"] in unit_of:
                 hist[unit_of[r["patient"]]][float(r["ms"])] += int(r["alarms"])
 
-    units = sorted(set(unit_of.values()))
+    units = sorted(tot)
     for src in (tot, ev_n, hist):          # ALL = the sum over the units
         src["ALL"] = sum((src[u] for u in units), Counter())
-    for src in (cases, ev_cases):
+    for src in (cases, ev_cases):          # ALL = each patient once
         for key in {k for u in units for k in src[u]}:
             src["ALL"][key] = set().union(*(src[u][key] for u in units))
-    rates["ALL"] = ([v for u in units for v in rates[u][0]], [v for u in units for v in rates[u][1]])
+    # rates["ALL"] holds one value per patient, filled in the patient loop
 
     rows = []
     for unit in units + ["ALL"]:

@@ -15,9 +15,9 @@
 # necessary condition on that class:
 #
 #   clinicalEvent:CardiacArrest rdfs:subClassOf
-#       [ evidencedBy some ( metric:HeartRate and hasRhythm value Absent ) ]
+#       [ evidencedBy some ( metric:CardiacRhythm and hasRhythm value Absent ) ]
 #
-# read as: "a cardiac arrest is evidenced by a heart-rate metric whose
+# read as: "a cardiac arrest is evidenced by a cardiac-rhythm metric whose
 # rhythm is absent". The only arrow is event -> evidence (mda:evidencedBy);
 # nothing points from evidence back to the event.
 #
@@ -73,20 +73,42 @@
 @prefix therapeuticModality: <https://w3id.org/mda/vocab/therapeutic-modality/> .
 @prefix clinicalEvent:    <https://w3id.org/mda/vocab/clinical-event/> .
 @prefix physiologicalProcess: <https://w3id.org/mda/vocab/physiological-process/> .
+@prefix physiologicalProperty: <https://w3id.org/mda/vocab/physiological-property/> .
 
 ####################################################################
 # Single-alarm events — evidenced by a metric
 ####################################################################
 
-# Cardiac arrest: a heart-rate metric reporting an absent rhythm.
-# Real corpus archetypes carry this on HeartRate (asystole alarms).
+# Cardiac arrest: a cardiac-rhythm metric reporting an absent rhythm
+# (asystole) or fibrillation (ventricular fibrillation: no cardiac output by
+# definition). Revised 2026-11-25 twice:
+#   - the p99 annotation carries asystole on metric:CardiacRhythm, the output
+#     of the arrhythmia analysis ("PHILIPSMONITOR - Asystolie", "Monitor -
+#     Asystolie"), and no archetype has HeartRate with an absent rhythm any
+#     more; the criterion was metric:HeartRate before;
+#   - fibrillation added ("Monitor - Ventriculaire fibrillatie":
+#     VentricularFibrillation refines Fibrillation, hierarchy.ttl, so the
+#     refinesConcept chain on hasRhythm entails it). Deliberately NOT
+#     included: VentricularTachycardia (can have a pulse; the monitor cannot
+#     tell), VentricularFibrillationOrTachycardia ("PHILIPSMONITOR - Ventrikel
+#     Fibr/Tachy": refines Abnormal, not Fibrillation — the alarm does not say
+#     which), and Abnormal ("Monitor - Hoge ARR").
+# Kept to the exact metric on purpose: "any cardiac metric with an absent
+# rhythm" would admit PulseRate Absent ("SpO2 geen pols"), typically a probe
+# problem rather than an arrest. NOTE: metricRhythm:Fibrillation is not
+# ventricular by itself — a rhythm annotated plain Fibrillation (e.g. an
+# atrial fibrillation alarm) would count; annotate ventricular fibrillation
+# as VentricularFibrillation and atrial fibrillation as its own concept,
+# never as plain Fibrillation.
 clinicalEvent:CardiacArrest rdfs:subClassOf
   [ a owl:Restriction ;
     owl:onProperty mda:evidencedBy ;
     owl:someValuesFrom
       [ a owl:Class ;
-        owl:intersectionOf ( metric:HeartRate
-          [ a owl:Restriction ; owl:onProperty mda:hasRhythm ; owl:hasValue metricRhythm:Absent ] ) ] ] .
+        owl:intersectionOf ( metric:CardiacRhythm
+          [ a owl:Class ;
+            owl:unionOf ( [ a owl:Restriction ; owl:onProperty mda:hasRhythm ; owl:hasValue metricRhythm:Absent ]
+                          [ a owl:Restriction ; owl:onProperty mda:hasRhythm ; owl:hasValue metricRhythm:Fibrillation ] ) ] ) ] ] .
 
 # Respiratory arrest: a respiration-rate metric reporting an absent rhythm.
 # Real corpus archetype: "PHILIPSMONITOR - Apneu".
@@ -121,6 +143,18 @@ clinicalEvent:RespiratoryArrest rdfs:subClassOf
 # from ANOTHER device is independent evidence that the patient is
 # affected, whereas a low minute volume during a leak is partly the leak's
 # own measurement effect.
+# Third branch (2026-11-25): HYPERCAPNIA, a raised value (Increased or
+# narrower) on any metric that approximates physiologicalProperty:PaCO2 —
+# in practice end-tidal CO2 ("Monitor - etCO2 Hoog", "PHILIPSMONITOR - etCO2
+# hoog"). The direct marker of inadequate ventilation: not hidden by
+# compensation, it is the failure of compensation. The property itself, not
+# its process (PulmonaryDiffusion also gathers what ECMO targets). A LOW
+# etCO2 stays excluded (above). Inspired CO2 has no bridge, so rebreathing
+# never counts.
+# Physiological alarms only (2026-11-25, enforced by the application, not
+# statable here: the category belongs to the alarm, the axiom constrains
+# the metric): the event is about impact on the patient, and a technical
+# alarm reports device state even when it carries a value.
 clinicalEvent:ReducedPulmonaryFunction rdfs:subClassOf
   [ a owl:Restriction ;
     owl:onProperty mda:evidencedBy ;
@@ -137,7 +171,13 @@ clinicalEvent:ReducedPulmonaryFunction rdfs:subClassOf
                 owl:someValuesFrom [ a owl:Restriction ; owl:onProperty mda:isPropertyOf ;
                                      owl:hasValue physiologicalProcess:PulmonaryOxygenation ] ]
               [ a owl:Restriction ; owl:onProperty mda:hasValueState ;
-                owl:someValuesFrom [ a owl:Class ; owl:oneOf ( metricValueState:Decreased metricValueState:SeverelyDecreased ) ] ] ) ] ) ] ] .
+                owl:someValuesFrom [ a owl:Class ; owl:oneOf ( metricValueState:Decreased metricValueState:SeverelyDecreased ) ] ] ) ]
+          [ a owl:Class ;
+            owl:intersectionOf ( mda:Metric
+              [ a owl:Restriction ; owl:onProperty mda:approximates ;
+                owl:hasValue physiologicalProperty:PaCO2 ]
+              [ a owl:Restriction ; owl:onProperty mda:hasValueState ;
+                owl:someValuesFrom [ a owl:Class ; owl:oneOf ( metricValueState:Increased metricValueState:SeverelyIncreased ) ] ] ) ] ) ] ] .
 
 ####################################################################
 # Combined events — evidenced by other events (and a therapy)

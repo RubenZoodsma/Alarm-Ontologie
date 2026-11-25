@@ -1,0 +1,23 @@
+id: cat1a_lead_sibling
+title: "CAT1a negative: a quality fault on the ECG lead does not flag an impedance-respiration alarm on the same electrodes"
+rule: "1a"
+purpose: falsify
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: >
+    Derivation graph, sibling branch. The ECG lead and the thoracic
+    impedance signal are separate products of the same electrodes; a fault
+    on the lead is not upstream of the respiration-rate metric, so the
+    alarm is forwarded.
+author: "Claude, 2026-11-25 (pending fixture from the CAT1a rule header)"
+strict: true
+
+stream:
+  - {id: a1, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - ECG ruissignaal", device_name: "Philipsmonitor", priority: "Medium", start: "08:00:00", end: "08:02:00"}
+  - {id: a2, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - Lage ademfreq.", device_name: "Philipsmonitor", priority: "Medium", start: "08:00:30", end: "08:01:00"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}

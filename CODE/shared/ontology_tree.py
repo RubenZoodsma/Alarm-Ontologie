@@ -16,7 +16,7 @@ rdfs:domain / rdfs:range pairs.
 
 import re
 
-from rdflib import Graph, URIRef
+from rdflib import BNode, Graph, URIRef
 from rdflib.collection import Collection
 from rdflib.namespace import RDF, RDFS, OWL, SKOS
 
@@ -206,3 +206,46 @@ def walk_instances(graph: Graph, tree: dict, root_node, root_class: URIRef) -> d
                 nxt.append((child_cls, child))
         frontier = nxt
     return found
+
+
+def walk_archetype(graph: Graph, tree: dict, root_node, root_class: URIRef,
+                   ranges: dict) -> tuple:
+    """
+    Follow an archetype as the GRAPH it is, from `root_node`.
+
+    walk_instances() returns one node per class, the first it meets, which
+    is all a tree-shaped archetype has. An archetype whose sensing pathway
+    is written out as a graph (build_framework.py's derivation_graph(): an
+    ECG lead derived from two electrodes, a derived metric computed from an
+    intermediate metric) has several nodes of one class, and edges the class
+    tree does not contain (a metric analyzedBy a step, a step producesSignal
+    a lead). This walk visits every blank node reachable through any
+    property, and classes each node by the class tree where the edge is a
+    tree edge, else by the property's rdfs:range (`ranges`).
+
+    Returns (by_class, cls_of, parents):
+      by_class  {class: [node, ...]} in breadth-first order
+      cls_of    {node: class}
+      parents   {node: [(parent_node, property), ...]} — every incoming edge
+    """
+    child_cls = {(link[0], link[1]): cls for cls, link in tree.items() if link is not None}
+    cls_of, parents, order, frontier = {root_node: root_class}, {}, [root_node], [root_node]
+    while frontier:
+        nxt = []
+        for n in frontier:
+            for p, o in sorted(graph.predicate_objects(n), key=lambda po: str(po[0])):
+                if p == RDF.type or not isinstance(o, BNode):
+                    continue
+                c = child_cls.get((cls_of[n], p)) or ranges.get(p)
+                if c is None:
+                    continue
+                parents.setdefault(o, []).append((n, p))
+                if o not in cls_of:
+                    cls_of[o] = c
+                    order.append(o)
+                    nxt.append(o)
+        frontier = nxt
+    by_class = {}
+    for n in order:
+        by_class.setdefault(cls_of[n], []).append(n)
+    return by_class, cls_of, parents

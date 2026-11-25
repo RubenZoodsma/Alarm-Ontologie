@@ -267,6 +267,36 @@ def label_of(node, g: Graph) -> str:
     return local(node)
 
 
+# Compact diagram (opt-in; the published page keeps COMPACT = False):
+# top-down by default, labels without the "Some " prefix (those nodes get a
+# dashed border instead), pre-coordinated names split over two lines and
+# wrapped, and nodes/edges emitted in a fixed order (group, then label) so
+# every archetype's layout is reproducible. Set by preview_annotations.py.
+COMPACT = False
+COMPACT_WRAP = 22
+
+
+def compact_label(node, g: Graph) -> str:
+    text = label_of(node, g)
+    if text.startswith("Some "):
+        text = text[5:]
+    parts = text.split("_")
+    if len(parts) >= 3:                    # Category_Model_Manufacturer
+        return f"{parts[0]}<br>{' · '.join(parts[1:])}"
+    return " ".join(parts)
+
+
+def mermaid_options(g: Graph) -> dict:
+    if not COMPACT:
+        return {"label_of": lambda n: label_of(n, g)}
+    order = {k: i for i, k in enumerate(GROUPS)}
+    return {"label_of": lambda n: compact_label(n, g),
+            "direction": "TD", "wrap": COMPACT_WRAP,
+            "sort_key": lambda n: (order.get(classify(n, g), len(order)), label_of(n, g), str(n)
+                                   if not isinstance(n, BNode) else ""),
+            "dashed": lambda n: isinstance(n, BNode)}
+
+
 def walk_archetype(g: Graph, root: URIRef) -> set:
     """
     Every triple reachable from `root`, walking every owl:ObjectProperty edge
@@ -331,7 +361,7 @@ def build_report(g: Graph, root: URIRef) -> dict:
             diagram_graph.add((s, p, o))
 
     mmd = to_mermaid(diagram_graph, classify=lambda n: classify(n, g), kinds=GROUPS,
-                      label_of=lambda n: label_of(n, g))
+                     **mermaid_options(g))
 
     # A second variant with every rdf:type edge dropped, for the "hide type
     # edges" toggle (default on). Safe to just drop them, not merely hide
@@ -348,7 +378,7 @@ def build_report(g: Graph, root: URIRef) -> dict:
         if p != RDF.type:
             diagram_graph_notype.add((s, p, o))
     mmd_notype = to_mermaid(diagram_graph_notype, classify=lambda n: classify(n, g), kinds=GROUPS,
-                             label_of=lambda n: label_of(n, g))
+                            **mermaid_options(g))
 
     label = next(g.objects(root, MDA.hasLabel), Literal(local(root)))
     priority = next(g.objects(root, MDA.hasPriority), None)

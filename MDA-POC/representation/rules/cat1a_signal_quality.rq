@@ -2,64 +2,113 @@
 # cat1a_signal_quality.rq — CAT1a condition. HAND-AUTHORED.
 #
 # NL rule (CAT1): "If a signal supporting a physiological alarm is of
-# insufficient quality, the alarm is flagged as likely false positive."
+# insufficient quality or not acquired, the alarm is flagged as likely
+# false positive."
 #
 # Clause by clause:
 #   "a physiological alarm"    — the arriving alarm has category
 #                                alarmcat:Physiological. A technical alarm
 #                                (e.g. "SpO2 zwak signaal") reports the
 #                                quality problem; it is never itself flagged.
-#   "a signal supporting [it]" — the signal on the alarm's OWN sensing
-#                                pathway: its FunctionalUnit -> sensor ->
-#                                signal -> the analysis producing its metric.
-#                                Anchored at both ends on the alarm itself
-#                                (?fu through its device in its own persistent
-#                                graph, ?analysis from its metric), so a sibling signal on the same
-#                                sensor never counts — e.g. an ECG-signal
-#                                problem does not flag a respiration-rate
-#                                alarm derived from ECG_lead_Impedance.
-#   "insufficient quality"     — either any mda:hasQualityState other than
-#                                Good currently asserted on that signal, or
-#                                the sensor producing it in a fault state:
-#                                Disabled, Disconnected or Malfunction — the
-#                                signal is not being acquired at all (e.g.
-#                                "ECG alle leads los" -> "Asystolie"). The
-#                                second branch extends the NL wording
-#                                deliberately (agreed 2026-09-21); the NL
-#                                table should read "...is of insufficient
-#                                quality or not acquired...". Both states are
-#                                reported by some alarm on the same pathway,
-#                                in practice a technical one. The quality-
-#                                state scheme holds only Impaired/
-#                                ScalingError today; the Good exclusion keeps
-#                                the first branch correct if a healthy state
-#                                is ever added. Warning is left out of the
-#                                second branch: no sensor alarm asserts it,
-#                                and it does not mean the signal is lost.
-#   "is"                       — currently: a quality state holds only
-#                                while the alarm reporting it is active.
+#   "a signal supporting [it]" — any signal or sensor UPSTREAM of the
+#                                alarm's own metric on its own sensing
+#                                pathway: if anything on that line is
+#                                compromised, so is the metric (agreed
+#                                2026-11-25). The pathway is a graph, not
+#                                one chain: a step may take several inputs
+#                                (an ECG lead from its electrodes' raw
+#                                signals), produce an intermediate signal
+#                                (the lead) or an intermediate metric (cardiac
+#                                output, from which cardiac index is
+#                                derived). "Upstream" is the property path
+#                                  analyzedBy/((producesSignal|producesMetric)/analyzedBy)*
+#                                from the signal to the step producing the
+#                                alarm's metric. On a one-chain pathway it
+#                                reduces to sensor -> signal -> analysis.
+#                                Anchored at both ends on the alarm itself:
+#                                ?analysis from its own metric, the pathway
+#                                from its own persistent graph. So a sibling
+#                                signal on the same sensor never counts —
+#                                e.g. an ECG-signal problem does not flag a
+#                                respiration-rate alarm derived from
+#                                ECG_lead_Impedance.
+#   "the alarm's own metric"   — the metric in the alarm's own persistent
+#                                graph that a step produces and no further
+#                                step consumes (no mda:analyzedBy out of
+#                                it): an intermediate metric is upstream,
+#                                never the anchor. Read from the pathway
+#                                itself, not from a pointer on the message
+#                                (mda:triggeredByStructure, retired
+#                                2026-11-25: ?gP already scopes the pathway
+#                                to this alarm). Not anchored on "the metric
+#                                with a state": some physiological alarms
+#                                state none (PHILIPSMONITOR - Apneu).
+#   "insufficient quality"     — any mda:hasQualityState other than Good
+#                                asserted on an upstream signal. Today:
+#                                Impaired and its refinements (Pulseless,
+#                                Weak, Interference, Unanalyzable,
+#                                OutOfRange) plus the unplaced ScalingError.
+#   "not acquired"             — a sensor feeding the pathway in a fault
+#                                state: Disabled, Disconnected or
+#                                Malfunction, or any refinement of these
+#                                (mda:refinesConcept*, read from the
+#                                framework in the default graph):
+#                                AdapterFault, MCableFailure,
+#                                PositionalError, Unrecognized refine
+#                                Malfunction (hierarchy.ttl, 2026-11-25).
+#                                The failed sensor is the pathway's own
+#                                sensor, or a sensor of a strictly broader
+#                                KIND on the same functional unit
+#                                (?sensorKind rdfs:subClassOf+ ?faultyKind).
+#                                Strictly: two particulars of the SAME kind
+#                                are different sensors (an arterial and a
+#                                central-venous IBP_transducer), and a fault
+#                                on one says nothing about the other. A
+#                                state on
+#                                the ECG electrode group ("ECG alle leads
+#                                los") covers each electrode kind under it
+#                                — the respiration electrode, RA, LL — not
+#                                the other way round ("R elektrode los"
+#                                does not reach a heart-rate alarm, whose
+#                                pathway starts at the group). So a state
+#                                belongs on the group only when the alarm
+#                                concerns the electrodes collectively.
+#                                Oxigraph matches the zero-length step of
+#                                refinesConcept* only for a term present in
+#                                the default graph: a state the vocabulary
+#                                does not declare would not match even
+#                                itself (cat1a_sensor_pos guards this).
+#                                Extends the NL wording deliberately
+#                                (agreed 2026-09-21). Warning is left out:
+#                                no sensor alarm asserts it as a fault, and
+#                                it does not mean the signal is lost.
+#   "is"                       — currently: a quality or sensor state holds
+#                                only while the alarm reporting it is active
+#                                (both are leaf properties, minted into the
+#                                reporting alarm's transient graph).
 #
 # Evaluated once, when the physiological alarm arrives (agreed
-# 2026-09-21): the flag informs whether the alarm is annunciated, so a
-# quality problem that starts later does not flag an alarm already active.
+# 2026-09-21, reconfirmed 2026-11-25): the flag informs whether the alarm
+# is annunciated, so a quality problem that starts later does not flag an
+# alarm already active.
 #
-# KNOWN GAP (vocabulary, not this rule): "PHILIPSMONITOR - Resp elektr.los"
-# sits on sensor ECG_lead_Resp, but respiration-rate alarms are modelled on
-# ElectroCardioGraphy_sensor/ECG_lead_Impedance — so it never reaches any
-# alarm's pathway and never flags anything.
+# RESPIRATION ELECTRODES (2026-11-25): impedance respiration starts at its
+# own sensor:ECG_Resp_sensor, a subclass of the ECG electrode group
+# (inference.ttl, hierarchy.ttl). "PHILIPSMONITOR - Resp elektr.los" states
+# Disconnected on it and so reaches only impedance-respiration alarms; a
+# state on the group ("ECG alle leads los") reaches them too, by kind.
 #
-#   own pathway: the message is triggeredBy the device; the device's
-#   functional unit is read from the alarm's OWN persistent graph
-#   (<alarm#persistent>), so another alarm's chain on the same device is
-#   never reached (option D, 2026-10-12).
-# GRAPHS. ?gT is the arriving alarm's transient graph (category, message,
-# triggeredBy and producesMetric are minted there together); ?gP is a
-# persistent graph holding its structural chain (FunctionalUnit, sensor,
-# signal, analysis — re-minted per alarm, so any copy carrying these exact
-# IRIs is the same pathway); ?gQ is wherever the quality state was
-# reported. Grouping the pathway into ?gT/?gP — instead of one free graph
-# variable per hop — is what stops hops from being borrowed from another
-# alarm's chain.
+# GRAPHS (mint contract 2026-11-25, TODO_derivation_graphs.md: structure
+# persists, states are transient). ?gT = <alarm#transient>: the alarm, its
+# category, its message with triggeredBy, and the
+# states it reports. ?gP = <alarm#persistent>: every node of its pathway and
+# every edge between them — functional unit, sensors (with their types),
+# signals, steps, intermediate metrics and its own metric — and nothing of
+# any other alarm's, so a pathway never borrows a hop from another alarm's
+# chain on the same device (option D, 2026-10-12). ?gQ is the transient
+# graph of the alarm reporting the state (states live only there, so the
+# reporter is active); ?gR is wherever the failed sensor's own structure
+# sits (the reporter's persistent graph).
 #
 # CONTRACT. Bound on entry: ?alarm (the arriving alarm), ?now.
 # Binds: ?evidence (the signal or sensor the verdict rests on) and ?witness
@@ -74,27 +123,44 @@
 # signal), cat1a_sibling (respiration-rate alarm while the ECG signal is
 # impaired), cat1a_otherfu (SpO2 fault vs heart-rate alarm) and
 # cat1a_sensor_neg (SpO2 sensor off vs heart-rate alarm) do not.
+# Derivation graphs (2026-11-25; each positive fails on the former one-hop
+# rule): cat1a_lead_pos (ECG-lead quality fault, then a heart-rate alarm:
+# intermediate signal) and cat1a_derived_pos (Swan-Ganz fault, then EDVI:
+# intermediate metrics) and cat1a_refined_pos (MCableFailure, then etCO2:
+# refinesConcept*) flag; cat1a_lead_sibling (ECG-lead fault vs impedance
+# respiration) does not.
+# cat1a_group_member ("ECG alle leads los" flags impedance respiration:
+# group kind -> member) flags.
+# PENDING (needs the workbook: Resp elektr.los -> Sensor ECG_Resp_sensor):
+# "Resp elektr.los" flags impedance respiration but not heart rate.
 ####################################################################
 
 PREFIX mda:          <https://w3id.org/mda/ontology#>
 PREFIX mdapoc:       <https://w3id.org/mda/poc#>
+PREFIX rdfs:         <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX alarmcat:     <https://w3id.org/mda/vocab/alarm-category/>
 PREFIX qualitystate: <https://w3id.org/mda/vocab/quality-state/>
 PREFIX opstate:      <https://w3id.org/mda/vocab/operation-state/>
 
 GRAPH ?gT { ?alarm mda:hasCategory alarmcat:Physiological .
             ?alarm mda:hasMessage ?msg . ?msg mda:triggeredBy ?device .
-            ?analysis mda:producesMetric ?metric . }
+          }
 BIND(IRI(CONCAT(STR(?alarm), "#persistent")) AS ?gP)
-GRAPH ?gP { ?device mda:hasFunctionalUnit ?fu . ?fu mda:hasSensor ?sensor .
-            ?sensor mda:sensorProducesSignal ?signal . ?signal mda:analyzedBy ?analysis . }
+GRAPH ?gP { ?analysis mda:producesMetric ?metric .
+            FILTER NOT EXISTS { ?metric mda:analyzedBy ?nextStep } }
 {
+  GRAPH ?gP { ?signal mda:analyzedBy/((mda:producesSignal|mda:producesMetric)/mda:analyzedBy)* ?analysis . }
   GRAPH ?gQ { ?signal mda:hasQualityState ?quality }
   FILTER(?quality != qualitystate:Good)
   BIND(?signal AS ?evidence)
 } UNION {
-  GRAPH ?gQ { ?sensor mda:hasSensorOperationState ?sensorState }
-  VALUES ?sensorState { opstate:Disabled opstate:Disconnected opstate:Malfunction }
-  BIND(?sensor AS ?evidence)
+  GRAPH ?gP { ?device mda:hasFunctionalUnit ?fu . ?fu mda:hasSensor ?sensor . ?sensor a ?sensorKind .
+              ?sensor mda:sensorProducesSignal/mda:analyzedBy/((mda:producesSignal|mda:producesMetric)/mda:analyzedBy)* ?analysis . }
+  GRAPH ?gQ { ?faultySensor mda:hasSensorOperationState ?sensorState }
+  GRAPH ?gR { ?fu mda:hasSensor ?faultySensor . ?faultySensor a ?faultyKind }
+  FILTER(?faultySensor = ?sensor || EXISTS { ?sensorKind rdfs:subClassOf+ ?faultyKind })
+  ?sensorState mda:refinesConcept* ?fault .
+  VALUES ?fault { opstate:Disabled opstate:Disconnected opstate:Malfunction }
+  BIND(?faultySensor AS ?evidence)
 }
 BIND(?gQ AS ?witness)

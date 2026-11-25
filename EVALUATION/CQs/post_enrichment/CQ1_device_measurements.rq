@@ -11,24 +11,28 @@
 #
 # The (analyzedBy/producesSignal)* hop covers derived/intermediate signals
 # (e.g. a computed lead feeding a further analysis step) before the
-# terminal analyzedBy/producesMetric hop; on the current p50-derived
-# kg_generated.ttl every metric is one hop off a sensor's raw signal, so
-# this generality is currently unused but kept for correctness against the
-# ontology's actual signal-analysis model.
+# terminal analyzedBy/producesMetric hop. Since the derivation graphs
+# (2026-11-24) this hop is load-bearing: every ECG-derived alarm (heart
+# rate, and respiration rate from the ECG electrodes) runs electrode ->
+# raw signal -> lead derivation -> lead -> analysis -> metric.
 #
 # Asserted only -- no inference.ttl predicate is involved, so this does not
-# require the OWL-RL closure. Four device classes present in
-# kg_generated.ttl are absent from the results (CardiacMonitor, Dialysator,
-# Thermoregulator, and the plain mda:Device of "MEDIBUS - Check patient"):
-# their only archetypes in this corpus are connection/system-fault alarms
-# with no measurement pathway at all (e.g. "EDWARDS - Verbinding
-# verbroken") -- correctly excluded, not a query defect.
+# require the OWL-RL closure. Device classes whose only archetypes are
+# connection/system-fault alarms have no measurement pathway at all and are
+# correctly absent from the results, not a query defect (at p75:
+# CardiacMonitor, Dialysator and Thermoregulator, e.g. "EDWARDS -
+# Verbinding verbroken").
 #
 # The answer is bounded by the annotated alarms: a measurement a device
 # never alarmed on in the corpus is not listed. Phase/aggregation variants
 # (e.g. ArterialBloodPressure and ArterialBloodPressure_Mean,
 # AirwayPressure_Peak and AirwayPressure_EndExpiratory) count as distinct
 # measurements, as each is a distinct displayed value.
+
+# 2026-11-24: metric hops added (build_framework.py derivation_graph()
+# writes out derived metrics: cardiac output -> cardiac index). Every
+# metric on the pathway counts as measured by the device, intermediate
+# ones included, so no "own metric" filter here.
 
 PREFIX mda: <https://w3id.org/mda/ontology#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
@@ -38,7 +42,7 @@ SELECT ?deviceClass (GROUP_CONCAT(DISTINCT ?metricNotation; separator=" | ") AS 
   ?a a mda:AlarmType ;
      mda:hasMessage/mda:triggeredBy ?deviceNode .
   ?deviceNode a ?deviceClass .
-  ?deviceNode mda:hasFunctionalUnit/mda:hasSensor/mda:sensorProducesSignal/(mda:analyzedBy/mda:producesSignal)*/mda:analyzedBy/mda:producesMetric/a ?metricConcept .
+  ?deviceNode mda:hasFunctionalUnit/mda:hasSensor/mda:sensorProducesSignal/(mda:analyzedBy/(mda:producesSignal|mda:producesMetric))*/mda:analyzedBy/mda:producesMetric/a ?metricConcept .
   ?metricConcept skos:notation ?metricNotation .
 }
 GROUP BY ?deviceClass
