@@ -75,7 +75,7 @@ Validation scripts in `validation/`:
 - `log_rebuild_check.py`: every logged row comes out again when only the alarms the logs name for it are replayed through the engine; the criterion is the rule file itself (run `regression.py` or `poc_main.py` first).
 - `clinical_events_cross_patient.py`: five patients interleaved in one stream and one store produce no cross-patient events.
 - `compare_logs.py`: two runs log the same firings and events (alarms matched by ALARM_ID).
-- `rule_coverage.py`: every ordered pair of alarm types in the knowledge base replayed as a synthetic patient (B active when A arrives; B ended before A arrives), giving the label combinations each rule covers, split by the department the types come from (manuscript 4.3.2). Writes `results/rule_coverage_pairs.csv` and `rule_coverage_summary.csv`; about 208,000 synthetic patients on the p99 knowledge base, replayed in chunks of 500 per store (`run_parallel(chunk_size=...)`): an estimated 6–8 minutes with 8 workers (25 minutes with one store per patient).
+- `rule_coverage.py`: every ordered pair of alarm types in the knowledge base replayed as a synthetic patient (B active when A arrives; B ended before A arrives), giving the label combinations each rule covers, split by the department the types come from (manuscript 4.3.2). Writes `results/rule_coverage_pairs.csv` and `rule_coverage_summary.csv`; about 208,000 synthetic patients on the p99 knowledge base, replayed in chunks of 500 per store (`run_parallel(chunk_size=...)`): about 11 minutes with 8 workers (24 minutes with one store per patient; measured 2026-11-25).
 
 ## Requirements
 
