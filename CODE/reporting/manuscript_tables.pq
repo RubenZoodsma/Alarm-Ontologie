@@ -1,64 +1,54 @@
 // manuscript_tables.pq — Power Query for MANUSCRIPT/table_drafts/Table4_occurrence.xlsx
 //
-// Loads MANUSCRIPT/table_drafts/manuscript_tables.csv (written by
-// CODE/reporting/manuscript_tables.py) into the two data sheets the
-// formatted tables read from. The sheets "Table 3" and "Table 4" look values
-// up by column (Unit in A, Key in B, Value in C), so the queries must land at
-// A1 of the same sheets with these four columns in this order.
+// Two queries load MANUSCRIPT/table_drafts/manuscript_tables.csv (written by
+// CODE/reporting/manuscript_tables.py) into the sheets the formatted tables
+// read from: tblTable3 into Data_T3, tblTable4 into Data. The sheets
+// "Table 3" and "Table 4" look values up by column (Unit in A, Key in B,
+// Value in C), so each query must land at A1 of its sheet.
 //
-// One-time setup (Excel: Data > Get Data > From Other Sources > Blank Query >
-// Advanced Editor), four queries, named exactly as below:
+// ONE-TIME SETUP, per query (first tblTable3 on Data_T3, then tblTable4 on Data):
+//   1. On the sheet, select columns A:D and press Delete (clear the contents;
+//      do not delete the columns or the sheet: the formulas refer to them).
+//   2. Data > Get Data (Power Query) > Blank query. The Power Query editor opens.
+//   3. Home > Advanced Editor: replace all text with the query below, with
+//      the CSV's full path on the CsvPath line. OK.
+//   4. Name the query (Query Settings, right) tblTable3 / tblTable4.
+//   5. Home > Close & Load To... > Table > Existing worksheet: =Data_T3!$A$1
+//      (or =Data!$A$1). OK.
 //
-//   1. ManuscriptTablesPath   paste QUERY 1, put in the CSV's full path.
-//                             Close & Load To... > Only Create Connection.
-//   2. ManuscriptTables       paste QUERY 2. Only Create Connection.
-//   3. tblTable3              paste QUERY 3. Before loading: on sheet Data_T3,
-//                             select columns A:D and Clear All (do not delete
-//                             the columns or the sheet: the formulas refer to
-//                             them). Then Close & Load To... > Table >
-//                             Existing worksheet: =Data_T3!$A$1.
-//   4. tblTable4              paste QUERY 4. Same, on sheet Data: =Data!$A$1.
+// AFTER THAT: run manuscript_tables.py, then in Excel Data > Refresh All.
+// Nothing writes into the workbook any more; do not run scripts that open and
+// save it (openpyxl drops Power Query definitions on save).
 //
-// Until then the two sheets hold the same four columns as plain values,
-// filled from the CSV on 2026-11-25, so the tables are current without the
-// queries; the queries replace exactly those cells.
-//
-// After that: run manuscript_tables.py, then Data > Refresh All. Nothing
-// writes into the workbook any more; do not run scripts that open and save it
-// (openpyxl drops Power Query definitions on save).
-//
-// Numbers are written with a '.' decimal separator; the Value column is typed
-// with culture "en-US" so a Dutch-locale Excel reads 90.5 as 90,5 and not 905.
+// The Value column is typed with culture "en-US": the CSV uses a '.' decimal
+// separator, and a Dutch-locale Excel would otherwise read 90.5 as 905.
 
 
-// ── QUERY 1: ManuscriptTablesPath ────────────────────────────────────────
-"/full/path/to/Alarm-Ontologie/MANUSCRIPT/table_drafts/manuscript_tables.csv"
-    meta [IsParameterQuery = true, Type = "Text", IsParameterQueryRequired = true]
-
-
-// ── QUERY 2: ManuscriptTables ────────────────────────────────────────────
+// ── tblTable3 (load to =Data_T3!$A$1) ────────────────────────────────────
 let
-    Source   = Csv.Document(File.Contents(ManuscriptTablesPath),
+    CsvPath  = "/full/path/to/Alarm-Ontologie/MANUSCRIPT/table_drafts/manuscript_tables.csv",
+    Source   = Csv.Document(File.Contents(CsvPath),
                             [Delimiter = ";", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
     Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
-    Typed    = Table.TransformColumnTypes(Promoted,
-                   {{"Table", type text}, {"Unit", type text}, {"Key", type text},
+    Rows     = Table.SelectRows(Promoted, each [Table] = "Table 3"),
+    Columns  = Table.SelectColumns(Rows, {"Unit", "Key", "Value", "Description"}),
+    Typed    = Table.TransformColumnTypes(Columns,
+                   {{"Unit", type text}, {"Key", type text},
                     {"Value", type number}, {"Description", type text}}, "en-US")
 in
     Typed
 
 
-// ── QUERY 3: tblTable3 ───────────────────────────────────────────────────
+// ── tblTable4 (load to =Data!$A$1) ───────────────────────────────────────
 let
-    Rows = Table.SelectRows(ManuscriptTables, each [Table] = "Table 3"),
-    Out  = Table.SelectColumns(Rows, {"Unit", "Key", "Value", "Description"})
+    CsvPath  = "/full/path/to/Alarm-Ontologie/MANUSCRIPT/table_drafts/manuscript_tables.csv",
+    Source   = Csv.Document(File.Contents(CsvPath),
+                            [Delimiter = ";", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    Rows     = Table.SelectRows(Promoted, each [Table] = "Table 4"),
+    Columns  = Table.SelectColumns(Rows, {"Unit", "Key", "Value", "Description"}),
+    Typed    = Table.TransformColumnTypes(Columns,
+                   {{"Unit", type text}, {"Key", type text},
+                    {"Value", type number}, {"Description", type text}}, "en-US")
 in
-    Out
-
-
-// ── QUERY 4: tblTable4 ───────────────────────────────────────────────────
-let
-    Rows = Table.SelectRows(ManuscriptTables, each [Table] = "Table 4"),
-    Out  = Table.SelectColumns(Rows, {"Unit", "Key", "Value", "Description"})
-in
-    Out
+    Typed
