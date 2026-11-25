@@ -7,6 +7,9 @@ review: pending
 rationale:
   clinical: ""
   technical: >
+    (2026-11-25: CAT2a also silences it — the same property, same direction,
+    equal priority (both Medium since the Unknown priorities were resolved);
+    one silence, justified under both rules.)
     Same `metric:SpO2` type via two independent sensors/devices — reuses the pair
     already validated for `CQ10_coinciding_equivalence.rq`'s technical branch,
     just re-sequenced for arrival-order evaluation — CAT2b positive
@@ -20,4 +23,5 @@ stream:
 expect:
   - {forwarded: a1}
   - {silenced: a2, reason: redundant, rule: 2b, by: [a1]}
+  - {silenced: a2, reason: redundant, rule: 2a, by: [a1]}
   - {interpretation: ReducedPulmonaryFunction, from: "08:00:00", until: "08:02:00", evidence: [a1, a2]}

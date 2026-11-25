@@ -1,0 +1,26 @@
+id: cat1a_scaling_neg
+title: "CAT1a negative: a display-scale message (ScalingError) does not flag the metric"
+rule: "1a"
+purpose: falsify
+status: active
+review: pending
+rationale:
+  clinical: >
+    "Change scale" means the waveform does not fit the display; the
+    measurement itself is not in doubt.
+  technical: >
+    CAT1a counts a quality state only if it is Impaired or a refinement
+    (revised 2026-11-25). ScalingError is not placed under Impaired, so the
+    etCO2 alarm on the same capnogram is forwarded (and is evidence for its
+    clinical event).
+author: "Claude, 2026-11-25 (CAT1a: Impaired only)"
+strict: true
+
+stream:
+  - {id: a1, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - CO2 wzig schaal l", device_name: "Philipsmonitor", priority: "Laag", start: "08:00:00", end: "08:02:00"}
+  - {id: a2, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - ?? etCO2 hoog", device_name: "Philipsmonitor", priority: "Medium", start: "08:00:30", end: "08:01:00"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:30", until: "08:01:00", evidence: [a2]}

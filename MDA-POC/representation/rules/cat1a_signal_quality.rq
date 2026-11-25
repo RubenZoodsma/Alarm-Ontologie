@@ -43,11 +43,21 @@
 #                                to this alarm). Not anchored on "the metric
 #                                with a state": some physiological alarms
 #                                state none (PHILIPSMONITOR - Apneu).
-#   "insufficient quality"     — any mda:hasQualityState other than Good
-#                                asserted on an upstream signal. Today:
-#                                Impaired and its refinements (Pulseless,
-#                                Weak, Interference, Unanalyzable,
-#                                OutOfRange) plus the unplaced ScalingError.
+#   "insufficient quality"     — a quality state on an upstream signal that
+#                                is Impaired or a refinement of it
+#                                (mda:refinesConcept*, read from the
+#                                framework in the default graph): today
+#                                Pulseless, Weak, Interference,
+#                                Unanalyzable, OutOfRange, StaticPressure.
+#                                (Revised 2026-11-25, was "any state other
+#                                than Good".) Deliberately NOT ScalingError
+#                                ("ABP/CVD verkleinen", "CO2 wzig schaal"):
+#                                the waveform does not fit the display
+#                                scale, which says nothing about the
+#                                measurement; on the 40-patient sample these
+#                                messages caused 945 of 2,572 flags. A new
+#                                quality state counts only once it is placed
+#                                under Impaired in hierarchy.ttl.
 #   "not acquired"             — a sensor feeding the pathway in a fault
 #                                state: Disabled, Disconnected or
 #                                Malfunction, or any refinement of these
@@ -130,9 +140,10 @@
 # refinesConcept*) flag; cat1a_lead_sibling (ECG-lead fault vs impedance
 # respiration) does not.
 # cat1a_group_member ("ECG alle leads los" flags impedance respiration:
-# group kind -> member) flags.
-# PENDING (needs the workbook: Resp elektr.los -> Sensor ECG_Resp_sensor):
-# "Resp elektr.los" flags impedance respiration but not heart rate.
+# group kind -> member), cat1a_resp_pos ("Resp elektr.los" flags impedance
+# respiration, not the heart rate) and cat1a_static_pos (StaticPressure,
+# a refinement of Impaired) flag; cat1a_scaling_neg (ScalingError, "CO2
+# wzig schaal") does not — it fails on the former "anything but Good" rule.
 ####################################################################
 
 PREFIX mda:          <https://w3id.org/mda/ontology#>
@@ -151,7 +162,7 @@ GRAPH ?gP { ?analysis mda:producesMetric ?metric .
 {
   GRAPH ?gP { ?signal mda:analyzedBy/((mda:producesSignal|mda:producesMetric)/mda:analyzedBy)* ?analysis . }
   GRAPH ?gQ { ?signal mda:hasQualityState ?quality }
-  FILTER(?quality != qualitystate:Good)
+  ?quality mda:refinesConcept* qualitystate:Impaired .
   BIND(?signal AS ?evidence)
 } UNION {
   GRAPH ?gP { ?device mda:hasFunctionalUnit ?fu . ?fu mda:hasSensor ?sensor . ?sensor a ?sensorKind .

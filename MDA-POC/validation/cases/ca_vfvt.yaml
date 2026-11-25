@@ -1,0 +1,23 @@
+id: ca_vfvt
+title: "CardiacArrest: Philips' combined VF/VT alarm counts as a possible VF, for safety"
+rule: "events"
+purpose: confirm
+status: active
+review: pending
+rationale:
+  clinical: >
+    The alarm cannot tell ventricular fibrillation from ventricular
+    tachycardia, so it is treated as a possible cardiac arrest.
+  technical: >
+    Safety extension in cardiac_arrest.rq (agreed 2026-11-25): an alarm that
+    reports exactly VentricularFibrillationOrTachycardia counts. Matched
+    exactly, not through refinesConcept*, so pure VT stays out (ca_vt_neg).
+author: "Claude, 2026-11-25 (cardiac arrest criterion)"
+strict: true
+
+stream:
+  - {id: a1, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - Ventrikel Fibr/Tachy", device_name: "Philipsmonitor", priority: "Hoog", start: "08:00:00", end: "08:01:00"}
+
+expect:
+  - {forwarded: a1}
+  - {interpretation: CardiacArrest, from: "08:00:00", until: "08:01:00", evidence: [a1]}

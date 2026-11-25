@@ -1,0 +1,28 @@
+id: cat2b_position_same_device
+title: "A pre-ductal and an unpositioned SpO2 on one monitor are the same probe: no CAT2b"
+rule: "2b"
+purpose: falsify
+status: active
+review: pending
+rationale:
+  clinical: >
+    A patient does not carry two probes of one kind on one device, so the
+    pre-ductal and the unpositioned SpO2 channel of one monitor are taken to be
+    the same probe.
+  technical: >
+    Sensor identity for CAT2b is the functional-unit particular plus the sensor
+    type (equal or refining); anatomical position plays no part (2026-11-25).
+    CAT2b must not fire. CAT2a does (same property SaO2, same direction, equal
+    priority). Both alarms stay evidence for reduced pulmonary function: a CAT2
+    silence removes no evidence.
+author: "Added 2026-11-25 (CAT2b sensor identity)"
+strict: true
+
+stream:
+  - {id: a1, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - ?? SpO2pr laag", device_name: "Philipsmonitor", priority: "Medium", start: "08:00:00", end: "08:02:00"}
+  - {id: a2, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - SpO2 laag", device_name: "Philipsmonitor", priority: "Medium", start: "08:00:30", end: "08:01:00"}
+
+expect:
+  - {forwarded: a1}
+  - {silenced: a2, reason: redundant, rule: 2a, by: [a1]}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:00", until: "08:02:00", evidence: [a1, a2]}

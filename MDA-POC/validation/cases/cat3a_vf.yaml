@@ -1,0 +1,26 @@
+id: cat3a_vf
+title: "CAT3a positive: ventricular fibrillation and apnoea at the same time are a cardiorespiratory arrest"
+rule: "3a"
+purpose: confirm
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: >
+    CAT3a combines conditions, not alarms: a CardiacArrest from ventricular
+    fibrillation (criterion revised 2026-11-25) and a RespiratoryArrest from
+    an apnoea, both current, give a CardioRespiratoryArrest from the later
+    start to the earlier end.
+author: "Claude, 2026-11-25 (cardiac arrest criterion: absent or fibrillation)"
+strict: true
+
+stream:
+  - {id: a1, device: "DraegerMonitor_00", label: "Monitor - Ventriculaire fibrillatie", device_name: "DraegerMonitor", priority: "Hoog", start: "08:00:00", end: "08:01:00"}
+  - {id: a2, device: "DraegerMonitor_00", label: "Monitor - APNOE RESP", device_name: "DraegerMonitor", priority: "Medium", start: "08:00:30", end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: CardioRespiratoryArrest, from: "08:00:30", until: "08:01:00", evidence: [a1, a2]}
+  - {interpretation: CardiacArrest, from: "08:00:00", until: "08:01:00", evidence: [a1]}
+  - {interpretation: RespiratoryArrest, from: "08:00:30", until: "08:01:30", evidence: [a2]}

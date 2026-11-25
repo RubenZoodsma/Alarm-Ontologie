@@ -1,0 +1,23 @@
+id: cat1b_scaling_no_withdraw
+title: "CAT1b: a display-scale message on the arterial line does not withdraw the flag"
+purpose: edge
+status: active
+rule: "1b"
+review: pending
+author: "Claude, 2026-11-25 (CAT1b: reassuring vs premise-breaking IBP alarms, option A)"
+strict: true
+rationale:
+  clinical: >
+    "ABP verkleinen": the arterial waveform exceeds the display scale, i.e. a
+    large pulsatile pressure (sample patient 8970, 2024-12-08: a leads-off
+    artefact).
+  technical: >
+    ScalingError on an arterial transducer reassures; it withdraws nothing.
+stream:
+  - {id: a1, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - ABPs hoog", device_name: "Philipsmonitor", priority: "Medium", start: "07:55:00", end: "07:55:20"}
+  - {id: a2, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - Asystolie", device_name: "Philipsmonitor", priority: "Hoog", start: "08:00:00", end: "08:00:20"}
+  - {id: a3, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - ABP verkleinen", device_name: "Philipsmonitor", priority: "Laag", start: "08:00:08", end: "08:00:12"}
+expect:
+  - {forwarded: a1}
+  - {forwarded: a3}
+  - {silenced: a2, reason: likely-invalid, rule: 1b, by: [a1]}

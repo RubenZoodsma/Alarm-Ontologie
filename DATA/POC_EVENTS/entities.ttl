@@ -103,9 +103,6 @@ scaffold:Device_MechanicalVentilator_ServoI_Getinge a device:MechanicalVentilato
 scaffold:Device_MechanicalVentilator_ServoU_Getinge a device:MechanicalVentilator_ServoU_Getinge ;
     rdfs:label "Mechanical Ventilator_Servo U_Getinge (type catalogue entry)"@en .
 
-scaffold:Device_MechanicalVentilator_Trilogy a device:MechanicalVentilator_Trilogy ;
-    rdfs:label "Mechanical Ventilator_Trilogy (type catalogue entry)"@en .
-
 scaffold:Device_MechanicalVentilator_Trilogy_Philips a device:MechanicalVentilator_Trilogy_Philips ;
     rdfs:label "Mechanical Ventilator_Trilogy_Philips (type catalogue entry)"@en .
 

@@ -826,12 +826,6 @@ alarmcat:Technical a skos:Concept ;
     skos:notation "Monitor - CO2 verminderde nauwkeurigheid" ;
     skos:prefLabel "Monitor - CO2 verminderde nauwkeurigheid"@en .
 
-<https://w3id.org/mda/vocab/alarm-label/MonitorDrukslangGeknikt> a skos:Concept ;
-    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
-    skos:notation "Monitor - DRUKSLANG GEKNIKT" ;
-    skos:prefLabel "Monitor - DRUKSLANG GEKNIKT"@en .
-
 <https://w3id.org/mda/vocab/alarm-label/MonitorEcgAfleidingenLos> a skos:Concept ;
     skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
     skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
@@ -862,18 +856,6 @@ alarmcat:Technical a skos:Concept ;
     skos:notation "Monitor - etCO2 Laag" ;
     skos:prefLabel "Monitor - etCO2 Laag"@en .
 
-<https://w3id.org/mda/vocab/alarm-label/MonitorGd1StatischeDruk> a skos:Concept ;
-    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
-    skos:notation "Monitor - GD1 statische druk" ;
-    skos:prefLabel "Monitor - GD1 statische druk"@en .
-
-<https://w3id.org/mda/vocab/alarm-label/MonitorGp3M> a skos:Concept ;
-    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
-    skos:notation "Monitor - GP3 M" ;
-    skos:prefLabel "Monitor - GP3 M"@en .
-
 <https://w3id.org/mda/vocab/alarm-label/MonitorHemopodNietAangesloten> a skos:Concept ;
     skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
     skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
@@ -903,12 +885,6 @@ alarmcat:Technical a skos:Concept ;
     skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
     skos:notation "Monitor - Hoge CPP" ;
     skos:prefLabel "Monitor - Hoge CPP"@en .
-
-<https://w3id.org/mda/vocab/alarm-label/MonitorHogeGp1M> a skos:Concept ;
-    skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
-    skos:inScheme <https://w3id.org/mda/vocab/alarm-label/Scheme> ;
-    skos:notation "Monitor - Hoge GP1 M" ;
-    skos:prefLabel "Monitor - Hoge GP1 M"@en .
 
 <https://w3id.org/mda/vocab/alarm-label/MonitorHogeHr> a skos:Concept ;
     skos:broader <https://w3id.org/mda/vocab/alarm-label/AlarmLabel> ;
@@ -2137,6 +2113,16 @@ anatomicalPosition:Central a skos:Concept ;
     skos:prefLabel "Central"@en,
         "Central"@nl .
 
+anatomicalPosition:CentralVenous a skos:Concept ;
+    rdfs:subClassOf mda:AnatomicalPosition ;
+    skos:broader anatomicalPosition:AnatomicalPosition ;
+    skos:definition "Central Venous"@en,
+        "Central Venous"@nl ;
+    skos:inScheme anatomicalPosition:Scheme ;
+    skos:notation "CentralVenous" ;
+    skos:prefLabel "Central Venous"@en,
+        "Central Venous"@nl .
+
 anatomicalPosition:Core a skos:Concept ;
     rdfs:subClassOf mda:AnatomicalPosition ;
     skos:broader anatomicalPosition:AnatomicalPosition ;
@@ -2156,6 +2142,16 @@ anatomicalPosition:Intravascular a skos:Concept ;
     skos:notation "Intravascular" ;
     skos:prefLabel "Intravascular"@en,
         "Intravascular"@nl .
+
+anatomicalPosition:MixedVenous a skos:Concept ;
+    rdfs:subClassOf mda:AnatomicalPosition ;
+    skos:broader anatomicalPosition:AnatomicalPosition ;
+    skos:definition "Mixed Venous"@en,
+        "Mixed Venous"@nl ;
+    skos:inScheme anatomicalPosition:Scheme ;
+    skos:notation "MixedVenous" ;
+    skos:prefLabel "Mixed Venous"@en,
+        "Mixed Venous"@nl .
 
 anatomicalPosition:Peripheral a skos:Concept ;
     rdfs:subClassOf mda:AnatomicalPosition ;
@@ -2490,15 +2486,14 @@ device:MechanicalVentilator_ServoU_Getinge a skos:Concept ;
     mda:hasManufacturer manufacturer:Getinge .
 
 device:MechanicalVentilator_Trilogy_Philips a skos:Concept ;
-    rdfs:subClassOf device:MechanicalVentilator,
-        device:MechanicalVentilator_Trilogy ;
+    rdfs:subClassOf device:MechanicalVentilator ;
     owl:equivalentClass [ a owl:Class ;
             owl:intersectionOf ( device:MechanicalVentilator [ a owl:Restriction ;
                         owl:hasValue deviceType:Trilogy ;
                         owl:onProperty mda:hasDeviceType ] [ a owl:Restriction ;
                         owl:hasValue manufacturer:Philips ;
                         owl:onProperty mda:hasManufacturer ] ) ] ;
-    skos:broader device:MechanicalVentilator_Trilogy ;
+    skos:broader device:MechanicalVentilator ;
     skos:inScheme device:Scheme ;
     skos:notation "MechanicalVentilator_Trilogy_Philips" ;
     skos:prefLabel "Mechanical Ventilator_Trilogy_Philips"@en ;
@@ -3274,15 +3269,6 @@ opstate:AdapterFault a skos:Concept ;
         "Adapter Fault"@nl ;
     mda:refinesConcept opstate:Malfunction .
 
-opstate:CentralVenous a skos:Concept ;
-    skos:broader opstate:OperationState ;
-    skos:definition "Central Venous"@en,
-        "Central Venous"@nl ;
-    skos:inScheme opstate:Scheme ;
-    skos:notation "CentralVenous" ;
-    skos:prefLabel "Central Venous"@en,
-        "Central Venous"@nl .
-
 opstate:Cleaning a skos:Concept ;
     skos:broader opstate:Unavailable ;
     skos:definition "Cleaning"@en,
@@ -3358,15 +3344,6 @@ opstate:MCableFailure a skos:Concept ;
     skos:prefLabel "M Cable Failure"@en,
         "M Cable Failure"@nl ;
     mda:refinesConcept opstate:Malfunction .
-
-opstate:MixedVenous a skos:Concept ;
-    skos:broader opstate:OperationState ;
-    skos:definition "Mixed Venous"@en,
-        "Mixed Venous"@nl ;
-    skos:inScheme opstate:Scheme ;
-    skos:notation "MixedVenous" ;
-    skos:prefLabel "Mixed Venous"@en,
-        "Mixed Venous"@nl .
 
 opstate:Monitored a skos:Concept ;
     skos:broader opstate:OperationState ;
@@ -3941,6 +3918,16 @@ qualitystate:ScalingError a skos:Concept ;
     skos:notation "ScalingError" ;
     skos:prefLabel "Scaling Error"@en,
         "Scaling Error"@nl .
+
+qualitystate:StaticPressure a skos:Concept ;
+    skos:broader qualitystate:Impaired ;
+    skos:definition "Static Pressure"@en,
+        "Static Pressure"@nl ;
+    skos:inScheme qualitystate:Scheme ;
+    skos:notation "StaticPressure" ;
+    skos:prefLabel "Static Pressure"@en,
+        "Static Pressure"@nl ;
+    mda:refinesConcept qualitystate:Impaired .
 
 qualitystate:Unanalyzable a skos:Concept ;
     skos:broader qualitystate:Impaired ;
@@ -5275,17 +5262,14 @@ deviceType:ServoU a skos:Concept ;
     skos:prefLabel "Servo U"@en,
         "Servo U"@nl .
 
-device:MechanicalVentilator_Trilogy a skos:Concept ;
-    rdfs:subClassOf device:MechanicalVentilator ;
-    owl:equivalentClass [ a owl:Class ;
-            owl:intersectionOf ( device:MechanicalVentilator [ a owl:Restriction ;
-                        owl:hasValue deviceType:Trilogy ;
-                        owl:onProperty mda:hasDeviceType ] ) ] ;
-    skos:broader device:MechanicalVentilator ;
-    skos:inScheme device:Scheme ;
-    skos:notation "MechanicalVentilator_Trilogy" ;
-    skos:prefLabel "Mechanical Ventilator_Trilogy"@en ;
-    mda:hasDeviceType deviceType:Trilogy .
+deviceType:Trilogy a skos:Concept ;
+    skos:broader deviceType:DeviceType ;
+    skos:definition "Trilogy"@en,
+        "Trilogy"@nl ;
+    skos:inScheme deviceType:Scheme ;
+    skos:notation "Trilogy" ;
+    skos:prefLabel "Trilogy"@en,
+        "Trilogy"@nl .
 
 manufacturer:Baxter a skos:Concept ;
     skos:broader manufacturer:Manufacturer ;
@@ -5518,15 +5502,6 @@ metric:VenousBloodPressure a skos:Concept ;
     skos:prefLabel "Venous Blood Pressure"@en,
         "Venous Blood Pressure"@nl .
 
-deviceType:Trilogy a skos:Concept ;
-    skos:broader deviceType:DeviceType ;
-    skos:definition "Trilogy"@en,
-        "Trilogy"@nl ;
-    skos:inScheme deviceType:Scheme ;
-    skos:notation "Trilogy" ;
-    skos:prefLabel "Trilogy"@en,
-        "Trilogy"@nl .
-
 manufacturer:Philips a skos:Concept ;
     skos:broader manufacturer:Manufacturer ;
     skos:definition "Philips"@en,
@@ -5725,6 +5700,16 @@ qualitystate:Impaired a skos:Concept ;
     skos:prefLabel "Impaired"@en,
         "Impaired"@nl .
 
+device:MechanicalVentilator a skos:Concept ;
+    rdfs:subClassOf mda:Device ;
+    skos:broader device:Device ;
+    skos:definition "Mechanical Ventilator"@en,
+        "Mechanical Ventilator"@nl ;
+    skos:inScheme device:Scheme ;
+    skos:notation "MechanicalVentilator" ;
+    skos:prefLabel "Mechanical Ventilator"@en,
+        "Mechanical Ventilator"@nl .
+
 signal:ECG_raw_signal a skos:Concept ;
     rdfs:subClassOf mda:Signal,
         signal:ECG_signal ;
@@ -5735,16 +5720,6 @@ signal:ECG_raw_signal a skos:Concept ;
     skos:notation "ECG_raw_signal" ;
     skos:prefLabel "ECG_raw_signal"@en,
         "ECG_raw_signal"@nl .
-
-device:MechanicalVentilator a skos:Concept ;
-    rdfs:subClassOf mda:Device ;
-    skos:broader device:Device ;
-    skos:definition "Mechanical Ventilator"@en,
-        "Mechanical Ventilator"@nl ;
-    skos:inScheme device:Scheme ;
-    skos:notation "MechanicalVentilator" ;
-    skos:prefLabel "Mechanical Ventilator"@en,
-        "Mechanical Ventilator"@nl .
 
 sensor:ElectroCardioGraphy_sensor a skos:Concept ;
     rdfs:subClassOf mda:Sensor ;

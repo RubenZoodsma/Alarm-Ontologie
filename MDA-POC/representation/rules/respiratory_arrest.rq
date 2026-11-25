@@ -8,7 +8,9 @@
 # created by one alarm ("PHILIPSMONITOR - Apneu"); any source meeting the
 # criterion (e.g. a ventilator apnoea alarm, once annotated) creates the
 # same condition. See cardiac_arrest.rq for the graphs: state from the
-# alarm's transient graph, metric type from its own persistent graph.
+# alarm's transient graph, metric type from its own persistent graph. Type
+# via rdfs:subClassOf*, rhythm via mda:refinesConcept* (as cardiac_arrest),
+# so a narrower concept counts without naming it here.
 #
 # CONTRACT. Bound on entry: ?patient, ?now. Binds: ?evidence (the metric),
 # ?support (the alarm's graph). Used by the episode actions.
@@ -17,12 +19,15 @@
 PREFIX mda:    <https://w3id.org/mda/ontology#>
 PREFIX mdapoc: <https://w3id.org/mda/poc#>
 PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX metric: <https://w3id.org/mda/vocab/metric/>
 PREFIX rhythm: <https://w3id.org/mda/vocab/metric-rhythm/>
 
 GRAPH ?gEv { ?evAlarm mda:hasMessage ?evMsg . ?evMsg mda:concernsPatient ?patient .
-             ?evidence mda:hasRhythm rhythm:Absent . }
+             ?evidence mda:hasRhythm ?rhythm . }
+?rhythm mda:refinesConcept* rhythm:Absent .
 BIND(IRI(CONCAT(STR(?evAlarm), "#persistent")) AS ?gEvP)
-GRAPH ?gEvP { ?evidence rdf:type metric:RespirationRate . }
+GRAPH ?gEvP { ?evidence rdf:type ?metricType . }
+?metricType rdfs:subClassOf* metric:RespirationRate .
 FILTER NOT EXISTS { GRAPH ?gEv { ?evAlarm mdapoc:flaggedLikelyFalsePositive ?why } }
 BIND(?gEv AS ?support)

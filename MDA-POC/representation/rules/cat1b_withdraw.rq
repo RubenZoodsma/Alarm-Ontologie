@@ -3,8 +3,16 @@
 #
 # A CAT1b flag ("asystole while an arterial line is present without alarms
 # on its pathway") is withdrawn when an alarm on that same IBP pathway
-# arrives while the flagged asystole is still active (agreed 2026-09-21):
-# in a genuine asystole the pressure alarm naturally follows the ECG alarm
+# arrives while the flagged asystole is still active (agreed 2026-09-21),
+# unless that alarm REASSURES (revised 2026-11-25, option A): its
+# transducer is Arterial, it reports an increased arterial pressure or
+# ScalingError, and nothing else (Enabled aside) — it then shows a working
+# line delivering a pulsatile pressure, which supports the flag. A
+# decreased pressure, out of range, a quality problem, a sensor fault or
+# any venous/PA alarm withdraws. (Seen in the 40-patient sample: "ABP
+# verkleinen" and "ABPm hoog" withdrew flags on artefactual asystoles.)
+# The reason for withdrawing: in a genuine asystole the pressure alarm
+# (a falling pressure, no pulse) naturally follows the ECG alarm
 # by seconds, so the flag set at onset must not stand. The withdrawn
 # asystole becomes evidence for a clinical event from this moment on.
 #
@@ -31,9 +39,39 @@
 
 PREFIX mda:    <https://w3id.org/mda/ontology#>
 PREFIX mdapoc: <https://w3id.org/mda/poc#>
+PREFIX rdf:                   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:                  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:                   <http://www.w3.org/2002/07/owl#>
+PREFIX physiologicalProperty: <https://w3id.org/mda/vocab/physiological-property/>
+PREFIX valuestate:            <https://w3id.org/mda/vocab/metric-value-state/>
+PREFIX qualitystate:          <https://w3id.org/mda/vocab/quality-state/>
+PREFIX opstate:               <https://w3id.org/mda/vocab/operation-state/>
+PREFIX position:              <https://w3id.org/mda/vocab/anatomical-position/>
 
 GRAPH ?gNew { ?new mda:hasMessage ?newMsg . ?newMsg mda:triggeredBy ?newDevice . }
 FILTER NOT EXISTS { GRAPH ?gNew { ?new mdapoc:flaggedLikelyFalsePositive ?newFlagEvidence } }
 BIND(IRI(CONCAT(STR(?new), "#persistent")) AS ?gNewP)
 GRAPH ?gNewP { ?newDevice mda:hasFunctionalUnit ?fu . }
 GRAPH ?gFlag { ?flagged mdapoc:flaggedLikelyFalsePositive ?fu }
+# ... unless the arriving alarm REASSURES: it shows a working arterial line
+# delivering a pulsatile pressure (same block as in cat1b_asystole_ibp.rq)
+FILTER NOT EXISTS {
+  GRAPH ?gNewP { ?fu mda:hasSensor ?okTransducer .
+                 ?okTransducer mda:hasAnatomicalPosition position:Arterial . }
+  { GRAPH ?gNew { ?okMetric mda:hasValueState ?okValue . }
+    ?okValue mda:refinesConcept* valuestate:Increased .
+    GRAPH ?gNewP { ?okMetric rdf:type ?okMetricType . }
+    ?okMetricType rdfs:subClassOf* ?okRestriction .
+    ?okRestriction owl:onProperty mda:approximates ;
+                   owl:hasValue physiologicalProperty:ArterialPressure . }
+  UNION
+  { GRAPH ?gNew { ?okSignal mda:hasQualityState qualitystate:ScalingError . } }
+  FILTER NOT EXISTS {
+    GRAPH ?gNew { ?anyNode ?anyStateProp ?anyState . }
+    VALUES ?anyStateProp { mda:hasValueState mda:hasRhythm mda:hasQualityState
+                           mda:hasSensorOperationState mda:hasComponentOperationState
+                           mda:hasDeviceOperationState }
+    FILTER NOT EXISTS { ?anyState mda:refinesConcept* valuestate:Increased }
+    FILTER(?anyState NOT IN (qualitystate:ScalingError, opstate:Enabled))
+  }
+}

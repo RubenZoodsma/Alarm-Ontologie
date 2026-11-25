@@ -88,11 +88,17 @@
 #     more; the criterion was metric:HeartRate before;
 #   - fibrillation added ("Monitor - Ventriculaire fibrillatie":
 #     VentricularFibrillation refines Fibrillation, hierarchy.ttl, so the
-#     refinesConcept chain on hasRhythm entails it). Deliberately NOT
-#     included: VentricularTachycardia (can have a pulse; the monitor cannot
-#     tell), VentricularFibrillationOrTachycardia ("PHILIPSMONITOR - Ventrikel
-#     Fibr/Tachy": refines Abnormal, not Fibrillation — the alarm does not say
-#     which), and Abnormal ("Monitor - Hoge ARR").
+#     refinesConcept chain on hasRhythm entails it). NOT included:
+#     VentricularTachycardia (can have a pulse; the monitor cannot tell) and
+#     Abnormal ("Monitor - Hoge ARR").
+#   - "VF or VT" ("PHILIPSMONITOR - Ventrikel Fibr/Tachy") is treated as a
+#     possible VF for safety, but in the MDA-POC rule (cardiac_arrest.rq),
+#     which matches that exact report — NOT in this axiom. Through the
+#     refinesConcept chain on hasRhythm a VentricularTachycardia report also
+#     entails hasRhythm VentricularFibrillationOrTachycardia, so a hasValue
+#     restriction on it here would make every VT a cardiac arrest. OWL cannot
+#     say "reports exactly the disjunction"; the axiom states what entails an
+#     arrest, the POC adds the precaution.
 # Kept to the exact metric on purpose: "any cardiac metric with an absent
 # rhythm" would admit PulseRate Absent ("SpO2 geen pols"), typically a probe
 # problem rather than an arrest. NOTE: metricRhythm:Fibrillation is not

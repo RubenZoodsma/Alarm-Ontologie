@@ -69,6 +69,10 @@
 # Not placed yet, pending a decision: ScalingError ("wijzig schaal"), which
 # concerns the display range rather than the signal itself.
 qualitystate:OutOfRange    mda:refinesConcept  qualitystate:Impaired .
+# StaticPressure ("statische druk": the pressure curve is flat, no
+# pulsatility) placed under Impaired (2026-11-25): a static pressure signal
+# cannot be relied on, so an alarm resting on it is suspect (CAT1a).
+qualitystate:StaticPressure mda:refinesConcept qualitystate:Impaired .
 qualitystate:Pulseless     mda:refinesConcept  qualitystate:Impaired .
 qualitystate:Weak          mda:refinesConcept  qualitystate:Impaired .
 qualitystate:Interference  mda:refinesConcept  qualitystate:Impaired .

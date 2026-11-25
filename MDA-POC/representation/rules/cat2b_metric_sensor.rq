@@ -117,9 +117,8 @@ VALUES ?activeStateProp { mda:hasValueState mda:hasRhythm }
 FILTER NOT EXISTS { GRAPH ?gA { ?active mdapoc:flaggedLikelyFalsePositive ?activeFlagEvidence } }
 BIND(IRI(CONCAT(STR(?active), "#persistent")) AS ?gAP)
 GRAPH ?gAP { ?activeMetric rdf:type ?activeMetricType . }
-{ FILTER(?activeMetricType = ?metricType) }
-UNION { ?activeMetricType rdfs:subClassOf+ ?metricType }
-UNION { ?metricType rdfs:subClassOf+ ?activeMetricType }
+# equal, or one refines the other (subClassOf* includes equality)
+{ ?activeMetricType rdfs:subClassOf* ?metricType } UNION { ?metricType rdfs:subClassOf+ ?activeMetricType }
 # the same direction, not more severe
 ?activeState (mda:refinesConcept|skos:broadMatch)* ?state .
 
@@ -131,7 +130,7 @@ FILTER NOT EXISTS {
   GRAPH ?gAP { ?fu mda:hasSensor ?as . ?as rdf:type ?ast .
                ?as mda:sensorProducesSignal/mda:analyzedBy/((mda:producesSignal|mda:producesMetric)/mda:analyzedBy)* ?aan .
                ?aan mda:producesMetric ?activeMetric . }
-  { FILTER(?st = ?ast) } UNION { ?st rdfs:subClassOf+ ?ast } UNION { ?ast rdfs:subClassOf+ ?st }
+  { ?st rdfs:subClassOf* ?ast } UNION { ?ast rdfs:subClassOf+ ?st }
 }
 
 FILTER(?active != ?alarm)

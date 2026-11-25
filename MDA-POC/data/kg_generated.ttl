@@ -137,7 +137,8 @@ alarmtype:BabyLeo_MedibusInstellingenVerloren_Medium a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:Incubator ;
                     mda:administers [ a therapeuticModality:ThermoRegulationTherapy ] ;
-                    mda:hasComponent [ a component:Settings ] ;
+                    mda:hasComponent [ a component:Settings ;
+                            mda:hasComponentOperationState opstate:Malfunction ] ;
                     mda:hasDeviceType deviceType:BabyLeo ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Medium .
@@ -307,7 +308,8 @@ alarmtype:BabyTherm_MedibusVentilatorStoring_Medium a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:Incubator ;
                     mda:administers [ a therapeuticModality:ThermoRegulationTherapy ] ;
-                    mda:hasComponent [ a component:Ventilation ] ;
+                    mda:hasComponent [ a component:Ventilation ;
+                            mda:hasComponentOperationState opstate:Malfunction ] ;
                     mda:hasDeviceType deviceType:BabyTherm ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Medium .
@@ -481,7 +483,8 @@ alarmtype:Caleo_MedibusVentilatorStoring_Medium a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:Incubator ;
                     mda:administers [ a therapeuticModality:ThermoRegulationTherapy ] ;
-                    mda:hasComponent [ a component:Ventilation ] ;
+                    mda:hasComponent [ a component:Ventilation ;
+                            mda:hasComponentOperationState opstate:Malfunction ] ;
                     mda:hasDeviceType deviceType:Caleo ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Medium .
@@ -1267,7 +1270,7 @@ alarmtype:Hemosphere_EdwardsCciLowAlarmLimit_Hoog a mda:AlarmType ;
     mda:hasPriority alarmprio:Hoog .
 
 alarmtype:Hemosphere_EdwardsCoCardiacOutput10LMin_Hoog a mda:AlarmType ;
-    mda:hasCategory alarmcat:Physiological ;
+    mda:hasCategory alarmcat:Technical ;
     mda:hasLabel "EDWARDS - CO: Cardiac Output < 1.0 L/min"@en ;
     mda:hasLabelConcept <https://w3id.org/mda/vocab/alarm-label/EdwardsCoCardiacOutput10LMin> ;
     mda:hasMessage [ a mda:AlarmMessage ;
@@ -1298,7 +1301,7 @@ alarmtype:Hemosphere_EdwardsCoCheckThermalFilamentPosition_Hoog a mda:AlarmType 
     mda:hasPriority alarmprio:Hoog .
 
 alarmtype:Hemosphere_EdwardsCoExceededHighLimit_Hoog a mda:AlarmType ;
-    mda:hasCategory alarmcat:Physiological ;
+    mda:hasCategory alarmcat:Technical ;
     mda:hasLabel "EDWARDS - CO exceeded high limit"@en ;
     mda:hasLabelConcept <https://w3id.org/mda/vocab/alarm-label/EdwardsCoExceededHighLimit> ;
     mda:hasMessage [ a mda:AlarmMessage ;
@@ -1323,18 +1326,18 @@ alarmtype:Hemosphere_EdwardsEdvExceedingHrThresholdLimit_Hoog a mda:AlarmType ;
             mda:triggeredBy [ a device:CardiacMonitor ;
                     mda:hasDeviceType deviceType:Hemosphere ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_HaemoDynamics ;
-                            mda:hasSensor [ a sensor:SwanGanzCatheter ;
-                                    mda:sensorProducesSignal [ a signal:BloodTemperature_waveform ;
-                                            mda:analyzedBy [ a signalAnalysis:RVEFAnalysis ;
-                                                    mda:producesMetric [ a metric:RightVentricleEjectionFraction ;
-                                                            mda:analyzedBy _:Nca869436491b4004b94689360e433639 ] ] ] ],
-                                [ a mda:Sensor ;
+                            mda:hasSensor [ a mda:Sensor ;
                                     mda:sensorProducesSignal [ a mda:Signal ;
                                             mda:analyzedBy [ a signalAnalysis:CardiacOutputAnalysis ;
                                                     mda:producesMetric [ a metric:CardiacOutput ;
                                                             mda:analyzedBy [ a signalAnalysis:StrokeVolumeAnalysis ;
                                                                     mda:producesMetric [ a metric:StrokeVolume ;
-                                                                            mda:analyzedBy _:Nca869436491b4004b94689360e433639 ] ] ] ] ] ] ] ;
+                                                                            mda:analyzedBy _:N5631ad48851d4f43a86e9e26c75452f3 ] ] ] ] ] ],
+                                [ a sensor:SwanGanzCatheter ;
+                                    mda:sensorProducesSignal [ a signal:BloodTemperature_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:RVEFAnalysis ;
+                                                    mda:producesMetric [ a metric:RightVentricleEjectionFraction ;
+                                                            mda:analyzedBy _:N5631ad48851d4f43a86e9e26c75452f3 ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Edwards ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -1363,14 +1366,14 @@ alarmtype:Hemosphere_EdwardsEdviHighAlarmLimit_Hoog a mda:AlarmType ;
                                     mda:sensorProducesSignal [ a signal:BloodTemperature_waveform ;
                                             mda:analyzedBy [ a signalAnalysis:RVEFAnalysis ;
                                                     mda:producesMetric [ a metric:RightVentricleEjectionFraction ;
-                                                            mda:analyzedBy _:N8f25eae802504c54951f3166a432d6c0 ] ] ] ],
+                                                            mda:analyzedBy _:Ne3be5ddefa00490c8f2436d0d21ac763 ] ] ] ],
                                 [ a mda:Sensor ;
                                     mda:sensorProducesSignal [ a mda:Signal ;
                                             mda:analyzedBy [ a signalAnalysis:CardiacOutputAnalysis ;
                                                     mda:producesMetric [ a metric:CardiacOutput ;
                                                             mda:analyzedBy [ a signalAnalysis:StrokeVolumeAnalysis ;
                                                                     mda:producesMetric [ a metric:StrokeVolume ;
-                                                                            mda:analyzedBy _:N8f25eae802504c54951f3166a432d6c0 ] ] ] ] ] ] ] ;
+                                                                            mda:analyzedBy _:Ne3be5ddefa00490c8f2436d0d21ac763 ] ] ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Edwards ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -1543,7 +1546,7 @@ alarmtype:Hemosphere_EdwardsScvo2LowAlarmLimit_Hoog a mda:AlarmType ;
                     mda:hasDeviceType deviceType:Hemosphere ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_IV_Oximetry ;
                             mda:hasSensor [ a sensor:OximetryCatheter ;
-                                    mda:hasSensorOperationState opstate:CentralVenous ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:CentralVenous ;
                                     mda:sensorProducesSignal [ a signal:OximetryWaveform ;
                                             mda:analyzedBy [ a signalAnalysis:VenousOxygenSaturationAnalysis ;
                                                     mda:producesMetric [ a metric:VenousOxygenSaturation ;
@@ -1610,7 +1613,7 @@ alarmtype:Hemosphere_EdwardsSvo2LowAlarmLimit_Hoog a mda:AlarmType ;
                     mda:hasDeviceType deviceType:Hemosphere ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_IV_Oximetry ;
                             mda:hasSensor [ a sensor:OximetryCatheter ;
-                                    mda:hasSensorOperationState opstate:MixedVenous ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:MixedVenous ;
                                     mda:sensorProducesSignal [ a signal:OximetryWaveform ;
                                             mda:analyzedBy [ a signalAnalysis:VenousOxygenSaturationAnalysis ;
                                                     mda:producesMetric [ a metric:VenousOxygenSaturation ;
@@ -1915,7 +1918,7 @@ alarmtype:Infinity_MonitorArtStatischeDruk_Medium a mda:AlarmType ;
                                     mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:hasSensorOperationState opstate:Enabled ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
-                                            mda:hasQualityState qualitystate:Impaired ] ] ] ;
+                                            mda:hasQualityState qualitystate:StaticPressure ] ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -2011,17 +2014,6 @@ alarmtype:Infinity_MonitorCo2VerminderdeNauwkeurigheid_Laag a mda:AlarmType ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Laag .
 
-alarmtype:Infinity_MonitorDrukslangGeknikt_Medium a mda:AlarmType ;
-    mda:hasCategory alarmcat:Technical ;
-    mda:hasLabel "Monitor - DRUKSLANG GEKNIKT"@en ;
-    mda:hasLabelConcept <https://w3id.org/mda/vocab/alarm-label/MonitorDrukslangGeknikt> ;
-    mda:hasMessage [ a mda:AlarmMessage ;
-            mda:concernsPatient [ a mda:Patient ] ;
-            mda:triggeredBy [ a device:PhysiologicalMonitor ;
-                    mda:hasDeviceType deviceType:Infinity ;
-                    mda:hasManufacturer manufacturer:Draeger ] ] ;
-    mda:hasPriority alarmprio:Medium .
-
 alarmtype:Infinity_MonitorEcgAfleidingenLos_Laag a mda:AlarmType ;
     mda:hasCategory alarmcat:Technical ;
     mda:hasLabel "Monitor - ECG afleidingen los"@en ;
@@ -2101,31 +2093,6 @@ alarmtype:Infinity_MonitorEtco2Laag_Medium a mda:AlarmType ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Medium .
 
-alarmtype:Infinity_MonitorGd1StatischeDruk_Medium a mda:AlarmType ;
-    mda:hasCategory alarmcat:Technical ;
-    mda:hasLabel "Monitor - GD1 statische druk"@en ;
-    mda:hasLabelConcept <https://w3id.org/mda/vocab/alarm-label/MonitorGd1StatischeDruk> ;
-    mda:hasMessage [ a mda:AlarmMessage ;
-            mda:concernsPatient [ a mda:Patient ] ;
-            mda:triggeredBy [ a device:PhysiologicalMonitor ;
-                    mda:hasDeviceType deviceType:Infinity ;
-                    mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
-                            mda:hasSensor [ a sensor:IBP_transducer ;
-                                    mda:sensorProducesSignal [ a signal:IBP_waveform ;
-                                            mda:hasQualityState qualitystate:Impaired ] ] ] ;
-                    mda:hasManufacturer manufacturer:Draeger ] ] ;
-    mda:hasPriority alarmprio:Medium .
-
-alarmtype:Infinity_MonitorGp3M_Laag a mda:AlarmType ;
-    mda:hasLabel "Monitor - GP3 M"@en ;
-    mda:hasLabelConcept <https://w3id.org/mda/vocab/alarm-label/MonitorGp3M> ;
-    mda:hasMessage [ a mda:AlarmMessage ;
-            mda:concernsPatient [ a mda:Patient ] ;
-            mda:triggeredBy [ a device:PhysiologicalMonitor ;
-                    mda:hasDeviceType deviceType:Infinity ;
-                    mda:hasManufacturer manufacturer:Draeger ] ] ;
-    mda:hasPriority alarmprio:Laag .
-
 alarmtype:Infinity_MonitorHemopodNietAangesloten_Laag a mda:AlarmType ;
     mda:hasCategory alarmcat:Technical ;
     mda:hasLabel "Monitor - Hemopod niet aangesloten"@en ;
@@ -2167,6 +2134,7 @@ alarmtype:Infinity_MonitorHogeArtmean_Medium a mda:AlarmType ;
                     mda:hasDeviceType deviceType:Infinity ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
                                             mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure_Mean ;
@@ -2185,6 +2153,7 @@ alarmtype:Infinity_MonitorHogeArtsys_Medium a mda:AlarmType ;
                     mda:hasDeviceType deviceType:Infinity ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
                                             mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure_Systolic ;
@@ -2207,22 +2176,6 @@ alarmtype:Infinity_MonitorHogeCpp_Medium a mda:AlarmType ;
                                             mda:analyzedBy [ a mda:SignalAnalysis ;
                                                     mda:producesMetric [ a metric:CerebralPerfusionPressure ;
                                                             mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
-                    mda:hasManufacturer manufacturer:Draeger ] ] ;
-    mda:hasPriority alarmprio:Medium .
-
-alarmtype:Infinity_MonitorHogeGp1M_Medium a mda:AlarmType ;
-    mda:hasCategory alarmcat:Physiological ;
-    mda:hasLabel "Monitor - Hoge GP1 M"@en ;
-    mda:hasLabelConcept <https://w3id.org/mda/vocab/alarm-label/MonitorHogeGp1M> ;
-    mda:hasMessage [ a mda:AlarmMessage ;
-            mda:concernsPatient [ a mda:Patient ] ;
-            mda:triggeredBy [ a device:PhysiologicalMonitor ;
-                    mda:hasDeviceType deviceType:Infinity ;
-                    mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
-                            mda:hasSensor [ a mda:Sensor ;
-                                    mda:sensorProducesSignal [ a mda:Signal ;
-                                            mda:analyzedBy [ a mda:SignalAnalysis ;
-                                                    mda:producesMetric [ mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -2289,7 +2242,8 @@ alarmtype:Infinity_MonitorHogePaM_Medium a mda:AlarmType ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasDeviceType deviceType:Infinity ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
-                            mda:hasSensor [ a mda:Sensor ;
+                            mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:PulmonaryArtery ;
                                     mda:sensorProducesSignal [ a mda:Signal ;
                                             mda:analyzedBy [ a mda:SignalAnalysis ;
                                                     mda:producesMetric [ mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
@@ -2341,9 +2295,7 @@ alarmtype:Infinity_MonitorIcpNietAangesloten_Medium a mda:AlarmType ;
                     mda:hasDeviceType deviceType:Infinity ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_IntraCranialPressure ;
                             mda:hasSensor [ a sensor:ICP_transducer ;
-                                    mda:sensorProducesSignal [ a signal:ICP_waveform ;
-                                            mda:analyzedBy [ a signalAnalysis:ICPAnalysis ;
-                                                    mda:producesMetric [ a metric:IntraCranialPressure ] ] ] ] ] ;
+                                    mda:hasSensorOperationState opstate:Disconnected ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -2357,6 +2309,7 @@ alarmtype:Infinity_MonitorLageArtmean_Medium a mda:AlarmType ;
                     mda:hasDeviceType deviceType:Infinity ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
                                             mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure_Mean ;
@@ -2375,6 +2328,7 @@ alarmtype:Infinity_MonitorLageArtsys_Medium a mda:AlarmType ;
                     mda:hasDeviceType deviceType:Infinity ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
                                             mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure_Systolic ;
@@ -2480,7 +2434,8 @@ alarmtype:Infinity_MonitorLagePaM_Medium a mda:AlarmType ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasDeviceType deviceType:Infinity ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
-                            mda:hasSensor [ a mda:Sensor ;
+                            mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:PulmonaryArtery ;
                                     mda:sensorProducesSignal [ a mda:Signal ;
                                             mda:analyzedBy [ a mda:SignalAnalysis ;
                                                     mda:producesMetric [ mda:hasValueState metricValueState:Decreased ] ] ] ] ] ;
@@ -2602,7 +2557,10 @@ alarmtype:Infinity_MonitorPaNietAangesloten_Laag a mda:AlarmType ;
             mda:concernsPatient [ a mda:Patient ] ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasDeviceType deviceType:Infinity ;
-                    mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ] ;
+                    mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
+                            mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:PulmonaryArtery ;
+                                    mda:hasSensorOperationState opstate:Disconnected ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Laag .
 
@@ -2616,8 +2574,9 @@ alarmtype:Infinity_MonitorPaStatischeDruk_Medium a mda:AlarmType ;
                     mda:hasDeviceType deviceType:Infinity ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:PulmonaryArtery ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
-                                            mda:hasQualityState qualitystate:Impaired ] ] ] ;
+                                            mda:hasQualityState qualitystate:StaticPressure ] ] ] ;
                     mda:hasManufacturer manufacturer:Draeger ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -2880,6 +2839,7 @@ alarmtype:IntelliVue_PhilipsmonitorAbpArtefact_Laag a mda:AlarmType ;
                     mda:hasDeviceType deviceType:IntelliVue ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
                                             mda:hasQualityState qualitystate:Impaired ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
@@ -2976,8 +2936,9 @@ alarmtype:IntelliVue_PhilipsmonitorAbpPulseertNiet_Medium a mda:AlarmType ;
                     mda:hasDeviceType deviceType:IntelliVue ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
-                                            mda:hasQualityState qualitystate:Impaired ] ] ] ;
+                                            mda:hasQualityState qualitystate:Pulseless ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -2991,6 +2952,7 @@ alarmtype:IntelliVue_PhilipsmonitorAbpSlechtSignaal_Medium a mda:AlarmType ;
                     mda:hasDeviceType deviceType:IntelliVue ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
                                             mda:hasQualityState qualitystate:Impaired ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
@@ -3006,10 +2968,11 @@ alarmtype:IntelliVue_PhilipsmonitorAbpVerkleinen_Laag a mda:AlarmType ;
                     mda:hasDeviceType deviceType:IntelliVue ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
                                             mda:analyzedBy [ a mda:SignalAnalysis ;
                                                     mda:producesMetric [ mda:approximates physiologicalProperty:ArterialPressure ] ] ;
-                                            mda:hasQualityState qualitystate:OutOfRange ] ] ] ;
+                                            mda:hasQualityState qualitystate:ScalingError ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Laag .
 
@@ -3023,6 +2986,7 @@ alarmtype:IntelliVue_PhilipsmonitorAbpdHoog_Medium a mda:AlarmType ;
                     mda:hasDeviceType deviceType:IntelliVue ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
                                             mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure_Diastolic ;
@@ -3040,6 +3004,7 @@ alarmtype:IntelliVue_PhilipsmonitorAbpdLaag_Medium a mda:AlarmType ;
                     mda:hasDeviceType deviceType:IntelliVue ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
                                             mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure_Diastolic ;
@@ -3057,6 +3022,7 @@ alarmtype:IntelliVue_PhilipsmonitorAbpmHoog_Hoog a mda:AlarmType ;
                     mda:hasDeviceType deviceType:IntelliVue ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
                                             mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure_Mean ;
@@ -3074,6 +3040,7 @@ alarmtype:IntelliVue_PhilipsmonitorAbpmHoog_Medium a mda:AlarmType ;
                     mda:hasDeviceType deviceType:IntelliVue ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
                                             mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure_Mean ;
@@ -3091,6 +3058,7 @@ alarmtype:IntelliVue_PhilipsmonitorAbpmLaag_Medium a mda:AlarmType ;
                     mda:hasDeviceType deviceType:IntelliVue ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
                                             mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure_Mean ;
@@ -3108,6 +3076,7 @@ alarmtype:IntelliVue_PhilipsmonitorAbpmlaag_Hoog a mda:AlarmType ;
                     mda:hasDeviceType deviceType:IntelliVue ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
                                             mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure_Mean ;
@@ -3125,6 +3094,7 @@ alarmtype:IntelliVue_PhilipsmonitorAbpsHoog_Hoog a mda:AlarmType ;
                     mda:hasDeviceType deviceType:IntelliVue ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
                                             mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure_Systolic ;
@@ -3142,6 +3112,7 @@ alarmtype:IntelliVue_PhilipsmonitorAbpsHoog_Medium a mda:AlarmType ;
                     mda:hasDeviceType deviceType:IntelliVue ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
                                             mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure_Systolic ;
@@ -3159,6 +3130,7 @@ alarmtype:IntelliVue_PhilipsmonitorAbpsLaag_Medium a mda:AlarmType ;
                     mda:hasDeviceType deviceType:IntelliVue ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_InvasiveBloodPressure ;
                             mda:hasSensor [ a sensor:IBP_transducer ;
+                                    mda:hasAnatomicalPosition anatomicalPosition:Arterial ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
                                             mda:analyzedBy [ a signalAnalysis:ArterialPressureAnalysis ;
                                                     mda:producesMetric [ a metric:ArterialBloodPressure_Systolic ;
@@ -3352,7 +3324,7 @@ alarmtype:IntelliVue_PhilipsmonitorCo2WastUit_Medium a mda:AlarmType ;
     mda:hasPriority alarmprio:Medium .
 
 alarmtype:IntelliVue_PhilipsmonitorCo2WzigSchaalL_Laag a mda:AlarmType ;
-    mda:hasCategory alarmcat:Physiological ;
+    mda:hasCategory alarmcat:Technical ;
     mda:hasLabel "PHILIPSMONITOR - CO2 wzig schaal l"@en ;
     mda:hasLabelConcept <https://w3id.org/mda/vocab/alarm-label/PhilipsmonitorCo2WzigSchaalL> ;
     mda:hasMessage [ a mda:AlarmMessage ;
@@ -3466,7 +3438,7 @@ alarmtype:IntelliVue_PhilipsmonitorCvdGeenTransducer_Medium a mda:AlarmType ;
     mda:hasPriority alarmprio:Medium .
 
 alarmtype:IntelliVue_PhilipsmonitorCvdVerkleinen_Laag a mda:AlarmType ;
-    mda:hasCategory alarmcat:Physiological ;
+    mda:hasCategory alarmcat:Technical ;
     mda:hasLabel "PHILIPSMONITOR - CVD verkleinen"@en ;
     mda:hasLabelConcept <https://w3id.org/mda/vocab/alarm-label/PhilipsmonitorCvdVerkleinen> ;
     mda:hasMessage [ a mda:AlarmMessage ;
@@ -3479,7 +3451,7 @@ alarmtype:IntelliVue_PhilipsmonitorCvdVerkleinen_Laag a mda:AlarmType ;
                                     mda:sensorProducesSignal [ a signal:IBP_waveform ;
                                             mda:analyzedBy [ a mda:SignalAnalysis ;
                                                     mda:producesMetric [ mda:approximates physiologicalProperty:VenousPressure ] ] ;
-                                            mda:hasQualityState qualitystate:OutOfRange ] ] ] ;
+                                            mda:hasQualityState qualitystate:ScalingError ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Laag .
 
@@ -4061,7 +4033,7 @@ alarmtype:IntelliVue_PhilipsmonitorRespElektrLos_Medium a mda:AlarmType ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasDeviceType deviceType:IntelliVue ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_ElectroCardiography ;
-                            mda:hasSensor [ a sensor:ElectroCardioGraphy_sensor ;
+                            mda:hasSensor [ a sensor:ECG_Resp_sensor ;
                                     mda:hasSensorOperationState opstate:Disconnected ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
@@ -4110,9 +4082,9 @@ alarmtype:IntelliVue_PhilipsmonitorSpo2GeenPols_Medium a mda:AlarmType ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_PulseOximetry ;
                             mda:hasSensor [ a sensor:PulseOximeter ;
                                     mda:sensorProducesSignal [ a signal:PPG_waveform ;
-                                            mda:analyzedBy [ a signalAnalysis:PulseAnalysis ;
-                                                    mda:producesMetric [ a metric:PulseRate ;
-                                                            mda:hasRhythm metricRhythm:Absent ] ] ] ] ] ;
+                                            mda:analyzedBy [ a mda:SignalAnalysis ;
+                                                    mda:producesMetric [ mda:hasRhythm metricRhythm:Absent ] ] ;
+                                            mda:hasQualityState qualitystate:Pulseless ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -4242,7 +4214,7 @@ alarmtype:IntelliVue_PhilipsmonitorSpo2PrGeenPuls_Medium a mda:AlarmType ;
                                     mda:sensorProducesSignal [ a signal:PPG_waveform ;
                                             mda:analyzedBy [ a mda:SignalAnalysis ;
                                                     mda:producesMetric [ mda:hasRhythm metricRhythm:Absent ] ] ;
-                                            mda:hasQualityState qualitystate:Impaired ] ] ] ;
+                                            mda:hasQualityState qualitystate:Pulseless ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -4550,10 +4522,10 @@ alarmtype:IntelliVue_PhilipsmonitorStIiHoog_Medium a mda:AlarmType ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_ElectroCardiography ;
                             mda:hasSensor [ a sensor:ECG_RA_sensor ;
                                     mda:sensorProducesSignal [ a signal:ECG_RA_signal ;
-                                            mda:analyzedBy _:Na8b034577bd24e01aceabf0ecc784063 ] ],
+                                            mda:analyzedBy _:N63f563c18d9e49b98faa9287bb7333b0 ] ],
                                 [ a sensor:ECG_LL_sensor ;
                                     mda:sensorProducesSignal [ a signal:ECG_LL_signal ;
-                                            mda:analyzedBy _:Na8b034577bd24e01aceabf0ecc784063 ] ] ] ;
+                                            mda:analyzedBy _:N63f563c18d9e49b98faa9287bb7333b0 ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -4907,7 +4879,7 @@ alarmtype:LeoniPlus_HulbusFreqTooHigh_Hoog a mda:AlarmType ;
                                     mda:sensorProducesSignal [ a signal:AirwayFlow_waveform ;
                                             mda:analyzedBy [ a signalAnalysis:RespiratoryRateAnalysis ;
                                                     mda:producesMetric [ a metric:RespirationRate ;
-                                                            mda:hasValueState metricValueState:Increased ] ] ] ] ] ;
+                                                            mda:hasValueState metricValueState:OutOfRange ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:LowensteinMedical ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -5973,33 +5945,32 @@ alarmtype:Trilogy_TrilogyVerbindingVerbroken_Hoog a mda:AlarmType ;
                     mda:administers [ a therapeuticModality:VentilationTherapy ] ;
                     mda:hasComponent [ a component:ConnectionUnit ;
                             mda:hasComponentOperationState opstate:Disconnected ] ;
-                    mda:hasDeviceType deviceType:Trilogy ] ] ;
+                    mda:hasDeviceType deviceType:Trilogy ;
+                    mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
-_:N2b6844cb44de4f6e851f12167935c195 a signalAnalysis:EndDiastolicVolumeIndexAnalysis ;
-    mda:producesMetric [ a metric:EndDiastolicVolumeIndex ;
+_:N2e0e1a70120e4e1ba35f5454ba71d3af a signalAnalysis:STAnalysis ;
+    mda:producesMetric [ a metric:STSegment ;
+            mda:approximates physiologicalProperty:MyocardialRepolarization ;
             mda:hasValueState metricValueState:Increased ] .
 
-_:N2be659e1203042deba2dab08e1afa33d a metric:STSegment ;
-    mda:approximates physiologicalProperty:MyocardialRepolarization ;
-    mda:hasValueState metricValueState:Increased .
+_:N30220ce484c94696808b0713d0a1fd13 a metric:EndDiastolicVolume ;
+    mda:analyzedBy [ a signalAnalysis:EndDiastolicVolumeIndexAnalysis ;
+            mda:producesMetric [ a metric:EndDiastolicVolumeIndex ;
+                    mda:hasValueState metricValueState:Increased ] ] .
 
-_:N528438df964a4b35974574a4878f0eb9 a signal:ECG_lead_II ;
-    mda:analyzedBy [ a signalAnalysis:STAnalysis ;
-            mda:producesMetric _:N2be659e1203042deba2dab08e1afa33d ] .
-
-_:Nc974cd8f8bef4b1687a46c66c459208a a metric:EndDiastolicVolume ;
-    mda:analyzedBy _:N2b6844cb44de4f6e851f12167935c195 .
-
-_:Nfec581b3a36241ca8f2c974ebc8ca991 a metric:EndDiastolicVolume ;
+_:N3f2aeb4b858a48dc8eaae7117670f5e8 a metric:EndDiastolicVolume ;
     mda:hasValueState metricValueState:OutOfRange .
 
-_:N8f25eae802504c54951f3166a432d6c0 a signalAnalysis:EndDiastolicVolumeAnalysis ;
-    mda:producesMetric _:Nc974cd8f8bef4b1687a46c66c459208a .
+_:N5031682fd4c5408e89dd14266f6abd90 a signal:ECG_lead_II ;
+    mda:analyzedBy _:N2e0e1a70120e4e1ba35f5454ba71d3af .
 
-_:Na8b034577bd24e01aceabf0ecc784063 a signalAnalysis:ECG_derivation_II ;
-    mda:producesSignal _:N528438df964a4b35974574a4878f0eb9 .
+_:N5631ad48851d4f43a86e9e26c75452f3 a signalAnalysis:EndDiastolicVolumeAnalysis ;
+    mda:producesMetric _:N3f2aeb4b858a48dc8eaae7117670f5e8 .
 
-_:Nca869436491b4004b94689360e433639 a signalAnalysis:EndDiastolicVolumeAnalysis ;
-    mda:producesMetric _:Nfec581b3a36241ca8f2c974ebc8ca991 .
+_:N63f563c18d9e49b98faa9287bb7333b0 a signalAnalysis:ECG_derivation_II ;
+    mda:producesSignal _:N5031682fd4c5408e89dd14266f6abd90 .
+
+_:Ne3be5ddefa00490c8f2436d0d21ac763 a signalAnalysis:EndDiastolicVolumeAnalysis ;
+    mda:producesMetric _:N30220ce484c94696808b0713d0a1fd13 .
 

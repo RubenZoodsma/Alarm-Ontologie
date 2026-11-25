@@ -1,10 +1,24 @@
 ####################################################################
 # cardiac_arrest.rq — clinical event CardiacArrest. HAND-AUTHORED.
 #
-# Criterion (FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl):
-#   evidencedBy some (metric:CardiacRhythm and hasRhythm value Absent)
-# — a cardiac-rhythm metric with an absent rhythm (asystole), reported by an
-# alarm of this patient that is still active and not CAT1-flagged. An
+# Criterion (FRAMEWORK/KNOWLEDGE_BASE/clinicalEvents.ttl, revised 2026-11-25):
+#   evidencedBy some (metric:CardiacRhythm and
+#                     (hasRhythm value Absent or hasRhythm value Fibrillation))
+# — a cardiac-rhythm metric with an absent rhythm (asystole) or fibrillation
+# (ventricular fibrillation refines Fibrillation), reported by an alarm of
+# this patient that is still active and not CAT1-flagged. The metric's type
+# follows rdfs:subClassOf* and the rhythm mda:refinesConcept* (the property
+# chain the ontology declares on hasRhythm; the POC does not materialise
+# it), so a narrower concept counts without naming it here.
+# SAFETY EXTENSION (agreed 2026-11-25), beyond the KB axiom: an alarm that
+# reports EXACTLY "VF or VT" (rhythm VentricularFibrillationOrTachycardia,
+# "PHILIPSMONITOR - Ventrikel Fibr/Tachy") also counts — it cannot tell the
+# two apart, so it is treated as a possible VF. Matched exactly, NOT through
+# refinesConcept*: VentricularTachycardia refines "VF or VT", and a pure VT
+# alarm (can have a pulse) must not count. For the same reason the KB axiom
+# cannot carry this: through the hasRhythm property chain, a VT report
+# entails hasRhythm "VF or VT", so a hasValue restriction on it would make
+# every VT a cardiac arrest. Not Abnormal ("Hoge ARR"). An
 # alarm CAT1 flagged as likely false positive supports no clinical event
 # (agreed 2026-09-21): a condition must not rest on an alarm the POC itself
 # believes to be false. A withdrawn CAT1b flag lets the asystole count from
@@ -28,12 +42,18 @@
 PREFIX mda:    <https://w3id.org/mda/ontology#>
 PREFIX mdapoc: <https://w3id.org/mda/poc#>
 PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX metric: <https://w3id.org/mda/vocab/metric/>
 PREFIX rhythm: <https://w3id.org/mda/vocab/metric-rhythm/>
 
 GRAPH ?gEv { ?evAlarm mda:hasMessage ?evMsg . ?evMsg mda:concernsPatient ?patient .
-             ?evidence mda:hasRhythm rhythm:Absent . }
+             ?evidence mda:hasRhythm ?rhythm . }
+{ ?rhythm mda:refinesConcept* ?arrestRhythm .
+  VALUES ?arrestRhythm { rhythm:Absent rhythm:Fibrillation } }
+UNION
+{ VALUES ?rhythm { rhythm:VentricularFibrillationOrTachycardia } }
 BIND(IRI(CONCAT(STR(?evAlarm), "#persistent")) AS ?gEvP)
-GRAPH ?gEvP { ?evidence rdf:type metric:CardiacRhythm . }
+GRAPH ?gEvP { ?evidence rdf:type ?metricType . }
+?metricType rdfs:subClassOf* metric:CardiacRhythm .
 FILTER NOT EXISTS { GRAPH ?gEv { ?evAlarm mdapoc:flaggedLikelyFalsePositive ?why } }
 BIND(?gEv AS ?support)

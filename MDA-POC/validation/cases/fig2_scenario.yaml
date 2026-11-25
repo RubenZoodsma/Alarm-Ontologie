@@ -7,6 +7,9 @@ review: pending
 rationale:
   clinical: ""
   technical: >
+    (2026-11-25: CAT2a also silences it — the same property, same direction,
+    equal priority (both Medium since the Unknown priorities were resolved);
+    one silence, justified under both rules.)
     The manuscript's illustrative scenario (Fig. 2): the same label SpO2 laag
     flagged (CAT1a) in episode 1 and evidence of ventilation failure (CAT3b,
     08:40:30–08:41:40) in episode 3; the ventilator's low respiratory rate
@@ -29,5 +32,6 @@ expect:
   - {forwarded: a6}
   - {silenced: a2, reason: likely-invalid, rule: 1a, by: [a1]}
   - {silenced: a4, reason: redundant, rule: 2b, by: [a3]}
+  - {silenced: a4, reason: redundant, rule: 2a, by: [a3]}
   - {interpretation: VentilationFailure, from: "08:40:30", until: "08:41:40", evidence: [a5, a6]}
   - {interpretation: ReducedPulmonaryFunction, from: "08:40:30", until: "08:41:40", evidence: [a6]}

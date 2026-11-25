@@ -8,8 +8,17 @@
 # Clause by clause (decisions agreed 2026-09-21, revised 2026-11-25):
 #   "an asystole alarm"        — the arriving alarm's OWN metric is a
 #                                cardiac rhythm (metric:CardiacRhythm or a
-#                                kind of it) reported Absent (or a
-#                                refinement of Absent). The metric is read
+#                                kind of it) reported Absent or Fibrillation
+#                                (or a refinement: VentricularFibrillation).
+#                                Extended to fibrillation 2026-11-25, with
+#                                the CardiacArrest criterion: a pulsatile,
+#                                silent arterial line contradicts VF as much
+#                                as asystole. NOT Philips' "VF or VT"
+#                                (which cardiac_arrest.rq does count, for
+#                                safety): a silent line does not contradict
+#                                VT with a pulse, so flagging that alarm
+#                                would hide a real VT (held, 2026-11-25).
+#                                NOT VT or Abnormal. The metric is read
 #                                from the alarm's own persistent graph (?gP:
 #                                the metric no step consumes), its rhythm
 #                                from its own transient graph (?gT). Never
@@ -56,17 +65,40 @@
 #                                the evidence alarm reported (high or low) is
 #                                deliberately not checked: what counts is that
 #                                the line is silent NOW (agreed 2026-11-25).
-#   "without alarms on that    — no current alarm is triggered by that IBP
-#    sensing pathway"            FUNCTIONAL UNIT (NOT EXISTS): checked per
-#                                unit, not per transducer, so an active CVD
-#                                or PAP alarm on the same monitor also blocks
-#                                the flag (agreed 2026-11-25: the safe side;
-#                                per transducer needs the location fix).
+#   "without alarms on that    — no current alarm on that IBP FUNCTIONAL
+#    sensing pathway"            UNIT that breaks the premise (NOT EXISTS):
+#                                checked per unit, not per transducer, so an
+#                                active CVD or PAP alarm on the same monitor
+#                                also blocks the flag (agreed 2026-11-25: the
+#                                safe side). Every alarm on the unit breaks
+#                                it UNLESS it reassures — shows a working
+#                                arterial line delivering a pulsatile
+#                                pressure (revised 2026-11-25, option A):
+#                                its transducer is Arterial; it reports an
+#                                INCREASED arterial pressure (Increased or a
+#                                refinement, any phase) or ScalingError (the
+#                                waveform exceeds the display scale); it
+#                                reports nothing else (a sensor merely
+#                                Enabled aside); and it is not itself
+#                                flagged. A whitelist on purpose: any other
+#                                or new state blocks, so annunciating is the
+#                                default. NOT reassuring: a DECREASED
+#                                pressure, mean or systolic/diastolic (a
+#                                mean is computed from a flat curve too, and
+#                                a falling pressure is what a real arrest
+#                                produces within seconds); out of range
+#                                (OutOfRange, OutOfLowRange, OutOfHighRange);
+#                                quality problems; sensor faults; and every
+#                                venous or pulmonary-artery alarm (a high
+#                                venous pressure does not show cardiac
+#                                output — it rises in an arrest).
 #   "it may be flagged"        — flagged at onset, and WITHDRAWN if an alarm
-#                                on that same IBP unit arrives while the
-#                                asystole is still active: in a genuine
-#                                asystole the pressure alarm follows the ECG
-#                                alarm by seconds. See cat1b_withdraw.rq.
+#                                on that same IBP unit that breaks the
+#                                premise (as above: any alarm that does not
+#                                reassure) arrives while the asystole is
+#                                still active: in a genuine asystole the
+#                                pressure alarm follows the ECG alarm by
+#                                seconds. See cat1b_withdraw.rq.
 #
 # FLAGGED ALARMS (agreed 2026-11-25, all rules): an alarm flagged likely
 # false positive takes part in no other rule. An asystole CAT1a has already
@@ -92,7 +124,9 @@
 # disconnect alarm on the line), cat1b_expired (evidence ended 20 min
 # earlier), cat1b_venous (only a CVD line) and cat1b_unit (CVD alarm active
 # on the same unit) do not; cat1b_withdraw is flagged and withdrawn when the
-# arterial line alarms 8 s after onset; cat1b_borrow flags the asystole but
+# arterial line alarms 8 s after onset; cat1b_vf (ventricular fibrillation,
+# silent arterial line) flags; cat1b_vt (VT) and cat1b_vfvt (Philips "VF or
+# VT") do not; cat1b_borrow flags the asystole but
 # not a heart-rate alarm arriving during it; cat1b_flagged_incoming (an
 # asystole already flagged by CAT1a is not flagged again).
 ####################################################################
@@ -107,11 +141,17 @@ PREFIX rhythm:                <https://w3id.org/mda/vocab/metric-rhythm/>
 PREFIX functionalUnit:        <https://w3id.org/mda/vocab/functional-unit/>
 PREFIX device:                <https://w3id.org/mda/vocab/device/>
 PREFIX physiologicalProperty: <https://w3id.org/mda/vocab/physiological-property/>
+PREFIX valuestate:            <https://w3id.org/mda/vocab/metric-value-state/>
+PREFIX qualitystate:          <https://w3id.org/mda/vocab/quality-state/>
+PREFIX opstate:               <https://w3id.org/mda/vocab/operation-state/>
+PREFIX position:              <https://w3id.org/mda/vocab/anatomical-position/>
 
-# an asystole alarm: its own metric is a cardiac rhythm, reported absent
+# an asystole or fibrillation alarm: its own metric is a cardiac rhythm,
+# reported absent or fibrillating
 GRAPH ?gT { ?alarm mda:hasMessage ?msg . ?msg mda:concernsPatient ?patient .
             ?metric mda:hasRhythm ?rhythm . }
-?rhythm mda:refinesConcept* rhythm:Absent .
+?rhythm mda:refinesConcept* ?arrestRhythm .
+VALUES ?arrestRhythm { rhythm:Absent rhythm:Fibrillation }
 BIND(IRI(CONCAT(STR(?alarm), "#persistent")) AS ?gP)
 GRAPH ?gP { ?analysis mda:producesMetric ?metric . ?metric rdf:type ?metricType .
             FILTER NOT EXISTS { ?metric mda:analyzedBy ?nextStep } }
@@ -128,11 +168,37 @@ GRAPH ?gIbp { ?patient mda:isMonitoredBy ?ibpDevice . ?ibpDevice rdf:type ?ibpDe
 ?ibpMetricType rdfs:subClassOf* ?arterialRestriction .
 ?arterialRestriction owl:onProperty mda:approximates ;
                      owl:hasValue physiologicalProperty:ArterialPressure .
-# without a current alarm on that pathway (the IBP functional unit)
+# without a current alarm on that pathway (the IBP functional unit) that
+# breaks the premise ...
 FILTER NOT EXISTS {
   GRAPH ?gOther { ?other mda:hasMessage ?otherMsg . ?otherMsg mda:triggeredBy ?ibpDevice . }
   BIND(IRI(CONCAT(STR(?other), "#persistent")) AS ?gOtherP)
   GRAPH ?gOtherP { ?ibpDevice mda:hasFunctionalUnit ?ibpFunctionalUnit . }
+  # ... i.e. any such alarm, unless it REASSURES: it shows a working arterial
+  # line delivering a pulsatile pressure (same block in cat1b_withdraw.rq)
+  FILTER NOT EXISTS {
+    GRAPH ?gOtherP { ?ibpFunctionalUnit mda:hasSensor ?okTransducer .
+                     ?okTransducer mda:hasAnatomicalPosition position:Arterial . }
+    { GRAPH ?gOther { ?okMetric mda:hasValueState ?okValue . }
+      ?okValue mda:refinesConcept* valuestate:Increased .
+      GRAPH ?gOtherP { ?okMetric rdf:type ?okMetricType . }
+      ?okMetricType rdfs:subClassOf* ?okRestriction .
+      ?okRestriction owl:onProperty mda:approximates ;
+                     owl:hasValue physiologicalProperty:ArterialPressure . }
+    UNION
+    { GRAPH ?gOther { ?okSignal mda:hasQualityState qualitystate:ScalingError . } }
+    # and it reports nothing else (a sensor merely Enabled aside)
+    FILTER NOT EXISTS {
+      GRAPH ?gOther { ?anyNode ?anyStateProp ?anyState . }
+      VALUES ?anyStateProp { mda:hasValueState mda:hasRhythm mda:hasQualityState
+                             mda:hasSensorOperationState mda:hasComponentOperationState
+                             mda:hasDeviceOperationState }
+      FILTER NOT EXISTS { ?anyState mda:refinesConcept* valuestate:Increased }
+      FILTER(?anyState NOT IN (qualitystate:ScalingError, opstate:Enabled))
+    }
+    # and it is not itself flagged likely false positive
+    FILTER NOT EXISTS { GRAPH ?gOther { ?other mdapoc:flaggedLikelyFalsePositive ?okFlag } }
+  }
 }
 BIND(?ibpFunctionalUnit AS ?evidence)
 BIND(?gIbp AS ?witness)

@@ -7,6 +7,9 @@ review: pending
 rationale:
   clinical: ""
   technical: >
+    (2026-11-25: CAT2a also silences it — the same property, same direction,
+    equal priority (both Medium since the Unknown priorities were resolved);
+    one silence, justified under both rules.)
     Silenced at arrival, lifted at 08:00:40 when the other monitor's alarm ends
     (`cat2_lifted`) — not silenced in the end
 author: "Migrated from DATA/CAT_evaluation (README and regression.py), 2026-10-14"
@@ -19,5 +22,6 @@ stream:
 expect:
   - {forwarded: a1}
   - {silenced: a2, reason: redundant, rule: 2b, by: [a1]}
+  - {silenced: a2, reason: redundant, rule: 2a, by: [a1]}
   - {lifted: a2, rule: 2, by: [a1], at: "08:00:40"}
   - {interpretation: ReducedPulmonaryFunction, from: "08:00:00", until: "08:10:00", evidence: [a1, a2]}

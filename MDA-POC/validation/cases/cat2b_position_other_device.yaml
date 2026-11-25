@@ -1,0 +1,25 @@
+id: cat2b_position_other_device
+title: "A pre-ductal SpO2 on one monitor and an SpO2 on another: CAT2b"
+rule: "2b"
+purpose: confirm
+status: active
+review: pending
+rationale:
+  clinical: >
+    Two probes on two devices measuring the same metric in the same direction:
+    the second alarm adds no information.
+  technical: >
+    Different functional units, so the pathways share no sensor: CAT2b fires.
+    CAT2a fires as well (same property, same direction, equal priority).
+author: "Added 2026-11-25 (CAT2b sensor identity)"
+strict: true
+
+stream:
+  - {id: a1, device: "PhilipsMonitor_00", label: "PHILIPSMONITOR - ?? SpO2pr laag", device_name: "Philipsmonitor", priority: "Medium", start: "08:00:00", end: "08:02:00"}
+  - {id: a2, device: "DraegerMonitor_00", label: "Monitor - Lage SpO2", device_name: "DraegerMonitor", priority: "Medium", start: "08:00:30", end: "08:01:00"}
+
+expect:
+  - {forwarded: a1}
+  - {silenced: a2, reason: redundant, rule: 2b, by: [a1]}
+  - {silenced: a2, reason: redundant, rule: 2a, by: [a1]}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:00", until: "08:02:00", evidence: [a1, a2]}

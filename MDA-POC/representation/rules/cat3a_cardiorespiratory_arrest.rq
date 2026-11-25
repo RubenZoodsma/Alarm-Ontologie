@@ -15,8 +15,11 @@
 # a cardiac arrest (asystole) and a respiratory arrest (apnoea) are present
 # at the same time, they collectively convey a cardiorespiratory arrest."
 # Clause by clause:
-#   "reduced heart rate"       -> a CardiacArrest condition: a heart-rate
-#                                 metric with an ABSENT rhythm (asystole).
+#   "reduced heart rate"       -> a CardiacArrest condition: a cardiac-
+#                                 rhythm metric with an ABSENT rhythm
+#                                 (asystole) or FIBRILLATION (ventricular
+#                                 fibrillation) — see cardiac_arrest.rq
+#                                 (revised 2026-11-25; heart rate before).
 #                                 Strict on purpose: faithful to clinical
 #                                 practice rather than to the table.
 #   "reduced respiratory rate" -> a RespiratoryArrest condition: a
@@ -24,10 +27,18 @@
 #                                 rhythm (apnoea).
 #   "within a 60s timeframe"   -> both conditions active at the same moment;
 #                                 no tolerance window. Sub-analysis on
-#                                 DATA_LOCKED: overlap alone gives 929
-#                                 episodes in 199 patients; a 60 s window
-#                                 would add 44 patients — not needed to
-#                                 show the rule triggers.
+#                                 DATA_LOCKED (2026-09, OLD knowledge base:
+#                                 asystole on heart rate, no fibrillation;
+#                                 STALE, to be redone before reporting):
+#                                 overlap alone gave 929 episodes in 199
+#                                 patients; a 60 s window would add 44
+#                                 patients — not needed to show the rule
+#                                 triggers.
+# Known limitation: on one patient monitor the asystole and the impedance
+# apnoea come from the same ECG electrodes (sensor:ECG_Resp_sensor is an
+# electrode of the group). An electrode problem not preceded by a "leads
+# off" alarm (which would CAT1a-flag both) can raise both at once; a real
+# arrest raises both too, so independent sources are not required.
 #   "respiratory arrest"       -> CardioRespiratoryArrest. RespiratoryArrest
 #                                 is a condition in its own right, and a
 #                                 constituent here.
@@ -40,7 +51,8 @@
 # its alarms). Used by the episode actions.
 #
 # VALIDATION — engine/regression.py: cat3a_pos, cat3c (arrival order
-# swapped) and cat3a_withdraw (from the CAT1b withdrawal on) fire;
+# swapped), cat3a_vf (ventricular fibrillation + apnoea) and cat3a_withdraw
+# (from the CAT1b withdrawal on) fire;
 # cat3a_neg (20 s gap) and cat3a_flagged (CAT1a-flagged asystole) do not.
 ####################################################################
 

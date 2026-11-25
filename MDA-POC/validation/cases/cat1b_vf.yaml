@@ -1,0 +1,23 @@
+id: cat1b_vf
+title: "CAT1b positive: ventricular fibrillation while an arterial line is present and silent"
+rule: "1b"
+purpose: confirm
+status: active
+review: pending
+rationale:
+  clinical: >
+    Ventricular fibrillation has no cardiac output; a pulsatile arterial line
+    that stays silent contradicts it as much as it contradicts asystole.
+  technical: >
+    CAT1b extended to rhythm Fibrillation and its refinements (2026-11-25).
+    The arterial line delivered a pressure 5 min earlier and is silent now.
+author: "Claude, 2026-11-25 (CAT1b: absent or fibrillation)"
+strict: true
+
+stream:
+  - {id: a1, device: "DraegerMonitor_00", label: "Monitor - Lage ARTmean", device_name: "DraegerMonitor", priority: "Medium", start: "07:55:00", end: "07:55:20"}
+  - {id: a2, device: "DraegerMonitor_00", label: "Monitor - Ventriculaire fibrillatie", device_name: "DraegerMonitor", priority: "Hoog", start: "08:00:00", end: "08:00:20"}
+
+expect:
+  - {forwarded: a1}
+  - {silenced: a2, reason: likely-invalid, rule: 1b, by: [a1]}
