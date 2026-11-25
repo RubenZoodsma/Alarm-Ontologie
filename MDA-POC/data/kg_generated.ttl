@@ -1332,12 +1332,12 @@ alarmtype:Hemosphere_EdwardsEdvExceedingHrThresholdLimit_Hoog a mda:AlarmType ;
                                                     mda:producesMetric [ a metric:CardiacOutput ;
                                                             mda:analyzedBy [ a signalAnalysis:StrokeVolumeAnalysis ;
                                                                     mda:producesMetric [ a metric:StrokeVolume ;
-                                                                            mda:analyzedBy _:N5631ad48851d4f43a86e9e26c75452f3 ] ] ] ] ] ],
+                                                                            mda:analyzedBy _:c14n1517 ] ] ] ] ] ],
                                 [ a sensor:SwanGanzCatheter ;
                                     mda:sensorProducesSignal [ a signal:BloodTemperature_waveform ;
                                             mda:analyzedBy [ a signalAnalysis:RVEFAnalysis ;
                                                     mda:producesMetric [ a metric:RightVentricleEjectionFraction ;
-                                                            mda:analyzedBy _:N5631ad48851d4f43a86e9e26c75452f3 ] ] ] ] ] ;
+                                                            mda:analyzedBy _:c14n1517 ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Edwards ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -1362,18 +1362,18 @@ alarmtype:Hemosphere_EdwardsEdviHighAlarmLimit_Hoog a mda:AlarmType ;
             mda:triggeredBy [ a device:CardiacMonitor ;
                     mda:hasDeviceType deviceType:Hemosphere ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_HaemoDynamics ;
-                            mda:hasSensor [ a sensor:SwanGanzCatheter ;
-                                    mda:sensorProducesSignal [ a signal:BloodTemperature_waveform ;
-                                            mda:analyzedBy [ a signalAnalysis:RVEFAnalysis ;
-                                                    mda:producesMetric [ a metric:RightVentricleEjectionFraction ;
-                                                            mda:analyzedBy _:Ne3be5ddefa00490c8f2436d0d21ac763 ] ] ] ],
-                                [ a mda:Sensor ;
+                            mda:hasSensor [ a mda:Sensor ;
                                     mda:sensorProducesSignal [ a mda:Signal ;
                                             mda:analyzedBy [ a signalAnalysis:CardiacOutputAnalysis ;
                                                     mda:producesMetric [ a metric:CardiacOutput ;
                                                             mda:analyzedBy [ a signalAnalysis:StrokeVolumeAnalysis ;
                                                                     mda:producesMetric [ a metric:StrokeVolume ;
-                                                                            mda:analyzedBy _:Ne3be5ddefa00490c8f2436d0d21ac763 ] ] ] ] ] ] ] ;
+                                                                            mda:analyzedBy _:c14n1547 ] ] ] ] ] ],
+                                [ a sensor:SwanGanzCatheter ;
+                                    mda:sensorProducesSignal [ a signal:BloodTemperature_waveform ;
+                                            mda:analyzedBy [ a signalAnalysis:RVEFAnalysis ;
+                                                    mda:producesMetric [ a metric:RightVentricleEjectionFraction ;
+                                                            mda:analyzedBy _:c14n1547 ] ] ] ] ] ;
                     mda:hasManufacturer manufacturer:Edwards ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
@@ -4520,12 +4520,12 @@ alarmtype:IntelliVue_PhilipsmonitorStIiHoog_Medium a mda:AlarmType ;
             mda:triggeredBy [ a device:PhysiologicalMonitor ;
                     mda:hasDeviceType deviceType:IntelliVue ;
                     mda:hasFunctionalUnit [ a functionalUnit:FU_ElectroCardiography ;
-                            mda:hasSensor [ a sensor:ECG_RA_sensor ;
-                                    mda:sensorProducesSignal [ a signal:ECG_RA_signal ;
-                                            mda:analyzedBy _:N63f563c18d9e49b98faa9287bb7333b0 ] ],
-                                [ a sensor:ECG_LL_sensor ;
+                            mda:hasSensor [ a sensor:ECG_LL_sensor ;
                                     mda:sensorProducesSignal [ a signal:ECG_LL_signal ;
-                                            mda:analyzedBy _:N63f563c18d9e49b98faa9287bb7333b0 ] ] ] ;
+                                            mda:analyzedBy _:c14n485 ] ],
+                                [ a sensor:ECG_RA_sensor ;
+                                    mda:sensorProducesSignal [ a signal:ECG_RA_signal ;
+                                            mda:analyzedBy _:c14n485 ] ] ] ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Medium .
 
@@ -5949,28 +5949,28 @@ alarmtype:Trilogy_TrilogyVerbindingVerbroken_Hoog a mda:AlarmType ;
                     mda:hasManufacturer manufacturer:Philips ] ] ;
     mda:hasPriority alarmprio:Hoog .
 
-_:N2e0e1a70120e4e1ba35f5454ba71d3af a signalAnalysis:STAnalysis ;
-    mda:producesMetric [ a metric:STSegment ;
-            mda:approximates physiologicalProperty:MyocardialRepolarization ;
-            mda:hasValueState metricValueState:Increased ] .
-
-_:N30220ce484c94696808b0713d0a1fd13 a metric:EndDiastolicVolume ;
-    mda:analyzedBy [ a signalAnalysis:EndDiastolicVolumeIndexAnalysis ;
-            mda:producesMetric [ a metric:EndDiastolicVolumeIndex ;
+_:c14n158 a signal:ECG_lead_II ;
+    mda:analyzedBy [ a signalAnalysis:STAnalysis ;
+            mda:producesMetric [ a metric:STSegment ;
+                    mda:approximates physiologicalProperty:MyocardialRepolarization ;
                     mda:hasValueState metricValueState:Increased ] ] .
 
-_:N3f2aeb4b858a48dc8eaae7117670f5e8 a metric:EndDiastolicVolume ;
+_:c14n330 a signalAnalysis:EndDiastolicVolumeIndexAnalysis ;
+    mda:producesMetric [ a metric:EndDiastolicVolumeIndex ;
+            mda:hasValueState metricValueState:Increased ] .
+
+_:c14n401 a metric:EndDiastolicVolume ;
     mda:hasValueState metricValueState:OutOfRange .
 
-_:N5031682fd4c5408e89dd14266f6abd90 a signal:ECG_lead_II ;
-    mda:analyzedBy _:N2e0e1a70120e4e1ba35f5454ba71d3af .
+_:c14n73 a metric:EndDiastolicVolume ;
+    mda:analyzedBy _:c14n330 .
 
-_:N5631ad48851d4f43a86e9e26c75452f3 a signalAnalysis:EndDiastolicVolumeAnalysis ;
-    mda:producesMetric _:N3f2aeb4b858a48dc8eaae7117670f5e8 .
+_:c14n1517 a signalAnalysis:EndDiastolicVolumeAnalysis ;
+    mda:producesMetric _:c14n401 .
 
-_:N63f563c18d9e49b98faa9287bb7333b0 a signalAnalysis:ECG_derivation_II ;
-    mda:producesSignal _:N5031682fd4c5408e89dd14266f6abd90 .
+_:c14n1547 a signalAnalysis:EndDiastolicVolumeAnalysis ;
+    mda:producesMetric _:c14n73 .
 
-_:Ne3be5ddefa00490c8f2436d0d21ac763 a signalAnalysis:EndDiastolicVolumeAnalysis ;
-    mda:producesMetric _:N30220ce484c94696808b0713d0a1fd13 .
+_:c14n485 a signalAnalysis:ECG_derivation_II ;
+    mda:producesSignal _:c14n158 .
 

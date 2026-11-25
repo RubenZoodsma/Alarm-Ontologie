@@ -76,6 +76,7 @@ from rdflib.namespace import RDF, RDFS, OWL, SKOS
 
 sys.path.append(str(Path(__file__).resolve().parent.parent / "shared"))
 from ontology_tree import derive_class_tree, format_tree, local as _local
+from canonical_turtle import serialize_canonical
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 
@@ -1939,8 +1940,10 @@ def main() -> None:
 
     VOCAB_OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     KG_OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    vocab_out.serialize(destination=str(VOCAB_OUT_PATH), format="turtle")
-    kg_out.serialize(destination=str(KG_OUT_PATH), format="turtle")
+    # Canonical blank-node labels (RDFC-1.0): an unchanged framework rebuilds
+    # byte-identically, so git diffs and the POC's copy check stay meaningful.
+    serialize_canonical(vocab_out, VOCAB_OUT_PATH)
+    serialize_canonical(kg_out, KG_OUT_PATH)
 
     n_types = sum(1 for s in set(kg_out.subjects()) if str(s).startswith(str(ALARMTYPE)))
     n_bnodes = len({x for t in kg_out for x in t if isinstance(x, BNode)})

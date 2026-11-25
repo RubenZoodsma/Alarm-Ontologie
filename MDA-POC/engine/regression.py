@@ -171,14 +171,29 @@ FRAMEWORK_COPIES = {
 }
 
 
+def _same_graph(a: Path, b: Path) -> bool:
+    """True when two Turtle files hold the same graph: isomorphic, blank-node
+    labels and serialisation aside (RDFC-1.0 canonicalisation, pyoxigraph)."""
+    import pyoxigraph as ox
+    datasets = []
+    for path in (a, b):
+        ds = ox.Dataset(ox.parse(path=str(path), format=ox.RdfFormat.TURTLE))
+        ds.canonicalize(ox.CanonicalizationAlgorithm.RDFC_1_0)
+        datasets.append(ds)
+    return datasets[0] == datasets[1]
+
+
 def framework_copy_issues() -> list:
     """The POC must reason over the framework as built: each copy in
-    MDA-POC/data/ is byte-identical to its FRAMEWORK/ source."""
+    MDA-POC/data/ holds the same graph as its FRAMEWORK/ source (identical
+    bytes, or isomorphic: a rebuild may renumber blank nodes)."""
     root = M.DATA_DIR.parent.parent
     issues = []
     for copy, source in FRAMEWORK_COPIES.items():
         a, b = M.DATA_DIR / copy, root / source
-        if not a.exists() or not b.exists() or a.read_bytes() != b.read_bytes():
+        if not a.exists() or not b.exists():
+            issues.append(f"MDA-POC/data/{copy} or {source} is missing")
+        elif a.read_bytes() != b.read_bytes() and not _same_graph(a, b):
             issues.append(f"MDA-POC/data/{copy} differs from {source}: copy it")
     return issues
 
