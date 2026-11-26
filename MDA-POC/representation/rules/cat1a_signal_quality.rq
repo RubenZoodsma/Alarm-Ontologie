@@ -63,13 +63,19 @@
 #                                quality state counts only once it is placed
 #                                under Impaired in hierarchy.ttl.
 #   "not acquired"             — a sensor feeding the pathway in a fault
-#                                state: Disabled, Disconnected or
-#                                Malfunction, or any refinement of these
-#                                (mda:refinesConcept*, read from the
-#                                framework in the default graph):
-#                                AdapterFault, MCableFailure,
+#                                state: Disabled, Disconnected,
+#                                Malfunction or Unavailable, or any
+#                                refinement of these (mda:refinesConcept*,
+#                                read from the framework in the default
+#                                graph): AdapterFault, MCableFailure,
 #                                PositionalError, Unrecognized refine
-#                                Malfunction (hierarchy.ttl, 2026-11-25).
+#                                Malfunction (hierarchy.ttl, 2026-11-25);
+#                                Initializing, Cleaning, Interruption,
+#                                Occlusion refine Unavailable (added to the
+#                                fault set 2026-11-26: a sensor that is
+#                                warming up, purging, interrupted or
+#                                occluded is not acquiring either, e.g.
+#                                "SpO2 zoekend", "CO2 occlusie").
 #                                The failed sensor is the pathway's own
 #                                sensor, or a sensor of a strictly broader
 #                                KIND on the same functional unit
@@ -93,9 +99,10 @@
 #                                does not declare would not match even
 #                                itself (cat1a_sensor_pos guards this).
 #                                Extends the NL wording deliberately
-#                                (agreed 2026-09-21). Warning is left out:
-#                                no sensor alarm asserts it as a fault, and
-#                                it does not mean the signal is lost.
+#                                (agreed 2026-09-21). Warning is left out
+#                                (reconfirmed 2026-11-26): it does not mean
+#                                the signal is lost ("ServoU - exp. cass.
+#                                vervangen" states it).
 #   "is"                       — currently: a quality or sensor state holds
 #                                only while the alarm reporting it is active
 #                                (both are leaf properties, minted into the
@@ -175,7 +182,7 @@ GRAPH ?gP { ?analysis mda:producesMetric ?metric .
   GRAPH ?gR { ?fu mda:hasSensor ?faultySensor . ?faultySensor a ?faultyKind }
   FILTER(?faultySensor = ?sensor || EXISTS { ?sensorKind rdfs:subClassOf+ ?faultyKind })
   ?sensorState mda:refinesConcept* ?fault .
-  VALUES ?fault { opstate:Disabled opstate:Disconnected opstate:Malfunction }
+  VALUES ?fault { opstate:Disabled opstate:Disconnected opstate:Malfunction opstate:Unavailable }
   BIND(?faultySensor AS ?evidence)
 }
 BIND(?gQ AS ?witness)

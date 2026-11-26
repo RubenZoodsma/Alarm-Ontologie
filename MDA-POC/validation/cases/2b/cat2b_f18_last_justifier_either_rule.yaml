@@ -1,0 +1,45 @@
+id: cat2b_f18_last_justifier_either_rule
+title: "Lifted when last justifier ends"
+rule: "2b"
+purpose: falsify
+premise: [P8]
+pairs_with: "cat2b_c08_justifiers_both_rules"
+status: active
+review: pending
+rationale:
+  clinical: "The low SpO2 is covered while any justifier is announced, not after."
+  technical: "a1 (2a and 2b) ends at 08:01:00, a2 (2a only) at 08:01:30: lifted at 08:01:30 only."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Lage SpO2",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "08:00:00",
+    end: "08:01:00"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Desaturatie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:10",
+    end: "08:01:30"}
+  - {id: a3,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - SpO2 laag",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:02:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {silenced: a3, reason: redundant, rule: "2a", by: [a1, a2]}
+  - {silenced: a3, reason: redundant, rule: "2b", by: [a1]}
+  - {lifted: a3, rule: "2", by: [a2], at: "08:01:30"}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:00", until: "08:02:30", evidence: [a1, a2, a3]}

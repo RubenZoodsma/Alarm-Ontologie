@@ -1,0 +1,36 @@
+id: cat3b_f04_data_link_lost
+title: "Lost data link with low minute volume"
+rule: "3b"
+purpose: falsify
+premise: [P2]
+pairs_with: "cat3b_c03_circuit_disconnected"
+status: active
+review: pending
+rationale:
+  clinical: "A lost data link concerns the connection to the system, not the patient's ventilation."
+  technical: "ConnectionUnit Disconnected is not an AirwayCircuit."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "ServoU_00",
+    label: "SERVOU - Verbinding verbroken",
+    device_name: "ServoU",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:01:00"}
+  - {id: a2,
+    device: "ServoU_00",
+    label: "SERVOU - Exp. minuutvol. laag",
+    device_name: "ServoU",
+    priority: "Hoog",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:30", until: "08:01:30", evidence: [a2]}
+  - {no_interpretation: VentilationFailure}

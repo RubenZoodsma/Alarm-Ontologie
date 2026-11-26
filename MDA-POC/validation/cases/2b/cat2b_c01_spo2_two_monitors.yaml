@@ -1,0 +1,36 @@
+id: cat2b_c01_spo2_two_monitors
+title: "Low SpO2 on two monitors"
+rule: "2b"
+purpose: confirm
+premise: [P1, P2, P3, P4, P5, P6, P7, P8]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: "A second oximeter's low SpO2 adds nothing to the first one's."
+  technical: "Same metric, another monitor, equal priority; 2a also silences. Anchor case."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - SpO2 laag",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Lage SpO2",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {silenced: a2, reason: redundant, rule: "2a", by: [a1]}
+  - {silenced: a2, reason: redundant, rule: "2b", by: [a1]}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:00", until: "08:02:00", evidence: [a1, a2]}

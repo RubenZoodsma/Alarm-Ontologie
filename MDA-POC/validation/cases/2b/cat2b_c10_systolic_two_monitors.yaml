@@ -1,0 +1,35 @@
+id: cat2b_c10_systolic_two_monitors
+title: "Severe high systolic covers high systolic"
+rule: "2b"
+purpose: confirm
+premise: [P1, P2, P3, P4, P5, P6, P7, P8]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: "A second monitor's high systolic adds nothing while a severely high one is announced."
+  technical: "Same metric (ABP systolic), another monitor; SeverelyIncreased refines Increased; equal priority."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABPs hoog",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Hoge ARTsys",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {silenced: a2, reason: redundant, rule: "2a", by: [a1]}
+  - {silenced: a2, reason: redundant, rule: "2b", by: [a1]}

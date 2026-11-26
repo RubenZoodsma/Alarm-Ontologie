@@ -1,0 +1,35 @@
+id: cat1b_f19_presence_20min
+title: "Presence 20 minutes before"
+rule: "1b"
+purpose: falsify
+premise: [P6]
+pairs_with: "cat1b_c02_asystole_infinity"
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: "Presence ended 20 min before X, on the Infinity."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Hoge ARTmean",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "07:39:40",
+    end: "07:40:00"}
+  - {id: ax,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Asystolie",
+    device_name: "DraegerMonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: ax}
+  - {interpretation: CardiacArrest, from: "08:00:00", until: "08:02:00", evidence: [ax]}

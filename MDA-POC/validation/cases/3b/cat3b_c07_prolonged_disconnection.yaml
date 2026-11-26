@@ -1,0 +1,36 @@
+id: cat3b_c07_prolonged_disconnection
+title: "Prolonged disconnection with low minute volume"
+rule: "3b"
+purpose: confirm
+premise: [P1, P2, P3]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: "A disconnection over one minute compromises ventilation at least as much as a short one."
+  technical: "ProlongedDisconnection refines Disconnected (hierarchy.ttl, 2026-11-26)."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "ServoU_00",
+    label: "SERVOU - Patiënt los > 1 min",
+    device_name: "ServoU",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:01:00"}
+  - {id: a2,
+    device: "ServoU_00",
+    label: "SERVOU - Exp. minuutvol. laag",
+    device_name: "ServoU",
+    priority: "Hoog",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:30", until: "08:01:30", evidence: [a2]}
+  - {interpretation: VentilationFailure, from: "08:00:30", until: "08:01:00", evidence: [a1, a2]}

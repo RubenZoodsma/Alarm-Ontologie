@@ -1,0 +1,35 @@
+id: cat1b_c07_line_other_monitor
+title: "Arterial line on another monitor"
+rule: "1b"
+purpose: confirm
+premise: [P1, P2, P3, P4, P5, P6, P7, P8]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: "Any device showing a beating heart contradicts the asystole."
+  technical: "Presence on the Infinity, asystole on the Philips monitor of the same patient."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Hoge ARTmean",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "07:55:00",
+    end: "07:55:20"}
+  - {id: ax,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Asystolie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+
+expect:
+  - {forwarded: a1}
+  - {silenced: ax, reason: likely-invalid, rule: "1b", by: [a1]}
+  - {no_interpretation: CardiacArrest}

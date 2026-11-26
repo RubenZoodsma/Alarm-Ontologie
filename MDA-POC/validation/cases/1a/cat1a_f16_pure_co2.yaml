@@ -1,0 +1,34 @@
+id: cat1a_f16_pure_co2
+title: "Pure CO2 and etCO2 high"
+rule: "1a"
+purpose: falsify
+premise: [P6]
+pairs_with: "cat1a_c08_co2_cable"
+status: draft
+review: pending
+rationale:
+  clinical: "OPEN: does 'Zuivere CO2' mean the capnometer is not measuring the patient? If so this should flag (confirm), not falsify."
+  technical: "Pure_CO2 on the capnometer refines no fault state; X equals c08's."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Zuivere CO2",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "0s",
+    end: "2m"}
+  - {id: a2,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Hoog etCO2",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "30s",
+    end: "1m"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}

@@ -136,7 +136,7 @@ def script_depends_on_future(kb, groups: dict, scratch: Path) -> list:
             if _normalised(cut.lines) != full_script[:emitted]:
                 problems.append(f"{patient}: the script up to {t.isoformat()} depends on the stream after it")
                 break
-    shutil.rmtree(scratch / "lookahead")
+    shutil.rmtree(scratch / "lookahead", ignore_errors=True)   # absent when there are no cases
     return problems
 
 
@@ -156,46 +156,26 @@ def _hash(paths) -> str:
     return h.hexdigest()[:12]
 
 
-# MDA-POC/data/ file -> the file it copies, relative to the repository root
-# (synced by hand). entities.ttl is the scaffold entity_seed.py writes from
-# kg_generated.ttl: a stale copy makes minting stop at the first individuated
-# node whose concept it lacks.
-FRAMEWORK_COPIES = {
-    "ontology.ttl": "FRAMEWORK/ONTOLOGY/ontology.ttl",
-    "inference.ttl": "FRAMEWORK/KNOWLEDGE_BASE/inference.ttl",
-    "kg_generated.ttl": "FRAMEWORK/KNOWLEDGE_BASE/kg_generated.ttl",
-    "vocab_generated.ttl": "FRAMEWORK/VOCABULARY/vocab_generated.ttl",
-    "clinicalEvent_vocab.ttl": "FRAMEWORK/VOCABULARY/seed/clinicalEvent_vocab.ttl",
-    "priority_rank.ttl": "FRAMEWORK/VOCABULARY/priority_rank.ttl",
-    "entities.ttl": "DATA/POC_EVENTS/entities.ttl",
-}
-
-
-def _same_graph(a: Path, b: Path) -> bool:
-    """True when two Turtle files hold the same graph: isomorphic, blank-node
-    labels and serialisation aside (RDFC-1.0 canonicalisation, pyoxigraph)."""
-    import pyoxigraph as ox
-    datasets = []
-    for path in (a, b):
-        ds = ox.Dataset(ox.parse(path=str(path), format=ox.RdfFormat.TURTLE))
-        ds.canonicalize(ox.CanonicalizationAlgorithm.RDFC_1_0)
-        datasets.append(ds)
-    return datasets[0] == datasets[1]
-
-
-def framework_copy_issues() -> list:
-    """The POC must reason over the framework as built: each copy in
-    MDA-POC/data/ holds the same graph as its FRAMEWORK/ source (identical
-    bytes, or isomorphic: a rebuild may renumber blank nodes)."""
-    root = M.DATA_DIR.parent.parent
-    issues = []
-    for copy, source in FRAMEWORK_COPIES.items():
-        a, b = M.DATA_DIR / copy, root / source
-        if not a.exists() or not b.exists():
-            issues.append(f"MDA-POC/data/{copy} or {source} is missing")
-        elif a.read_bytes() != b.read_bytes() and not _same_graph(a, b):
-            issues.append(f"MDA-POC/data/{copy} differs from {source}: copy it")
-    return issues
+def scaffold_issues() -> list:
+    """The POC reads the framework in place from FRAMEWORK/; its one derived
+    file is the scaffold, MDA-POC/data/entities.ttl. It must equal what
+    data/tools/entity_seed.py builds from the current framework: a stale
+    scaffold makes minting stop at the first individuated node whose concept
+    it lacks."""
+    import sys
+    from rdflib import Graph
+    from rdflib.compare import isomorphic
+    sys.path.insert(0, str(POC_DIR / "data" / "tools"))
+    try:
+        import entity_seed
+    finally:
+        sys.path.pop(0)
+    if not M.ENTITIES.exists():
+        return [f"{M.ENTITIES.name} is missing: run python3 MDA-POC/data/tools/entity_seed.py"]
+    built, _ = entity_seed.build()
+    if not isomorphic(built, Graph().parse(M.ENTITIES, format="turtle")):
+        return [f"{M.ENTITIES.name} is stale: run python3 MDA-POC/data/tools/entity_seed.py"]
+    return []
 
 
 def minting_completeness_issues(kb) -> list:
@@ -323,13 +303,13 @@ def run():
     problems = lookahead_by_construction() + script_depends_on_future(kb, in_scope, scratch)
     hits = rule_logic_outside_rule_files()
     identity = blueprint_identity_issues(kb)
-    copies = framework_copy_issues()
+    copies = scaffold_issues()
     completeness = minting_completeness_issues(kb)
     for name, issues in (("no lookahead: at every instant, the script so far is independent of the stream "
                           "after it", problems), ("no rule logic in Python sources", hits),
                          ("blueprint identity: every distinct annotated alarm (device, label, priority) "
                           "resolves to a blueprint of its own", identity),
-                         ("framework copies: MDA-POC/data/ equals the FRAMEWORK/ and scaffold files", copies),
+                         ("scaffold current: MDA-POC/data/entities.ttl equals entity_seed.py's output from FRAMEWORK/", copies),
                          ("minting completeness: every blueprint grounds each of its nodes and edges once",
                           completeness)):
         result = "FAIL" if issues else "PASS"
@@ -365,7 +345,7 @@ def run():
             "uncommitted_changes": bool(_git("status", "--porcelain", "--", ".")),
             "framework_hash": _hash(framework),
             "rules_hash": _hash(list(RULES_DIR.glob("*.rq")) + list(ACTIONS_DIR.glob("*.rq"))),
-            "cases_hash": _hash(list(C.CASES_DIR.glob("*.yaml"))),
+            "cases_hash": _hash(C.case_files()),
             "only": SETTINGS["only"],
             "complete": complete,
             "active_cases": n_cases,

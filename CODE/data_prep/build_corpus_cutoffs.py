@@ -18,7 +18,7 @@ import pandas as pd
 from pathlib import Path
 
 ## set the working directory to DATA/CORPUS, where the corpus files live
-ROOT = Path(__file__).resolve().parent.parent.parent   # CODE/data_prep -> CODE -> Restructured
+ROOT = Path(__file__).resolve().parent.parent.parent   # CODE/data_prep -> CODE -> repository root
 os.chdir(ROOT / "DATA" / "CORPUS")
 
 INPUT_PATH = "Total_corpus.csv"

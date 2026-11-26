@@ -1887,8 +1887,8 @@ physiologicalProcess:CerebralCirculation           mda:presentIn organ:Brain ;
                                                    mda:processPartOf physiologicalProcess:BloodCirculation .
 physiologicalProcess:CerebrospinalFluidCirculation mda:presentIn organ:Brain .
 
-# ThermoRegulation: closes the dead end recorded in EVALUATION/CQs/
-# cq_discoveries.md. Cause and effect sit in different places: the
+# ThermoRegulation: closes a dead end found while writing the competency
+# questions (the process had no organ to be present in). Cause and effect sit in different places: the
 # regulation is driven centrally (hypothalamus) but EFFECTUATED in the skin
 # (vasomotor tone, sweating, heat exchange with the environment — the
 # exchange an incubator or warming mattress acts on). presentIn names where

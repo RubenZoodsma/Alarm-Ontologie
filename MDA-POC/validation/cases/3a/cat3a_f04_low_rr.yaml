@@ -1,0 +1,36 @@
+id: cat3a_f04_low_rr
+title: "Asystole with low respiratory rate"
+rule: "3a"
+purpose: falsify
+premise: [P2]
+pairs_with: "cat3a_c01_asystole_apnoea"
+status: active
+review: pending
+rationale:
+  clinical: "A low respiratory rate is no respiratory arrest."
+  technical: "Apnoea replaced by 'Lage ademfreq.' (Decreased, not Absent)."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Asystolie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:01:00"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Lage ademfreq.",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: CardiacArrest, from: "08:00:00", until: "08:01:00", evidence: [a1]}
+  - {no_interpretation: CardioRespiratoryArrest}

@@ -1,0 +1,34 @@
+id: cat1a_f13_other_module_derived
+title: "Oximetry cable off and EDVI high"
+rule: "1a"
+purpose: falsify
+premise: [P3]
+pairs_with: "cat1a_c03_swanganz_derived"
+status: active
+review: pending
+rationale:
+  clinical: "EDVI comes from thermodilution, not from the oximetry fibre."
+  technical: "Intermediate-metric route of f05: a sensor fault on another functional unit of the same device."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "Hemosphere_00",
+    label: "EDWARDS - Oximetry cable disconnected",
+    device_name: "Edwards",
+    priority: "Hoog",
+    start: "0s",
+    end: "2m"}
+  - {id: a2,
+    device: "Hemosphere_00",
+    label: "EDWARDS - EDVI High Alarm Limit",
+    device_name: "Edwards",
+    priority: "Hoog",
+    start: "30s",
+    end: "1m"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}

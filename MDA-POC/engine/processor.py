@@ -371,7 +371,7 @@ def run_parallel(patients: dict, scratch_root: Path, log: LiveLog, stats: RuleSt
     patients are replayed one after another through it (run_live: each
     patient's windows are closed before the next starts). chunk_size 1 gives
     every patient its own store; a larger chunk saves the framework load and
-    the task overhead per patient, for many short streams (rule_coverage.py).
+    the task overhead per patient, for many short streams (MANUSCRIPT/scripts/rule_coverage.py).
     Records and firings are written to `log` in the input order of the
     patients; rule statistics are merged into `stats`. True if every
     patient completed without engine errors."""

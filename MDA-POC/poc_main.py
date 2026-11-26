@@ -55,7 +55,7 @@ SETTINGS = {
     "max_alarms_per_patient": None,
 
     # Seed of the patient sample.
-    "seed": 42,
+    "seed": 24,
 
     # One switch per rule (engine/rules.RULES). A combined rule needs its
     # constituents: cat3a needs cardiac_arrest + respiratory_arrest, cat3b
@@ -105,7 +105,7 @@ SETTINGS = {
     # The two logs (engine/event_log.py).
     "event_log": ROOT / "_scratch" / "clinical_events.csv",
     "firing_log": ROOT / "_scratch" / "rule_firings.csv",
-    # For Table 4 (CODE/reporting/manuscript_tables.py): processing time per
+    # For Table 4 (MANUSCRIPT/scripts/manuscript_tables.py): processing time per
     # arriving alarm (histogram per patient), and what was run.
     "arrival_times": ROOT / "_scratch" / "arrival_times.csv",
     "run_manifest": ROOT / "_scratch" / "run.json",
@@ -216,10 +216,12 @@ def code_hash() -> str:
     repository, e.g. on the reporting scripts, does not block a resume)."""
     import hashlib
     h = hashlib.sha256()
-    paths = (sorted((ROOT / "data").glob("*.ttl")) + sorted((ROOT / "representation").rglob("*.rq"))
+    import paths as P
+    framework = [P.ONTOLOGY, P.INFERENCE, P.CATALOGUE, P.VOCAB, P.CLINICAL_EVENT_VOCAB, P.PRIORITY_RANK]
+    paths = (framework + sorted((ROOT / "data").glob("*.ttl")) + sorted((ROOT / "representation").rglob("*.rq"))
              + sorted((ROOT / "engine").glob("*.py")) + [ROOT / "poc_main.py"])
     for path in paths:
-        h.update(str(path.relative_to(ROOT)).encode())
+        h.update(str(path.relative_to(ROOT.parent)).encode())
         h.update(path.read_bytes())
     return h.hexdigest()
 

@@ -18,10 +18,6 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
-from paths import ROOT
-
-DATASET = ROOT / "DATA" / "CAT_evaluation" / "events_data.csv"
-
 
 @dataclass
 class Event:

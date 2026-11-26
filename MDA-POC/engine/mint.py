@@ -39,17 +39,12 @@ from rdflib.namespace import RDF, RDFS, SKOS, XSD, DCTERMS, OWL
 sys.path.append(str(Path(__file__).resolve().parent))
 from ontology_tree import BlueprintNode, class_edges, derive_class_tree, walk_blueprint
 
-# ── Paths: copies of the framework files, under MDA-POC/data/ ──────
+# ── Paths: the framework is read in place from FRAMEWORK/ (paths.py) ──────
 
-DATA_DIR  = Path(__file__).resolve().parent.parent / "data"
-ONTOLOGY  = DATA_DIR / "ontology.ttl"
-VOCAB     = DATA_DIR / "vocab_generated.ttl"
-CLINICAL_EVENT_VOCAB = DATA_DIR / "clinicalEvent_vocab.ttl"
-INFERENCE = DATA_DIR / "inference.ttl"
-CATALOGUE = DATA_DIR / "kg_generated.ttl"
-ENTITIES  = DATA_DIR / "entities.ttl"
-# Gateway device name -> device model (FRAMEWORK/PLAN_blueprint_identity.md).
-DEVICE_MODELS = DATA_DIR.parent.parent / "DATA" / "ANNOTATION" / "device_models.csv"
+from paths import (CATALOGUE, CLINICAL_EVENT_VOCAB, DATA_DIR, ENTITIES,  # noqa: E402
+                   INFERENCE, ONTOLOGY, ROOT, VOCAB)
+# Gateway device name -> device model.
+DEVICE_MODELS = ROOT / "DATA" / "ANNOTATION" / "device_models.csv"
 
 # ── Namespaces ────────────────────────────────────────────────────────────
 
@@ -422,7 +417,7 @@ def ground_chain(kb: KB, arch: "Archetype", patient_id: str, device_id: str,
         concept = arch.node_concept(bn)
         if kind == "individuated" and concept is not None and concept not in kb.scaffold_concepts:
             raise ValueError(f"{_local(concept)} ({_local(bn.cls)}) is not in the scaffold "
-                             f"{ENTITIES.name}: regenerate it (entity_seed.py) and copy it to data/")
+                             f"{ENTITIES.name}: regenerate it (python3 MDA-POC/data/tools/entity_seed.py)")
         particular = particular_iri(kb, arch, patient_id, device_id, bn, identity, memo)
         minted[id(bn)] = particular
         for p, prop in grounded_parents:

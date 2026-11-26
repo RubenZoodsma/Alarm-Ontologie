@@ -49,8 +49,8 @@
 # Size > 2 (more than category + the device's own class) excludes sparse
 # false positives: "HULBUS - 345" and "TRILOGY - 0x79" would match only
 # because neither is annotated beyond device class and category -- two
-# unresolved vendor error codes, not an equivalence claim. Logged in
-# ../cq_discoveries.md; not treated as a CQ7 result. Both rows are now EXCL
+# unresolved vendor error codes, not an equivalence claim, and not
+# treated as a CQ7 result. Both rows are now EXCL
 # in the annotation and absent from the KG, so the guard removes nothing at
 # p75 or p99 (checked 2026-11-25); it stays for the next unresolved code.
 #

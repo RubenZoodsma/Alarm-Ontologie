@@ -1,0 +1,34 @@
+id: cat2a_f13_paw_vs_minute_volume
+title: "Airway pressure does not cover volume"
+rule: "2a"
+purpose: falsify
+premise: [P5]
+pairs_with: "cat2a_c07_paw_covers_peep"
+status: active
+review: pending
+rationale:
+  clinical: "A high minute volume is new information next to a high airway pressure."
+  technical: "RespirationPressure vs RespirationVolume: one process, different properties."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "ServoI_00",
+    label: "SERVOI - Paw hoog",
+    device_name: "ServoI",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "ServoI_00",
+    label: "SERVOI - Exp. minuutvol: Hoog",
+    device_name: "ServoI",
+    priority: "Hoog",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}

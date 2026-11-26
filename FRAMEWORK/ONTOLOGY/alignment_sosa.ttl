@@ -1,0 +1,212 @@
+@prefix mda:     <https://w3id.org/mda/ontology#> .
+@prefix sosa:    <http://www.w3.org/ns/sosa/> .
+@prefix ssn:     <http://www.w3.org/ns/ssn/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+##################################################################
+# Alignment of the MDA Ontology to SOSA/SSN
+##################################################################
+#
+# SEPARATE ALIGNMENT OF MDA WITH SOSA/SSN
+# This file states how MDA's device sensing chain relates to the W3C/OGC SOSA/SSN sensing pattern.
+# It changes nothing about MDA's own inference, rules, or queries.
+#
+# THE READING IN ONE PICTURE: two chained sensing stages
+#
+#   Device (sosa:Platform)
+#    └─ hasFunctionalUnit ⊑ sosa:hosts
+#        └─ FunctionalUnit (sosa:Sensor; signals/metrics in, metric out)
+#            └─ hasSensor ⊑ ssn:hasSubSystem
+#                └─ Sensor (sosa:Sensor; stimulus in, raw signal out)
+#                    └─ sensorProducesSignal → Signal
+#                         └─ analyzedBy ⊑ inverse(ssn:hasInput)
+#                             └─ SignalAnalysis (sosa:Procedure)
+#                                 └─ producesMetric ⊑ ssn:hasOutput
+#                                     └─ Metric (ssn:Output)
+#                                         ~ approximates → PhysiologicalProperty
+#                                                          (sosa:ObservableProperty)
+#                                           └─ isPropertyOf ⊑ ssn:isPropertyOf
+#                                               └─ PhysiologicalProcess
+#                                                  (sosa:FeatureOfInterest)
+#
+# DELIBERATELY NOT ALIGNED
+#   mda:Signal, mda:producesSignal / mda:sensorProducesSignal,
+#   mda:approximates, mda:Patient, mda:TherapeuticModality, alarm-level
+#   classes (mda:Alarm, mda:AlarmType, mda:AlarmMessage), mda:ClinicalEvent.
+
+<https://w3id.org/mda/alignment/sosa>  a owl:Ontology ;
+    dc:title                "MDA – SOSA/SSN alignment"@en ;
+    dcterms:creator         "Ruben Zoodsma" ;
+    dcterms:created         "2026-11-26"^^xsd:date ;
+    owl:versionInfo         "1.0.0" ;
+    dc:license              <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:references      <https://w3id.org/mda/ontology#> ,
+                            <https://www.w3.org/TR/vocab-ssn/> ;
+    rdfs:comment            "Aligns the MDA device sensing chain to the SOSA/SSN sensing pattern, read as two chained sensing stages: the probe (mda:Sensor) turns a stimulus into a raw signal, and the functional unit runs a signal analysis (sosa:Procedure) that turns signals and metrics into a metric. Uses subclass and subproperty axioms only, always with an MDA term as subject. SSN is deliberately not imported."@en .
+
+#################################################################
+# Hosting: the device as platform
+#################################################################
+
+mda:Device  rdfs:subClassOf  sosa:Platform .
+[]  a owl:Axiom ;
+    owl:annotatedSource    mda:Device ;
+    owl:annotatedProperty  rdfs:subClassOf ;
+    owl:annotatedTarget    sosa:Platform ;
+    rdfs:comment "A medical device hosts the units (functional units) that sense (through mda:Sensor) and, through mda:administers, also delivers therapy. sosa:Platform is SOSA's class for things that host sensors and actuators. The device itself does not observe anything."@en .
+
+mda:hasFunctionalUnit  rdfs:subPropertyOf  sosa:hosts .
+[]  a owl:Axiom ;
+    owl:annotatedSource    mda:hasFunctionalUnit ;
+    owl:annotatedProperty  rdfs:subPropertyOf ;
+    owl:annotatedTarget    sosa:hosts ;
+    rdfs:comment "The device hosts its functional units. The broader mda:hasComponent is deliberately not aligned: a power inlet or a data-link port is a component, but it is not something SOSA would say a platform hosts."@en .
+
+
+#################################################################
+# Two sensing stages: probe and functional unit
+#################################################################
+# SOSA defines a sensor as anything that responds to a stimulus, OR to input
+# made from the results of earlier observations, and produces a result. Both
+# MDA classes fit that definition at different stages, so both are
+# sosa:Sensor. The mda:FunctionalUnit and mda:Sensor were deliberately split, based on information from IEEE SDC standards.
+#
+# Rejected alternative: a single sensing step with the probe as the sensor.
+# It cannot represent a metric with several input signals (aVF from three
+# lead signals), nor a derived metric that has no probe at all (stroke
+# volume from cardiac output and heart rate).
+
+mda:Sensor  rdfs:subClassOf  sosa:Sensor .
+[]  a owl:Axiom ;
+    owl:annotatedSource    mda:Sensor ;
+    owl:annotatedProperty  rdfs:subClassOf ;
+    owl:annotatedTarget    sosa:Sensor ;
+    rdfs:comment "Stage 1. The probe responds to a stimulus and produces a raw signal; it computes nothing. That matches SOSA's sensor as something that responds to a stimulus and produces a result."@en .
+
+mda:FunctionalUnit  rdfs:subClassOf  sosa:Sensor .
+[]  a owl:Axiom ;
+    owl:annotatedSource    mda:FunctionalUnit ;
+    owl:annotatedProperty  rdfs:subClassOf ;
+    owl:annotatedTarget    sosa:Sensor ;
+    rdfs:comment "Stage 2. The functional unit is the computer of a measurement capability. Its input is the result of stage 1 (signals) or of earlier analysis steps (metrics), and it produces a metric through mda:SignalAnalysis. That matches SOSA's sensor as software that takes input from earlier observation results and produces a result."@en .
+
+mda:hasSensor  rdfs:subPropertyOf  ssn:hasSubSystem .
+[]  a owl:Axiom ;
+    owl:annotatedSource    mda:hasSensor ;
+    owl:annotatedProperty  rdfs:subPropertyOf ;
+    owl:annotatedTarget    ssn:hasSubSystem ;
+    rdfs:comment "The probe is part of the functional unit's measuring system: without its probes a functional unit has nothing to analyse. The relation is functional, not physical. The probe is attached to the patient, not inside the module."@en .
+
+
+#################################################################
+# Processing: the analysis step as procedure
+#################################################################
+
+mda:SignalAnalysis  rdfs:subClassOf  sosa:Procedure .
+[]  a owl:Axiom ;
+    owl:annotatedSource    mda:SignalAnalysis ;
+    owl:annotatedProperty  rdfs:subClassOf ;
+    owl:annotatedTarget    sosa:Procedure ;
+    rdfs:comment "A signal analysis is the computational method a functional unit runs to turn its inputs into a metric or a derived signal. SOSA defines a procedure as an algorithm or computational method for making an observation."@en .
+
+mda:analyzedBy  rdfs:subPropertyOf  [ owl:inverseOf ssn:hasInput ] .
+[]  a owl:Axiom ;
+    owl:annotatedSource    mda:analyzedBy ;
+    owl:annotatedProperty  rdfs:subPropertyOf ;
+    owl:annotatedTarget    [ owl:inverseOf ssn:hasInput ] ;
+    rdfs:comment "A signal or metric that an analysis step consumes is an input to that procedure. MDA points from input to step, SSN from step to input, hence the inverse. Written as an anonymous inverse so that MDA needs no extra named property."@en .
+
+mda:producesMetric  rdfs:subPropertyOf  ssn:hasOutput .
+[]  a owl:Axiom ;
+    owl:annotatedSource    mda:producesMetric ;
+    owl:annotatedProperty  rdfs:subPropertyOf ;
+    owl:annotatedTarget    ssn:hasOutput ;
+    rdfs:comment "The metric an analysis step produces is that procedure's output. The more general mda:producesSignal is not aligned: see the section on deliberate gaps."@en .
+
+mda:Metric  rdfs:subClassOf  ssn:Output .
+[]  a owl:Axiom ;
+    owl:annotatedSource    mda:Metric ;
+    owl:annotatedProperty  rdfs:subClassOf ;
+    owl:annotatedTarget    ssn:Output ;
+    rdfs:comment "Every metric is computed by an analysis step, so every metric is information a procedure reports, which is SSN's definition of an output. The stronger readings are deliberately not claimed. Not sosa:Observation: a metric node is a persistent particular (this patient's quantity on this device), observed again in every alarm that reports a state on it, whereas an observation is a single act with exactly one result time. Not sosa:ObservableProperty: the particular is bound to the device (two monitors give two metric nodes but one property of the patient), while a property is intrinsic to the thing it belongs to; that patient-side property is mda:PhysiologicalProperty, which the metric approximates. A metric kind (the concept, e.g. metric:SpO2) could serve as an observable property, but that is a statement about concepts, not about this class. Not sosa:Result: MDA has no observation nodes for a metric to be the result of."@en .
+
+
+#################################################################
+# What is measured, and on what
+#################################################################
+
+mda:PhysiologicalProperty  rdfs:subClassOf  sosa:ObservableProperty .
+[]  a owl:Axiom ;
+    owl:annotatedSource    mda:PhysiologicalProperty ;
+    owl:annotatedProperty  rdfs:subClassOf ;
+    owl:annotatedTarget    sosa:ObservableProperty ;
+    rdfs:comment "The physiological property (e.g. arterial oxygen saturation) is the quality whose value a metric estimates (e.g. SpO2), which makes it SOSA's observable property. MDA keeps the estimate (mda:Metric) and the property apart through mda:approximates. SOSA has no counterpart for that gap, so mda:approximates is left unaligned."@en .
+
+mda:PhysiologicalProcess  rdfs:subClassOf  sosa:FeatureOfInterest .
+[]  a owl:Axiom ;
+    owl:annotatedSource    mda:PhysiologicalProcess ;
+    owl:annotatedProperty  rdfs:subClassOf ;
+    owl:annotatedTarget    sosa:FeatureOfInterest ;
+    rdfs:comment "The feature of interest is the thing whose property is estimated. In MDA a physiological property belongs to a physiological process (mda:isPropertyOf), so the process is the feature of interest. Having a process rather than an object as feature of interest is unusual but allowed by SOSA. The patient is the eventual bearer of these processes but is not aligned: MDA does not link processes to a specific patient yet."@en .
+
+mda:isPropertyOf  rdfs:subPropertyOf  ssn:isPropertyOf .
+[]  a owl:Axiom ;
+    owl:annotatedSource    mda:isPropertyOf ;
+    owl:annotatedProperty  rdfs:subPropertyOf ;
+    owl:annotatedTarget    ssn:isPropertyOf ;
+    rdfs:comment "Exact match in meaning: SSN's relation between a property and the entity it belongs to. Stated as a subproperty rather than an equivalence, so that MDA's narrower domain and range are not imposed on SSN."@en .
+
+
+#################################################################
+# Deliberate gaps (no axioms; reasons recorded here)
+#################################################################
+#
+# mda:Signal
+#   No SOSA/SSN counterpart. ssn:Stimulus is the real-world event that
+#   triggers a sensor, not the electrical trace a probe produces. ssn:Input
+#   and ssn:Output each cover only some signals: a raw signal is not the
+#   output of a procedure, and not every signal is consumed by an analysis.
+#
+# mda:producesSignal / mda:sensorProducesSignal
+#   mda:producesSignal is shared by probes and analysis steps (union domain),
+#   while SSN defines ssn:hasOutput as a relation from a Procedure. Aligning
+#   it would call a probe's signal a procedure output. There is no
+#   analysis-only signal property to align instead. Adding
+#   mda:analysisProducesSignal next to mda:sensorProducesSignal in
+#   ontology.ttl would make that possible. The probe side has no SOSA
+#   counterpart without observation nodes: SOSA links sensor to result only
+#   through an Observation.
+#
+# mda:approximates
+#   Metric → physiological property: the device's estimate versus the true
+#   quantity. sosa:observedProperty sits on an Observation, which MDA does
+#   not represent, and it cannot express "approximates".
+#
+# Observation-level terms (sosa:Observation, madeBySensor, observedProperty,
+# hasResult, resultTime, ...)
+#   MDA does not create observation nodes; the output node (signal or metric)
+#   carries the result directly. Introducing them would add per-alarm nodes
+#   that no rule or CQ uses. This is also why loading SSN's Observation
+#   cardinalities causes no merges.
+#
+# ssn:implements (functional unit → signal analysis)
+#   MDA intentionally has a single path to an analysis step
+#   (Signal → analyzedBy), and no direct link from the functional unit to its
+#   analysis steps. A property chain could derive one, but its axiom would
+#   have ssn:implements as subject, which means asserting things about SSN's
+#   own term. Not done.
+#
+# mda:TherapeuticModality, mda:administers, mda:targetsProcess
+#   The match with actuation (sosa:Actuator, sosa:Actuation,
+#   sosa:actsOnProperty) is too loose: a therapeutic modality is a kind of
+#   treatment, not an act of actuation or an actuator.
+#
+# mda:Alarm, mda:AlarmType, mda:AlarmMessage, mda:ClinicalEvent,
+# operation-/quality-/value-state properties
+#   Outside SOSA's scope. Evidence links (mda:evidencedBy) are closer to
+#   PROV-O (prov:wasDerivedFrom); states are closer to SSN's system
+#   capabilities. Neither is aligned in this module.

@@ -1,0 +1,35 @@
+id: cat1b_f01_vt
+title: "VT with a silent arterial line"
+rule: "1b"
+purpose: falsify
+premise: [P1]
+pairs_with: "cat1b_c01_asystole_silent_line"
+status: active
+review: pending
+rationale:
+  clinical: "A silent line does not contradict VT with a pulse."
+  technical: ""
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABPm hoog",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "07:55:00",
+    end: "07:55:20"}
+  - {id: ax,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - VTach",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: ax}
+  - {no_interpretation: CardiacArrest}

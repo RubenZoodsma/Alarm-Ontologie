@@ -3340,15 +3340,6 @@ opstate:Disabled a skos:Concept ;
     skos:prefLabel "Disabled"@en,
         "Disabled"@nl .
 
-opstate:Disconnected a skos:Concept ;
-    skos:broader opstate:OperationState ;
-    skos:definition "Disconnected"@en,
-        "Disconnected"@nl ;
-    skos:inScheme opstate:Scheme ;
-    skos:notation "Disconnected" ;
-    skos:prefLabel "Disconnected"@en,
-        "Disconnected"@nl .
-
 opstate:Enabled a skos:Concept ;
     skos:broader opstate:OperationState ;
     skos:definition "Enabled"@en,
@@ -3407,13 +3398,14 @@ opstate:Monitored a skos:Concept ;
         "Monitored"@nl .
 
 opstate:Occlusion a skos:Concept ;
-    skos:broader opstate:OperationState ;
+    skos:broader opstate:Unavailable ;
     skos:definition "Occlusion"@en,
         "Occlusion"@nl ;
     skos:inScheme opstate:Scheme ;
     skos:notation "Occlusion" ;
     skos:prefLabel "Occlusion"@en,
-        "Occlusion"@nl .
+        "Occlusion"@nl ;
+    mda:refinesConcept opstate:Unavailable .
 
 opstate:PositionalError a skos:Concept ;
     skos:broader opstate:Malfunction ;
@@ -3426,13 +3418,14 @@ opstate:PositionalError a skos:Concept ;
     mda:refinesConcept opstate:Malfunction .
 
 opstate:ProlongedDisconnection a skos:Concept ;
-    skos:broader opstate:OperationState ;
+    skos:broader opstate:Disconnected ;
     skos:definition "Prolonged Disconnection"@en,
         "Prolonged Disconnection"@nl ;
     skos:inScheme opstate:Scheme ;
     skos:notation "ProlongedDisconnection" ;
     skos:prefLabel "Prolonged Disconnection"@en,
-        "Prolonged Disconnection"@nl .
+        "Prolonged Disconnection"@nl ;
+    mda:refinesConcept opstate:Disconnected .
 
 opstate:Pure_CO2 a skos:Concept ;
     skos:broader opstate:OperationState ;
@@ -5514,6 +5507,15 @@ metric:RespirationVolume_Tidal a skos:Concept ;
     skos:prefLabel "Respiration Volume_Tidal"@en ;
     mda:hasAggregation metricAggregation:Tidal .
 
+opstate:Disconnected a skos:Concept ;
+    skos:broader opstate:OperationState ;
+    skos:definition "Disconnected"@en,
+        "Disconnected"@nl ;
+    skos:inScheme opstate:Scheme ;
+    skos:notation "Disconnected" ;
+    skos:prefLabel "Disconnected"@en,
+        "Disconnected"@nl .
+
 signalAnalysis:CardiacOutputAnalysis a skos:Concept ;
     rdfs:subClassOf mda:SignalAnalysis ;
     skos:broader signalAnalysis:SignalAnalysis ;
@@ -5726,15 +5728,6 @@ metric:LinePressure a skos:Concept ;
     skos:prefLabel "Line Pressure"@en,
         "Line Pressure"@nl .
 
-opstate:Unavailable a skos:Concept ;
-    skos:broader opstate:OperationState ;
-    skos:definition "Unavailable"@en,
-        "Unavailable"@nl ;
-    skos:inScheme opstate:Scheme ;
-    skos:notation "Unavailable" ;
-    skos:prefLabel "Unavailable"@en,
-        "Unavailable"@nl .
-
 opstate:Malfunction a skos:Concept ;
     skos:broader opstate:OperationState ;
     skos:definition "Malfunction"@en,
@@ -5743,6 +5736,15 @@ opstate:Malfunction a skos:Concept ;
     skos:notation "Malfunction" ;
     skos:prefLabel "Malfunction"@en,
         "Malfunction"@nl .
+
+opstate:Unavailable a skos:Concept ;
+    skos:broader opstate:OperationState ;
+    skos:definition "Unavailable"@en,
+        "Unavailable"@nl ;
+    skos:inScheme opstate:Scheme ;
+    skos:notation "Unavailable" ;
+    skos:prefLabel "Unavailable"@en,
+        "Unavailable"@nl .
 
 device:Incubator a skos:Concept ;
     rdfs:subClassOf mda:Device ;

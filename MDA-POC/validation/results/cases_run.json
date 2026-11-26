@@ -1,16 +1,20 @@
 {
-  "run": "2026-11-25T21:25:08",
-  "commit": "e7d820e",
+  "run": "2026-11-26T16:46:48",
+  "commit": "edfa25a",
   "uncommitted_changes": true,
-  "framework_hash": "d11c5d7bff58",
-  "rules_hash": "d13287bf2b16",
-  "cases_hash": "c5a668df86a1",
+  "framework_hash": "b975ff017eac",
+  "rules_hash": "8ba6eff91a58",
+  "cases_hash": "032fb1499421",
   "only": null,
   "complete": true,
-  "active_cases": 93,
-  "assertions": 395,
-  "passed": 395,
-  "expected_fail": [],
+  "active_cases": 145,
+  "assertions": 607,
+  "passed": 607,
+  "expected_fail": [
+    "cat2b_c09_two_probes_one_monitor"
+  ],
   "unexpected_pass": [],
-  "draft": []
+  "draft": [
+    "cat1a_f16_pure_co2"
+  ]
 }

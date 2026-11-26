@@ -1,0 +1,35 @@
+id: cat3b_f03_low_rr
+title: "Leak with low respiratory rate"
+rule: "3b"
+purpose: falsify
+premise: [P1]
+pairs_with: "cat3b_c01_leak_low_mv"
+status: active
+review: pending
+rationale:
+  clinical: "A low respiratory rate alone does not show reduced pulmonary function."
+  technical: "Low minute volume replaced by 'Ademfrequentie laag'."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "ServoU_00",
+    label: "SERVOU - Te veel lekkage",
+    device_name: "ServoU",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:01:00"}
+  - {id: a2,
+    device: "ServoU_00",
+    label: "SERVOU - Ademfrequentie laag",
+    device_name: "ServoU",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {no_interpretation: VentilationFailure}

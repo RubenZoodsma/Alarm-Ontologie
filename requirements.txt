@@ -17,10 +17,10 @@ matplotlib==3.9.4
 # MDA-POC verification cases (validation/cases/*.yaml)
 PyYAML==6.0.3
 
-# Consistency check in CODE/reporting/manuscript_tables.py, Table 3 (HermiT, needs Java)
+# Consistency check in MANUSCRIPT/scripts/manuscript_tables.py, Table 3 (HermiT, needs Java)
 owlready2==0.51
 
 # Outside pip, needed only by the scripts named:
 #   Java            owlready2's HermiT reasoner (manuscript_tables.py)
 #   R               MDA-POC/data/tools/export_rdata.R (locked R workspace -> CSV)
-#   rsvg-convert    MISC/figures/fig1_panels/make_figure.py (SVG -> PDF/PNG)
+#   rsvg-convert    MANUSCRIPT/scripts/make_figure.py (SVG -> PDF/PNG)

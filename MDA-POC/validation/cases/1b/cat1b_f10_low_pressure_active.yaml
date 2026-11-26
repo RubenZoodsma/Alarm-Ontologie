@@ -1,0 +1,35 @@
+id: cat1b_f10_low_pressure_active
+title: "Asystole while a low pressure is active"
+rule: "1b"
+purpose: falsify
+premise: [P8]
+pairs_with: "cat1b_c08_reassuring_active"
+status: active
+review: pending
+rationale:
+  clinical: "A falling pressure is what a real arrest produces."
+  technical: "Decreased pressure does not reassure."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABPm laag",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "07:59:00",
+    end: "08:03:00"}
+  - {id: ax,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Asystolie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: ax}
+  - {interpretation: CardiacArrest, from: "08:00:00", until: "08:02:00", evidence: [ax]}

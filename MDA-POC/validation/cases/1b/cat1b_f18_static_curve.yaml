@@ -1,0 +1,35 @@
+id: cat1b_f18_static_curve
+title: "Asystole after a static arterial curve"
+rule: "1b"
+purpose: falsify
+premise: [P5]
+pairs_with: "cat1b_c02_asystole_infinity"
+status: active
+review: pending
+rationale:
+  clinical: "A flat curve shows a line exists, not that it works."
+  technical: ""
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - ART statische druk",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "07:55:00",
+    end: "07:55:20"}
+  - {id: ax,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Asystolie",
+    device_name: "DraegerMonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: ax}
+  - {interpretation: CardiacArrest, from: "08:00:00", until: "08:02:00", evidence: [ax]}

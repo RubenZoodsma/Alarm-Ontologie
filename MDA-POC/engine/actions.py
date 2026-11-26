@@ -90,22 +90,17 @@ def _incoming_prio(incoming_prio) -> str:
 
 
 def silence_bindings(rule: str, alarm: str, now: str, incoming_prio=None) -> str:
-    """A CAT2 check's bindings; cat2a also binds the incoming priority
-    (not in the store yet at its own check)."""
-    if rule == "cat2a":
-        return values(alarm=iri(alarm), now=now, incomingPrio=_incoming_prio(incoming_prio))
-    return values(alarm=iri(alarm), now=now)
+    """A CAT2 check's bindings, with the incoming alarm's priority (not in
+    the store yet at its own check; both CAT2 rules compare it)."""
+    return values(alarm=iri(alarm), now=now, incomingPrio=_incoming_prio(incoming_prio))
 
 
 def silence_insert(rule: str, alarm: str, tgraph: str, now: str, incoming_prio=None) -> str:
     """Store `rule`'s (cat2a or cat2b) silence on `alarm`: one silencedBy
     link per active alarm justifying it."""
     link = rule_link(rule)
-    if rule == "cat2a":
-        bindings = values(alarm=iri(alarm), now=now, incomingPrio=_incoming_prio(incoming_prio), tgraph=tgraph,
-                          ruleLink=link)
-    else:
-        bindings = values(alarm=iri(alarm), now=now, tgraph=tgraph, ruleLink=link)
+    bindings = values(alarm=iri(alarm), now=now, incomingPrio=_incoming_prio(incoming_prio), tgraph=tgraph,
+                      ruleLink=link)
     return compose("silence_insert", bindings, RULES[rule].condition)
 
 

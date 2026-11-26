@@ -1,0 +1,34 @@
+id: cat2b_f08_lower_prio_rr
+title: "Lower-priority monitor RR active"
+rule: "2b"
+purpose: falsify
+premise: [P4]
+pairs_with: "cat2b_c04_rr_two_devices"
+status: active
+review: pending
+rationale:
+  clinical: "A Medium alarm cannot make a Hoog alarm redundant; its urgency would be lost."
+  technical: "c04 with roles swapped: same state (Decreased), active Medium below incoming Hoog."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Lage ademfreq.",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "CarescapeR860_00",
+    label: "DATEXOHMEDACOMVENTILATOR - RR Low",
+    device_name: "CarescapeR860",
+    priority: "Hoog",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}

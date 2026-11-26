@@ -101,14 +101,8 @@
 # (that alarm's transient graph).
 # Used by actions/check.rq and actions/silence_insert.rq.
 #
-# VALIDATION — engine/regression.py: cat2a_pos (severe bradycardia, then
-# bradycardia), cat2a_gate (low MAP on two monitors) and cat2a_peak (PEEP
-# high, then peak pressure high — same property RespirationPressure)
-# silence; cat2a_neg, cat2a_opposite, cat2a_escalation, cat2a_reversal,
-# cat2a_hr_map and cat2a_technical do not; cat2a_lift and cat2a_lift_last
-# are silenced and lifted when the last justifying alarm ends;
-# cat2a_flagged_justifier (a flagged active alarm justifies nothing) and
-# cat2a_flagged_incoming (a flagged incoming alarm is not also silenced).
+# VALIDATION — validation/cases/2a/ (premises and confirm/falsify pairs in
+# validation/case_design.xlsx, sheet 2a); run engine/regression.py.
 ####################################################################
 
 PREFIX mda:       <https://w3id.org/mda/ontology#>

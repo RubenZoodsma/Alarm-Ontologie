@@ -1,0 +1,35 @@
+id: cat2b_f10_generic_vs_specific
+title: "SpO2 does not cover pre-ductal SpO2"
+rule: "2b"
+purpose: falsify
+premise: [P5]
+pairs_with: "cat2b_c05_specific_covers_generic"
+status: active
+review: pending
+rationale:
+  clinical: "An unsited SpO2 says less than a pre-ductal one."
+  technical: "c05 with roles swapped: SpO2 does not refine SpO2_PreDuctal. 2a still silences (same property)."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Lage SpO2",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ?? SpO2pr laag",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {silenced: a2, reason: redundant, rule: "2a", by: [a1]}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:00", until: "08:02:00", evidence: [a1, a2]}

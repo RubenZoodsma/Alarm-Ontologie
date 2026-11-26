@@ -1,0 +1,54 @@
+id: cat3a_c05_withdrawn_flag
+title: "Arrest from the 1b withdrawal on"
+rule: "3a"
+purpose: confirm
+premise: [P1, P2, P3]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: "Once a low pressure contradicts the silent line, the asystole and the apnoea are an arrest."
+  technical: "ax is flagged by 1b (a0), withdrawn by a3 at 08:00:20; the arrest runs from then on."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a0,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABPm hoog",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "07:55:00",
+    end: "07:55:20"}
+  - {id: ax,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Asystolie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:01:00"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Apneu",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:05",
+    end: "08:01:30"}
+  - {id: a3,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABPm laag",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:20",
+    end: "08:01:00"}
+
+expect:
+  - {forwarded: a0}
+  - {forwarded: a2}
+  - {forwarded: a3}
+  - {silenced: ax, reason: likely-invalid, rule: "1b", by: [a0]}
+  - {lifted: ax, rule: "1b", by: [a3], at: "08:00:20"}
+  - {interpretation: CardiacArrest, from: "08:00:20", until: "08:01:00", evidence: [ax]}
+  - {interpretation: RespiratoryArrest, from: "08:00:05", until: "08:01:30", evidence: [a2]}
+  - {interpretation: CardioRespiratoryArrest, from: "08:00:20", until: "08:01:00", evidence: [ax, a2]}

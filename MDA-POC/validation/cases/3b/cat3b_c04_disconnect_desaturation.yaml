@@ -1,0 +1,36 @@
+id: cat3b_c04_disconnect_desaturation
+title: "Disconnection with desaturation"
+rule: "3b"
+purpose: confirm
+premise: [P1, P2, P3]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: "A desaturation while the patient is disconnected is a ventilation failure."
+  technical: "Oxygenation branch; the evidence comes from the monitor."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "CarescapeR860_00",
+    label: "DATEXOHMEDACOMVENTILATOR - Patient Disconnected",
+    device_name: "CarescapeR860",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:01:00"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Desaturatie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:30", until: "08:01:30", evidence: [a2]}
+  - {interpretation: VentilationFailure, from: "08:00:30", until: "08:01:00", evidence: [a1, a2]}

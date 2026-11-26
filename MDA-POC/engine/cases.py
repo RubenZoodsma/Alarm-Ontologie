@@ -1,8 +1,8 @@
 """
 cases.py — verification cases: one YAML file per case in
-MDA-POC/validation/cases/, each holding its input stream, its expected
+MDA-POC/validation/cases/<rule>/ (one folder per rule), each holding its input stream, its expected
 conclusions and their rationale. Read by regression.py (to run them) and
-validation/cases_appendix.py (to report them).
+MANUSCRIPT/scripts/cases_appendix.py (to report them).
 
 A case, in the paper's vocabulary rather than the engine's:
 
@@ -10,6 +10,8 @@ A case, in the paper's vocabulary rather than the engine's:
   title: ...                        # one line
   rule: 1a                          # 1a 1b 2a 2b 3a 3b, or events, engine, scenario
   purpose: confirm                  # confirm | falsify | edge | scenario
+  premise: [P5a]                    # optional: premise id(s) of the rule's sheet in validation/case_design.xlsx
+  pairs_with: cat1a_c1              # optional: the confirm case a falsify case differs from
   status: active                    # active | expected-fail | draft
   review: pending                   # pending | done: the team's review of the case
   rationale: {clinical: ..., technical: ...}
@@ -48,6 +50,11 @@ produces must match an assertion of the case; anything else fails the
 case's "no other conclusions" check. Alarms that are not mentioned must
 then simply be forwarded.
 
+Start a new case from validation/cases/CASE_Template.yaml, saved as
+validation/cases/<rule>/<id>.yaml: the folder must equal the case's rule
+(files named CASE_* are skipped by the runner). The cases before 2026-11-26 are retired
+to old/MDA-POC/validation/cases/.
+
 Status: active cases count towards the result; expected-fail cases state
 behavior the rules do not (yet) have, and are reported as XFAIL (or XPASS
 when they unexpectedly pass); draft cases are validated but not run.
@@ -70,6 +77,7 @@ from paths import POC_DIR
 from stream import Event
 
 CASES_DIR = POC_DIR / "validation" / "cases"
+CASE_DESIGN = POC_DIR / "validation" / "case_design.xlsx"   # premises per rule (one sheet each)
 RESULTS_DIR = POC_DIR / "validation" / "results"
 BASE_DATE = "2026-01-01"
 DEFAULT_START = "08:00:00"
@@ -100,6 +108,40 @@ ASSERTION_KEYS = {
 
 class CaseError(ValueError):
     """A case file that cannot be run as written."""
+
+
+# --------------------------------------------------------------------
+# Premises
+# --------------------------------------------------------------------
+
+_PREMISE_ID = re.compile(r"^P\d+[a-z]?$")
+
+
+def load_premises(rule: str) -> dict:
+    """{premise id: (premise, meaning)} from the sheet named `rule` in
+    validation/case_design.xlsx: the premise table, i.e. the unbroken run of
+    rows whose column A holds a premise id (P1, P2, ...) directly below the
+    first row whose column A reads "ID". Anything after that run (open
+    questions, the case and coverage tables) is not read, whatever its
+    headings. {} when the rule has no sheet."""
+    if not CASE_DESIGN.exists():
+        return {}
+    from openpyxl import load_workbook
+    wb = load_workbook(CASE_DESIGN, read_only=True)
+    if rule not in wb.sheetnames:
+        wb.close()
+        return {}
+    out, in_table = {}, False
+    for row in wb[rule].iter_rows(min_col=1, max_col=3, values_only=True):
+        first = str(row[0] or "").strip()
+        if not in_table:
+            in_table = first == "ID"
+            continue
+        if not _PREMISE_ID.match(first):
+            break
+        out[first] = (str(row[1] or ""), str(row[2] or ""))
+    wb.close()
+    return out
 
 
 # --------------------------------------------------------------------
@@ -153,6 +195,8 @@ class Case:
     strict: bool
     stream: list            # raw alarm dicts, with parsed times
     expect: list            # raw assertion dicts
+    premise: list = field(default_factory=list)  # premise ids (validation/case_design.xlsx)
+    pairs_with: str = ""                         # the confirm case a falsify case differs from
     events: list = field(default_factory=list)   # stream.Event per alarm
     clock: bool = False     # the case writes clock times: report in clock times too
 
@@ -179,12 +223,28 @@ def load_case(path: Path, kb=None) -> Case:
             raise CaseError(f"{where}: missing '{key}'")
     if raw["id"] != path.stem:
         raise CaseError(f"{where}: id '{raw['id']}' must equal the file name")
+    if path.parent != CASES_DIR and path.parent.name != str(raw.get("rule")):
+        raise CaseError(f"{where}: rule '{raw.get('rule')}' must equal its folder '{path.parent.name}'")
     for key, allowed in (("rule", RULES), ("purpose", PURPOSES), ("status", STATUSES)):
         if str(raw[key]) not in allowed:
             raise CaseError(f"{where}: {key} '{raw[key]}' is not one of {sorted(allowed)}")
     review = raw.get("review", "pending")
     if review not in REVIEWS:
         raise CaseError(f"{where}: review '{review}' is not one of {sorted(REVIEWS)}")
+
+    premise = [str(x) for x in _as_list(raw.get("premise") or [])]
+    for pid in premise:
+        if not _PREMISE_ID.match(pid):
+            raise CaseError(f"{where}: premise '{pid}' is not a premise id such as P3 or P5a")
+    if premise:
+        known = load_premises(str(raw["rule"]))
+        if not known:
+            raise CaseError(f"{where}: cites premises but {CASE_DESIGN.name} has no sheet "
+                            f"'{raw['rule']}' with premises")
+        unknown = [pid for pid in premise if pid not in known]
+        if unknown:
+            raise CaseError(f"{where}: premise {unknown} not in sheet '{raw['rule']}' of {CASE_DESIGN.name}")
+    pairs_with = str(raw.get("pairs_with") or "")
 
     start_at = datetime.fromisoformat(f"{BASE_DATE}T{raw.get('start_at', DEFAULT_START)}")
     stream, ids = [], set()
@@ -237,24 +297,40 @@ def load_case(path: Path, kb=None) -> Case:
 
     case = Case(path, raw["id"], raw["title"], str(raw["rule"]), raw["purpose"], raw["status"], review,
                 raw.get("rationale") or {}, raw.get("author", ""), start_at, raw.get("strict", True),
-                stream, expect)
+                stream, expect, premise, pairs_with)
     case.clock = any(isinstance(a[k], str) and _CLOCK.match(a[k]) for a in raw["stream"] or [] for k in ("start", "end"))
     case.events = [Event(case.id, a["label"], a["device"], a["start"], a["end"], a["id"],
                          a.get("device_name", ""), a.get("priority", "")) for a in stream]
     return case
 
 
+def case_files(folder: Path = CASES_DIR) -> list:
+    """The case files in `folder` and its rule folders, sorted by id. Files
+    named CASE_* (the template CASE_Template.yaml) are not cases."""
+    return sorted((p for p in folder.rglob("*.yaml") if not p.name.startswith("CASE_")),
+                  key=lambda p: p.stem)
+
+
 def load_cases(folder: Path = CASES_DIR, kb=None, only=None) -> list:
     """Every case in `folder` (or those whose id is in `only`), sorted by id.
     All errors are collected and raised together."""
     cases, errors = [], []
-    for path in sorted(folder.glob("*.yaml")):
+    seen = {}
+    for path in case_files(folder):
+        if path.stem in seen:
+            errors.append(f"{path.name}: id also used by {seen[path.stem]}")
+            continue
+        seen[path.stem] = path.relative_to(folder)
         if only and path.stem not in only:
             continue
         try:
             cases.append(load_case(path, kb))
         except CaseError as exc:
             errors.append(str(exc))
+    ids = {c.id for c in cases}
+    for c in cases:
+        if c.pairs_with and c.pairs_with not in ids and not only:
+            errors.append(f"{c.path.name}: pairs_with '{c.pairs_with}' is not a case")
     if errors:
         raise CaseError("cases that cannot be run:\n  " + "\n  ".join(errors))
     return cases

@@ -1,0 +1,43 @@
+id: cat1b_f13_after_asystole_ended
+title: "Low pressure after the asystole ended"
+rule: "1b"
+purpose: falsify
+premise: [P9]
+pairs_with: "cat1b_c10_withdraw_low_pressure"
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: "Withdrawal only while X is active; X ends at 08:00:20."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABPm hoog",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "07:55:00",
+    end: "07:55:20"}
+  - {id: ax,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Asystolie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:00:20"}
+  - {id: a3,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABPm laag",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:02:00"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a3}
+  - {silenced: ax, reason: likely-invalid, rule: "1b", by: [a1]}
+  - {no_interpretation: CardiacArrest}

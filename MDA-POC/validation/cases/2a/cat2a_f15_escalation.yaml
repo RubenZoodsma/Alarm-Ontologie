@@ -1,0 +1,34 @@
+id: cat2a_f15_escalation
+title: "High mean does not cover severe systolic"
+rule: "2a"
+purpose: falsify
+premise: [P6]
+pairs_with: "cat2a_c04_abp_severe_equal_prio"
+status: active
+review: pending
+rationale:
+  clinical: "An escalation to severely high pressure is new information."
+  technical: "c04 with roles swapped: incoming SeverelyIncreased is more severe than active Increased."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABPm hoog",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABPs hoog",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}

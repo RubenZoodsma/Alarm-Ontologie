@@ -1,0 +1,42 @@
+id: cat2b_f05_active_flagged_artline
+title: "Flagged arterial mean justifies nothing"
+rule: "2b"
+purpose: falsify
+premise: [P2]
+pairs_with: "cat2b_c03_artline_cuff"
+status: active
+review: pending
+rationale:
+  clinical: "With the arterial line disconnected, the cuff is the valid pressure and must be heard."
+  technical: "a1 is flagged by 1a (sensor route, a0), so it justifies no silence of a2."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a0,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABP losgeraakt",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "07:59:50",
+    end: "08:02:30"}
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABPm laag",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - NiBDm laag",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a0}
+  - {silenced: a1, reason: likely-invalid, rule: "1a", by: [a0]}
+  - {forwarded: a2}

@@ -1,0 +1,35 @@
+id: cat1b_c06_presence_14min
+title: "Presence 14 minutes before"
+rule: "1b"
+purpose: confirm
+premise: [P1, P2, P3, P4, P5, P6, P7, P8]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: "Presence ended 14 min before X: inside the 15-minute window."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABPm hoog",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "07:45:40",
+    end: "07:46:00"}
+  - {id: ax,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Asystolie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+
+expect:
+  - {forwarded: a1}
+  - {silenced: ax, reason: likely-invalid, rule: "1b", by: [a1]}
+  - {no_interpretation: CardiacArrest}

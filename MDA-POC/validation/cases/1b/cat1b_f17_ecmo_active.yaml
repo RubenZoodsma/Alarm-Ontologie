@@ -1,0 +1,35 @@
+id: cat1b_f17_ecmo_active
+title: "Asystole on VA-ECMO with a high circuit pressure"
+rule: "1b"
+purpose: falsify
+premise: [P3]
+pairs_with: "cat1b_c08_reassuring_active"
+status: active
+review: pending
+rationale:
+  clinical: "On VA-ECMO the pump, not the heart, makes the pressure."
+  technical: "ECMO pressure active during X; no monitor line."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "CardioHelp_00",
+    label: "CARDIOHELP - pArt boven alarmgrens",
+    device_name: "CardioHelp",
+    priority: "Hoog",
+    start: "07:59:00",
+    end: "08:03:00"}
+  - {id: ax,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Asystolie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: ax}
+  - {interpretation: CardiacArrest, from: "08:00:00", until: "08:02:00", evidence: [ax]}

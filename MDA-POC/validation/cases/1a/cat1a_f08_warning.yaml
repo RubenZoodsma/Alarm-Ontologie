@@ -1,0 +1,35 @@
+id: cat1a_f08_warning
+title: "Cassette warning and minute volume low"
+rule: "1a"
+purpose: falsify
+premise: [P6]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: "A cassette due for replacement still measures."
+  technical: "Warning is not in the fault set. Unpaired: no ServoU label states a fault on this pathway."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "ServoU_00",
+    label: "SERVOU - Exp. cass. vervangen",
+    device_name: "ServoU",
+    priority: "Laag",
+    start: "0s",
+    end: "2m"}
+  - {id: a2,
+    device: "ServoU_00",
+    label: "SERVOU - Exp. minuutvol. laag",
+    device_name: "ServoU",
+    priority: "Hoog",
+    start: "30s",
+    end: "1m"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "30s", until: "1m", evidence: [a2]}

@@ -1,0 +1,35 @@
+id: cat1b_f02_vf_or_vt
+title: "VF-or-VT alarm with a silent arterial line"
+rule: "1b"
+purpose: falsify
+premise: [P1]
+pairs_with: "cat1b_c01_asystole_silent_line"
+status: active
+review: pending
+rationale:
+  clinical: "'VF or VT' may be VT with a pulse; flagging it could hide a real VT."
+  technical: "Counted as cardiac arrest for safety, never flagged."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABPm hoog",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "07:55:00",
+    end: "07:55:20"}
+  - {id: ax,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Ventrikel Fibr/Tachy",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: ax}
+  - {interpretation: CardiacArrest, from: "08:00:00", until: "08:02:00", evidence: [ax]}

@@ -1,0 +1,35 @@
+id: cat1a_f02_reporter_ended
+title: "Fault ended before SpO2 low"
+rule: "1a"
+purpose: falsify
+premise: [P2]
+pairs_with: "cat1a_c01_spo2_quality"
+status: active
+review: pending
+rationale:
+  clinical: "A fault that has cleared says nothing about the new value."
+  technical: "Y ends at 20s, X arrives at 30s."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Storing in SpO2",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "0s",
+    end: "20s"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - SpO2 laag",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "30s",
+    end: "1m"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "30s", until: "1m", evidence: [a2]}

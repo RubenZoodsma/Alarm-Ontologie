@@ -1,5 +1,5 @@
 """
-Shared layout of the annotation workbook (export_annotation_xlsx.py writes it,
+Shared layout of the annotation workbook (export_annotation_xlsx.py, now retired to old/CODE/data_prep/, wrote it;
 import_annotation_xlsx.py reads it back). Kept in one place so the two cannot
 drift apart.
 """

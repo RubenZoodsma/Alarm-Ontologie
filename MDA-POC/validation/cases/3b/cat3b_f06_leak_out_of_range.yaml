@@ -1,0 +1,36 @@
+id: cat3b_f06_leak_out_of_range
+title: "Leak measurement out of range"
+rule: "3b"
+purpose: falsify
+premise: [P2]
+pairs_with: "cat3b_c01_leak_low_mv"
+status: active
+review: pending
+rationale:
+  clinical: "A leak outside the viable range is a leak-detection fault, not a leak."
+  technical: "VentilationCircuitLeak OutOfRange does not refine Increased."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "ServoI_00",
+    label: "SERVOI - Lekkage buiten bereik",
+    device_name: "ServoI",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:01:00"}
+  - {id: a2,
+    device: "ServoI_00",
+    label: "SERVOI - Exp. minuutvol: Laag",
+    device_name: "ServoI",
+    priority: "Hoog",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:30", until: "08:01:30", evidence: [a2]}
+  - {no_interpretation: VentilationFailure}

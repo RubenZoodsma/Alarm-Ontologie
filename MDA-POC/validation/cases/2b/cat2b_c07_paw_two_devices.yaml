@@ -1,0 +1,35 @@
+id: cat2b_c07_paw_two_devices
+title: "Ventilator peak pressure covers monitor's"
+rule: "2b"
+purpose: confirm
+premise: [P1, P2, P3, P4, P5, P6, P7, P8]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: "A monitor's high airway pressure adds nothing to the ventilator's."
+  technical: "Same metric (AirwayPressure_Peak), two devices; Hoog over Medium; 2a also silences."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "CarescapeR860_00",
+    label: "DATEXOHMEDACOMVENTILATOR - Ppeak High",
+    device_name: "CarescapeR860",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "DraegerMonitor_00",
+    label: "Monitor - PAW HOOG",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {silenced: a2, reason: redundant, rule: "2a", by: [a1]}
+  - {silenced: a2, reason: redundant, rule: "2b", by: [a1]}

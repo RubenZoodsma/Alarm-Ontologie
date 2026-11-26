@@ -1,0 +1,35 @@
+id: cat3b_f01_low_etco2
+title: "Leak with low etCO2"
+rule: "3b"
+purpose: falsify
+premise: [P1]
+pairs_with: "cat3b_c05_leak_hypercapnia"
+status: active
+review: pending
+rationale:
+  clinical: "A low etCO2 is what a leak itself produces; it is no reduced pulmonary function."
+  technical: "etCO2 Hoog replaced by etCO2 Laag: no ReducedPulmonaryFunction."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "LeoniPlus_00",
+    label: "HULBUS - Leak too high",
+    device_name: "LeoniPlus",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:01:00"}
+  - {id: a2,
+    device: "DraegerMonitor_00",
+    label: "Monitor - etCO2 Laag",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {no_interpretation: VentilationFailure}

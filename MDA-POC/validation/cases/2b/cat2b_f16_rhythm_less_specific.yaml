@@ -1,0 +1,34 @@
+id: cat2b_f16_rhythm_less_specific
+title: "Abnormal rhythm does not cover VT"
+rule: "2b"
+purpose: falsify
+premise: [P7]
+pairs_with: "cat2b_c06_vt_two_monitors"
+status: active
+review: pending
+rationale:
+  clinical: "A VT alarm says more than an abnormal-rhythm alarm."
+  technical: "Abnormal does not refine VentricularTachycardia."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Hoge ARR",
+    device_name: "DraegerMonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Vtach",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}

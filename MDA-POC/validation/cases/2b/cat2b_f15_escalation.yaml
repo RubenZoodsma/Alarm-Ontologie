@@ -1,0 +1,34 @@
+id: cat2b_f15_escalation
+title: "High systolic does not cover severe systolic"
+rule: "2b"
+purpose: falsify
+premise: [P7]
+pairs_with: "cat2b_c10_systolic_two_monitors"
+status: active
+review: pending
+rationale:
+  clinical: "An escalation to severely high systolic is new information."
+  technical: "c10 with roles swapped: incoming SeverelyIncreased is more severe; equal priority."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Hoge ARTsys",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABPs hoog",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}

@@ -3,7 +3,7 @@ build_framework.py
 
 Ontology-driven readout script for the annotated alarm CSV.
 
-Analyzes the annotated CSV (DATA/ANNOTATION/consensus/p50_annotated.csv)
+Analyzes the annotated CSV (DATA/ANNOTATION/consensus/p99_annotated.csv)
 against the hand-maintained base files in FRAMEWORK/ONTOLOGY/ and
 FRAMEWORK/VOCABULARY/seed/, and fully regenerates two output files;
 everything the generated files hold, generated or hand-authored, is what
@@ -45,24 +45,24 @@ Usage
 -----
   python3 build_framework.py
 
-Both outputs are pure functions of (ontology.ttl, vocab_base.ttl,
-vocab_data.csv): they are rewritten from scratch on every run, never
-appended to.
+Both outputs are pure functions of the inputs below: they are rewritten
+from scratch on every run, never appended to.
 
-Two distinct promotion paths exist for a generated stub, and they are not
-interchangeable. Adding a notation directly to vocab_base.ttl (checked by
-build_notation_index/collect_missing below) marks it as truly universal,
-timeless scaffold — rare, and this script stops re-generating a stub for it
-on the next run. The much more common path is 3_CURATION: a stub gets
-reviewed, enriched, and possibly redefined there instead, as a *catalogue-
-scoped* curated concept. This script deliberately does NOT check 3_CURATION
-before generating — that would make stage 2 depend on stage 3, breaking the
-pipeline's one-way ordering — so a promoted concept's stub keeps being
-regenerated here too. That is harmless surplus, not drift: 4_OPERATIONAL
-reads 3_CURATION exclusively, never this file's output directly, and
-3_CURATION/check_delta.py is the tool for seeing where curation has
-knowingly diverged from what this script still (mechanically, correctly)
-produces.
+  FRAMEWORK/ONTOLOGY/ontology.ttl                 class tree, scheme bindings
+  FRAMEWORK/KNOWLEDGE_BASE/inference.ttl          bridge axioms (concepts they name)
+  FRAMEWORK/VOCABULARY/seed/vocab_base.ttl        hand-written schemes and concepts
+  FRAMEWORK/VOCABULARY/seed/clinicalEvent_vocab.ttl  clinical-event concepts
+  FRAMEWORK/VOCABULARY/seed/hierarchy.ttl         curated is-a placements, merged
+                                                  into vocab_generated.ttl
+  DATA/ANNOTATION/consensus/p99_annotated.csv     the expert annotation
+  DATA/ANNOTATION/device_models.csv               gateway name -> device model
+
+A concept the annotation needs is generated as a stub in vocab_generated.ttl
+unless vocab_base.ttl already defines it (checked by
+build_notation_index/collect_missing below). Adding a concept to
+vocab_base.ttl is therefore how a stub becomes hand-written: the next run
+stops generating it. Curated placements between concepts go in
+hierarchy.ttl, not in the generated file, which is overwritten on every run.
 """
 
 import re
@@ -82,7 +82,7 @@ from site_refinement import SiteTable, SiteRefinementError
 # ── Paths ─────────────────────────────────────────────────────────────────────
 
 SCRIPT_DIR      = Path(__file__).resolve().parent
-ROOT            = SCRIPT_DIR.parent.parent   # CODE/framework_build -> CODE -> Restructured
+ROOT            = SCRIPT_DIR.parent.parent   # CODE/framework_build -> CODE -> repository root
 FRAMEWORK_DIR   = ROOT / "FRAMEWORK"
 ONTOLOGY_PATH   = FRAMEWORK_DIR / "ONTOLOGY" / "ontology.ttl"
 VOCAB_BASE_PATH = FRAMEWORK_DIR / "VOCABULARY" / "seed" / "vocab_base.ttl"

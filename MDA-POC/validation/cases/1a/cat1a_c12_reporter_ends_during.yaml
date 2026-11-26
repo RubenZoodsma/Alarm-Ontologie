@@ -1,0 +1,34 @@
+id: cat1a_c12_reporter_ends_during
+title: "Fault ends during SpO2 low: flag stays"
+rule: "1a"
+purpose: confirm
+premise: [P1, P2, P3, P4, P5, P8]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: "The value was unreliable when it alarmed; a fault clearing later does not make that alarm valid."
+  technical: "Y active at X's arrival, ends at 40s while X runs to 1m. Decided once at arrival: no lift."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Storing in SpO2",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "0s",
+    end: "40s"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - SpO2 laag",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "30s",
+    end: "1m"}
+
+expect:
+  - {forwarded: a1}
+  - {silenced: a2, reason: likely-invalid, rule: "1a", by: [a1]}

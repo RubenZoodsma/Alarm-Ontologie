@@ -2,7 +2,7 @@
 ontology_tree.py — the class nesting implied by the ontology, derived once.
 
 Used by CODE/framework_build/build_framework.py (which builds the blueprint)
-and CODE/shared/ontology_diagram.py. The MDA-POC keeps its own
+and, formerly, ontology_diagram.py (retired to old/CODE/shared/). The MDA-POC keeps its own
 adapted copy (MDA-POC/engine/ontology_tree.py) so it imports nothing from
 outside its folder.
 

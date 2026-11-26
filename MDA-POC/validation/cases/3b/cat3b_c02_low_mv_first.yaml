@@ -1,0 +1,36 @@
+id: cat3b_c02_low_mv_first
+title: "Low minute volume before leak"
+rule: "3b"
+purpose: confirm
+premise: [P1, P2, P3]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: "The order in which they are announced does not matter."
+  technical: "c01 with arrival order swapped; span is still the overlap."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "ServoU_00",
+    label: "SERVOU - Exp. minuutvol. laag",
+    device_name: "ServoU",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:01:00"}
+  - {id: a2,
+    device: "ServoU_00",
+    label: "SERVOU - Te veel lekkage",
+    device_name: "ServoU",
+    priority: "Hoog",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:00", until: "08:01:00", evidence: [a1]}
+  - {interpretation: VentilationFailure, from: "08:00:30", until: "08:01:00", evidence: [a1, a2]}

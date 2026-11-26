@@ -5,15 +5,16 @@
 # likely already convey equivalent clinical or technical information?
 #
 # NL rule (CAT2, "simultaneous alarms likely carrying overlapping or
-# redundant information"): "If an alarm conveys the same metric via a
-# different sensor, an incoming alarm conveying that metric from another
-# sensor can be silenced."
+# redundant information"): "If an active alarm of equal or higher
+# priority conveys the same metric via a different sensor as an incoming
+# alarm, then the incoming alarm can be silenced." (Revised 2026-11-26:
+# priority condition added, as CAT2a.)
 #
 # Clause by clause (revised 2026-11-25):
 #   "an incoming alarm"        — a PHYSIOLOGICAL alarm, at its arrival, not
 #                                one CAT1 has just flagged likely false
 #                                positive (see FLAGGED ALARMS below).
-#   "an alarm" (active)        — a physiological alarm of the same patient
+#   "an active alarm"          — a physiological alarm of the same patient
 #                                whose transient graph is in the store now,
 #                                other than the incoming one, and not
 #                                flagged likely false positive. An active
@@ -68,10 +69,12 @@
 #                                SeverelyDecreased). Two sensors that
 #                                disagree (SpO2 low vs high) or an escalation
 #                                (low SpO2 -> desaturation) is information.
-#                                No priority condition — the NL rule names
-#                                none (kept 2026-11-25: unlike CAT2a, a
-#                                lower-priority alarm on one device may
-#                                silence a higher-priority one on another).
+#   "equal or higher priority" — priorityRank(active) >= priorityRank
+#                                (incoming), priority_rank.ttl, as CAT2a
+#                                (added 2026-11-26; until then a Medium
+#                                alarm on one device could silence a Hoog
+#                                one on another, so the clinician heard the
+#                                information at the lower urgency).
 #   "can be silenced"          — for as long as an alarm that justified it
 #                                at arrival is still active, shared with
 #                                CAT2a: one silence per alarm, lifted when
@@ -97,23 +100,15 @@
 # metric, however many steps (lead derivations, derived metrics). So every
 # hop is the alarm's own; none is borrowed from another alarm.
 #
-# CONTRACT. Bound on entry: ?alarm (the incoming alarm), ?now. Binds:
+# CONTRACT. Bound on entry: ?alarm (the incoming alarm), ?now, ?incomingPrio
+# (its priority: its own hasPriority triple is inserted only after its
+# checks). Binds:
 # ?active (one row per active alarm justifying the silence; all are stored)
 # and ?witness (that alarm's transient graph).
 # Used by actions/check.rq and actions/silence_insert.rq.
 #
-# VALIDATION — engine/regression.py: cat2b_pos (low SpO2 on two monitors),
-# cat2a_gate (low MAP on two monitors), cat2a_lift_last (low HR on two
-# monitors), cat3f and fig2_scenario silence; cat2b_neg, cat2b_opposite and
-# cat2b_escalation do not; cat2b_same_sensor never fires CAT2b (forbidden
-# firing); cat2a_flagged_justifier and cat2a_flagged_incoming (strict, two
-# monitors: a flagged alarm neither justifies nor is silenced, under
-# CAT2a or CAT2b); cat2b_lift and cat3f are silenced and lifted when the
-# justifying alarm ends; cat2b_untyped_active and cat2b_untyped_incoming
-# (strict: an untyped metric, active or incoming, matches nothing);
-# cat2b_generic_vs_specific (the direction of "the same metric");
-# site_pa_vs_arterial and site_skin_vs_core (site-refined metrics do not
-# match their unrelated siblings).
+# VALIDATION — validation/cases/2b/ (premises and confirm/falsify pairs in
+# validation/case_design.xlsx, sheet 2b); run engine/regression.py.
 ####################################################################
 
 PREFIX mda:      <https://w3id.org/mda/ontology#>
@@ -136,9 +131,14 @@ FILTER NOT EXISTS { GRAPH ?gT { ?alarm mdapoc:flaggedLikelyFalsePositive ?incomi
 # an active, unflagged alarm of the same patient conveying the same metric
 GRAPH ?gA { ?active mda:hasCategory alarmcat:Physiological .
             ?active mda:hasMessage ?activeMsg . ?activeMsg mda:concernsPatient ?patient .
+            ?active mda:hasPriority ?activePrio .
             ?activeMetric ?activeStateProp ?activeState . }
 VALUES ?activeStateProp { mda:hasValueState mda:hasRhythm }
 FILTER NOT EXISTS { GRAPH ?gA { ?active mdapoc:flaggedLikelyFalsePositive ?activeFlagEvidence } }
+# equal or higher priority
+?incomingPrio mda:priorityRank ?incomingRank .
+?activePrio mda:priorityRank ?activeRank .
+FILTER(?activeRank >= ?incomingRank)
 BIND(IRI(CONCAT(STR(?active), "#persistent")) AS ?gAP)
 GRAPH ?gAP { ?activeMetric rdf:type ?activeMetricType . }
 # both typed: plain mda:Metric (a metric annotated without a type) matches nothing

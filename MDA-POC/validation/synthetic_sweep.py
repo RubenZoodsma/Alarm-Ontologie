@@ -2,7 +2,7 @@
 synthetic_sweep.py — end-to-end test of the full pipeline (poc_main ->
 logs -> Table 4 of manuscript_tables.py) on synthetic patients whose outcome is known.
 
-Every verification case (validation/cases/*.yaml, each confirmed by
+Every verification case (validation/cases/<rule>/*.yaml, each confirmed by
 engine/regression.py) becomes a SEGMENT of a long patient stream, plus a few
 segments for what only Table 4 needs (the 5-s filter, alarms without a
 blueprint, stream edge cases). Three patients, each a mixed device fleet:
@@ -109,8 +109,8 @@ def assign(segs: dict) -> dict:
     """{patient: (department, [segment, ...])}."""
     def rule_of(seg):
         import yaml
-        p = ROOT / "validation" / "cases" / f"{seg}.yaml"
-        return str(yaml.safe_load(p.read_text())["rule"]) if p.exists() else "extra"
+        p = next((ROOT / "validation" / "cases").rglob(f"{seg}.yaml"), None)
+        return str(yaml.safe_load(p.read_text())["rule"]) if p else "extra"
     cases = [s for s in segs if s not in EXTRAS]
     nicu = [s for s in cases if {r["device_name"] for r in segs[s]} & NICU_DEVICES or rule_of(s) in NICU_RULES]
     picu = [s for s in cases if s not in nicu]
@@ -286,7 +286,7 @@ def compare(name: str, got: dict, want: dict, segments: list, problems: list) ->
 # ── Table 4 ──────────────────────────────────────────────────────────────
 
 def table4(run: Path, problems: list) -> dict:
-    sys.path.insert(0, str(ROOT.parent / "CODE" / "reporting"))
+    sys.path.insert(0, str(ROOT.parent / "MANUSCRIPT" / "scripts"))
     import manuscript_tables as T
     import contextlib
     import io

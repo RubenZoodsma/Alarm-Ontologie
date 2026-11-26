@@ -1,0 +1,44 @@
+id: cat2b_c08_justifiers_both_rules
+title: "Justifiers under both rules"
+rule: "2b"
+purpose: confirm
+premise: [P1, P2, P3, P4, P5, P6, P7, P8]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: "A low SpO2 adds nothing while desaturation and another oximeter are announced."
+  technical: "a2 (same probe) justifies under 2a only; a1 (other monitor) under 2a and 2b. Both outlast a3."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Lage SpO2",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Desaturatie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:10",
+    end: "08:02:00"}
+  - {id: a3,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - SpO2 laag",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {silenced: a3, reason: redundant, rule: "2a", by: [a1, a2]}
+  - {silenced: a3, reason: redundant, rule: "2b", by: [a1]}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:00", until: "08:02:00", evidence: [a1, a2, a3]}

@@ -1,0 +1,43 @@
+id: cat3b_f02_desaturation_flagged
+title: "Disconnection with flagged desaturation"
+rule: "3b"
+purpose: falsify
+premise: [P1]
+pairs_with: "cat3b_c04_disconnect_desaturation"
+status: active
+review: pending
+rationale:
+  clinical: "A desaturation during an SpO2 signal fault is likely false; it is no evidence."
+  technical: "a2 is flagged by 1a (a0), so there is no ReducedPulmonaryFunction."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a0,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Storing in SpO2",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "07:59:50",
+    end: "08:02:30"}
+  - {id: a1,
+    device: "CarescapeR860_00",
+    label: "DATEXOHMEDACOMVENTILATOR - Patient Disconnected",
+    device_name: "CarescapeR860",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:01:00"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Desaturatie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a0}
+  - {forwarded: a1}
+  - {silenced: a2, reason: likely-invalid, rule: "1a", by: [a0]}
+  - {no_interpretation: VentilationFailure}

@@ -1,0 +1,36 @@
+id: cat3b_f07_gap
+title: "Leak ends before low minute volume"
+rule: "3b"
+purpose: falsify
+premise: [P3]
+pairs_with: "cat3b_c01_leak_low_mv"
+status: active
+review: pending
+rationale:
+  clinical: "Both must be present at the same time."
+  technical: "The leak ends 10 s before the low minute volume; no tolerance window."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "ServoU_00",
+    label: "SERVOU - Te veel lekkage",
+    device_name: "ServoU",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:00:20"}
+  - {id: a2,
+    device: "ServoU_00",
+    label: "SERVOU - Exp. minuutvol. laag",
+    device_name: "ServoU",
+    priority: "Hoog",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:30", until: "08:01:30", evidence: [a2]}
+  - {no_interpretation: VentilationFailure}

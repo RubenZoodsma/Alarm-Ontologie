@@ -54,10 +54,8 @@
 # (the ReducedPulmonaryFunction event, and the therapy with the graph of
 # the alarm compromising it). Used by the episode actions.
 #
-# VALIDATION — engine/regression.py: cat3b_pos, cat3d (order swapped),
-# cat3b_leak, cat3b_circuit, cat3b_disconnect (another ventilator) and
-# cat3b_cpap fire; cat3b_neg, cat3e (fault over before the low minute
-# volume), cat3b_swap and cat3b_datalink do not.
+# VALIDATION — validation/cases/3b/ (premises and confirm/falsify pairs in
+# validation/case_design.xlsx, sheet 3b); run engine/regression.py.
 ####################################################################
 
 PREFIX mda:                 <https://w3id.org/mda/ontology#>

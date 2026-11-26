@@ -1,0 +1,43 @@
+id: cat1b_f03_ecg_leads_off
+title: "Asystole with ECG leads off"
+rule: "1b"
+purpose: falsify
+premise: [P2]
+pairs_with: "cat1b_c01_asystole_silent_line"
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: "Rule 1a flags the asystole; rule 1b does not flag it a second time."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABPm hoog",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "07:55:00",
+    end: "07:55:20"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ECG alle leads los",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "07:59:00",
+    end: "08:03:00"}
+  - {id: ax,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Asystolie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {silenced: ax, reason: likely-invalid, rule: "1a", by: [a2]}
+  - {no_interpretation: CardiacArrest}

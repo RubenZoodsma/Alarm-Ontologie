@@ -1,0 +1,36 @@
+id: cat3a_f06_ventilator_low_rr
+title: "VF with ventilator low rate"
+rule: "3a"
+purpose: falsify
+premise: [P2]
+pairs_with: "cat3a_c03_vf_ventilator_apnoea"
+status: active
+review: pending
+rationale:
+  clinical: "A low ventilator rate is no respiratory arrest."
+  technical: "Ventilator apnoea replaced by 'Ademfrequentie: Laag'."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Ventriculaire fibrillatie",
+    device_name: "DraegerMonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:01:00"}
+  - {id: a2,
+    device: "ServoI_00",
+    label: "SERVOI - Ademfrequentie: Laag",
+    device_name: "ServoI",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: CardiacArrest, from: "08:00:00", until: "08:01:00", evidence: [a1]}
+  - {no_interpretation: CardioRespiratoryArrest}

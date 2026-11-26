@@ -1,0 +1,36 @@
+id: cat3b_c05_leak_hypercapnia
+title: "Leak with raised etCO2"
+rule: "3b"
+purpose: confirm
+premise: [P1, P2, P3]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: "Hypercapnia during a leak shows the ventilation is failing."
+  technical: "Raised-CO2 branch (PaCO2 Increased) from the monitor."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "LeoniPlus_00",
+    label: "HULBUS - Leak too high",
+    device_name: "LeoniPlus",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:01:00"}
+  - {id: a2,
+    device: "DraegerMonitor_00",
+    label: "Monitor - etCO2 Hoog",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:30", until: "08:01:30", evidence: [a2]}
+  - {interpretation: VentilationFailure, from: "08:00:30", until: "08:01:00", evidence: [a1, a2]}

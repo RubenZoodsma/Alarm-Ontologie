@@ -54,10 +54,8 @@
 # (one row per constituent event; the log resolves a constituent event to
 # its alarms). Used by the episode actions.
 #
-# VALIDATION — engine/regression.py: cat3a_pos, cat3c (arrival order
-# swapped), cat3a_vf (ventricular fibrillation + apnoea) and cat3a_withdraw
-# (from the CAT1b withdrawal on) fire;
-# cat3a_neg (20 s gap) and cat3a_flagged (CAT1a-flagged asystole) do not.
+# VALIDATION — validation/cases/3a/ (premises and confirm/falsify pairs in
+# validation/case_design.xlsx, sheet 3a); run engine/regression.py.
 ####################################################################
 
 PREFIX mda:           <https://w3id.org/mda/ontology#>

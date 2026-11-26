@@ -1,0 +1,36 @@
+id: cat2b_f17_justifier_ends_first
+title: "Silence lifted when justifier ends"
+rule: "2b"
+purpose: falsify
+premise: [P8]
+pairs_with: "cat2b_c02_hr_two_monitors"
+status: active
+review: pending
+rationale:
+  clinical: "Once the other monitor stops reporting bradycardia, this one must be heard again."
+  technical: "a1 ends while a2 is active: the silence (2a and 2b) is lifted at a1's end."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Lage HR",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "08:00:00",
+    end: "08:01:00"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Lage hartfreq.",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:02:00"}
+
+expect:
+  - {forwarded: a1}
+  - {silenced: a2, reason: redundant, rule: "2a", by: [a1]}
+  - {silenced: a2, reason: redundant, rule: "2b", by: [a1]}
+  - {lifted: a2, rule: "2", by: [a1], at: "08:01:00"}

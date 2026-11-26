@@ -1,0 +1,35 @@
+id: cat1a_f03_reporter_later
+title: "Fault starts after SpO2 low"
+rule: "1a"
+purpose: falsify
+premise: [P8]
+pairs_with: "cat1a_c01_spo2_quality"
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: "X arrives first; the rule is evaluated at X's arrival only, so a later Y does not flag it."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - SpO2 laag",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "0s",
+    end: "1m"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Storing in SpO2",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "30s",
+    end: "2m"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "0s", until: "1m", evidence: [a1]}

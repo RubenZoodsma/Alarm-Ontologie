@@ -1,0 +1,43 @@
+id: cat1b_f16_ecg_artefact
+title: "Asystole with an ECG artefact"
+rule: "1b"
+purpose: falsify
+premise: [P2]
+pairs_with: "cat1b_c02_asystole_infinity"
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: "Rule 1a flags the asystole (quality fault on the ECG lead); rule 1b does not flag it again."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Hoge ARTmean",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "07:55:00",
+    end: "07:55:20"}
+  - {id: a2,
+    device: "DraegerMonitor_00",
+    label: "Monitor - ECG artefact",
+    device_name: "DraegerMonitor",
+    priority: "Laag",
+    start: "07:59:00",
+    end: "08:03:00"}
+  - {id: ax,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Asystolie",
+    device_name: "DraegerMonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {silenced: ax, reason: likely-invalid, rule: "1a", by: [a2]}
+  - {no_interpretation: CardiacArrest}

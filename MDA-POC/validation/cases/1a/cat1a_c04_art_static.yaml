@@ -1,0 +1,34 @@
+id: cat1a_c04_art_static
+title: "Static arterial curve flags ARTmean high"
+rule: "1a"
+purpose: confirm
+premise: [P1, P2, P3, P4, P5, P8]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: "A flat arterial curve means the pressure value is not measured."
+  technical: "StaticPressure refines Impaired."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - ART statische druk",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "0s",
+    end: "2m"}
+  - {id: a2,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Hoge ARTmean",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "30s",
+    end: "1m"}
+
+expect:
+  - {forwarded: a1}
+  - {silenced: a2, reason: likely-invalid, rule: "1a", by: [a1]}

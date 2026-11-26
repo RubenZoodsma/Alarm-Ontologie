@@ -1,0 +1,78 @@
+# CASE_Template.yaml — template for a verification case.
+#
+# Copy this file to <rule>/<id>.yaml (one folder per rule, e.g. 1a/) and
+# replace every value. Files named CASE_* are skipped by the runner; every
+# other *.yaml under this folder is a case. Format and assertions: engine/cases.py (docstring). Run all cases:
+#   cd MDA-POC/engine && python3 regression.py
+# The cases before 2026-11-26 are retired to old/MDA-POC/validation/cases/.
+#
+# Before writing a case, answer in the rationale:
+#   - Which premise of which rule does this case exercise? Record its id in
+#     `premise`; the premises are in validation/case_design.xlsx (one sheet per rule).
+#   - confirm: which way of satisfying the rule's premises does it show?
+#   - falsify: which confirm case is its pair, and which ONE premise does it
+#     break? Everything else should equal the pair.
+#   - Why is this case not already covered by an existing one?
+#
+# Rules of thumb:
+#   - Labels, device_name and priority must name an alarm type (blueprint)
+#     of the knowledge base, verbatim; the runner stops otherwise.
+#   - Always quote times. Offsets ("0s", "1m30s") from start_at, or clock
+#     times ("08:00:30"); not both in one case.
+#   - strict: true (the default) means every silence, lift and clinical
+#     event the system draws must be listed, including single-alarm events
+#     such as ReducedPulmonaryFunction. Alarms not mentioned must then be
+#     forwarded.
+#   - Set review: done only once the team has checked the case and filled
+#     in the clinical rationale.
+
+id: CASE_Template                # = the file name without .yaml
+title: "<title of the case>"
+rule: "1a"                       # 1a 1b 2a 2b 3a 3b | events | engine | scenario
+purpose: confirm                 # confirm | falsify
+premise: [P5a]                   # premise id(s) from the rule's sheet in validation/case_design.xlsx (falsify: the ONE premise it breaks)
+pairs_with: ""                   # falsify: id of the confirm case it differs from in that one premise; confirm: ""
+status: draft                   # draft | active
+review: pending                  # pending | done
+rationale:
+  clinical: >
+    Why a clinician would (not) draw this conclusion from these alarms.
+  technical: >
+    Technical rationale.
+author: "Initials, YYYY-MM-DD"
+start_at: "08:00:00"             # clock time of offset 0
+strict: true                     # strict mode; every outcome must be listed explicitly
+
+stream:                          # the alarms as the devices report them
+  - {id: a1, 
+    device: "DraegerMonitor_00", 
+    label: "Monitor - Lage SpO2", 
+    device_name: "DraegerMonitor", 
+    priority: "Medium", 
+    start: "0s", 
+    end: "2m"}
+  - {id: a2, 
+    device: "PhilipsMonitor_00", 
+    label: "PHILIPSMONITOR - SpO2 laag", 
+    device_name: "Philipsmonitor", 
+    priority: "Medium", 
+    start: "30s", 
+    end: "1m"}
+
+expect:
+  # {forwarded: a1}                                    no silence was ever set on a1
+  # {silenced: a2, reason: redundant, rule: 2b, by: [a1]}
+  #     reason: likely-invalid (1a, 1b) | redundant (2a, 2b); by: exactly these alarms
+  # {lifted: a2, rule: 2, by: [a1], at: "1m"}
+  #     rule: 1b (flag withdrawn) | 2 (justifying alarm ended)
+  # {interpretation: ReducedPulmonaryFunction, from: "0s", until: "2m", evidence: [a1, a2]}
+  # {no_interpretation: CardiacArrest}                 no clinical event of this kind
+  # {not_evidence: a2}                                 a2 supports no clinical event
+  # Keys after the first are optional filters: leave one out to accept any value.
+  '
+  Example outcomes:
+  - {forwarded: a1}
+  - {silenced: a2, reason: redundant, rule: 2b, by: [a1]}
+  - {silenced: a2, reason: redundant, rule: 2a, by: [a1]}
+  - {interpretation: ReducedPulmonaryFunction, from: "0s", until: "2m", evidence: [a1, a2]}
+  '

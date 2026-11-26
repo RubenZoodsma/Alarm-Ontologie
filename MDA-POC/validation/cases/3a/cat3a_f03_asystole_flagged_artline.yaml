@@ -1,0 +1,44 @@
+id: cat3a_f03_asystole_flagged_artline
+title: "Asystole flagged by a silent line"
+rule: "3a"
+purpose: falsify
+premise: [P1]
+pairs_with: "cat3a_c01_asystole_apnoea"
+status: active
+review: pending
+rationale:
+  clinical: "A working arterial line that stays silent contradicts the asystole."
+  technical: "ax is flagged by 1b (a0, presence 4 min 40 s); nothing withdraws it."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a0,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABPm hoog",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "07:55:00",
+    end: "07:55:20"}
+  - {id: ax,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Asystolie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:01:00"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Apneu",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a0}
+  - {silenced: ax, reason: likely-invalid, rule: "1b", by: [a0]}
+  - {forwarded: a2}
+  - {interpretation: RespiratoryArrest, from: "08:00:30", until: "08:01:30", evidence: [a2]}
+  - {no_interpretation: CardioRespiratoryArrest}

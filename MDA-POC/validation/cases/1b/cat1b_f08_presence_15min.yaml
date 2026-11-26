@@ -1,0 +1,35 @@
+id: cat1b_f08_presence_15min
+title: "Presence exactly 15 minutes before"
+rule: "1b"
+purpose: falsify
+premise: [P6]
+pairs_with: "cat1b_c12_presence_14min59s"
+status: active
+review: pending
+rationale:
+  clinical: ""
+  technical: "Boundary: presence ended exactly 15:00 before X; the line is no longer known to be present (P6: less than 15 minutes)."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABPm hoog",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "07:44:40",
+    end: "07:45:00"}
+  - {id: ax,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Asystolie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: ax}
+  - {interpretation: CardiacArrest, from: "08:00:00", until: "08:02:00", evidence: [ax]}

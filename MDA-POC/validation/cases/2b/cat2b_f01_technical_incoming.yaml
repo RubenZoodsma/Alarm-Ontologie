@@ -1,0 +1,34 @@
+id: cat2b_f01_technical_incoming
+title: "Technical incoming alarm"
+rule: "2b"
+purpose: falsify
+premise: [P1]
+pairs_with: "cat2b_c07_paw_two_devices"
+status: active
+review: pending
+rationale:
+  clinical: "A ventilator limit alarm reports on the device, not as a redundant reading."
+  technical: "Incoming 'Ppeak too high' is Technical. Minimal pair, so two ventilators."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "CarescapeR860_00",
+    label: "DATEXOHMEDACOMVENTILATOR - Ppeak High",
+    device_name: "CarescapeR860",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "LeoniPlus_00",
+    label: "HULBUS - Ppeak too high",
+    device_name: "LeoniPlus",
+    priority: "Hoog",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}

@@ -1,0 +1,43 @@
+id: cat2a_f05_active_flagged_spo2
+title: "Flagged desaturation justifies nothing"
+rule: "2a"
+purpose: falsify
+premise: [P2]
+pairs_with: "cat2a_c08_spo2_second_monitor"
+status: active
+review: pending
+rationale:
+  clinical: "The second oximeter may be the one valid reading; hiding it behind a likely false one is unsafe."
+  technical: "a1 is flagged by 1a (a0), so it justifies no 2a or 2b silence of a2."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a0,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Storing in SpO2",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "07:59:50",
+    end: "08:02:30"}
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Desaturatie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Lage SpO2",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a0}
+  - {silenced: a1, reason: likely-invalid, rule: "1a", by: [a0]}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:30", until: "08:01:30", evidence: [a2]}

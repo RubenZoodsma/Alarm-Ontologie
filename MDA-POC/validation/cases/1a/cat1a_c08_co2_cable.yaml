@@ -1,0 +1,34 @@
+id: cat1a_c08_co2_cable
+title: "CO2 cable fault flags etCO2 high"
+rule: "1a"
+purpose: confirm
+premise: [P1, P2, P3, P4, P6, P7, P8]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: "A cable fault means the capnometer delivers no valid value."
+  technical: "MCableFailure refines Malfunction."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - CO2 MCable storing",
+    device_name: "DraegerMonitor",
+    priority: "Laag",
+    start: "0s",
+    end: "2m"}
+  - {id: a2,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Hoog etCO2",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "30s",
+    end: "1m"}
+
+expect:
+  - {forwarded: a1}
+  - {silenced: a2, reason: likely-invalid, rule: "1a", by: [a1]}

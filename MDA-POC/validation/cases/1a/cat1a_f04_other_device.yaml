@@ -1,0 +1,35 @@
+id: cat1a_f04_other_device
+title: "Fault on another monitor"
+rule: "1a"
+purpose: falsify
+premise: [P4]
+pairs_with: "cat1a_c01_spo2_quality"
+status: active
+review: pending
+rationale:
+  clinical: "A fault on one monitor says nothing about another monitor's probe."
+  technical: "Same labels as c01, X on a second monitor."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Storing in SpO2",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "0s",
+    end: "2m"}
+  - {id: a2,
+    device: "PhilipsMonitor_01",
+    label: "PHILIPSMONITOR - SpO2 laag",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "30s",
+    end: "1m"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "30s", until: "1m", evidence: [a2]}

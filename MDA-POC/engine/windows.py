@@ -13,7 +13,7 @@ sensor, a metric) carries one state per alarm reporting it.
 Insert: a TriG file via `import`. Drop: `DROP SILENT GRAPH <g>`, which
 removes the graph itself: emptying it (DELETE WHERE) would leave its name in
 the store, and the names of every expired graph would pile up over a stay
-and slow every GRAPH ?g pattern (validation/accumulation_probe.py).
+and slow every GRAPH ?g pattern (accumulation_probe.py, retired to old/).
 """
 
 from __future__ import annotations

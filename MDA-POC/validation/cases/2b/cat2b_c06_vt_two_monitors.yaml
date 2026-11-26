@@ -1,0 +1,35 @@
+id: cat2b_c06_vt_two_monitors
+title: "VT on two monitors"
+rule: "2b"
+purpose: confirm
+premise: [P1, P2, P3, P4, P5, P6, P7, P8]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: "A second monitor's VT adds nothing to the first one's."
+  technical: "Same metric (CardiacRhythm), same rhythm, another monitor; 2a also silences."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - ARR: Ventriculaire tachycardie",
+    device_name: "DraegerMonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Vtach",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {silenced: a2, reason: redundant, rule: "2a", by: [a1]}
+  - {silenced: a2, reason: redundant, rule: "2b", by: [a1]}

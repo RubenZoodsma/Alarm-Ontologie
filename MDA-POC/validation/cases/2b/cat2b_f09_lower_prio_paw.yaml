@@ -1,0 +1,34 @@
+id: cat2b_f09_lower_prio_paw
+title: "Lower-priority monitor PAW active"
+rule: "2b"
+purpose: falsify
+premise: [P4]
+pairs_with: "cat2b_c07_paw_two_devices"
+status: active
+review: pending
+rationale:
+  clinical: "A Medium alarm cannot make a Hoog alarm redundant; its urgency would be lost."
+  technical: "c07 with roles swapped: same state (Increased), active Medium below incoming Hoog."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - PAW HOOG",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "CarescapeR860_00",
+    label: "DATEXOHMEDACOMVENTILATOR - Ppeak High",
+    device_name: "CarescapeR860",
+    priority: "Hoog",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}

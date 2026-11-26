@@ -1,8 +1,0 @@
-Run: /Users/rzoodsm2/GIT-repositories/Alarm-Ontologie/MDA-POC/_scratch/run.json  (complete: True, patients: 3358)
-Filter: 5-s delay on ['laag', 'medium']; units: PICU and NICU
-
-A filter would also have suppressed 29.2% and 30.7% of the silenced alarms. Among the silenced alarms that a filter would have passed, 18.2% and 14.8% were of high priority. Conversely, a filter would have suppressed 739570 and 1943844 alarms that no rule concerned.
-
-Removed vs silenced (not in V9):
-  PICU: silenced 39303, of which removed 38053 (30.1% of removed also filtered; 18.5% of removed-and-passed high priority). Filter suppresses 751064 of 2303007 replayed alarms (32.6%).
-  NICU: silenced 153337, of which removed 149400 (31.5% of removed also filtered; 14.3% of removed-and-passed high priority). Filter suppresses 1990982 of 9419037 replayed alarms (21.1%).

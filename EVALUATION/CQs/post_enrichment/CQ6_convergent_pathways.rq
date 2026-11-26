@@ -112,4 +112,4 @@ SELECT ?organ (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
 }
 GROUP BY ?organ
 HAVING (COUNT(DISTINCT ?rep) > 1)
-ORDER BY DESC(?distinctPathways)
+ORDER BY DESC(?distinctPathways) DESC(?matchCount) ?organ

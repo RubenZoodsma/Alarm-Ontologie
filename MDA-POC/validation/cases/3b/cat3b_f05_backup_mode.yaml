@@ -1,0 +1,36 @@
+id: cat3b_f05_backup_mode
+title: "Backup mode with desaturation"
+rule: "3b"
+purpose: falsify
+premise: [P2]
+pairs_with: "cat3b_c04_disconnect_desaturation"
+status: active
+review: pending
+rationale:
+  clinical: "Backup ventilation running is the ventilator responding, not a fault."
+  technical: "Device state Warning does not refine Malfunction."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "CarescapeR860_00",
+    label: "DATEXOHMEDACOMVENTILATOR - Backup Mode Active",
+    device_name: "CarescapeR860",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:01:00"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Desaturatie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}
+  - {interpretation: ReducedPulmonaryFunction, from: "08:00:30", until: "08:01:30", evidence: [a2]}
+  - {no_interpretation: VentilationFailure}

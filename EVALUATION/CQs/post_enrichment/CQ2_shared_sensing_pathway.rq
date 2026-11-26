@@ -107,4 +107,4 @@ SELECT (GROUP_CONCAT(DISTINCT ?label; separator=" | ") AS ?alarms)
 }
 GROUP BY ?rep
 HAVING (COUNT(DISTINCT ?a) > 1)
-ORDER BY DESC(?matchCount)
+ORDER BY DESC(?matchCount) ?rep

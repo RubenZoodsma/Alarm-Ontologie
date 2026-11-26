@@ -1,0 +1,44 @@
+id: cat1b_c11_withdraw_pulseless
+title: "Flag withdrawn by a pulseless arterial curve"
+rule: "1b"
+purpose: confirm
+premise: [P1, P2, P3, P4, P5, P6, P7, P8, P9]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: "A curve that stops pulsating is what a real arrest produces."
+  technical: "'ABP pulseert niet' (Pulseless) does not reassure."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABPm hoog",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "07:55:00",
+    end: "07:55:20"}
+  - {id: ax,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Asystolie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a3,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ABP pulseert niet",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:08",
+    end: "08:02:00"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a3}
+  - {silenced: ax, reason: likely-invalid, rule: "1b", by: [a1]}
+  - {lifted: ax, rule: "1b", by: [a3], at: "08:00:08"}
+  - {interpretation: CardiacArrest, from: "08:00:08", until: "08:02:00", evidence: [ax]}

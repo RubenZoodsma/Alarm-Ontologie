@@ -48,7 +48,7 @@ def _term(t) -> str:
 # history) and never reclaims it, so query time grows with every quad ever
 # inserted, not with what the store holds: over a long stay (tens of
 # thousands of alarms, each inserting and later dropping its graphs) a
-# query became ~6x slower (validation/accumulation_probe.py). Every
+# query became ~6x slower (accumulation_probe.py, retired to old/). Every
 # REBUILD_EVERY syncs the live quads are copied into a fresh store; the
 # rules see exactly the same quads before and after.
 # MDA_REBUILD_EVERY overrides it (tests force a rebuild every few syncs).

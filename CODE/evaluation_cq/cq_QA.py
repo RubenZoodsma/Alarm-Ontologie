@@ -72,7 +72,7 @@ import sparql_engine
 REASONING_DIRECTIVE = re.compile(r"^#\s*reasoning:\s*required\s*$", re.MULTILINE)
 QUESTION_DIRECTIVE = re.compile(r"^#\s*question:\s*(.+)$", re.MULTILINE)
 
-# This file lives at CODE/evaluation_cq/cq_QA.py; walk up to Restructured/.
+# This file lives at CODE/evaluation_cq/cq_QA.py; walk up to the repository root.
 ROOT = Path(__file__).resolve().parents[2]
 FRAMEWORK_DIR = ROOT / "FRAMEWORK"
 CQS_DIR = ROOT / "EVALUATION" / "CQs"
@@ -185,6 +185,28 @@ def _label(term, g: Graph) -> str:
     return str(term)
 
 
+# Separators the CQs pass to GROUP_CONCAT (" | " for alarm labels,
+# manufacturers and measurements; " ; " for CQ2's pathway edges).
+CONCAT_SEPARATORS = (" | ", " ; ")
+
+
+def _sort_concat(value: str) -> str:
+    """
+    Sort the items of a GROUP_CONCAT result so a run is reproducible.
+
+    Row order is fixed by each query's ORDER BY, but SPARQL 1.1 leaves the
+    order of the values inside GROUP_CONCAT undefined and has no ORDER BY
+    within an aggregate; Oxigraph concatenates in store iteration order,
+    which differs between runs. So the items are sorted here, after
+    execution. Relies on no label containing a separator (none in the
+    catalogue does).
+    """
+    for sep in CONCAT_SEPARATORS:
+        if sep in value:
+            return sep.join(sorted(value.split(sep)))
+    return value
+
+
 def discover_queries(cqs_dir: Path) -> list:
     """Every .rq file one level under cqs_dir (EVALUATION/CQs/<stage>/*.rq),
     ordered by STAGE_ORDER then filename so the report reads pre- before
@@ -224,7 +246,7 @@ def run_query(query_path: Path, base: Graph, reasoned: Graph) -> dict:
     # A reasoned query also sees the asserted graph, as a named graph.
     target = reasoned_dataset(base, reasoned) if used_reasoning else base
     names, result_rows = sparql_engine.select(target, text)
-    rows = [[_label(t, graph) for t in row] for row in result_rows]
+    rows = [[_sort_concat(_label(t, graph)) for t in row] for row in result_rows]
     print(f"[cq_QA] {query_path.parent.name}/{query_path.name}: {len(rows)} row(s) "
           f"({'reasoned' if used_reasoning else 'base'})")
 

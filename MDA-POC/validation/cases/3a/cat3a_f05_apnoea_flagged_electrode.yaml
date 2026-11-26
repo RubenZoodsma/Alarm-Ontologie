@@ -1,0 +1,44 @@
+id: cat3a_f05_apnoea_flagged_electrode
+title: "Apnoea flagged by resp electrode"
+rule: "3a"
+purpose: falsify
+premise: [P2]
+pairs_with: "cat3a_c01_asystole_apnoea"
+status: active
+review: pending
+rationale:
+  clinical: "An apnoea with the respiration electrode off is likely false."
+  technical: "a2 is flagged by 1a (a0). The asystole is not: an electrode fault covers only its own kind."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Asystolie",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:01:00"}
+  - {id: a0,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Resp elektr.los",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:15",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Apneu",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a0}
+  - {silenced: a2, reason: likely-invalid, rule: "1a", by: [a0]}
+  - {interpretation: CardiacArrest, from: "08:00:00", until: "08:01:00", evidence: [a1]}
+  - {no_interpretation: CardioRespiratoryArrest}

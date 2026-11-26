@@ -1,0 +1,34 @@
+id: cat2a_f02_technical_active
+title: "Technical active alarm"
+rule: "2a"
+purpose: falsify
+premise: [P1]
+pairs_with: "cat2a_c07_paw_covers_peep"
+status: active
+review: pending
+rationale:
+  clinical: "A technical alarm cannot make a physiological one redundant."
+  technical: "Active 'Ppeak too high' is Technical; otherwise same property, direction, priority."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "LeoniPlus_00",
+    label: "HULBUS - Ppeak too high",
+    device_name: "LeoniPlus",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "LeoniPlus_00",
+    label: "HULBUS - CPAP high",
+    device_name: "LeoniPlus",
+    priority: "Hoog",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}

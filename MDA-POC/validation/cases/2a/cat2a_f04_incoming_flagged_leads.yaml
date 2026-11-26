@@ -1,0 +1,42 @@
+id: cat2a_f04_incoming_flagged_leads
+title: "Incoming flagged by leads off"
+rule: "2a"
+purpose: falsify
+premise: [P2]
+pairs_with: "cat2a_c02_hr_severe_covers_mild"
+status: active
+review: pending
+rationale:
+  clinical: "A low heart rate with all leads off is likely false; one verdict suffices."
+  technical: "a2 is flagged by 1a (sensor route, a0) and is then not also silenced by 2a."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Extr. lage hartfreq.",
+    device_name: "Philipsmonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+  - {id: a0,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - ECG alle leads los",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:15",
+    end: "08:02:00"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Lage hartfreq.",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a0}
+  - {silenced: a2, reason: likely-invalid, rule: "1a", by: [a0]}

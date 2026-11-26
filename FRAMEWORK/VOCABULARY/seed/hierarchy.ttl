@@ -114,9 +114,13 @@ metricRhythm:VentricularTachycardia   mda:refinesConcept  metricRhythm:Tachycard
 
 # ── Operation state ──────────────────────────────────────────────────
 # Unavailable: temporarily not measuring, without being broken (warming
-# up, purging, an interrupted measurement). Disabled (switched off by the
-# user) is deliberately not placed here yet: that is a choice, not a
-# transient condition.
+# up, purging, an interrupted measurement, a blocked sampling line).
+# Disabled (switched off by the user) is deliberately not placed here yet:
+# that is a choice, not a transient condition. Warning is deliberately not
+# placed here either (decided with the CAT1a review, 2026-11-26): it does
+# not mean the sensor stopped delivering. Since 2026-11-26 Unavailable is
+# in the CAT1a fault set: a sensor that is not measuring is not acquiring
+# its signal, whatever the reason.
 #
 # Synonyms merged in the annotation instead of nested (2026-11-24):
 # Failure -> Malfunction, Unconnected -> Disconnected.
@@ -133,6 +137,14 @@ opstate:Unrecognized     mda:refinesConcept  opstate:Malfunction .
 opstate:Initializing  mda:refinesConcept  opstate:Unavailable .
 opstate:Cleaning      mda:refinesConcept  opstate:Unavailable .
 opstate:Interruption  mda:refinesConcept  opstate:Unavailable .
+opstate:Occlusion     mda:refinesConcept  opstate:Unavailable .
+#
+# ProlongedDisconnection ("SERVOU - Patiënt los > 1 min") is a
+# disconnection that has lasted: it refines Disconnected, so whatever holds
+# for a disconnection holds for it (2026-11-26, CAT3b review: until then a
+# disconnection over one minute did not compromise the ventilation therapy
+# while a shorter one did).
+opstate:ProlongedDisconnection  mda:refinesConcept  opstate:Disconnected .
 
 
 ####################################################################

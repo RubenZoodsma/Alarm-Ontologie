@@ -1,0 +1,34 @@
+id: cat2b_f06_ended_before
+title: "Justifier ended before arrival"
+rule: "2b"
+purpose: falsify
+premise: [P3]
+pairs_with: "cat2b_c02_hr_two_monitors"
+status: active
+review: pending
+rationale:
+  clinical: "A bradycardia that one monitor no longer reports does not cover the other's."
+  technical: "a1 ends 10 s before a2 arrives."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Lage HR",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "08:00:00",
+    end: "08:00:20"}
+  - {id: a2,
+    device: "PhilipsMonitor_00",
+    label: "PHILIPSMONITOR - Lage hartfreq.",
+    device_name: "Philipsmonitor",
+    priority: "Medium",
+    start: "08:00:30",
+    end: "08:01:30"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: a2}

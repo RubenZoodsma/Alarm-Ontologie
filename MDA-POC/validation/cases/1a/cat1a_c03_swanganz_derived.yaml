@@ -1,0 +1,34 @@
+id: cat1a_c03_swanganz_derived
+title: "Swan-Ganz fault flags EDVI high"
+rule: "1a"
+purpose: confirm
+premise: [P1, P2, P3, P4, P6, P7, P8]
+pairs_with: ""
+status: active
+review: pending
+rationale:
+  clinical: "A faulty catheter module invalidates every value derived from it."
+  technical: "Malfunction on the catheter; EDVI is reached through intermediate metrics."
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "Hemosphere_00",
+    label: "EDWARDS - Swan Ganz Module Fault",
+    device_name: "Edwards",
+    priority: "Hoog",
+    start: "0s",
+    end: "2m"}
+  - {id: a2,
+    device: "Hemosphere_00",
+    label: "EDWARDS - EDVI High Alarm Limit",
+    device_name: "Edwards",
+    priority: "Hoog",
+    start: "30s",
+    end: "1m"}
+
+expect:
+  - {forwarded: a1}
+  - {silenced: a2, reason: likely-invalid, rule: "1a", by: [a1]}

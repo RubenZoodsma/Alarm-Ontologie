@@ -271,7 +271,7 @@ def label_of(node, g: Graph) -> str:
 # top-down by default, labels without the "Some " prefix (those nodes get a
 # dashed border instead), pre-coordinated names split over two lines and
 # wrapped, and nodes/edges emitted in a fixed order (group, then label) so
-# every archetype's layout is reproducible. Set by preview_annotations.py.
+# every archetype's layout is reproducible. Set by preview_annotations.py (retired to old/CODE/evaluation_qa/).
 COMPACT = False
 COMPACT_WRAP = 22
 

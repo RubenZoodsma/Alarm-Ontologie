@@ -1,0 +1,35 @@
+id: cat1b_f05_pa_line
+title: "Asystole after a pulmonary artery pressure alarm"
+rule: "1b"
+purpose: falsify
+premise: [P4]
+pairs_with: "cat1b_c02_asystole_infinity"
+status: active
+review: pending
+rationale:
+  clinical: "PA pressure depends on the right ventricle, not on systemic output."
+  technical: ""
+author: "RZ, 2026-11-26"
+start_at: "08:00:00"
+strict: true
+
+stream:
+  - {id: a1,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Lage PA M",
+    device_name: "DraegerMonitor",
+    priority: "Medium",
+    start: "07:55:00",
+    end: "07:55:20"}
+  - {id: ax,
+    device: "DraegerMonitor_00",
+    label: "Monitor - Asystolie",
+    device_name: "DraegerMonitor",
+    priority: "Hoog",
+    start: "08:00:00",
+    end: "08:02:00"}
+
+expect:
+  - {forwarded: a1}
+  - {forwarded: ax}
+  - {interpretation: CardiacArrest, from: "08:00:00", until: "08:02:00", evidence: [ax]}

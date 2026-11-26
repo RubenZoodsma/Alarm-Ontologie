@@ -19,17 +19,17 @@ from pathlib import Path
 import event_log as EL
 from oxigraph_session import OxigraphSession
 from rules import PREFIX_COMMANDS, RULES
-from paths import DATA_DIR
+from paths import CLINICAL_EVENT_VOCAB, INFERENCE, MDAPOC, ONTOLOGY, PRIORITY_RANK, VOCAB
 
 FRAMEWORK_FILES = [
-    DATA_DIR / "ontology.ttl",
-    DATA_DIR / "vocab_generated.ttl",
-    DATA_DIR / "clinicalEvent_vocab.ttl",
-    DATA_DIR / "inference.ttl",
-    DATA_DIR / "priority_rank.ttl",
+    ONTOLOGY,
+    VOCAB,
+    CLINICAL_EVENT_VOCAB,
+    INFERENCE,
+    PRIORITY_RANK,
     # mdapoc: — the POC's own terms (silencing, false-positive flags),
     # outside the mda: ontology.
-    DATA_DIR / "mdapoc.ttl",
+    MDAPOC,
 ]
 
 # Top of every script: the rule files' prefixes, declared once (rules.py).
