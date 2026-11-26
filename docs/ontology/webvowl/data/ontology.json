@@ -74,7 +74,7 @@
     "id" : "16",
     "type" : "owl:Class"
   }, {
-    "id" : "17",
+    "id" : "18",
     "type" : "owl:Class"
   }, {
     "id" : "1",
@@ -98,7 +98,7 @@
     "id" : "48",
     "type" : "owl:Class"
   }, {
-    "id" : "19",
+    "id" : "20",
     "type" : "owl:Class"
   }, {
     "id" : "54",
@@ -116,7 +116,7 @@
     "id" : "45",
     "type" : "owl:Class"
   }, {
-    "id" : "38",
+    "id" : "41",
     "type" : "owl:Class"
   }, {
     "id" : "60",
@@ -146,7 +146,7 @@
     "id" : "67",
     "type" : "owl:unionOf"
   }, {
-    "id" : "18",
+    "id" : "19",
     "type" : "owl:Class"
   }, {
     "id" : "70",
@@ -167,7 +167,7 @@
     "id" : "27",
     "type" : "owl:Class"
   }, {
-    "id" : "20",
+    "id" : "21",
     "type" : "owl:Class"
   } ],
   "classAttribute" : [ {
@@ -253,12 +253,12 @@
       "en" : "Component",
       "nl" : "Onderdeel"
     },
-    "subClasses" : [ "18", "19", "20" ],
+    "subClasses" : [ "19", "20", "21" ],
     "comment" : {
       "en" : "A physical or functional part of a medical device (e.g. a connection port, power unit, or heating element). mda:Sensor is the specialisation that additionally produces a measurable signal — every sensor is a component, but not every component senses.",
       "nl" : "Een fysiek of functioneel onderdeel van een medisch apparaat (bijv. een aansluitpoort, voedingseenheid of verwarmingselement). mda:Sensor is de specialisatie die daarnaast een meetbaar signaal produceert — elke sensor is een onderdeel, maar niet elk onderdeel meet."
     },
-    "id" : "17"
+    "id" : "18"
   }, {
     "iri" : "https://w3id.org/mda/ontology#Metric",
     "baseIri" : "https://w3id.org/mda/ontology",
@@ -447,12 +447,12 @@
       "en" : "The subclass of mda:Component whose own disconnection means the device itself is unavailable (e.g. the data-link port, the power inlet) — as opposed to a peripheral component whose disconnection is only a subsystem-level warning (e.g. a mattress heater). This class exists so the propagation rule using it can be precise: unconditionally true for CriticalComponent, never assumed for mda:Component as a whole — see mda:hasOperationState's comment below on why mda:hasComponent was deliberately dropped from its propertyChainAxiom. The rule itself, and which concrete vocabulary-level component types (e.g. component:ConnectionUnit, component:PowerUnit) are tagged as members of this class, both live in 2_READOUT/outcome/inference.ttl's Component operational-state propagation section — the rule's hasValue target (a specific operation-state concept) is catalogue vocabulary, so it cannot be asserted here, but this class it's written over is a plain structural distinction with no vocabulary dependency, so it belongs in this TBox, not duplicated per component type down there.",
       "nl" : "De subklasse van mda:Component waarvan het loskoppelen betekent dat het apparaat zelf niet beschikbaar is (bijv. de datapoort, de stroomaansluiting) — in tegenstelling tot een randonderdeel waarvan het loskoppelen slechts een subsysteemwaarschuwing is (bijv. een matrasverwarming)."
     },
-    "id" : "19",
-    "superClasses" : [ "17" ]
+    "id" : "20",
+    "superClasses" : [ "18" ]
   }, {
     "instances" : 0,
     "union" : [ "13", "34" ],
-    "attributes" : [ "union", "anonymous" ],
+    "attributes" : [ "anonymous", "union" ],
     "id" : "54"
   }, {
     "iri" : "http://www.w3.org/2002/07/owl#Thing",
@@ -551,26 +551,26 @@
       "en" : "A measurable property of a physiological process.",
       "nl" : "Een meetbare eigenschap van een fysiologisch proces."
     },
-    "id" : "38"
+    "id" : "41"
   }, {
     "instances" : 0,
     "union" : [ "48", "34" ],
-    "attributes" : [ "union", "anonymous" ],
+    "attributes" : [ "anonymous", "union" ],
     "id" : "60"
   }, {
     "instances" : 0,
     "union" : [ "45", "1", "4", "34" ],
-    "attributes" : [ "union", "anonymous" ],
+    "attributes" : [ "anonymous", "union" ],
     "id" : "35"
   }, {
     "instances" : 0,
-    "union" : [ "1", "4", "18", "17", "20" ],
-    "attributes" : [ "union", "anonymous" ],
+    "union" : [ "1", "4", "19", "18", "21" ],
+    "attributes" : [ "anonymous", "union" ],
     "id" : "61"
   }, {
     "instances" : 0,
-    "union" : [ "63", "20" ],
-    "attributes" : [ "union", "anonymous" ],
+    "union" : [ "63", "21" ],
+    "attributes" : [ "anonymous", "union" ],
     "id" : "62"
   }, {
     "iri" : "http://www.w3.org/2000/01/rdf-schema#Literal",
@@ -583,7 +583,7 @@
   }, {
     "instances" : 0,
     "union" : [ "13", "34" ],
-    "attributes" : [ "union", "anonymous" ],
+    "attributes" : [ "anonymous", "union" ],
     "id" : "10"
   }, {
     "iri" : "http://www.w3.org/2001/XMLSchema#dateTime",
@@ -602,7 +602,7 @@
   }, {
     "instances" : 0,
     "union" : [ "1", "16" ],
-    "attributes" : [ "union", "anonymous" ],
+    "attributes" : [ "anonymous", "union" ],
     "id" : "67"
   }, {
     "iri" : "https://w3id.org/mda/ontology#FunctionalUnit",
@@ -631,8 +631,8 @@
       "en" : "The module of a device that houses the computation logic for a particular measurement capability (e.g. an ECG module, an SpO2 module) — often called 'the sensor' colloquially, but distinct here from mda:Sensor, which is only the physical probe. A functional unit reads from one or more sensors and, via one or more mda:SignalAnalysis steps, turns their signals into metrics. A specialisation of mda:Component. Declared disjoint with mda:Sensor precisely because of that colloquial conflation — the two are easy to confuse in exactly the way this class's own name tries to prevent, so a node accidentally typed as both is now an inconsistency a reasoner catches rather than a silent modelling error.",
       "nl" : "De module van een apparaat die de berekeningslogica voor een bepaalde meetmogelijkheid huisvest (bijv. een ECG-module, een SpO2-module) — in de volksmond vaak 'de sensor' genoemd, maar hier onderscheiden van mda:Sensor, dat enkel de fysieke probe is. Een functionele eenheid leest van één of meer sensoren en zet, via één of meer mda:SignalAnalysis-stappen, hun signalen om in metrieken. Een specialisatie van mda:Component. Disjunct verklaard met mda:Sensor vanwege precies die volkstaal-verwarring."
     },
-    "id" : "18",
-    "superClasses" : [ "17" ]
+    "id" : "19",
+    "superClasses" : [ "18" ]
   }, {
     "iri" : "https://w3id.org/mda/ontology#Laterality",
     "baseIri" : "https://w3id.org/mda/ontology",
@@ -829,8 +829,8 @@
       "en" : "The physical object placed to generate a signal — e.g. a pulse-oximetry clip, an ECG lead, a temperature probe. It responds to a stimulus and produces a raw signal (mda:producesSignal); it computes nothing. Turning that signal into a metric is mda:FunctionalUnit's job, via mda:SignalAnalysis. A specialisation of mda:Component. Declared disjoint with mda:FunctionalUnit (see its own comment) — asserted there, applies symmetrically.",
       "nl" : "Het fysieke object dat geplaatst wordt om een signaal te genereren — bijv. een pulse-oximetrieklip, een ECG-afleiding, een temperatuurprobe. Het reageert op een stimulus en produceert een ruw signaal (mda:producesSignal); het berekent niets. Dat signaal omzetten in een metriek is de taak van mda:FunctionalUnit, via mda:SignalAnalysis. Een specialisatie van mda:Component."
     },
-    "id" : "20",
-    "superClasses" : [ "17" ]
+    "id" : "21",
+    "superClasses" : [ "18" ]
   } ],
   "property" : [ {
     "id" : "0",
@@ -851,7 +851,7 @@
     "id" : "14",
     "type" : "owl:datatypeProperty"
   }, {
-    "id" : "21",
+    "id" : "17",
     "type" : "owl:objectProperty"
   }, {
     "id" : "22",
@@ -953,16 +953,16 @@
     "id" : "76",
     "type" : "owl:objectProperty"
   }, {
-    "id" : "41",
+    "id" : "38",
     "type" : "owl:objectProperty"
   }, {
     "id" : "77",
     "type" : "owl:objectProperty"
   }, {
-    "id" : "78",
+    "id" : "6",
     "type" : "owl:objectProperty"
   }, {
-    "id" : "6",
+    "id" : "78",
     "type" : "owl:objectProperty"
   }, {
     "id" : "80",
@@ -977,10 +977,10 @@
     "id" : "83",
     "type" : "owl:objectProperty"
   }, {
-    "id" : "84",
+    "id" : "79",
     "type" : "owl:objectProperty"
   }, {
-    "id" : "79",
+    "id" : "84",
     "type" : "owl:objectProperty"
   } ],
   "propertyAttribute" : [ {
@@ -1188,13 +1188,13 @@
       "nl" : "heeft onderdeeloperatiestatus"
     },
     "superproperty" : [ "6" ],
-    "domain" : "17",
+    "domain" : "18",
     "comment" : {
       "en" : "The operational state of a non-sensing component, e.g. Disconnected or Warning. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously.",
       "nl" : "De operationele status van een niet-sensorisch onderdeel, bijv. Disconnected of Warning. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen."
     },
     "attributes" : [ "object" ],
-    "id" : "21"
+    "id" : "17"
   }, {
     "iri" : "https://w3id.org/mda/ontology#hasAnatomicalPosition",
     "baseIri" : "https://w3id.org/mda/ontology",
@@ -1218,7 +1218,7 @@
       "en" : "has anatomical position",
       "nl" : "heeft anatomische positie"
     },
-    "domain" : "20",
+    "domain" : "21",
     "comment" : {
       "en" : "Relates a sensor to its anatomical position on the body. Functional: a physical sensor occupies exactly one position at a time.",
       "nl" : "Koppelt een sensor aan zijn anatomische positie op het lichaam. Functioneel: een fysieke sensor bevindt zich op een gegeven moment op precies één positie."
@@ -1394,34 +1394,29 @@
     "attributes" : [ "object" ],
     "id" : "36"
   }, {
-    "iri" : "https://w3id.org/mda/ontology#isPropertyOf",
+    "iri" : "https://w3id.org/mda/ontology#hasFunctionalUnit",
     "baseIri" : "https://w3id.org/mda/ontology",
-    "range" : "8",
+    "range" : "19",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
         "language" : "undefined",
-        "value" : "isPropertyOf",
-        "type" : "label"
-      } ],
-      "situational" : [ {
-        "identifier" : "situational",
-        "language" : "undefined",
-        "value" : "true",
+        "value" : "hasFunctionalUnit",
         "type" : "label"
       } ]
     },
     "label" : {
-      "IRI-based" : "isPropertyOf",
-      "en" : "is property of",
-      "nl" : "is eigenschap van"
+      "IRI-based" : "hasFunctionalUnit",
+      "en" : "has functional unit",
+      "nl" : "heeft functionele eenheid"
     },
-    "domain" : "38",
+    "superproperty" : [ "38" ],
+    "domain" : "4",
     "comment" : {
-      "en" : "Relates a physiological property to the process it characterises.",
-      "nl" : "Koppelt een fysiologische eigenschap aan het proces dat het karakteriseert."
+      "en" : "Relates a device to a functional unit it houses (e.g. an ECG module, an SpO2 module) — a sub-property of hasComponent, since every functional unit is a component. Inverse-functional: a functional unit belongs to at most one device.",
+      "nl" : "Koppelt een apparaat aan een functionele eenheid die het bevat (bijv. een ECG-module, een SpO2-module) — een subeigenschap van hasComponent, aangezien elke functionele eenheid een onderdeel is. Invers-functioneel: een functionele eenheid behoort tot hoogstens één apparaat."
     },
-    "attributes" : [ "object" ],
+    "attributes" : [ "inverse functional", "object" ],
     "id" : "37"
   }, {
     "iri" : "https://w3id.org/mda/ontology#hasCategory",
@@ -1454,29 +1449,34 @@
     "attributes" : [ "object" ],
     "id" : "39"
   }, {
-    "iri" : "https://w3id.org/mda/ontology#hasFunctionalUnit",
+    "iri" : "https://w3id.org/mda/ontology#isPropertyOf",
     "baseIri" : "https://w3id.org/mda/ontology",
-    "range" : "18",
+    "range" : "8",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
         "language" : "undefined",
-        "value" : "hasFunctionalUnit",
+        "value" : "isPropertyOf",
+        "type" : "label"
+      } ],
+      "situational" : [ {
+        "identifier" : "situational",
+        "language" : "undefined",
+        "value" : "true",
         "type" : "label"
       } ]
     },
     "label" : {
-      "IRI-based" : "hasFunctionalUnit",
-      "en" : "has functional unit",
-      "nl" : "heeft functionele eenheid"
+      "IRI-based" : "isPropertyOf",
+      "en" : "is property of",
+      "nl" : "is eigenschap van"
     },
-    "superproperty" : [ "41" ],
-    "domain" : "4",
+    "domain" : "41",
     "comment" : {
-      "en" : "Relates a device to a functional unit it houses (e.g. an ECG module, an SpO2 module) — a sub-property of hasComponent, since every functional unit is a component. Inverse-functional: a functional unit belongs to at most one device.",
-      "nl" : "Koppelt een apparaat aan een functionele eenheid die het bevat (bijv. een ECG-module, een SpO2-module) — een subeigenschap van hasComponent, aangezien elke functionele eenheid een onderdeel is. Invers-functioneel: een functionele eenheid behoort tot hoogstens één apparaat."
+      "en" : "Relates a physiological property to the process it characterises.",
+      "nl" : "Koppelt een fysiologische eigenschap aan het proces dat het karakteriseert."
     },
-    "attributes" : [ "inverse functional", "object" ],
+    "attributes" : [ "object" ],
     "id" : "40"
   }, {
     "iri" : "https://w3id.org/mda/ontology#hasManufacturer",
@@ -1575,13 +1575,13 @@
     "attributes" : [ "anonymous", "object" ],
     "id" : "46"
   }, {
-    "range" : "17",
-    "domain" : "19",
+    "range" : "18",
+    "domain" : "20",
     "attributes" : [ "anonymous", "object" ],
     "id" : "47"
   }, {
-    "range" : "17",
-    "domain" : "18",
+    "range" : "18",
+    "domain" : "19",
     "attributes" : [ "anonymous", "object" ],
     "id" : "49"
   }, {
@@ -1590,8 +1590,8 @@
     "attributes" : [ "anonymous", "object" ],
     "id" : "50"
   }, {
-    "range" : "17",
-    "domain" : "20",
+    "range" : "18",
+    "domain" : "21",
     "attributes" : [ "anonymous", "object" ],
     "id" : "51"
   }, {
@@ -1625,30 +1625,6 @@
     "attributes" : [ "object" ],
     "id" : "52"
   }, {
-    "iri" : "https://w3id.org/mda/ontology#triggeredBy",
-    "baseIri" : "https://w3id.org/mda/ontology",
-    "range" : "4",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "triggeredBy",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "triggeredBy",
-      "en" : "triggered by",
-      "nl" : "veroorzaakt door"
-    },
-    "domain" : "48",
-    "comment" : {
-      "en" : "Relates an alarm message directly to the device whose technical structure it implicates — the sole path from AlarmMessage into the mda:Device subtree (mda:hasFunctionalUnit, mda:hasSensor, ...). Replaces routing that reach through mda:concernsPatient/mda:isMonitoredBy: that chain asserted every alarm-raising device 'monitors' the patient, which is false for a fundamentally therapeutic device (mda:MechanicalVentilator, mda:Dialysator, mda:ExtracorporealMembraneOxygenator, mda:Incubator/mda:Thermoregulator all administer a therapy — see mda:administers — rather than principally observe). mda:isMonitoredBy itself is UNCHANGED and still used, but only for its own actual justification: 4_OPERATIONAL/op_knowledge.py's per-instant double-booking check, asserted fresh at grounding time, never derived from or dependent on this blueprint-level structure. Functional, not inverse-functional: one message has exactly one triggering device, but one device triggers many messages over its lifetime — unlike mda:hasMessage's strict bijection.",
-      "nl" : "Koppelt een alarmbericht rechtstreeks aan het apparaat waarvan het de technische structuur impliceert — de enige weg van AlarmMessage naar de mda:Device-deelboom. Vervangt routering via mda:concernsPatient/mda:isMonitoredBy: die keten beweerde dat elk alarmerend apparaat de patiënt 'bewaakt', wat onjuist is voor een wezenlijk therapeutisch apparaat. mda:isMonitoredBy zelf is ONGEWIJZIGD en blijft gebruikt, maar uitsluitend voor de eigen operationele rechtvaardiging. Functioneel, niet invers-functioneel."
-    },
-    "attributes" : [ "functional", "object" ],
-    "id" : "55"
-  }, {
     "iri" : "https://w3id.org/mda/ontology#hasLabelConcept",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
@@ -1677,6 +1653,30 @@
       "nl" : "Koppelt een alarmtype aan zijn gecontroleerde-vocabulaireconcept in het schema van mda:AlarmLabel — één concept per onderscheidend labelstring, gedeeld door elk archetype dat dat label gebruikt, ongeacht prioriteit."
     },
     "attributes" : [ "object" ],
+    "id" : "55"
+  }, {
+    "iri" : "https://w3id.org/mda/ontology#triggeredBy",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "4",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "triggeredBy",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "triggeredBy",
+      "en" : "triggered by",
+      "nl" : "veroorzaakt door"
+    },
+    "domain" : "48",
+    "comment" : {
+      "en" : "Relates an alarm message directly to the device whose technical structure it implicates — the sole path from AlarmMessage into the mda:Device subtree (mda:hasFunctionalUnit, mda:hasSensor, ...). Replaces routing that reach through mda:concernsPatient/mda:isMonitoredBy: that chain asserted every alarm-raising device 'monitors' the patient, which is false for a fundamentally therapeutic device (mda:MechanicalVentilator, mda:Dialysator, mda:ExtracorporealMembraneOxygenator, mda:Incubator/mda:Thermoregulator all administer a therapy — see mda:administers — rather than principally observe). mda:isMonitoredBy itself is UNCHANGED and still used, but only for its own actual justification: 4_OPERATIONAL/op_knowledge.py's per-instant double-booking check, asserted fresh at grounding time, never derived from or dependent on this blueprint-level structure. Functional, not inverse-functional: one message has exactly one triggering device, but one device triggers many messages over its lifetime — unlike mda:hasMessage's strict bijection.",
+      "nl" : "Koppelt een alarmbericht rechtstreeks aan het apparaat waarvan het de technische structuur impliceert — de enige weg van AlarmMessage naar de mda:Device-deelboom. Vervangt routering via mda:concernsPatient/mda:isMonitoredBy: die keten beweerde dat elk alarmerend apparaat de patiënt 'bewaakt', wat onjuist is voor een wezenlijk therapeutisch apparaat. mda:isMonitoredBy zelf is ONGEWIJZIGD en blijft gebruikt, maar uitsluitend voor de eigen operationele rechtvaardiging. Functioneel, niet invers-functioneel."
+    },
+    "attributes" : [ "functional", "object" ],
     "id" : "56"
   }, {
     "iri" : "https://w3id.org/mda/ontology#isMonitoredBy",
@@ -1705,7 +1705,7 @@
   }, {
     "iri" : "https://w3id.org/mda/ontology#hasSensor",
     "baseIri" : "https://w3id.org/mda/ontology",
-    "range" : "20",
+    "range" : "21",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
@@ -1719,7 +1719,7 @@
       "en" : "has sensor",
       "nl" : "heeft sensor"
     },
-    "domain" : "18",
+    "domain" : "19",
     "comment" : {
       "en" : "Relates a functional unit to the physical sensor(s) it reads from (e.g. an ECG module to each of its 12 leads). NOT a sub-property of hasComponent: its domain is FunctionalUnit, not Device, and hasComponent's domain is fixed to Device — declaring it a sub-property would wrongly entail every FunctionalUnit is itself a Device. A sensor no longer belongs directly to a device (see FunctionalUnit below for why: the sensor is the physical probe, the functional unit is what analyses what it picks up). Deliberately NOT owl:InverseFunctionalProperty, unlike most of this file's other IFP-marked relations: 2_READOUT/outcome/inference.ttl's FunctionalUnit recipe axioms assert hasSensor via an owl:hasValue restriction, so every alarm typed to the same FunctionalUnit concept (e.g. every FU_PneumoTachograph alarm) entails hasSensor to the SAME shared sensor concept, not a fresh individual per alarm the way 2_READOUT/build_framework.py's own per-row blank nodes do. Confirmed by an isolated reasoner test: with InverseFunctionalProperty declared, prp-ifp forces every one of those alarms' FunctionalUnit individuals into owl:sameAs with each other — and would do the same across grounded, per-patient data in 4_OPERATIONAL if this property were ever reasoned over there, merging different patients' equipment. mda:producesSignal carries the same latent risk if a future recipe axiom (e.g. the pending ECG one) ever reuses one signal concept across two different sensor concepts — watch for it there too.",
       "nl" : "Koppelt een functionele eenheid aan de fysieke sensor(en) waarvan het afleest (bijv. een ECG-module aan elk van zijn 12 afleidingen). GEEN subeigenschap van hasComponent: het domein is FunctionalUnit, niet Device, en het domein van hasComponent ligt vast op Device. Een sensor behoort niet langer rechtstreeks tot een apparaat."
@@ -1727,8 +1727,8 @@
     "attributes" : [ "object" ],
     "id" : "59"
   }, {
-    "range" : "20",
-    "domain" : "18",
+    "range" : "21",
+    "domain" : "19",
     "attributes" : [ "anonymous", "object" ],
     "id" : "65"
   }, {
@@ -1827,7 +1827,7 @@
       "nl" : "heeft sensoroperatiestatus"
     },
     "superproperty" : [ "6" ],
-    "domain" : "20",
+    "domain" : "21",
     "comment" : {
       "en" : "The operational state of a sensor, e.g. Enabled, Disabled, or Malfunction. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously.",
       "nl" : "De operationele status van een sensor, bijv. Enabled, Disabled of Malfunction. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen."
@@ -1969,7 +1969,7 @@
   }, {
     "iri" : "https://w3id.org/mda/ontology#hasComponent",
     "baseIri" : "https://w3id.org/mda/ontology",
-    "range" : "17",
+    "range" : "18",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
@@ -1984,13 +1984,13 @@
       "nl" : "heeft onderdeel"
     },
     "domain" : "4",
-    "subproperty" : [ "40" ],
+    "subproperty" : [ "37" ],
     "comment" : {
       "en" : "Relates a device to its components, sensing or not (e.g. a connection port, power unit, heating element, or functional unit). Inverse-functional: a component belongs to at most one device — no separate isComponentOf property is declared; query in this direction only.",
       "nl" : "Koppelt een apparaat aan zijn onderdelen, al dan niet sensorisch (bijv. een aansluitpoort, voedingseenheid, verwarmingselement of functionele eenheid). Invers-functioneel: een onderdeel behoort tot hoogstens één apparaat — er is geen aparte isComponentOf-eigenschap; bevraag alleen in deze richting."
     },
     "attributes" : [ "inverse functional", "object" ],
-    "id" : "41"
+    "id" : "38"
   }, {
     "iri" : "https://w3id.org/mda/ontology#presentIn",
     "baseIri" : "https://w3id.org/mda/ontology",
@@ -2022,6 +2022,37 @@
     "attributes" : [ "object" ],
     "id" : "77"
   }, {
+    "iri" : "https://w3id.org/mda/ontology#hasOperationState",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "2",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "hasOperationState",
+        "type" : "label"
+      } ],
+      "persistsPostAlarm" : [ {
+        "identifier" : "persistsPostAlarm",
+        "language" : "undefined",
+        "value" : "true",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "hasOperationState",
+      "en" : "has operation state",
+      "nl" : "heeft operatiestatus"
+    },
+    "domain" : "61",
+    "subproperty" : [ "25", "17", "5", "71" ],
+    "comment" : {
+      "en" : "The operational state of a device, functional unit, sensor, component or metric — equipment and the data it yields. Deliberately NOT borne by a Signal or a SignalAnalysis: a signal's own account of itself is mda:hasQualityState, and an analysis that produced a metric is self-evidently running, so an operational state on either accumulated entailments nothing consumed. A signal's quality state instead entails its SENSOR is Enabled. Deliberately NOT borne by a TherapeuticModality either: a therapy is not equipment, and whether it is being delivered without compromise is mda:hasTherapyDeliveryQuality, its own property. See the operational-state ladder in FRAMEWORK/KNOWLEDGE_BASE/inference.ttl.",
+      "nl" : "De operationele status van een apparaat, functionele eenheid, sensor, onderdeel of metriek — apparatuur en de gegevens die zij oplevert. Bewust NIET gedragen door een Signal of een SignalAnalysis: de eigen verantwoording van een signaal is mda:hasQualityState, en een analyse die een metriek heeft opgeleverd draait vanzelfsprekend. De kwaliteitsstatus van een signaal impliceert in plaats daarvan dat de SENSOR Enabled is. Ook bewust NIET gedragen door een TherapeuticModality: een therapie is geen apparatuur, en of zij ongeschonden wordt toegediend is mda:hasTherapyDeliveryQuality, een eigen eigenschap."
+    },
+    "attributes" : [ "object" ],
+    "id" : "6"
+  }, {
     "iri" : "https://w3id.org/mda/ontology#producesSignal",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "16",
@@ -2046,37 +2077,6 @@
     },
     "attributes" : [ "inverse functional", "object" ],
     "id" : "78"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology#hasOperationState",
-    "baseIri" : "https://w3id.org/mda/ontology",
-    "range" : "2",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "hasOperationState",
-        "type" : "label"
-      } ],
-      "persistsPostAlarm" : [ {
-        "identifier" : "persistsPostAlarm",
-        "language" : "undefined",
-        "value" : "true",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "hasOperationState",
-      "en" : "has operation state",
-      "nl" : "heeft operatiestatus"
-    },
-    "domain" : "61",
-    "subproperty" : [ "25", "21", "5", "71" ],
-    "comment" : {
-      "en" : "The operational state of a device, functional unit, sensor, component or metric — equipment and the data it yields. Deliberately NOT borne by a Signal or a SignalAnalysis: a signal's own account of itself is mda:hasQualityState, and an analysis that produced a metric is self-evidently running, so an operational state on either accumulated entailments nothing consumed. A signal's quality state instead entails its SENSOR is Enabled. Deliberately NOT borne by a TherapeuticModality either: a therapy is not equipment, and whether it is being delivered without compromise is mda:hasTherapyDeliveryQuality, its own property. See the operational-state ladder in FRAMEWORK/KNOWLEDGE_BASE/inference.ttl.",
-      "nl" : "De operationele status van een apparaat, functionele eenheid, sensor, onderdeel of metriek — apparatuur en de gegevens die zij oplevert. Bewust NIET gedragen door een Signal of een SignalAnalysis: de eigen verantwoording van een signaal is mda:hasQualityState, en een analyse die een metriek heeft opgeleverd draait vanzelfsprekend. De kwaliteitsstatus van een signaal impliceert in plaats daarvan dat de SENSOR Enabled is. Ook bewust NIET gedragen door een TherapeuticModality: een therapie is geen apparatuur, en of zij ongeschonden wordt toegediend is mda:hasTherapyDeliveryQuality, een eigen eigenschap."
-    },
-    "attributes" : [ "object" ],
-    "id" : "6"
   }, {
     "iri" : "https://w3id.org/mda/ontology#targetsProcess",
     "baseIri" : "https://w3id.org/mda/ontology",
@@ -2108,6 +2108,36 @@
     "attributes" : [ "object" ],
     "id" : "80"
   }, {
+    "iri" : "https://w3id.org/mda/ontology#hasLaterality",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "70",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "hasLaterality",
+        "type" : "label"
+      } ],
+      "refinesParticularIdentity" : [ {
+        "identifier" : "refinesParticularIdentity",
+        "language" : "undefined",
+        "value" : "true",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "hasLaterality",
+      "en" : "has laterality",
+      "nl" : "heeft lateraliteit"
+    },
+    "domain" : "21",
+    "comment" : {
+      "en" : "Relates a sensor to its laterality (left, right, bilateral). Functional: a physical sensor has exactly one laterality at a time.",
+      "nl" : "Koppelt een sensor aan zijn lateraliteit (links, rechts, bilateraal). Functioneel: een fysieke sensor heeft op een gegeven moment precies één lateraliteit."
+    },
+    "attributes" : [ "functional", "object" ],
+    "id" : "81"
+  }, {
     "iri" : "https://w3id.org/mda/ontology#hasPriority",
     "baseIri" : "https://w3id.org/mda/ontology",
     "range" : "2",
@@ -2136,36 +2166,6 @@
       "nl" : "Het prioriteitsniveau van een alarm of alarmbericht."
     },
     "attributes" : [ "object" ],
-    "id" : "81"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology#hasLaterality",
-    "baseIri" : "https://w3id.org/mda/ontology",
-    "range" : "70",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "hasLaterality",
-        "type" : "label"
-      } ],
-      "refinesParticularIdentity" : [ {
-        "identifier" : "refinesParticularIdentity",
-        "language" : "undefined",
-        "value" : "true",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "hasLaterality",
-      "en" : "has laterality",
-      "nl" : "heeft lateraliteit"
-    },
-    "domain" : "20",
-    "comment" : {
-      "en" : "Relates a sensor to its laterality (left, right, bilateral). Functional: a physical sensor has exactly one laterality at a time.",
-      "nl" : "Koppelt een sensor aan zijn lateraliteit (links, rechts, bilateraal). Functioneel: een fysieke sensor heeft op een gegeven moment precies één lateraliteit."
-    },
-    "attributes" : [ "functional", "object" ],
     "id" : "82"
   }, {
     "iri" : "https://w3id.org/mda/ontology#concernsPatient",
@@ -2192,9 +2192,34 @@
     "attributes" : [ "functional", "object" ],
     "id" : "83"
   }, {
+    "iri" : "https://w3id.org/mda/ontology#sensorProducesSignal",
+    "baseIri" : "https://w3id.org/mda/ontology",
+    "range" : "16",
+    "annotations" : {
+      "identifier" : [ {
+        "identifier" : "identifier",
+        "language" : "undefined",
+        "value" : "sensorProducesSignal",
+        "type" : "label"
+      } ]
+    },
+    "label" : {
+      "IRI-based" : "sensorProducesSignal",
+      "en" : "sensor produces signal",
+      "nl" : "sensor produceert signaal"
+    },
+    "superproperty" : [ "78" ],
+    "domain" : "21",
+    "comment" : {
+      "en" : "The CSV/tree-facing case of mda:producesSignal: a sensor's own raw signal. A single-domain sub-property that carries the Sensor -> Signal edge in the ontology-derived tree (ontology_tree.py leaves that member of mda:producesSignal's union domain to it) — see mda:producesSignal's comment. Every fact asserted through it still entails the general mda:producesSignal fact (and, transitively, mda:hasOperationState's propagation chain) via rdfs:subPropertyOf.",
+      "nl" : "Het CSV/boom-gerichte geval van mda:producesSignal: het eigen ruwe signaal van een sensor. Een subeigenschap met één domein, zodat de door 2_READOUT/build_framework.py afgeleide boom Signal ondubbelzinnig onder Sensor kan hangen."
+    },
+    "attributes" : [ "object" ],
+    "id" : "79"
+  }, {
     "iri" : "https://w3id.org/mda/ontology#approximates",
     "baseIri" : "https://w3id.org/mda/ontology",
-    "range" : "38",
+    "range" : "41",
     "annotations" : {
       "identifier" : [ {
         "identifier" : "identifier",
@@ -2221,30 +2246,5 @@
     },
     "attributes" : [ "object" ],
     "id" : "84"
-  }, {
-    "iri" : "https://w3id.org/mda/ontology#sensorProducesSignal",
-    "baseIri" : "https://w3id.org/mda/ontology",
-    "range" : "16",
-    "annotations" : {
-      "identifier" : [ {
-        "identifier" : "identifier",
-        "language" : "undefined",
-        "value" : "sensorProducesSignal",
-        "type" : "label"
-      } ]
-    },
-    "label" : {
-      "IRI-based" : "sensorProducesSignal",
-      "en" : "sensor produces signal",
-      "nl" : "sensor produceert signaal"
-    },
-    "superproperty" : [ "78" ],
-    "domain" : "20",
-    "comment" : {
-      "en" : "The CSV/tree-facing case of mda:producesSignal: a sensor's own raw signal. A single-domain sub-property that carries the Sensor -> Signal edge in the ontology-derived tree (ontology_tree.py leaves that member of mda:producesSignal's union domain to it) — see mda:producesSignal's comment. Every fact asserted through it still entails the general mda:producesSignal fact (and, transitively, mda:hasOperationState's propagation chain) via rdfs:subPropertyOf.",
-      "nl" : "Het CSV/boom-gerichte geval van mda:producesSignal: het eigen ruwe signaal van een sensor. Een subeigenschap met één domein, zodat de door 2_READOUT/build_framework.py afgeleide boom Signal ondubbelzinnig onder Sensor kan hangen."
-    },
-    "attributes" : [ "object" ],
-    "id" : "79"
   } ]
 }
