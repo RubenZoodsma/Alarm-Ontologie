@@ -3,30 +3,79 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2002/07/owl#unionOf" : [ {
     "@list" : [ {
+      "@id" : "https://w3id.org/mda/ontology#Metric"
+    }, {
+      "@id" : "https://w3id.org/mda/ontology#Signal"
+    } ]
+  } ]
+}, {
+  "@id" : "_:genid18",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2002/07/owl#unionOf" : [ {
+    "@list" : [ {
       "@id" : "https://w3id.org/mda/ontology#Component"
     }, {
       "@id" : "https://w3id.org/mda/ontology#Device"
     }, {
+      "@id" : "https://w3id.org/mda/ontology#FunctionalUnit"
+    }, {
+      "@id" : "https://w3id.org/mda/ontology#Metric"
+    }, {
       "@id" : "https://w3id.org/mda/ontology#Sensor"
-    }, {
-      "@id" : "https://w3id.org/mda/ontology#Signal"
-    }, {
-      "@id" : "https://w3id.org/mda/ontology#TherapeuticModality"
     } ]
   } ]
 }, {
-  "@id" : "_:genid15",
-  "http://www.w3.org/2002/07/owl#inverseOf" : [ {
-    "@id" : "https://w3id.org/mda/ontology#administers"
-  } ]
-}, {
-  "@id" : "_:genid16",
+  "@id" : "_:genid36",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2002/07/owl#unionOf" : [ {
     "@list" : [ {
       "@id" : "https://w3id.org/mda/ontology#Sensor"
     }, {
       "@id" : "https://w3id.org/mda/ontology#SignalAnalysis"
+    } ]
+  } ]
+}, {
+  "@id" : "_:genid39",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2002/07/owl#unionOf" : [ {
+    "@list" : [ {
+      "@id" : "https://w3id.org/mda/ontology#Alarm"
+    }, {
+      "@id" : "https://w3id.org/mda/ontology#ClinicalEvent"
+    } ]
+  } ]
+}, {
+  "@id" : "_:genid4",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2002/07/owl#unionOf" : [ {
+    "@list" : [ {
+      "@id" : "https://w3id.org/mda/ontology#AlarmMessage"
+    }, {
+      "@id" : "https://w3id.org/mda/ontology#ClinicalEvent"
+    } ]
+  } ]
+}, {
+  "@id" : "_:genid42",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2002/07/owl#unionOf" : [ {
+    "@list" : [ {
+      "@id" : "https://w3id.org/mda/ontology#Alarm"
+    }, {
+      "@id" : "https://w3id.org/mda/ontology#ClinicalEvent"
+    } ]
+  } ]
+}, {
+  "@id" : "_:genid7",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2002/07/owl#unionOf" : [ {
+    "@list" : [ {
+      "@id" : "https://w3id.org/mda/ontology#ClinicalEvent"
+    }, {
+      "@id" : "https://w3id.org/mda/ontology#Device"
+    }, {
+      "@id" : "https://w3id.org/mda/ontology#Metric"
+    }, {
+      "@id" : "https://w3id.org/mda/ontology#TherapeuticModality"
     } ]
   } ]
 }, {
@@ -69,6 +118,9 @@
   "@id" : "http://www.w3.org/2004/02/skos/core#ConceptScheme",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ]
 }, {
+  "@id" : "http://www.w3.org/2004/02/skos/core#broader",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ]
+}, {
   "@id" : "https://w3id.org/mda/ontology#",
   "@type" : [ "http://www.w3.org/2002/07/owl#Ontology" ],
   "http://purl.org/dc/elements/1.1/license" : [ {
@@ -100,7 +152,7 @@
     "@value" : "https://w3id.org/mda/ontology#"
   } ],
   "http://www.w3.org/2002/07/owl#versionInfo" : [ {
-    "@value" : "1.0.0"
+    "@value" : "1.1.0"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology#Alarm",
@@ -184,6 +236,32 @@
   }, {
     "@language" : "nl",
     "@value" : "Anatomische Positie"
+  } ],
+  "https://w3id.org/mda/ontology#nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/ontology#Referential"
+  } ]
+}, {
+  "@id" : "https://w3id.org/mda/ontology#ClinicalEvent",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://purl.org/dc/terms/identifier" : [ {
+    "@value" : "ClinicalEvent"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A discrete, acute clinical judgement about one patient — e.g. a cardiac arrest — individuated per occurrence. It concerns exactly one patient (mda:concernsPatient), is believed because of the evidence it points to (mda:evidencedBy), and holds from mda:hasStart until mda:hasEnd. Which evidence each kind of event requires is stated on the event class itself, in clinicalEvents.ttl. Its concrete kind is given by a concept from the clinical-event scheme, used as its rdf:type."
+  }, {
+    "@language" : "nl",
+    "@value" : "Een afzonderlijk, acuut klinisch oordeel over één patiënt — bijv. een hartstilstand — per voorval geïndividualiseerd. Zij betreft precies één patiënt (mda:concernsPatient), wordt aangenomen op grond van het bewijs waarnaar zij verwijst (mda:evidencedBy), en geldt van mda:hasStart tot mda:hasEnd. Welk bewijs elke soort gebeurtenis vereist, staat op de gebeurtenisklasse zelf, in clinicalEvents.ttl. De concrete soort wordt gegeven door een concept uit het klinische-gebeurtenisschema, gebruikt als rdf:type."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Clinical Event"
+  }, {
+    "@language" : "nl",
+    "@value" : "Klinische Gebeurtenis"
+  } ],
+  "https://w3id.org/mda/ontology#nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/ontology#Individuated"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology#Component",
@@ -309,6 +387,9 @@
   }, {
     "@language" : "en",
     "@value" : "Laterality"
+  } ],
+  "https://w3id.org/mda/ontology#nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/ontology#Referential"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology#Metric",
@@ -318,10 +399,10 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "en",
-    "@value" : "A measurable quantity, computed from one or more signals by a mda:SignalAnalysis step."
+    "@value" : "A measurable quantity, computed by a mda:SignalAnalysis step from one or more signals, or derived from other metrics (a metric can itself be the input of a further step, via mda:analyzedBy)."
   }, {
     "@language" : "nl",
-    "@value" : "Een meetbare grootheid, berekend uit één of meer signalen door een mda:SignalAnalysis-stap."
+    "@value" : "Een meetbare grootheid, berekend door een mda:SignalAnalysis-stap uit één of meer signalen, of afgeleid uit andere metrieken."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -352,6 +433,9 @@
   }, {
     "@language" : "en",
     "@value" : "Organ"
+  } ],
+  "https://w3id.org/mda/ontology#nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/ontology#Referential"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology#OrganSystem",
@@ -372,6 +456,9 @@
   }, {
     "@language" : "en",
     "@value" : "Organ System"
+  } ],
+  "https://w3id.org/mda/ontology#nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/ontology#Referential"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology#Patient",
@@ -415,6 +502,9 @@
   }, {
     "@language" : "en",
     "@value" : "Physiological Process"
+  } ],
+  "https://w3id.org/mda/ontology#nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/ontology#Referential"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology#PhysiologicalProperty",
@@ -435,6 +525,9 @@
   }, {
     "@language" : "en",
     "@value" : "Physiological Property"
+  } ],
+  "https://w3id.org/mda/ontology#nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/ontology#Referential"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology#PostAlarmValidScheme",
@@ -461,7 +554,7 @@
   } ],
   "https://w3id.org/mda/ontology#postAlarmValidityDuration" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#duration",
-    "@value" : "PT60S"
+    "@value" : "PT15M"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology#Referential",
@@ -478,10 +571,10 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "nl",
-    "@value" : "Het fysieke object dat geplaatst wordt om een signaal te genereren — bijv. een pulse-oximetrieklip, een ECG-afleiding, een temperatuurprobe. Het meet of berekent zelf niets: het produceert enkel een ruw signaal (mda:producesSignal). Dat signaal omzetten in een metriek is de taak van mda:FunctionalUnit, via mda:SignalAnalysis. Een specialisatie van mda:Component."
+    "@value" : "Het fysieke object dat geplaatst wordt om een signaal te genereren — bijv. een pulse-oximetrieklip, een ECG-afleiding, een temperatuurprobe. Het reageert op een stimulus en produceert een ruw signaal (mda:producesSignal); het berekent niets. Dat signaal omzetten in een metriek is de taak van mda:FunctionalUnit, via mda:SignalAnalysis. Een specialisatie van mda:Component."
   }, {
     "@language" : "en",
-    "@value" : "The physical object placed to generate a signal — e.g. a pulse-oximetry clip, an ECG lead, a temperature probe. It does not itself measure or compute anything: it only produces a raw signal (mda:producesSignal). Turning that signal into a metric is mda:FunctionalUnit's job, via mda:SignalAnalysis. A specialisation of mda:Component. Declared disjoint with mda:FunctionalUnit (see its own comment) — asserted there, applies symmetrically."
+    "@value" : "The physical object placed to generate a signal — e.g. a pulse-oximetry clip, an ECG lead, a temperature probe. It responds to a stimulus and produces a raw signal (mda:producesSignal); it computes nothing. Turning that signal into a metric is mda:FunctionalUnit's job, via mda:SignalAnalysis. A specialisation of mda:Component. Declared disjoint with mda:FunctionalUnit (see its own comment) — asserted there, applies symmetrically."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -504,10 +597,10 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "en",
-    "@value" : "A signal — either raw, produced by a sensor, or derived/intermediate, produced by a mda:SignalAnalysis step from other signals (e.g. augmented lead aVF, combined from ECG leads I and II). No structural distinction between the two: a later analysis step consuming a signal doesn't need to know whether it came from a sensor or from an earlier analysis."
+    "@value" : "A signal — either raw, produced by a sensor, or derived/intermediate, produced by a mda:SignalAnalysis step from other signals (e.g. augmented lead aVF, derived from the RA, LA and LL raw signals). No structural distinction between the two: a later analysis step consuming a signal doesn't need to know whether it came from a sensor or from an earlier analysis."
   }, {
     "@language" : "nl",
-    "@value" : "Een signaal — ofwel ruw, geproduceerd door een sensor, ofwel afgeleid/tussenliggend, geproduceerd door een mda:SignalAnalysis-stap uit andere signalen (bijv. versterkte afleiding aVF, gecombineerd uit ECG-afleidingen I en II). Geen structureel onderscheid tussen beide: een latere analysestap die een signaal verbruikt hoeft niet te weten of het van een sensor komt of van een eerdere analyse."
+    "@value" : "Een signaal — ofwel ruw, geproduceerd door een sensor, ofwel afgeleid/tussenliggend, geproduceerd door een mda:SignalAnalysis-stap uit andere signalen (bijv. versterkte afleiding aVF, afgeleid uit de ruwe RA-, LA- en LL-signalen). Geen structureel onderscheid tussen beide: een latere analysestap die een signaal verbruikt hoeft niet te weten of het van een sensor komt of van een eerdere analyse."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "nl",
@@ -527,10 +620,10 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "nl",
-    "@value" : "Eén berekeningsstap van een functionele eenheid: verbruikt één of meer signalen (bereikt via de inverse van mda:analyzedBy) en produceert ofwel een metriek (mda:producesMetric) ofwel een verder afgeleid signaal (mda:producesSignal) dat een latere stap op zijn beurt kan verbruiken. Zelf geen mda:Component — het is de berekening die een functionele eenheid uitvoert, geen fysiek onderdeel."
+    "@value" : "Eén berekeningsstap van een functionele eenheid: verbruikt één of meer signalen en/of metrieken (bereikt via de inverse van mda:analyzedBy) en produceert ofwel een metriek (mda:producesMetric) ofwel een verder afgeleid signaal (mda:producesSignal) dat een latere stap op zijn beurt kan verbruiken. Zelf geen mda:Component — het is de berekening die een functionele eenheid uitvoert, geen fysiek onderdeel."
   }, {
     "@language" : "en",
-    "@value" : "One computation step of a functional unit: consumes one or more signals (reached via the inverse of mda:analyzedBy) and produces either a metric (mda:producesMetric) or a further, derived signal (mda:producesSignal) that a later step can itself consume. Not itself a mda:Component — it's the computation a functional unit performs, not a physical part."
+    "@value" : "One computation step of a functional unit: consumes one or more signals and/or metrics (reached via the inverse of mda:analyzedBy) and produces either a metric (mda:producesMetric) or a further, derived signal (mda:producesSignal) that a later step can itself consume. Not itself a mda:Component — it's the computation a functional unit performs, not a physical part. A step with metric inputs produces exactly one metric: one step with several inputs and several outputs would lose which input feeds which output. The class keeps the name SignalAnalysis for its signal-consuming origin; renaming it would touch every consumer for no change in meaning."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "nl",
@@ -538,6 +631,9 @@
   }, {
     "@language" : "en",
     "@value" : "Signal analysis"
+  } ],
+  "https://w3id.org/mda/ontology#nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/ontology#Individuated"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology#Stateful",
@@ -565,6 +661,9 @@
   }, {
     "@language" : "nl",
     "@value" : "Therapeutische Modaliteit"
+  } ],
+  "https://w3id.org/mda/ontology#nodeKind" : [ {
+    "@id" : "https://w3id.org/mda/ontology#Individuated"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology#administers",
@@ -604,13 +703,13 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "nl",
-    "@value" : "Koppelt een signaal aan de signaalanalysestap die het verbruikt. De enige weg naar mda:SignalAnalysis — bewust niet ook rechtstreeks bereikbaar vanaf mda:FunctionalUnit (er bestaat geen performsAnalysis-achtige kortere weg), zodat er precies één pad naar een analysestap bestaat, altijd via het specifieke signaal (de specifieke signalen) dat het daadwerkelijk verbruikt. Functioneel niet: hetzelfde signaal kan meer dan één analysestap voeden."
+    "@value" : "Koppelt een signaal, of een metriek, aan de analysestap die het verbruikt. Een metriek als invoer maakt de stap een afleiding (bijv. slagvolume uit hartminuutvolume en hartfrequentie). De enige weg naar mda:SignalAnalysis — bewust niet ook rechtstreeks bereikbaar vanaf mda:FunctionalUnit (er bestaat geen performsAnalysis-achtige kortere weg), zodat er precies één pad naar een analysestap bestaat, altijd via het specifieke signaal (de specifieke signalen) dat het daadwerkelijk verbruikt. Functioneel niet: hetzelfde signaal kan meer dan één analysestap voeden."
   }, {
     "@language" : "en",
-    "@value" : "Relates a signal to the signal-analysis step that consumes it. The only edge reaching mda:SignalAnalysis — deliberately not also reachable directly from mda:FunctionalUnit (no performsAnalysis-style shortcut exists), so there is exactly one path to an analysis step, always through the specific signal(s) it actually consumes. A second, shorter path would let ontology_tree.py's shortest-path class-tree derivation silently prefer it over the precise one (the same failure mode mda:administers was introduced to avoid for mda:TherapeuticModality — see the Technical axioms note in inference.ttl). Not functional: the same signal can feed more than one analysis step (e.g. ECG lead II feeds both a heart-rate computation and an aVF derivation)."
+    "@value" : "Relates a signal, or a metric, to the analysis step that consumes it. A metric input makes the step a derivation: stroke volume computed from cardiac output and heart rate, an indexed value from its unindexed value and body surface area (see the Derived metrics section in inference.ttl). The union domain does not let a reasoner type anything as a Signal or a Metric from this edge, which matters because inference.ttl asserts it on punned metric concepts. ontology_tree.py's derive_class_tree ignores the Metric member: mda:SignalAnalysis is already reached through mda:Signal, at a shallower depth, so the archetype tree is unchanged. The only edge reaching mda:SignalAnalysis — deliberately not also reachable directly from mda:FunctionalUnit (no performsAnalysis-style shortcut exists), so there is exactly one path to an analysis step, always through the specific signal(s) it actually consumes. A second, shorter path would let ontology_tree.py's shortest-path class-tree derivation silently prefer it over the precise one (the same failure mode mda:administers was introduced to avoid for mda:TherapeuticModality — see the Technical axioms note in inference.ttl). Not functional: the same signal can feed more than one analysis step (e.g. the LL raw signal feeds the derivations of leads II, III and aVF)."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology#Signal"
+    "@id" : "_:genid1"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -653,6 +752,26 @@
     "@value" : "true"
   } ]
 }, {
+  "@id" : "https://w3id.org/mda/ontology#atSite",
+  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ],
+  "http://purl.org/dc/terms/identifier" : [ {
+    "@value" : "atSite"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "nl",
+    "@value" : "De locatie van een locatieverfijning: een waarde van een sensoreigenschap die de particuliere identiteit verfijnt (mda:refinesParticularIdentity), zoals een anatomische positie. Een nauwere locatie valt eronder tenzij zij een eigen verfijning heeft."
+  }, {
+    "@language" : "en",
+    "@value" : "The site of a site refinement: a value of a particular-identity-refining sensor property (mda:refinesParticularIdentity), such as an anatomical position. A narrower site is covered unless it has a refinement of its own."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "at site"
+  }, {
+    "@language" : "nl",
+    "@value" : "op locatie"
+  } ]
+}, {
   "@id" : "https://w3id.org/mda/ontology#concernsPatient",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty", "http://www.w3.org/2002/07/owl#FunctionalProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
@@ -660,13 +779,13 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "nl",
-    "@value" : "Koppelt een alarmbericht aan de patiënt die het betreft — het gedeelde, persistente samenvoegankerpunt. Bewust een doodlopend pad: leidt niet langer via mda:isMonitoredBy naar mda:Device. Functioneel: één bericht betreft precies één patiënt."
+    "@value" : "Koppelt een alarmbericht, of een klinische gebeurtenis, aan de patiënt die het betreft — het gedeelde, persistente samenvoegankerpunt. Bewust een doodlopend pad: leidt niet via mda:isMonitoredBy naar mda:Device. Functioneel: één bericht of gebeurtenis betreft precies één patiënt. Bij een klinische gebeurtenis is dit wat de gebeurtenis aan één patiënt bindt; het bewijs (mda:evidencedBy) doet dat nooit op zichzelf."
   }, {
     "@language" : "en",
-    "@value" : "Relates an alarm message to the patient it concerns — the shared, persistent merge anchor. Deliberately a dead end: it no longer continues on to mda:Device via mda:isMonitoredBy (see mda:triggeredBy's comment for why). Functional: one message concerns exactly one patient — it is minted fresh per alarm precisely so it never needs to concern more than one."
+    "@value" : "Relates an alarm message, or a clinical event, to the patient it concerns — the shared, persistent merge anchor. Deliberately a dead end: it does not continue on to mda:Device via mda:isMonitoredBy (see mda:triggeredBy's comment for why). Functional: one message or event concerns exactly one patient — both are minted fresh per occurrence precisely so they never need to concern more than one. On a clinical event this is what scopes the event to one patient; its evidence (mda:evidencedBy) never does that on its own."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology#AlarmMessage"
+    "@id" : "_:genid4"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "nl",
@@ -677,6 +796,69 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "https://w3id.org/mda/ontology#Patient"
+  } ]
+}, {
+  "@id" : "https://w3id.org/mda/ontology#evidencedBy",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://purl.org/dc/terms/identifier" : [ {
+    "@value" : "evidencedBy"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "nl",
+    "@value" : "Koppelt een klinische gebeurtenis aan een knooppunt waarvan de toestand bewijs ervoor is — het controlespoor voor waarom de gebeurtenis wordt aangenomen, vastgelegd voor elk ondersteunend knooppunt, ook als er maar één is. De pijl loopt alleen van de gebeurtenis naar haar bewijs; niets verwijst terug. Bewijs is altijd een knooppunt dat is aangemaakt voor het alarm dat het rapporteerde (een metriek, een apparaat) of een andere klinische gebeurtenis, nooit een gedeeld vocabulaireconcept. Het bereik dekt de huidige criteria: een Metric (een gebeurtenis uit één alarm, zoals een hartstilstand), een TherapeuticModality (de gecompromitteerde beademingstherapie bij beademingsfalen) en een ClinicalEvent (een samengestelde gebeurtenis verwijst naar haar samenstellende gebeurtenissen). Device blijft in het bereik voor criteria die op de eigen toestand van een apparaat rusten; geen enkel criterium doet dat momenteel."
+  }, {
+    "@language" : "en",
+    "@value" : "Relates a clinical event to a node whose state is evidence for it — the audit trail for why the event is believed, asserted for every supporting node, even when there is only one. The arrow runs from the event to its evidence only; nothing points back from evidence to event. Evidence is always a node minted for the alarm that reported it (a metric, a device) or another clinical event, never a shared vocabulary concept: a shared concept is reached by every patient's alarms and would say nothing about this one. The range covers the current criteria: a Metric (a single-alarm event such as cardiac arrest), a TherapeuticModality (the compromised ventilation therapy in ventilation failure) and a ClinicalEvent (a combined event points at its constituent events). Device stays in the range for criteria that rest on a device's own state; none does at present."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://w3id.org/mda/ontology#ClinicalEvent"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "evidenced by"
+  }, {
+    "@language" : "nl",
+    "@value" : "onderbouwd door"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "_:genid7"
+  } ],
+  "https://w3id.org/mda/ontology#situational" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
+    "@value" : "true"
+  } ]
+}, {
+  "@id" : "https://w3id.org/mda/ontology#hasAggregation",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://purl.org/dc/terms/identifier" : [ {
+    "@value" : "hasAggregation"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "nl",
+    "@value" : "Hoe de metriek over MEERDERE fysiologische cycli wordt samengesteld tot één gerapporteerd getal over een vast tijdvenster (bijv. minuut). Onderscheiden van mda:hasPhase, dat binnen één cyclus blijft — gemiddelde druk en teugvolume zijn grootheden van één cyclus en horen daar thuis, niet hier."
+  }, {
+    "@language" : "en",
+    "@value" : "How the metric is composed across MANY physiological cycles into a single reported figure over a fixed window (e.g. minute). Distinct from mda:hasPhase, which stays within one cycle — mean pressure and tidal volume are single-cycle quantities and belong there, not here."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://w3id.org/mda/ontology#Metric"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "has aggregation"
+  }, {
+    "@language" : "nl",
+    "@value" : "heeft aggregatie"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ],
+  "https://w3id.org/mda/ontology#refinesUniversalIdentity" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
+    "@value" : "true"
+  } ],
+  "https://w3id.org/mda/ontology#valuesFromScheme" : [ {
+    "@id" : "https://w3id.org/mda/vocab/metric-aggregation/Scheme"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology#hasAnatomicalPosition",
@@ -792,6 +974,13 @@
   "http://www.w3.org/2000/01/rdf-schema#subPropertyOf" : [ {
     "@id" : "https://w3id.org/mda/ontology#hasOperationState"
   } ],
+  "http://www.w3.org/2002/07/owl#propertyChainAxiom" : [ {
+    "@list" : [ {
+      "@id" : "https://w3id.org/mda/ontology#hasComponentOperationState"
+    }, {
+      "@id" : "https://w3id.org/mda/ontology#refinesConcept"
+    } ]
+  } ],
   "https://w3id.org/mda/ontology#valuesFromScheme" : [ {
     "@id" : "https://w3id.org/mda/vocab/operation-state/Scheme"
   } ]
@@ -823,6 +1012,13 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subPropertyOf" : [ {
     "@id" : "https://w3id.org/mda/ontology#hasOperationState"
+  } ],
+  "http://www.w3.org/2002/07/owl#propertyChainAxiom" : [ {
+    "@list" : [ {
+      "@id" : "https://w3id.org/mda/ontology#hasDeviceOperationState"
+    }, {
+      "@id" : "https://w3id.org/mda/ontology#refinesConcept"
+    } ]
   } ],
   "https://w3id.org/mda/ontology#valuesFromScheme" : [ {
     "@id" : "https://w3id.org/mda/vocab/operation-state/Scheme"
@@ -868,10 +1064,10 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "nl",
-    "@value" : "De duur van het alarm."
+    "@value" : "De duur van het alarm, als ISO 8601-duur (bijv. PT30S)."
   }, {
     "@language" : "en",
-    "@value" : "The duration of the alarm."
+    "@value" : "The duration of the alarm, as an ISO 8601 duration (e.g. PT30S)."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
     "@id" : "https://w3id.org/mda/ontology#Alarm"
@@ -884,7 +1080,7 @@
     "@value" : "heeft duur"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "http://www.w3.org/2001/XMLSchema#duration"
+    "@id" : "http://www.w3.org/2000/01/rdf-schema#Literal"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology#hasEnd",
@@ -894,13 +1090,13 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "nl",
-    "@value" : "Het eindtijdstip van het alarm."
+    "@value" : "Het eindtijdstip van een alarm, of van een klinische gebeurtenis — voor de laatste het moment waarop haar bewijscriterium ophield te gelden, nooit het moment waarop een toepassing dat opmerkte. Een lopende klinische gebeurtenis heeft nog geen einde."
   }, {
     "@language" : "en",
-    "@value" : "The end time of the alarm."
+    "@value" : "The end time of an alarm, or of a clinical event — for the latter, the moment its evidence criterion stopped holding, never the moment an application noticed. An ongoing clinical event has no end yet."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology#Alarm"
+    "@id" : "_:genid39"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -978,7 +1174,7 @@
     "@value" : "Koppelt een alarmtype aan zijn gecontroleerde-vocabulaireconcept in het schema van mda:AlarmLabel — één concept per onderscheidend labelstring, gedeeld door elk archetype dat dat label gebruikt, ongeacht prioriteit."
   }, {
     "@language" : "en",
-    "@value" : "Relates an alarm type to its controlled-vocabulary concept in mda:AlarmLabel's scheme — one concept per distinct label string encountered, shared across every archetype that uses that label regardless of priority (2_READOUT/vocab_readout.py's label_concept_iri keys on the label alone, not the archetype). The companion of mda:hasLabel, not a replacement for it."
+    "@value" : "Relates an alarm type to its controlled-vocabulary concept in mda:AlarmLabel's scheme — one concept per distinct label string encountered, shared across every archetype that uses that label regardless of priority (2_READOUT/build_framework.py's label_concept_iri keys on the label alone, not the archetype). The companion of mda:hasLabel, not a replacement for it."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
     "@id" : "https://w3id.org/mda/ontology#AlarmType"
@@ -1086,6 +1282,45 @@
     "@id" : "https://w3id.org/mda/ontology#AlarmMessage"
   } ]
 }, {
+  "@id" : "https://w3id.org/mda/ontology#hasMetricOperationState",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://purl.org/dc/terms/identifier" : [ {
+    "@value" : "hasMetricOperationState"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "nl",
+    "@value" : "Of een metriek momenteel wordt gemonitord — anders dan de overige hasOperationState-subeigenschappen nooit CSV-gestuurd; afgeleid door de monitoringsaxioma van FRAMEWORK/KNOWLEDGE_BASE/inference.ttl zodra de metriek een daadwerkelijke interpretatie draagt (hasValueState/hasPhase/hasAggregation/hasRhythm), nooit rechtstreeks toegekend."
+  }, {
+    "@language" : "en",
+    "@value" : "Whether a metric is currently being monitored — unlike the other hasOperationState sub-properties, never CSV-driven (no CSV column names it); entailed by FRAMEWORK/KNOWLEDGE_BASE/inference.ttl's Metric monitoring axiom whenever the metric carries an actual interpretation (hasValueState/hasPhase/hasAggregation/hasRhythm), never asserted directly. A sub-property of hasOperationState with a single named domain for the same reason the CSV-driven ones have one: unambiguous attachment for any tooling that walks this property family, even though nothing here reads a CSV column."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://w3id.org/mda/ontology#Metric"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "has metric operation state"
+  }, {
+    "@language" : "nl",
+    "@value" : "heeft metriekoperatiestatus"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#subPropertyOf" : [ {
+    "@id" : "https://w3id.org/mda/ontology#hasOperationState"
+  } ],
+  "http://www.w3.org/2002/07/owl#propertyChainAxiom" : [ {
+    "@list" : [ {
+      "@id" : "https://w3id.org/mda/ontology#hasMetricOperationState"
+    }, {
+      "@id" : "https://w3id.org/mda/ontology#refinesConcept"
+    } ]
+  } ],
+  "https://w3id.org/mda/ontology#valuesFromScheme" : [ {
+    "@id" : "https://w3id.org/mda/vocab/operation-state/Scheme"
+  } ]
+}, {
   "@id" : "https://w3id.org/mda/ontology#hasOperationState",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
@@ -1093,13 +1328,13 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "nl",
-    "@value" : "De operationele status van een apparaat, sensor, signaal, onderdeel, of de therapeutische modaliteit die een apparaat toedient (dit laatste afgeleid van de status van het toedienende apparaat, niet direct toegekend)."
+    "@value" : "De operationele status van een apparaat, functionele eenheid, sensor, onderdeel of metriek — apparatuur en de gegevens die zij oplevert. Bewust NIET gedragen door een Signal of een SignalAnalysis: de eigen verantwoording van een signaal is mda:hasQualityState, en een analyse die een metriek heeft opgeleverd draait vanzelfsprekend. De kwaliteitsstatus van een signaal impliceert in plaats daarvan dat de SENSOR Enabled is. Ook bewust NIET gedragen door een TherapeuticModality: een therapie is geen apparatuur, en of zij ongeschonden wordt toegediend is mda:hasTherapyDeliveryQuality, een eigen eigenschap."
   }, {
     "@language" : "en",
-    "@value" : "The operational state of a device, sensor, signal, component, or the therapeutic modality a device administers (the latter inferred from the administering device's own state, not asserted directly)."
+    "@value" : "The operational state of a device, functional unit, sensor, component or metric — equipment and the data it yields. Deliberately NOT borne by a Signal or a SignalAnalysis: a signal's own account of itself is mda:hasQualityState, and an analysis that produced a metric is self-evidently running, so an operational state on either accumulated entailments nothing consumed. A signal's quality state instead entails its SENSOR is Enabled. Deliberately NOT borne by a TherapeuticModality either: a therapy is not equipment, and whether it is being delivered without compromise is mda:hasTherapyDeliveryQuality, its own property. See the operational-state ladder in FRAMEWORK/KNOWLEDGE_BASE/inference.ttl."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "_:genid1"
+    "@id" : "_:genid18"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -1113,27 +1348,9 @@
   } ],
   "http://www.w3.org/2002/07/owl#propertyChainAxiom" : [ {
     "@list" : [ {
-      "@id" : "https://w3id.org/mda/ontology#hasFunctionalUnit"
-    }, {
       "@id" : "https://w3id.org/mda/ontology#hasOperationState"
-    } ]
-  }, {
-    "@list" : [ {
-      "@id" : "https://w3id.org/mda/ontology#hasSensor"
     }, {
-      "@id" : "https://w3id.org/mda/ontology#hasOperationState"
-    } ]
-  }, {
-    "@list" : [ {
-      "@id" : "https://w3id.org/mda/ontology#producesSignal"
-    }, {
-      "@id" : "https://w3id.org/mda/ontology#hasOperationState"
-    } ]
-  }, {
-    "@list" : [ {
-      "@id" : "_:genid15"
-    }, {
-      "@id" : "https://w3id.org/mda/ontology#hasOperationState"
+      "@id" : "https://w3id.org/mda/ontology#refinesConcept"
     } ]
   } ],
   "https://w3id.org/mda/ontology#persistsPostAlarm" : [ {
@@ -1148,10 +1365,10 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "nl",
-    "@value" : "De fase van de metriek waarop de alarmconditie van toepassing is (bijv. gemiddeld, systolisch, diastolisch, eind-expiratoir)."
+    "@value" : "Welk deel van één fysiologische cyclus de waarde van de metriek kenmerkt — een punt daarbinnen (systolisch, diastolisch, inspiratoir, eind-expiratoir) of de cyclus als geheel (gemiddeld, teug). Beperkt tot één cyclus: samenstelling over meerdere cycli is mda:hasAggregation."
   }, {
     "@language" : "en",
-    "@value" : "The phase of the metric to which the alarm condition applies (e.g. mean, systolic, diastolic, end-expiratory)."
+    "@value" : "Which part of a single physiological cycle the metric's value characterises — either a point within it (systolic, diastolic, inspiratory, end-expiratory) or the cycle taken whole (mean, tidal). Confined to one cycle: composition across many cycles is mda:hasAggregation."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
     "@id" : "https://w3id.org/mda/ontology#Metric"
@@ -1228,41 +1445,15 @@
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
   } ],
-  "https://w3id.org/mda/ontology#persistsPostAlarm" : [ {
-    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
-    "@value" : "true"
+  "http://www.w3.org/2002/07/owl#propertyChainAxiom" : [ {
+    "@list" : [ {
+      "@id" : "https://w3id.org/mda/ontology#hasQualityState"
+    }, {
+      "@id" : "https://w3id.org/mda/ontology#refinesConcept"
+    } ]
   } ],
   "https://w3id.org/mda/ontology#valuesFromScheme" : [ {
     "@id" : "https://w3id.org/mda/vocab/quality-state/Scheme"
-  } ]
-}, {
-  "@id" : "https://w3id.org/mda/ontology#hasRate",
-  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
-  "http://purl.org/dc/terms/identifier" : [ {
-    "@value" : "hasRate"
-  } ],
-  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
-    "@language" : "nl",
-    "@value" : "De snelheidsafwijking van de metriek die het alarm veroorzaakt (bijv. verhoogd, verlaagd, kritieke daling)."
-  }, {
-    "@language" : "en",
-    "@value" : "The rate deviation of the metric that raises the alarm (e.g. increased, decreased, critical decrease)."
-  } ],
-  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology#Metric"
-  } ],
-  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
-    "@language" : "en",
-    "@value" : "has rate"
-  }, {
-    "@language" : "nl",
-    "@value" : "heeft snelheid"
-  } ],
-  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
-  } ],
-  "https://w3id.org/mda/ontology#valuesFromScheme" : [ {
-    "@id" : "https://w3id.org/mda/vocab/metric-rate/Scheme"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology#hasRhythm",
@@ -1272,10 +1463,10 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "nl",
-    "@value" : "Het ritmepatroon van de metriek waarop de alarmconditie van toepassing is (bijv. onregelmatig)."
+    "@value" : "Hoe de waarde van de metriek over opeenvolgende cycli in de tijd fluctueert (bijv. onregelmatig, atriumfibrilleren). Onderscheiden van mda:hasValueState, dat één momentane meting tegen een grenswaarde betreft."
   }, {
     "@language" : "en",
-    "@value" : "The rhythm pattern of the metric to which the alarm condition applies (e.g. irregular)."
+    "@value" : "How the metric's value fluctuates across successive cycles over time (e.g. irregular, atrial fibrillation). Distinct from mda:hasValueState, which is a single instantaneous reading against a limit."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
     "@id" : "https://w3id.org/mda/ontology#Metric"
@@ -1290,8 +1481,15 @@
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
   } ],
+  "http://www.w3.org/2002/07/owl#propertyChainAxiom" : [ {
+    "@list" : [ {
+      "@id" : "https://w3id.org/mda/ontology#hasRhythm"
+    }, {
+      "@id" : "https://w3id.org/mda/ontology#refinesConcept"
+    } ]
+  } ],
   "https://w3id.org/mda/ontology#valuesFromScheme" : [ {
-    "@id" : "https://w3id.org/mda/vocab/rhythm/Scheme"
+    "@id" : "https://w3id.org/mda/vocab/metric-rhythm/Scheme"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology#hasSensor",
@@ -1304,7 +1502,7 @@
     "@value" : "Koppelt een functionele eenheid aan de fysieke sensor(en) waarvan het afleest (bijv. een ECG-module aan elk van zijn 12 afleidingen). GEEN subeigenschap van hasComponent: het domein is FunctionalUnit, niet Device, en het domein van hasComponent ligt vast op Device. Een sensor behoort niet langer rechtstreeks tot een apparaat."
   }, {
     "@language" : "en",
-    "@value" : "Relates a functional unit to the physical sensor(s) it reads from (e.g. an ECG module to each of its 12 leads). NOT a sub-property of hasComponent: its domain is FunctionalUnit, not Device, and hasComponent's domain is fixed to Device — declaring it a sub-property would wrongly entail every FunctionalUnit is itself a Device. A sensor no longer belongs directly to a device (see FunctionalUnit below for why: the sensor is the physical probe, the functional unit is what analyses what it picks up). Deliberately NOT owl:InverseFunctionalProperty, unlike most of this file's other IFP-marked relations: 2_READOUT/outcome/inference.ttl's FunctionalUnit recipe axioms assert hasSensor via an owl:hasValue restriction, so every alarm typed to the same FunctionalUnit concept (e.g. every FU_PneumoTachograph alarm) entails hasSensor to the SAME shared sensor concept, not a fresh individual per alarm the way 2_READOUT/vocab_readout.py's own per-row blank nodes do. Confirmed by an isolated reasoner test: with InverseFunctionalProperty declared, prp-ifp forces every one of those alarms' FunctionalUnit individuals into owl:sameAs with each other — and would do the same across grounded, per-patient data in 4_OPERATIONAL if this property were ever reasoned over there, merging different patients' equipment. mda:producesSignal carries the same latent risk if a future recipe axiom (e.g. the pending ECG one) ever reuses one signal concept across two different sensor concepts — watch for it there too."
+    "@value" : "Relates a functional unit to the physical sensor(s) it reads from (e.g. an ECG module to each of its 12 leads). NOT a sub-property of hasComponent: its domain is FunctionalUnit, not Device, and hasComponent's domain is fixed to Device — declaring it a sub-property would wrongly entail every FunctionalUnit is itself a Device. A sensor no longer belongs directly to a device (see FunctionalUnit below for why: the sensor is the physical probe, the functional unit is what analyses what it picks up). Deliberately NOT owl:InverseFunctionalProperty, unlike most of this file's other IFP-marked relations: 2_READOUT/outcome/inference.ttl's FunctionalUnit recipe axioms assert hasSensor via an owl:hasValue restriction, so every alarm typed to the same FunctionalUnit concept (e.g. every FU_PneumoTachograph alarm) entails hasSensor to the SAME shared sensor concept, not a fresh individual per alarm the way 2_READOUT/build_framework.py's own per-row blank nodes do. Confirmed by an isolated reasoner test: with InverseFunctionalProperty declared, prp-ifp forces every one of those alarms' FunctionalUnit individuals into owl:sameAs with each other — and would do the same across grounded, per-patient data in 4_OPERATIONAL if this property were ever reasoned over there, merging different patients' equipment. mda:producesSignal carries the same latent risk if a future recipe axiom (e.g. the pending ECG one) ever reuses one signal concept across two different sensor concepts — watch for it there too."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
     "@id" : "https://w3id.org/mda/ontology#FunctionalUnit"
@@ -1348,8 +1546,35 @@
   "http://www.w3.org/2000/01/rdf-schema#subPropertyOf" : [ {
     "@id" : "https://w3id.org/mda/ontology#hasOperationState"
   } ],
+  "http://www.w3.org/2002/07/owl#propertyChainAxiom" : [ {
+    "@list" : [ {
+      "@id" : "https://w3id.org/mda/ontology#hasSensorOperationState"
+    }, {
+      "@id" : "https://w3id.org/mda/ontology#refinesConcept"
+    } ]
+  } ],
   "https://w3id.org/mda/ontology#valuesFromScheme" : [ {
     "@id" : "https://w3id.org/mda/vocab/operation-state/Scheme"
+  } ]
+}, {
+  "@id" : "https://w3id.org/mda/ontology#hasSiteRefinement",
+  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ],
+  "http://purl.org/dc/terms/identifier" : [ {
+    "@value" : "hasSiteRefinement"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "nl",
+    "@value" : "Koppelt een basismetriek aan één locatieverfijning: een knoop met de locatie (mda:atSite) en de metriek die de basis is wanneer daar gemeten (mda:refinedMetric). Een bouwinstructie, gelezen door build_framework.py."
+  }, {
+    "@language" : "en",
+    "@value" : "Relates a base metric to one site refinement: a node giving the site (mda:atSite) and the metric the base is when measured there (mda:refinedMetric). A build directive, read by build_framework.py."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "has site refinement"
+  }, {
+    "@language" : "nl",
+    "@value" : "heeft locatieverfijning"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology#hasStart",
@@ -1359,13 +1584,13 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "nl",
-    "@value" : "Het starttijdstip van het alarm."
+    "@value" : "Het starttijdstip van een alarm, of van een klinische gebeurtenis — voor de laatste het moment waarop haar bewijscriterium (clinicalEvents.ttl) voor het eerst gold."
   }, {
     "@language" : "en",
-    "@value" : "The start time of the alarm."
+    "@value" : "The start time of an alarm, or of a clinical event — for the latter, the moment its evidence criterion (clinicalEvents.ttl) first held."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "https://w3id.org/mda/ontology#Alarm"
+    "@id" : "_:genid42"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -1376,6 +1601,78 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://www.w3.org/2001/XMLSchema#dateTime"
+  } ]
+}, {
+  "@id" : "https://w3id.org/mda/ontology#hasTherapyDeliveryQuality",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://purl.org/dc/terms/identifier" : [ {
+    "@value" : "hasTherapyDeliveryQuality"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "nl",
+    "@value" : "Of de therapeutische interventie zelf zonder compromis wordt toegediend, als onderscheiden van de eigen connectiviteit/werking van het toedienende apparaat (hasOperationState) of de meetbetrouwbaarheid van een signaal (hasQualityState). Gedragen door de therapeutische modaliteit, nooit door het apparaat dat deze toedient."
+  }, {
+    "@language" : "en",
+    "@value" : "Whether the therapeutic intervention itself is being delivered without compromise, as distinct from the administering device's own connectivity/functioning (hasOperationState) or a signal's measurement reliability (hasQualityState). Borne by the therapeutic modality, never by the device that administers it."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://w3id.org/mda/ontology#TherapeuticModality"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "has therapy delivery quality"
+  }, {
+    "@language" : "nl",
+    "@value" : "heeft therapietoedieningskwaliteit"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ],
+  "http://www.w3.org/2002/07/owl#propertyChainAxiom" : [ {
+    "@list" : [ {
+      "@id" : "https://w3id.org/mda/ontology#hasTherapyDeliveryQuality"
+    }, {
+      "@id" : "https://w3id.org/mda/ontology#refinesConcept"
+    } ]
+  } ],
+  "https://w3id.org/mda/ontology#valuesFromScheme" : [ {
+    "@id" : "https://w3id.org/mda/vocab/quality-state/Scheme"
+  } ]
+}, {
+  "@id" : "https://w3id.org/mda/ontology#hasValueState",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://purl.org/dc/terms/identifier" : [ {
+    "@value" : "hasValueState"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "nl",
+    "@value" : "Waar de waarde van de metriek zich bevindt ten opzichte van de ingestelde alarmgrenzen van het apparaat, zoals het apparaat dit zelf rapporteert (bijv. verhoogd, verlaagd, sterk verlaagd, afwezig). De drempelwaarde waartegen wordt vergeleken is niet gerepresenteerd in dit raamwerk — alleen de uitkomst van de vergelijking."
+  }, {
+    "@language" : "en",
+    "@value" : "Where the metric's value sits relative to the device's configured alarm limits, as the device itself reports it (e.g. increased, decreased, severely decreased, absent). The threshold compared against is not represented in this framework — only the outcome of the comparison."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://w3id.org/mda/ontology#Metric"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "has value state"
+  }, {
+    "@language" : "nl",
+    "@value" : "heeft waardestatus"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ],
+  "http://www.w3.org/2002/07/owl#propertyChainAxiom" : [ {
+    "@list" : [ {
+      "@id" : "https://w3id.org/mda/ontology#hasValueState"
+    }, {
+      "@id" : "https://w3id.org/mda/ontology#refinesConcept"
+    } ]
+  } ],
+  "https://w3id.org/mda/ontology#valuesFromScheme" : [ {
+    "@id" : "https://w3id.org/mda/vocab/metric-value-state/Scheme"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology#instantiatesClass",
@@ -1612,6 +1909,62 @@
     "@value" : "true"
   } ]
 }, {
+  "@id" : "https://w3id.org/mda/ontology#priorityRank",
+  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ],
+  "http://purl.org/dc/terms/identifier" : [ {
+    "@value" : "priorityRank"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "en",
+    "@value" : "A total ordering over alarmprio:Scheme's concepts, higher meaning more urgent — the comparable quantity mda:hasPriority's skos:Concept values do not carry on their own. Declared on the concepts themselves (not per-alarm) since it is a fact about the priority level, not about any occurrence of it; asserted in FRAMEWORK/VOCABULARY/priority_rank.ttl, not vocab_generated.ttl, since alarmprio:* concepts are mechanically minted per distinct CSV value by build_framework.py and this ranking is instead a fixed, hand-authored fact about the (small, closed) scheme, independent of which alarms happen to use which priority. Consumed by CAT2's alarm-management rules (CODE/evaluation_poc/reasoner/) to compare an incoming alarm's priority against an already-active one via SPARQL FILTER — see mda:postAlarmValidityDuration above for the same load-once-as-scheme-annotation pattern."
+  }, {
+    "@language" : "nl",
+    "@value" : "Een totale ordening over de concepten van alarmprio:Scheme, waarbij hoger dringender betekent."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "nl",
+    "@value" : "prioriteitsrang"
+  }, {
+    "@language" : "en",
+    "@value" : "priority rank"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "http://www.w3.org/2001/XMLSchema#integer"
+  } ]
+}, {
+  "@id" : "https://w3id.org/mda/ontology#processPartOf",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://purl.org/dc/terms/identifier" : [ {
+    "@value" : "processPartOf"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "nl",
+    "@value" : "Koppelt een fysiologisch proces aan het grotere fysiologische proces waarvan het een samenstellend deel is."
+  }, {
+    "@language" : "en",
+    "@value" : "Relates a physiological process to the larger physiological process it is a constituent part of."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "https://w3id.org/mda/ontology#PhysiologicalProcess"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "nl",
+    "@value" : "proces deel van"
+  }, {
+    "@language" : "en",
+    "@value" : "process part of"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "https://w3id.org/mda/ontology#PhysiologicalProcess"
+  } ],
+  "https://w3id.org/mda/ontology#situational" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#boolean",
+    "@value" : "true"
+  } ]
+}, {
   "@id" : "https://w3id.org/mda/ontology#producesMetric",
   "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
   "http://purl.org/dc/terms/identifier" : [ {
@@ -1645,13 +1998,13 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "nl",
-    "@value" : "Koppelt een sensor OF een signaalanalysestap aan het signaal dat het produceert — het ruwe signaal van een sensor, of het afgeleide/tussenliggende signaal van een analysestap (bijv. versterkte afleiding aVF, gecombineerd uit andere afleidingen). Invers-functioneel: een signaal heeft hoogstens één producent, ongeacht het soort."
+    "@value" : "Koppelt een sensor OF een signaalanalysestap aan het signaal dat het produceert — het ruwe signaal van een sensor, of het afgeleide/tussenliggende signaal van een analysestap (bijv. een afleiding zoals aVF, afgeleid uit de ruwe signalen van de elektroden). Invers-functioneel: een signaal heeft hoogstens één producent, ongeacht het soort."
   }, {
     "@language" : "en",
-    "@value" : "Relates a sensor OR a signal-analysis step to the signal it produces — a sensor's raw signal, or an analysis step's derived/intermediate signal (e.g. augmented lead aVF, combined from other leads). Inverse-functional: a signal has at most one producer, whichever kind produced it. Its domain is a union, so it cannot itself anchor 2_READOUT/vocab_readout.py's CSV/tree derivation (ontology_tree.py's derive_class_tree only follows a named rdfs:domain, the same limitation documented at mda:hasOperationState below) — mda:sensorProducesSignal is the single-domain sub-property that does. A signal-analysis step's own derived-signal output (the aVF case) is only ever hand-authored in inference.ttl, never CSV-driven, so it uses this general property directly and needs no sub-property of its own."
+    "@value" : "Relates a sensor OR a signal-analysis step to the signal it produces — a sensor's raw signal, or an analysis step's derived/intermediate signal (e.g. a lead such as aVF, derived from the electrodes' raw signals). Inverse-functional: a signal has at most one producer, whichever kind produced it. Its domain is a union; ontology_tree.py's derive_class_tree expands union domains, but leaves the Sensor member to mda:sensorProducesSignal, the single-domain sub-property that carries that edge — so the CSV/tree derivation in CODE/framework_build/build_framework.py attaches Signal under Sensor exactly once. A signal-analysis step's own derived-signal output (the aVF case) is only ever hand-authored in inference.ttl, never CSV-driven, so it uses this general property directly and needs no sub-property of its own."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "_:genid16"
+    "@id" : "_:genid36"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "nl",
@@ -1662,6 +2015,55 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "https://w3id.org/mda/ontology#Signal"
+  } ]
+}, {
+  "@id" : "https://w3id.org/mda/ontology#refinedMetric",
+  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ],
+  "http://purl.org/dc/terms/identifier" : [ {
+    "@value" : "refinedMetric"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "nl",
+    "@value" : "De metriek die een basismetriek is wanneer gemeten op de locatie van de verfijning. Kan de basis zelf zijn: de locatie bevestigt dan de betekenis van de basis."
+  }, {
+    "@language" : "en",
+    "@value" : "The metric a base metric is when measured at the refinement's site. May be the base itself: the site then confirms the base's meaning."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "refined metric"
+  }, {
+    "@language" : "nl",
+    "@value" : "verfijnde metriek"
+  } ]
+}, {
+  "@id" : "https://w3id.org/mda/ontology#refinesConcept",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://purl.org/dc/terms/identifier" : [ {
+    "@value" : "refinesConcept"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "nl",
+    "@value" : "Koppelt een waardeconcept aan het bredere waardeconcept waarvan het altijd een geval is, binnen één schema (bijv. kwaliteitsstatus Pulseless aan Impaired). Via de eigenschapsketens op de waarde-eigenschappen draagt een knoop met de nauwere waarde ook de bredere."
+  }, {
+    "@language" : "en",
+    "@value" : "Relates a value concept to the broader value concept it is always a case of, within one scheme (e.g. quality state Pulseless to Impaired). Through the property chains declared on the value properties, a node bearing the narrower value also bears the broader one. Curated in FRAMEWORK/VOCABULARY/seed/hierarchy.ttl."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "refines concept"
+  }, {
+    "@language" : "nl",
+    "@value" : "verfijnt concept"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "http://www.w3.org/2004/02/skos/core#Concept"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#subPropertyOf" : [ {
+    "@id" : "http://www.w3.org/2004/02/skos/core#broader"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/ontology#refinesParticularIdentity",
@@ -1711,10 +2113,10 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "nl",
-    "@value" : "Het CSV/boom-gerichte geval van mda:producesSignal: het eigen ruwe signaal van een sensor. Een subeigenschap met één domein, zodat de door 2_READOUT/vocab_readout.py afgeleide boom Signal ondubbelzinnig onder Sensor kan hangen."
+    "@value" : "Het CSV/boom-gerichte geval van mda:producesSignal: het eigen ruwe signaal van een sensor. Een subeigenschap met één domein, zodat de door 2_READOUT/build_framework.py afgeleide boom Signal ondubbelzinnig onder Sensor kan hangen."
   }, {
     "@language" : "en",
-    "@value" : "The CSV/tree-facing case of mda:producesSignal: a sensor's own raw signal. A single-domain sub-property so 2_READOUT/vocab_readout.py's ontology-derived tree can attach Signal under Sensor unambiguously — see mda:producesSignal's comment. Every fact asserted through it still entails the general mda:producesSignal fact (and, transitively, mda:hasOperationState's propagation chain) via rdfs:subPropertyOf."
+    "@value" : "The CSV/tree-facing case of mda:producesSignal: a sensor's own raw signal. A single-domain sub-property that carries the Sensor -> Signal edge in the ontology-derived tree (ontology_tree.py leaves that member of mda:producesSignal's union domain to it) — see mda:producesSignal's comment. Every fact asserted through it still entails the general mda:producesSignal fact (and, transitively, mda:hasOperationState's propagation chain) via rdfs:subPropertyOf."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
     "@id" : "https://w3id.org/mda/ontology#Sensor"
@@ -1840,6 +2242,11 @@
     "@id" : "https://w3id.org/mda/ontology#AnatomicalPosition"
   } ]
 }, {
+  "@id" : "https://w3id.org/mda/vocab/clinical-event/Scheme",
+  "https://w3id.org/mda/ontology#instantiatesClass" : [ {
+    "@id" : "https://w3id.org/mda/ontology#ClinicalEvent"
+  } ]
+}, {
   "@id" : "https://w3id.org/mda/vocab/component/Scheme",
   "https://w3id.org/mda/ontology#instantiatesClass" : [ {
     "@id" : "https://w3id.org/mda/ontology#Component"
@@ -1893,6 +2300,11 @@
   "@id" : "https://w3id.org/mda/vocab/sensor/Scheme",
   "https://w3id.org/mda/ontology#instantiatesClass" : [ {
     "@id" : "https://w3id.org/mda/ontology#Sensor"
+  } ]
+}, {
+  "@id" : "https://w3id.org/mda/vocab/signal-analysis/Scheme",
+  "https://w3id.org/mda/ontology#instantiatesClass" : [ {
+    "@id" : "https://w3id.org/mda/ontology#SignalAnalysis"
   } ]
 }, {
   "@id" : "https://w3id.org/mda/vocab/signal/Scheme",

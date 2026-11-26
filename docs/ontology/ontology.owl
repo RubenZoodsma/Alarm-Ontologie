@@ -19,7 +19,7 @@
         <terms:description xml:lang="en">The MDA Ontology formally represents the concepts and relationships involved in medical device alarm generation and interpretation, making the implicit technical and clinical knowledge conveyed by alarms explicit and machine-interpretable.</terms:description>
         <vann:preferredNamespacePrefix>mda</vann:preferredNamespacePrefix>
         <vann:preferredNamespaceUri>https://w3id.org/mda/ontology#</vann:preferredNamespaceUri>
-        <owl:versionInfo>1.0.0</owl:versionInfo>
+        <owl:versionInfo>1.1.0</owl:versionInfo>
     </owl:Ontology>
     
 
@@ -99,6 +99,32 @@
     
 
 
+    <!-- https://w3id.org/mda/ontology#atSite -->
+
+
+    <owl:AnnotationProperty rdf:about="https://w3id.org/mda/ontology#atSite">
+        <terms:identifier>atSite</terms:identifier>
+        <rdfs:comment xml:lang="nl">De locatie van een locatieverfijning: een waarde van een sensoreigenschap die de particuliere identiteit verfijnt (mda:refinesParticularIdentity), zoals een anatomische positie. Een nauwere locatie valt eronder tenzij zij een eigen verfijning heeft.</rdfs:comment>
+        <rdfs:comment xml:lang="en">The site of a site refinement: a value of a particular-identity-refining sensor property (mda:refinesParticularIdentity), such as an anatomical position. A narrower site is covered unless it has a refinement of its own.</rdfs:comment>
+        <rdfs:label xml:lang="en">at site</rdfs:label>
+        <rdfs:label xml:lang="nl">op locatie</rdfs:label>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- https://w3id.org/mda/ontology#hasSiteRefinement -->
+
+
+    <owl:AnnotationProperty rdf:about="https://w3id.org/mda/ontology#hasSiteRefinement">
+        <terms:identifier>hasSiteRefinement</terms:identifier>
+        <rdfs:comment xml:lang="nl">Koppelt een basismetriek aan één locatieverfijning: een knoop met de locatie (mda:atSite) en de metriek die de basis is wanneer daar gemeten (mda:refinedMetric). Een bouwinstructie, gelezen door build_framework.py.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Relates a base metric to one site refinement: a node giving the site (mda:atSite) and the metric the base is when measured there (mda:refinedMetric). A build directive, read by build_framework.py.</rdfs:comment>
+        <rdfs:label xml:lang="en">has site refinement</rdfs:label>
+        <rdfs:label xml:lang="nl">heeft locatieverfijning</rdfs:label>
+    </owl:AnnotationProperty>
+    
+
+
     <!-- https://w3id.org/mda/ontology#instantiatesClass -->
 
 
@@ -151,6 +177,34 @@
         <rdfs:label xml:lang="nl">post-alarm geldigheidsduur</rdfs:label>
         <rdfs:label xml:lang="en">post-alarm validity duration</rdfs:label>
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#duration"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- https://w3id.org/mda/ontology#priorityRank -->
+
+
+    <owl:AnnotationProperty rdf:about="https://w3id.org/mda/ontology#priorityRank">
+        <terms:identifier>priorityRank</terms:identifier>
+        <rdfs:comment xml:lang="en">A total ordering over alarmprio:Scheme&apos;s concepts, higher meaning more urgent — the comparable quantity mda:hasPriority&apos;s skos:Concept values do not carry on their own. Declared on the concepts themselves (not per-alarm) since it is a fact about the priority level, not about any occurrence of it; asserted in FRAMEWORK/VOCABULARY/priority_rank.ttl, not vocab_generated.ttl, since alarmprio:* concepts are mechanically minted per distinct CSV value by build_framework.py and this ranking is instead a fixed, hand-authored fact about the (small, closed) scheme, independent of which alarms happen to use which priority. Consumed by CAT2&apos;s alarm-management rules (CODE/evaluation_poc/reasoner/) to compare an incoming alarm&apos;s priority against an already-active one via SPARQL FILTER — see mda:postAlarmValidityDuration above for the same load-once-as-scheme-annotation pattern.</rdfs:comment>
+        <rdfs:comment xml:lang="nl">Een totale ordening over de concepten van alarmprio:Scheme, waarbij hoger dringender betekent.</rdfs:comment>
+        <rdfs:label xml:lang="nl">prioriteitsrang</rdfs:label>
+        <rdfs:label xml:lang="en">priority rank</rdfs:label>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <rdfs:domain rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- https://w3id.org/mda/ontology#refinedMetric -->
+
+
+    <owl:AnnotationProperty rdf:about="https://w3id.org/mda/ontology#refinedMetric">
+        <terms:identifier>refinedMetric</terms:identifier>
+        <rdfs:comment xml:lang="nl">De metriek die een basismetriek is wanneer gemeten op de locatie van de verfijning. Kan de basis zelf zijn: de locatie bevestigt dan de betekenis van de basis.</rdfs:comment>
+        <rdfs:comment xml:lang="en">The metric a base metric is when measured at the refinement&apos;s site. May be the base itself: the site then confirms the base&apos;s meaning.</rdfs:comment>
+        <rdfs:label xml:lang="en">refined metric</rdfs:label>
+        <rdfs:label xml:lang="nl">verfijnde metriek</rdfs:label>
     </owl:AnnotationProperty>
     
 
@@ -247,6 +301,13 @@
     
 
 
+    <!-- http://www.w3.org/2004/02/skos/core#broader -->
+
+
+    <owl:ObjectProperty rdf:about="http://www.w3.org/2004/02/skos/core#broader"/>
+    
+
+
     <!-- https://w3id.org/mda/ontology#administers -->
 
 
@@ -267,11 +328,18 @@
 
 
     <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology#analyzedBy">
-        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#Signal"/>
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology#Metric"/>
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology#Signal"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
         <rdfs:range rdf:resource="https://w3id.org/mda/ontology#SignalAnalysis"/>
         <terms:identifier>analyzedBy</terms:identifier>
-        <rdfs:comment xml:lang="nl">Koppelt een signaal aan de signaalanalysestap die het verbruikt. De enige weg naar mda:SignalAnalysis — bewust niet ook rechtstreeks bereikbaar vanaf mda:FunctionalUnit (er bestaat geen performsAnalysis-achtige kortere weg), zodat er precies één pad naar een analysestap bestaat, altijd via het specifieke signaal (de specifieke signalen) dat het daadwerkelijk verbruikt. Functioneel niet: hetzelfde signaal kan meer dan één analysestap voeden.</rdfs:comment>
-        <rdfs:comment xml:lang="en">Relates a signal to the signal-analysis step that consumes it. The only edge reaching mda:SignalAnalysis — deliberately not also reachable directly from mda:FunctionalUnit (no performsAnalysis-style shortcut exists), so there is exactly one path to an analysis step, always through the specific signal(s) it actually consumes. A second, shorter path would let ontology_tree.py&apos;s shortest-path class-tree derivation silently prefer it over the precise one (the same failure mode mda:administers was introduced to avoid for mda:TherapeuticModality — see the Technical axioms note in inference.ttl). Not functional: the same signal can feed more than one analysis step (e.g. ECG lead II feeds both a heart-rate computation and an aVF derivation).</rdfs:comment>
+        <rdfs:comment xml:lang="nl">Koppelt een signaal, of een metriek, aan de analysestap die het verbruikt. Een metriek als invoer maakt de stap een afleiding (bijv. slagvolume uit hartminuutvolume en hartfrequentie). De enige weg naar mda:SignalAnalysis — bewust niet ook rechtstreeks bereikbaar vanaf mda:FunctionalUnit (er bestaat geen performsAnalysis-achtige kortere weg), zodat er precies één pad naar een analysestap bestaat, altijd via het specifieke signaal (de specifieke signalen) dat het daadwerkelijk verbruikt. Functioneel niet: hetzelfde signaal kan meer dan één analysestap voeden.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Relates a signal, or a metric, to the analysis step that consumes it. A metric input makes the step a derivation: stroke volume computed from cardiac output and heart rate, an indexed value from its unindexed value and body surface area (see the Derived metrics section in inference.ttl). The union domain does not let a reasoner type anything as a Signal or a Metric from this edge, which matters because inference.ttl asserts it on punned metric concepts. ontology_tree.py&apos;s derive_class_tree ignores the Metric member: mda:SignalAnalysis is already reached through mda:Signal, at a shallower depth, so the archetype tree is unchanged. The only edge reaching mda:SignalAnalysis — deliberately not also reachable directly from mda:FunctionalUnit (no performsAnalysis-style shortcut exists), so there is exactly one path to an analysis step, always through the specific signal(s) it actually consumes. A second, shorter path would let ontology_tree.py&apos;s shortest-path class-tree derivation silently prefer it over the precise one (the same failure mode mda:administers was introduced to avoid for mda:TherapeuticModality — see the Technical axioms note in inference.ttl). Not functional: the same signal can feed more than one analysis step (e.g. the LL raw signal feeds the derivations of leads II, III and aVF).</rdfs:comment>
         <rdfs:label xml:lang="en">analyzed by</rdfs:label>
         <rdfs:label xml:lang="nl">geanalyseerd door</rdfs:label>
     </owl:ObjectProperty>
@@ -299,13 +367,62 @@
 
     <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology#concernsPatient">
         <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
-        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#AlarmMessage"/>
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology#AlarmMessage"/>
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology#ClinicalEvent"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
         <rdfs:range rdf:resource="https://w3id.org/mda/ontology#Patient"/>
         <terms:identifier>concernsPatient</terms:identifier>
-        <rdfs:comment xml:lang="nl">Koppelt een alarmbericht aan de patiënt die het betreft — het gedeelde, persistente samenvoegankerpunt. Bewust een doodlopend pad: leidt niet langer via mda:isMonitoredBy naar mda:Device. Functioneel: één bericht betreft precies één patiënt.</rdfs:comment>
-        <rdfs:comment xml:lang="en">Relates an alarm message to the patient it concerns — the shared, persistent merge anchor. Deliberately a dead end: it no longer continues on to mda:Device via mda:isMonitoredBy (see mda:triggeredBy&apos;s comment for why). Functional: one message concerns exactly one patient — it is minted fresh per alarm precisely so it never needs to concern more than one.</rdfs:comment>
+        <rdfs:comment xml:lang="nl">Koppelt een alarmbericht, of een klinische gebeurtenis, aan de patiënt die het betreft — het gedeelde, persistente samenvoegankerpunt. Bewust een doodlopend pad: leidt niet via mda:isMonitoredBy naar mda:Device. Functioneel: één bericht of gebeurtenis betreft precies één patiënt. Bij een klinische gebeurtenis is dit wat de gebeurtenis aan één patiënt bindt; het bewijs (mda:evidencedBy) doet dat nooit op zichzelf.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Relates an alarm message, or a clinical event, to the patient it concerns — the shared, persistent merge anchor. Deliberately a dead end: it does not continue on to mda:Device via mda:isMonitoredBy (see mda:triggeredBy&apos;s comment for why). Functional: one message or event concerns exactly one patient — both are minted fresh per occurrence precisely so they never need to concern more than one. On a clinical event this is what scopes the event to one patient; its evidence (mda:evidencedBy) never does that on its own.</rdfs:comment>
         <rdfs:label xml:lang="nl">betreft patiënt</rdfs:label>
         <rdfs:label xml:lang="en">concerns patient</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://w3id.org/mda/ontology#evidencedBy -->
+
+
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology#evidencedBy">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#ClinicalEvent"/>
+        <rdfs:range>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology#ClinicalEvent"/>
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology#Device"/>
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology#Metric"/>
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology#TherapeuticModality"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:range>
+        <terms:identifier>evidencedBy</terms:identifier>
+        <rdfs:comment xml:lang="nl">Koppelt een klinische gebeurtenis aan een knooppunt waarvan de toestand bewijs ervoor is — het controlespoor voor waarom de gebeurtenis wordt aangenomen, vastgelegd voor elk ondersteunend knooppunt, ook als er maar één is. De pijl loopt alleen van de gebeurtenis naar haar bewijs; niets verwijst terug. Bewijs is altijd een knooppunt dat is aangemaakt voor het alarm dat het rapporteerde (een metriek, een apparaat) of een andere klinische gebeurtenis, nooit een gedeeld vocabulaireconcept. Het bereik dekt de huidige criteria: een Metric (een gebeurtenis uit één alarm, zoals een hartstilstand), een TherapeuticModality (de gecompromitteerde beademingstherapie bij beademingsfalen) en een ClinicalEvent (een samengestelde gebeurtenis verwijst naar haar samenstellende gebeurtenissen). Device blijft in het bereik voor criteria die op de eigen toestand van een apparaat rusten; geen enkel criterium doet dat momenteel.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Relates a clinical event to a node whose state is evidence for it — the audit trail for why the event is believed, asserted for every supporting node, even when there is only one. The arrow runs from the event to its evidence only; nothing points back from evidence to event. Evidence is always a node minted for the alarm that reported it (a metric, a device) or another clinical event, never a shared vocabulary concept: a shared concept is reached by every patient&apos;s alarms and would say nothing about this one. The range covers the current criteria: a Metric (a single-alarm event such as cardiac arrest), a TherapeuticModality (the compromised ventilation therapy in ventilation failure) and a ClinicalEvent (a combined event points at its constituent events). Device stays in the range for criteria that rest on a device&apos;s own state; none does at present.</rdfs:comment>
+        <rdfs:label xml:lang="en">evidenced by</rdfs:label>
+        <rdfs:label xml:lang="nl">onderbouwd door</rdfs:label>
+        <situational rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</situational>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://w3id.org/mda/ontology#hasAggregation -->
+
+
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology#hasAggregation">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#Metric"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <terms:identifier>hasAggregation</terms:identifier>
+        <rdfs:comment xml:lang="nl">Hoe de metriek over MEERDERE fysiologische cycli wordt samengesteld tot één gerapporteerd getal over een vast tijdvenster (bijv. minuut). Onderscheiden van mda:hasPhase, dat binnen één cyclus blijft — gemiddelde druk en teugvolume zijn grootheden van één cyclus en horen daar thuis, niet hier.</rdfs:comment>
+        <rdfs:comment xml:lang="en">How the metric is composed across MANY physiological cycles into a single reported figure over a fixed window (e.g. minute). Distinct from mda:hasPhase, which stays within one cycle — mean pressure and tidal volume are single-cycle quantities and belong there, not here.</rdfs:comment>
+        <rdfs:label xml:lang="en">has aggregation</rdfs:label>
+        <rdfs:label xml:lang="nl">heeft aggregatie</rdfs:label>
+        <refinesUniversalIdentity rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</refinesUniversalIdentity>
+        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/metric-aggregation/Scheme"/>
     </owl:ObjectProperty>
     
 
@@ -366,6 +483,10 @@
         <rdfs:subPropertyOf rdf:resource="https://w3id.org/mda/ontology#hasOperationState"/>
         <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#Component"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology#hasComponentOperationState"/>
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology#refinesConcept"/>
+        </owl:propertyChainAxiom>
         <terms:identifier>hasComponentOperationState</terms:identifier>
         <rdfs:comment xml:lang="nl">De operationele status van een niet-sensorisch onderdeel, bijv. Disconnected of Warning. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen.</rdfs:comment>
         <rdfs:comment xml:lang="en">The operational state of a non-sensing component, e.g. Disconnected or Warning. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously.</rdfs:comment>
@@ -383,6 +504,10 @@
         <rdfs:subPropertyOf rdf:resource="https://w3id.org/mda/ontology#hasOperationState"/>
         <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#Device"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology#hasDeviceOperationState"/>
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology#refinesConcept"/>
+        </owl:propertyChainAxiom>
         <terms:identifier>hasDeviceOperationState</terms:identifier>
         <rdfs:comment xml:lang="nl">De operationele status van een apparaat zelf, bijv. Disconnected. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen.</rdfs:comment>
         <rdfs:comment xml:lang="en">The operational state of a device itself, e.g. Disconnected. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously.</rdfs:comment>
@@ -435,7 +560,7 @@
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
         <terms:identifier>hasLabelConcept</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een alarmtype aan zijn gecontroleerde-vocabulaireconcept in het schema van mda:AlarmLabel — één concept per onderscheidend labelstring, gedeeld door elk archetype dat dat label gebruikt, ongeacht prioriteit.</rdfs:comment>
-        <rdfs:comment xml:lang="en">Relates an alarm type to its controlled-vocabulary concept in mda:AlarmLabel&apos;s scheme — one concept per distinct label string encountered, shared across every archetype that uses that label regardless of priority (2_READOUT/vocab_readout.py&apos;s label_concept_iri keys on the label alone, not the archetype). The companion of mda:hasLabel, not a replacement for it.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Relates an alarm type to its controlled-vocabulary concept in mda:AlarmLabel&apos;s scheme — one concept per distinct label string encountered, shared across every archetype that uses that label regardless of priority (2_READOUT/build_framework.py&apos;s label_concept_iri keys on the label alone, not the archetype). The companion of mda:hasLabel, not a replacement for it.</rdfs:comment>
         <rdfs:label xml:lang="en">has label concept</rdfs:label>
         <rdfs:label xml:lang="nl">heeft labelconcept</rdfs:label>
         <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/alarm-label/Scheme"/>
@@ -494,6 +619,27 @@
     
 
 
+    <!-- https://w3id.org/mda/ontology#hasMetricOperationState -->
+
+
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology#hasMetricOperationState">
+        <rdfs:subPropertyOf rdf:resource="https://w3id.org/mda/ontology#hasOperationState"/>
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#Metric"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology#hasMetricOperationState"/>
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology#refinesConcept"/>
+        </owl:propertyChainAxiom>
+        <terms:identifier>hasMetricOperationState</terms:identifier>
+        <rdfs:comment xml:lang="nl">Of een metriek momenteel wordt gemonitord — anders dan de overige hasOperationState-subeigenschappen nooit CSV-gestuurd; afgeleid door de monitoringsaxioma van FRAMEWORK/KNOWLEDGE_BASE/inference.ttl zodra de metriek een daadwerkelijke interpretatie draagt (hasValueState/hasPhase/hasAggregation/hasRhythm), nooit rechtstreeks toegekend.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Whether a metric is currently being monitored — unlike the other hasOperationState sub-properties, never CSV-driven (no CSV column names it); entailed by FRAMEWORK/KNOWLEDGE_BASE/inference.ttl&apos;s Metric monitoring axiom whenever the metric carries an actual interpretation (hasValueState/hasPhase/hasAggregation/hasRhythm), never asserted directly. A sub-property of hasOperationState with a single named domain for the same reason the CSV-driven ones have one: unambiguous attachment for any tooling that walks this property family, even though nothing here reads a CSV column.</rdfs:comment>
+        <rdfs:label xml:lang="en">has metric operation state</rdfs:label>
+        <rdfs:label xml:lang="nl">heeft metriekoperatiestatus</rdfs:label>
+        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/operation-state/Scheme"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- https://w3id.org/mda/ontology#hasOperationState -->
 
 
@@ -503,34 +649,20 @@
                 <owl:unionOf rdf:parseType="Collection">
                     <rdf:Description rdf:about="https://w3id.org/mda/ontology#Component"/>
                     <rdf:Description rdf:about="https://w3id.org/mda/ontology#Device"/>
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology#FunctionalUnit"/>
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology#Metric"/>
                     <rdf:Description rdf:about="https://w3id.org/mda/ontology#Sensor"/>
-                    <rdf:Description rdf:about="https://w3id.org/mda/ontology#Signal"/>
-                    <rdf:Description rdf:about="https://w3id.org/mda/ontology#TherapeuticModality"/>
                 </owl:unionOf>
             </owl:Class>
         </rdfs:domain>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
         <owl:propertyChainAxiom rdf:parseType="Collection">
-            <rdf:Description rdf:about="https://w3id.org/mda/ontology#hasFunctionalUnit"/>
             <rdf:Description rdf:about="https://w3id.org/mda/ontology#hasOperationState"/>
-        </owl:propertyChainAxiom>
-        <owl:propertyChainAxiom rdf:parseType="Collection">
-            <rdf:Description rdf:about="https://w3id.org/mda/ontology#hasSensor"/>
-            <rdf:Description rdf:about="https://w3id.org/mda/ontology#hasOperationState"/>
-        </owl:propertyChainAxiom>
-        <owl:propertyChainAxiom rdf:parseType="Collection">
-            <rdf:Description rdf:about="https://w3id.org/mda/ontology#producesSignal"/>
-            <rdf:Description rdf:about="https://w3id.org/mda/ontology#hasOperationState"/>
-        </owl:propertyChainAxiom>
-        <owl:propertyChainAxiom rdf:parseType="Collection">
-            <rdf:Description>
-                <owl:inverseOf rdf:resource="https://w3id.org/mda/ontology#administers"/>
-            </rdf:Description>
-            <rdf:Description rdf:about="https://w3id.org/mda/ontology#hasOperationState"/>
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology#refinesConcept"/>
         </owl:propertyChainAxiom>
         <terms:identifier>hasOperationState</terms:identifier>
-        <rdfs:comment xml:lang="nl">De operationele status van een apparaat, sensor, signaal, onderdeel, of de therapeutische modaliteit die een apparaat toedient (dit laatste afgeleid van de status van het toedienende apparaat, niet direct toegekend).</rdfs:comment>
-        <rdfs:comment xml:lang="en">The operational state of a device, sensor, signal, component, or the therapeutic modality a device administers (the latter inferred from the administering device&apos;s own state, not asserted directly).</rdfs:comment>
+        <rdfs:comment xml:lang="nl">De operationele status van een apparaat, functionele eenheid, sensor, onderdeel of metriek — apparatuur en de gegevens die zij oplevert. Bewust NIET gedragen door een Signal of een SignalAnalysis: de eigen verantwoording van een signaal is mda:hasQualityState, en een analyse die een metriek heeft opgeleverd draait vanzelfsprekend. De kwaliteitsstatus van een signaal impliceert in plaats daarvan dat de SENSOR Enabled is. Ook bewust NIET gedragen door een TherapeuticModality: een therapie is geen apparatuur, en of zij ongeschonden wordt toegediend is mda:hasTherapyDeliveryQuality, een eigen eigenschap.</rdfs:comment>
+        <rdfs:comment xml:lang="en">The operational state of a device, functional unit, sensor, component or metric — equipment and the data it yields. Deliberately NOT borne by a Signal or a SignalAnalysis: a signal&apos;s own account of itself is mda:hasQualityState, and an analysis that produced a metric is self-evidently running, so an operational state on either accumulated entailments nothing consumed. A signal&apos;s quality state instead entails its SENSOR is Enabled. Deliberately NOT borne by a TherapeuticModality either: a therapy is not equipment, and whether it is being delivered without compromise is mda:hasTherapyDeliveryQuality, its own property. See the operational-state ladder in FRAMEWORK/KNOWLEDGE_BASE/inference.ttl.</rdfs:comment>
         <rdfs:label xml:lang="en">has operation state</rdfs:label>
         <rdfs:label xml:lang="nl">heeft operatiestatus</rdfs:label>
         <persistsPostAlarm rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</persistsPostAlarm>
@@ -545,8 +677,8 @@
         <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#Metric"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
         <terms:identifier>hasPhase</terms:identifier>
-        <rdfs:comment xml:lang="nl">De fase van de metriek waarop de alarmconditie van toepassing is (bijv. gemiddeld, systolisch, diastolisch, eind-expiratoir).</rdfs:comment>
-        <rdfs:comment xml:lang="en">The phase of the metric to which the alarm condition applies (e.g. mean, systolic, diastolic, end-expiratory).</rdfs:comment>
+        <rdfs:comment xml:lang="nl">Welk deel van één fysiologische cyclus de waarde van de metriek kenmerkt — een punt daarbinnen (systolisch, diastolisch, inspiratoir, eind-expiratoir) of de cyclus als geheel (gemiddeld, teug). Beperkt tot één cyclus: samenstelling over meerdere cycli is mda:hasAggregation.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Which part of a single physiological cycle the metric&apos;s value characterises — either a point within it (systolic, diastolic, inspiratory, end-expiratory) or the cycle taken whole (mean, tidal). Confined to one cycle: composition across many cycles is mda:hasAggregation.</rdfs:comment>
         <rdfs:label xml:lang="en">has phase</rdfs:label>
         <rdfs:label xml:lang="nl">heeft fase</rdfs:label>
         <refinesUniversalIdentity rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</refinesUniversalIdentity>
@@ -577,29 +709,16 @@
     <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology#hasQualityState">
         <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#Signal"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology#hasQualityState"/>
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology#refinesConcept"/>
+        </owl:propertyChainAxiom>
         <terms:identifier>hasQualityState</terms:identifier>
         <rdfs:comment xml:lang="nl">De kwaliteitsstatus van een signaal, die de meetbetrouwbaarheid aangeeft.</rdfs:comment>
         <rdfs:comment xml:lang="en">The quality state of a signal, indicating measurement reliability.</rdfs:comment>
         <rdfs:label xml:lang="en">has quality state</rdfs:label>
         <rdfs:label xml:lang="nl">heeft kwaliteitsstatus</rdfs:label>
-        <persistsPostAlarm rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</persistsPostAlarm>
         <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/quality-state/Scheme"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- https://w3id.org/mda/ontology#hasRate -->
-
-
-    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology#hasRate">
-        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#Metric"/>
-        <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <terms:identifier>hasRate</terms:identifier>
-        <rdfs:comment xml:lang="nl">De snelheidsafwijking van de metriek die het alarm veroorzaakt (bijv. verhoogd, verlaagd, kritieke daling).</rdfs:comment>
-        <rdfs:comment xml:lang="en">The rate deviation of the metric that raises the alarm (e.g. increased, decreased, critical decrease).</rdfs:comment>
-        <rdfs:label xml:lang="en">has rate</rdfs:label>
-        <rdfs:label xml:lang="nl">heeft snelheid</rdfs:label>
-        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/metric-rate/Scheme"/>
     </owl:ObjectProperty>
     
 
@@ -610,12 +729,16 @@
     <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology#hasRhythm">
         <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#Metric"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology#hasRhythm"/>
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology#refinesConcept"/>
+        </owl:propertyChainAxiom>
         <terms:identifier>hasRhythm</terms:identifier>
-        <rdfs:comment xml:lang="nl">Het ritmepatroon van de metriek waarop de alarmconditie van toepassing is (bijv. onregelmatig).</rdfs:comment>
-        <rdfs:comment xml:lang="en">The rhythm pattern of the metric to which the alarm condition applies (e.g. irregular).</rdfs:comment>
+        <rdfs:comment xml:lang="nl">Hoe de waarde van de metriek over opeenvolgende cycli in de tijd fluctueert (bijv. onregelmatig, atriumfibrilleren). Onderscheiden van mda:hasValueState, dat één momentane meting tegen een grenswaarde betreft.</rdfs:comment>
+        <rdfs:comment xml:lang="en">How the metric&apos;s value fluctuates across successive cycles over time (e.g. irregular, atrial fibrillation). Distinct from mda:hasValueState, which is a single instantaneous reading against a limit.</rdfs:comment>
         <rdfs:label xml:lang="en">has rhythm</rdfs:label>
         <rdfs:label xml:lang="nl">heeft ritme</rdfs:label>
-        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/rhythm/Scheme"/>
+        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/metric-rhythm/Scheme"/>
     </owl:ObjectProperty>
     
 
@@ -628,7 +751,7 @@
         <rdfs:range rdf:resource="https://w3id.org/mda/ontology#Sensor"/>
         <terms:identifier>hasSensor</terms:identifier>
         <rdfs:comment xml:lang="nl">Koppelt een functionele eenheid aan de fysieke sensor(en) waarvan het afleest (bijv. een ECG-module aan elk van zijn 12 afleidingen). GEEN subeigenschap van hasComponent: het domein is FunctionalUnit, niet Device, en het domein van hasComponent ligt vast op Device. Een sensor behoort niet langer rechtstreeks tot een apparaat.</rdfs:comment>
-        <rdfs:comment xml:lang="en">Relates a functional unit to the physical sensor(s) it reads from (e.g. an ECG module to each of its 12 leads). NOT a sub-property of hasComponent: its domain is FunctionalUnit, not Device, and hasComponent&apos;s domain is fixed to Device — declaring it a sub-property would wrongly entail every FunctionalUnit is itself a Device. A sensor no longer belongs directly to a device (see FunctionalUnit below for why: the sensor is the physical probe, the functional unit is what analyses what it picks up). Deliberately NOT owl:InverseFunctionalProperty, unlike most of this file&apos;s other IFP-marked relations: 2_READOUT/outcome/inference.ttl&apos;s FunctionalUnit recipe axioms assert hasSensor via an owl:hasValue restriction, so every alarm typed to the same FunctionalUnit concept (e.g. every FU_PneumoTachograph alarm) entails hasSensor to the SAME shared sensor concept, not a fresh individual per alarm the way 2_READOUT/vocab_readout.py&apos;s own per-row blank nodes do. Confirmed by an isolated reasoner test: with InverseFunctionalProperty declared, prp-ifp forces every one of those alarms&apos; FunctionalUnit individuals into owl:sameAs with each other — and would do the same across grounded, per-patient data in 4_OPERATIONAL if this property were ever reasoned over there, merging different patients&apos; equipment. mda:producesSignal carries the same latent risk if a future recipe axiom (e.g. the pending ECG one) ever reuses one signal concept across two different sensor concepts — watch for it there too.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Relates a functional unit to the physical sensor(s) it reads from (e.g. an ECG module to each of its 12 leads). NOT a sub-property of hasComponent: its domain is FunctionalUnit, not Device, and hasComponent&apos;s domain is fixed to Device — declaring it a sub-property would wrongly entail every FunctionalUnit is itself a Device. A sensor no longer belongs directly to a device (see FunctionalUnit below for why: the sensor is the physical probe, the functional unit is what analyses what it picks up). Deliberately NOT owl:InverseFunctionalProperty, unlike most of this file&apos;s other IFP-marked relations: 2_READOUT/outcome/inference.ttl&apos;s FunctionalUnit recipe axioms assert hasSensor via an owl:hasValue restriction, so every alarm typed to the same FunctionalUnit concept (e.g. every FU_PneumoTachograph alarm) entails hasSensor to the SAME shared sensor concept, not a fresh individual per alarm the way 2_READOUT/build_framework.py&apos;s own per-row blank nodes do. Confirmed by an isolated reasoner test: with InverseFunctionalProperty declared, prp-ifp forces every one of those alarms&apos; FunctionalUnit individuals into owl:sameAs with each other — and would do the same across grounded, per-patient data in 4_OPERATIONAL if this property were ever reasoned over there, merging different patients&apos; equipment. mda:producesSignal carries the same latent risk if a future recipe axiom (e.g. the pending ECG one) ever reuses one signal concept across two different sensor concepts — watch for it there too.</rdfs:comment>
         <rdfs:label xml:lang="en">has sensor</rdfs:label>
         <rdfs:label xml:lang="nl">heeft sensor</rdfs:label>
     </owl:ObjectProperty>
@@ -642,12 +765,56 @@
         <rdfs:subPropertyOf rdf:resource="https://w3id.org/mda/ontology#hasOperationState"/>
         <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#Sensor"/>
         <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology#hasSensorOperationState"/>
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology#refinesConcept"/>
+        </owl:propertyChainAxiom>
         <terms:identifier>hasSensorOperationState</terms:identifier>
         <rdfs:comment xml:lang="nl">De operationele status van een sensor, bijv. Enabled, Disabled of Malfunction. Een subeigenschap van hasOperationState met een enkel benoemd domein, zodat CSV-gestuurde readout het ondubbelzinnig kan koppelen.</rdfs:comment>
         <rdfs:comment xml:lang="en">The operational state of a sensor, e.g. Enabled, Disabled, or Malfunction. A sub-property of hasOperationState with a single named domain, so CSV-driven readout can attach it unambiguously.</rdfs:comment>
         <rdfs:label xml:lang="en">has sensor operation state</rdfs:label>
         <rdfs:label xml:lang="nl">heeft sensoroperatiestatus</rdfs:label>
         <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/operation-state/Scheme"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://w3id.org/mda/ontology#hasTherapyDeliveryQuality -->
+
+
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology#hasTherapyDeliveryQuality">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#TherapeuticModality"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology#hasTherapyDeliveryQuality"/>
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology#refinesConcept"/>
+        </owl:propertyChainAxiom>
+        <terms:identifier>hasTherapyDeliveryQuality</terms:identifier>
+        <rdfs:comment xml:lang="nl">Of de therapeutische interventie zelf zonder compromis wordt toegediend, als onderscheiden van de eigen connectiviteit/werking van het toedienende apparaat (hasOperationState) of de meetbetrouwbaarheid van een signaal (hasQualityState). Gedragen door de therapeutische modaliteit, nooit door het apparaat dat deze toedient.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Whether the therapeutic intervention itself is being delivered without compromise, as distinct from the administering device&apos;s own connectivity/functioning (hasOperationState) or a signal&apos;s measurement reliability (hasQualityState). Borne by the therapeutic modality, never by the device that administers it.</rdfs:comment>
+        <rdfs:label xml:lang="en">has therapy delivery quality</rdfs:label>
+        <rdfs:label xml:lang="nl">heeft therapietoedieningskwaliteit</rdfs:label>
+        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/quality-state/Scheme"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://w3id.org/mda/ontology#hasValueState -->
+
+
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology#hasValueState">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#Metric"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology#hasValueState"/>
+            <rdf:Description rdf:about="https://w3id.org/mda/ontology#refinesConcept"/>
+        </owl:propertyChainAxiom>
+        <terms:identifier>hasValueState</terms:identifier>
+        <rdfs:comment xml:lang="nl">Waar de waarde van de metriek zich bevindt ten opzichte van de ingestelde alarmgrenzen van het apparaat, zoals het apparaat dit zelf rapporteert (bijv. verhoogd, verlaagd, sterk verlaagd, afwezig). De drempelwaarde waartegen wordt vergeleken is niet gerepresenteerd in dit raamwerk — alleen de uitkomst van de vergelijking.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Where the metric&apos;s value sits relative to the device&apos;s configured alarm limits, as the device itself reports it (e.g. increased, decreased, severely decreased, absent). The threshold compared against is not represented in this framework — only the outcome of the comparison.</rdfs:comment>
+        <rdfs:label xml:lang="en">has value state</rdfs:label>
+        <rdfs:label xml:lang="nl">heeft waardestatus</rdfs:label>
+        <valuesFromScheme rdf:resource="https://w3id.org/mda/vocab/metric-value-state/Scheme"/>
     </owl:ObjectProperty>
     
 
@@ -732,6 +899,22 @@
     
 
 
+    <!-- https://w3id.org/mda/ontology#processPartOf -->
+
+
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology#processPartOf">
+        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#PhysiologicalProcess"/>
+        <rdfs:range rdf:resource="https://w3id.org/mda/ontology#PhysiologicalProcess"/>
+        <terms:identifier>processPartOf</terms:identifier>
+        <rdfs:comment xml:lang="nl">Koppelt een fysiologisch proces aan het grotere fysiologische proces waarvan het een samenstellend deel is.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Relates a physiological process to the larger physiological process it is a constituent part of.</rdfs:comment>
+        <rdfs:label xml:lang="nl">proces deel van</rdfs:label>
+        <rdfs:label xml:lang="en">process part of</rdfs:label>
+        <situational rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</situational>
+    </owl:ObjectProperty>
+    
+
+
     <!-- https://w3id.org/mda/ontology#producesMetric -->
 
 
@@ -762,10 +945,26 @@
         </rdfs:domain>
         <rdfs:range rdf:resource="https://w3id.org/mda/ontology#Signal"/>
         <terms:identifier>producesSignal</terms:identifier>
-        <rdfs:comment xml:lang="nl">Koppelt een sensor OF een signaalanalysestap aan het signaal dat het produceert — het ruwe signaal van een sensor, of het afgeleide/tussenliggende signaal van een analysestap (bijv. versterkte afleiding aVF, gecombineerd uit andere afleidingen). Invers-functioneel: een signaal heeft hoogstens één producent, ongeacht het soort.</rdfs:comment>
-        <rdfs:comment xml:lang="en">Relates a sensor OR a signal-analysis step to the signal it produces — a sensor&apos;s raw signal, or an analysis step&apos;s derived/intermediate signal (e.g. augmented lead aVF, combined from other leads). Inverse-functional: a signal has at most one producer, whichever kind produced it. Its domain is a union, so it cannot itself anchor 2_READOUT/vocab_readout.py&apos;s CSV/tree derivation (ontology_tree.py&apos;s derive_class_tree only follows a named rdfs:domain, the same limitation documented at mda:hasOperationState below) — mda:sensorProducesSignal is the single-domain sub-property that does. A signal-analysis step&apos;s own derived-signal output (the aVF case) is only ever hand-authored in inference.ttl, never CSV-driven, so it uses this general property directly and needs no sub-property of its own.</rdfs:comment>
+        <rdfs:comment xml:lang="nl">Koppelt een sensor OF een signaalanalysestap aan het signaal dat het produceert — het ruwe signaal van een sensor, of het afgeleide/tussenliggende signaal van een analysestap (bijv. een afleiding zoals aVF, afgeleid uit de ruwe signalen van de elektroden). Invers-functioneel: een signaal heeft hoogstens één producent, ongeacht het soort.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Relates a sensor OR a signal-analysis step to the signal it produces — a sensor&apos;s raw signal, or an analysis step&apos;s derived/intermediate signal (e.g. a lead such as aVF, derived from the electrodes&apos; raw signals). Inverse-functional: a signal has at most one producer, whichever kind produced it. Its domain is a union; ontology_tree.py&apos;s derive_class_tree expands union domains, but leaves the Sensor member to mda:sensorProducesSignal, the single-domain sub-property that carries that edge — so the CSV/tree derivation in CODE/framework_build/build_framework.py attaches Signal under Sensor exactly once. A signal-analysis step&apos;s own derived-signal output (the aVF case) is only ever hand-authored in inference.ttl, never CSV-driven, so it uses this general property directly and needs no sub-property of its own.</rdfs:comment>
         <rdfs:label xml:lang="nl">produceert signaal</rdfs:label>
         <rdfs:label xml:lang="en">produces signal</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://w3id.org/mda/ontology#refinesConcept -->
+
+
+    <owl:ObjectProperty rdf:about="https://w3id.org/mda/ontology#refinesConcept">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2004/02/skos/core#broader"/>
+        <rdfs:domain rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <terms:identifier>refinesConcept</terms:identifier>
+        <rdfs:comment xml:lang="nl">Koppelt een waardeconcept aan het bredere waardeconcept waarvan het altijd een geval is, binnen één schema (bijv. kwaliteitsstatus Pulseless aan Impaired). Via de eigenschapsketens op de waarde-eigenschappen draagt een knoop met de nauwere waarde ook de bredere.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Relates a value concept to the broader value concept it is always a case of, within one scheme (e.g. quality state Pulseless to Impaired). Through the property chains declared on the value properties, a node bearing the narrower value also bears the broader one. Curated in FRAMEWORK/VOCABULARY/seed/hierarchy.ttl.</rdfs:comment>
+        <rdfs:label xml:lang="en">refines concept</rdfs:label>
+        <rdfs:label xml:lang="nl">verfijnt concept</rdfs:label>
     </owl:ObjectProperty>
     
 
@@ -778,8 +977,8 @@
         <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#Sensor"/>
         <rdfs:range rdf:resource="https://w3id.org/mda/ontology#Signal"/>
         <terms:identifier>sensorProducesSignal</terms:identifier>
-        <rdfs:comment xml:lang="nl">Het CSV/boom-gerichte geval van mda:producesSignal: het eigen ruwe signaal van een sensor. Een subeigenschap met één domein, zodat de door 2_READOUT/vocab_readout.py afgeleide boom Signal ondubbelzinnig onder Sensor kan hangen.</rdfs:comment>
-        <rdfs:comment xml:lang="en">The CSV/tree-facing case of mda:producesSignal: a sensor&apos;s own raw signal. A single-domain sub-property so 2_READOUT/vocab_readout.py&apos;s ontology-derived tree can attach Signal under Sensor unambiguously — see mda:producesSignal&apos;s comment. Every fact asserted through it still entails the general mda:producesSignal fact (and, transitively, mda:hasOperationState&apos;s propagation chain) via rdfs:subPropertyOf.</rdfs:comment>
+        <rdfs:comment xml:lang="nl">Het CSV/boom-gerichte geval van mda:producesSignal: het eigen ruwe signaal van een sensor. Een subeigenschap met één domein, zodat de door 2_READOUT/build_framework.py afgeleide boom Signal ondubbelzinnig onder Sensor kan hangen.</rdfs:comment>
+        <rdfs:comment xml:lang="en">The CSV/tree-facing case of mda:producesSignal: a sensor&apos;s own raw signal. A single-domain sub-property that carries the Sensor -&gt; Signal edge in the ontology-derived tree (ontology_tree.py leaves that member of mda:producesSignal&apos;s union domain to it) — see mda:producesSignal&apos;s comment. Every fact asserted through it still entails the general mda:producesSignal fact (and, transitively, mda:hasOperationState&apos;s propagation chain) via rdfs:subPropertyOf.</rdfs:comment>
         <rdfs:label xml:lang="nl">sensor produceert signaal</rdfs:label>
         <rdfs:label xml:lang="en">sensor produces signal</rdfs:label>
     </owl:ObjectProperty>
@@ -835,10 +1034,10 @@
 
     <owl:DatatypeProperty rdf:about="https://w3id.org/mda/ontology#hasDuration">
         <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#Alarm"/>
-        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#duration"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
         <terms:identifier>hasDuration</terms:identifier>
-        <rdfs:comment xml:lang="nl">De duur van het alarm.</rdfs:comment>
-        <rdfs:comment xml:lang="en">The duration of the alarm.</rdfs:comment>
+        <rdfs:comment xml:lang="nl">De duur van het alarm, als ISO 8601-duur (bijv. PT30S).</rdfs:comment>
+        <rdfs:comment xml:lang="en">The duration of the alarm, as an ISO 8601 duration (e.g. PT30S).</rdfs:comment>
         <rdfs:label xml:lang="en">has duration</rdfs:label>
         <rdfs:label xml:lang="nl">heeft duur</rdfs:label>
     </owl:DatatypeProperty>
@@ -849,11 +1048,18 @@
 
 
     <owl:DatatypeProperty rdf:about="https://w3id.org/mda/ontology#hasEnd">
-        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#Alarm"/>
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology#Alarm"/>
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology#ClinicalEvent"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
         <terms:identifier>hasEnd</terms:identifier>
-        <rdfs:comment xml:lang="nl">Het eindtijdstip van het alarm.</rdfs:comment>
-        <rdfs:comment xml:lang="en">The end time of the alarm.</rdfs:comment>
+        <rdfs:comment xml:lang="nl">Het eindtijdstip van een alarm, of van een klinische gebeurtenis — voor de laatste het moment waarop haar bewijscriterium ophield te gelden, nooit het moment waarop een toepassing dat opmerkte. Een lopende klinische gebeurtenis heeft nog geen einde.</rdfs:comment>
+        <rdfs:comment xml:lang="en">The end time of an alarm, or of a clinical event — for the latter, the moment its evidence criterion stopped holding, never the moment an application noticed. An ongoing clinical event has no end yet.</rdfs:comment>
         <rdfs:label xml:lang="en">has end</rdfs:label>
         <rdfs:label xml:lang="nl">heeft einde</rdfs:label>
     </owl:DatatypeProperty>
@@ -879,11 +1085,18 @@
 
 
     <owl:DatatypeProperty rdf:about="https://w3id.org/mda/ontology#hasStart">
-        <rdfs:domain rdf:resource="https://w3id.org/mda/ontology#Alarm"/>
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology#Alarm"/>
+                    <rdf:Description rdf:about="https://w3id.org/mda/ontology#ClinicalEvent"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
         <terms:identifier>hasStart</terms:identifier>
-        <rdfs:comment xml:lang="nl">Het starttijdstip van het alarm.</rdfs:comment>
-        <rdfs:comment xml:lang="en">The start time of the alarm.</rdfs:comment>
+        <rdfs:comment xml:lang="nl">Het starttijdstip van een alarm, of van een klinische gebeurtenis — voor de laatste het moment waarop haar bewijscriterium (clinicalEvents.ttl) voor het eerst gold.</rdfs:comment>
+        <rdfs:comment xml:lang="en">The start time of an alarm, or of a clinical event — for the latter, the moment its evidence criterion (clinicalEvents.ttl) first held.</rdfs:comment>
         <rdfs:label xml:lang="en">has start</rdfs:label>
         <rdfs:label xml:lang="nl">heeft start</rdfs:label>
     </owl:DatatypeProperty>
@@ -965,6 +1178,21 @@
         <rdfs:comment xml:lang="en">The anatomical position of a sensor on the body.</rdfs:comment>
         <rdfs:label xml:lang="en">Anatomical Position</rdfs:label>
         <rdfs:label xml:lang="nl">Anatomische Positie</rdfs:label>
+        <nodeKind rdf:resource="https://w3id.org/mda/ontology#Referential"/>
+    </owl:Class>
+    
+
+
+    <!-- https://w3id.org/mda/ontology#ClinicalEvent -->
+
+
+    <owl:Class rdf:about="https://w3id.org/mda/ontology#ClinicalEvent">
+        <terms:identifier>ClinicalEvent</terms:identifier>
+        <rdfs:comment xml:lang="en">A discrete, acute clinical judgement about one patient — e.g. a cardiac arrest — individuated per occurrence. It concerns exactly one patient (mda:concernsPatient), is believed because of the evidence it points to (mda:evidencedBy), and holds from mda:hasStart until mda:hasEnd. Which evidence each kind of event requires is stated on the event class itself, in clinicalEvents.ttl. Its concrete kind is given by a concept from the clinical-event scheme, used as its rdf:type.</rdfs:comment>
+        <rdfs:comment xml:lang="nl">Een afzonderlijk, acuut klinisch oordeel over één patiënt — bijv. een hartstilstand — per voorval geïndividualiseerd. Zij betreft precies één patiënt (mda:concernsPatient), wordt aangenomen op grond van het bewijs waarnaar zij verwijst (mda:evidencedBy), en geldt van mda:hasStart tot mda:hasEnd. Welk bewijs elke soort gebeurtenis vereist, staat op de gebeurtenisklasse zelf, in clinicalEvents.ttl. De concrete soort wordt gegeven door een concept uit het klinische-gebeurtenisschema, gebruikt als rdf:type.</rdfs:comment>
+        <rdfs:label xml:lang="en">Clinical Event</rdfs:label>
+        <rdfs:label xml:lang="nl">Klinische Gebeurtenis</rdfs:label>
+        <nodeKind rdf:resource="https://w3id.org/mda/ontology#Individuated"/>
     </owl:Class>
     
 
@@ -1036,6 +1264,7 @@
         <rdfs:comment xml:lang="en">The laterality (left, right, bilateral) of a sensor position.</rdfs:comment>
         <rdfs:label xml:lang="nl">Lateraliteit</rdfs:label>
         <rdfs:label xml:lang="en">Laterality</rdfs:label>
+        <nodeKind rdf:resource="https://w3id.org/mda/ontology#Referential"/>
     </owl:Class>
     
 
@@ -1045,8 +1274,8 @@
 
     <owl:Class rdf:about="https://w3id.org/mda/ontology#Metric">
         <terms:identifier>Metric</terms:identifier>
-        <rdfs:comment xml:lang="en">A measurable quantity, computed from one or more signals by a mda:SignalAnalysis step.</rdfs:comment>
-        <rdfs:comment xml:lang="nl">Een meetbare grootheid, berekend uit één of meer signalen door een mda:SignalAnalysis-stap.</rdfs:comment>
+        <rdfs:comment xml:lang="en">A measurable quantity, computed by a mda:SignalAnalysis step from one or more signals, or derived from other metrics (a metric can itself be the input of a further step, via mda:analyzedBy).</rdfs:comment>
+        <rdfs:comment xml:lang="nl">Een meetbare grootheid, berekend door een mda:SignalAnalysis-stap uit één of meer signalen, of afgeleid uit andere metrieken.</rdfs:comment>
         <rdfs:label xml:lang="en">Metric</rdfs:label>
         <rdfs:label xml:lang="nl">Metriek</rdfs:label>
         <nodeKind rdf:resource="https://w3id.org/mda/ontology#Stateful"/>
@@ -1063,6 +1292,7 @@
         <rdfs:comment xml:lang="nl">Een biologisch orgaan.</rdfs:comment>
         <rdfs:label xml:lang="nl">Orgaan</rdfs:label>
         <rdfs:label xml:lang="en">Organ</rdfs:label>
+        <nodeKind rdf:resource="https://w3id.org/mda/ontology#Referential"/>
     </owl:Class>
     
 
@@ -1076,6 +1306,7 @@
         <rdfs:comment xml:lang="nl">Een systeem van gerelateerde organen in het lichaam.</rdfs:comment>
         <rdfs:label xml:lang="nl">Orgaansysteem</rdfs:label>
         <rdfs:label xml:lang="en">Organ System</rdfs:label>
+        <nodeKind rdf:resource="https://w3id.org/mda/ontology#Referential"/>
     </owl:Class>
     
 
@@ -1103,6 +1334,7 @@
         <rdfs:comment xml:lang="nl">Een biologisch of fysiologisch proces dat in het lichaam plaatsvindt.</rdfs:comment>
         <rdfs:label xml:lang="nl">Fysiologisch Proces</rdfs:label>
         <rdfs:label xml:lang="en">Physiological Process</rdfs:label>
+        <nodeKind rdf:resource="https://w3id.org/mda/ontology#Referential"/>
     </owl:Class>
     
 
@@ -1116,6 +1348,7 @@
         <rdfs:comment xml:lang="nl">Een meetbare eigenschap van een fysiologisch proces.</rdfs:comment>
         <rdfs:label xml:lang="nl">Fysiologische Eigenschap</rdfs:label>
         <rdfs:label xml:lang="en">Physiological Property</rdfs:label>
+        <nodeKind rdf:resource="https://w3id.org/mda/ontology#Referential"/>
     </owl:Class>
     
 
@@ -1130,7 +1363,7 @@
         <rdfs:comment xml:lang="nl">Een SKOS-conceptschema waarvan de concepten geldig blijven gedurende een vaste duur nadat een alarm is geëindigd.</rdfs:comment>
         <rdfs:label xml:lang="nl">Post-alarm geldig schema</rdfs:label>
         <rdfs:label xml:lang="en">Post-alarm valid scheme</rdfs:label>
-        <postAlarmValidityDuration rdf:datatype="http://www.w3.org/2001/XMLSchema#duration">PT60S</postAlarmValidityDuration>
+        <postAlarmValidityDuration rdf:datatype="http://www.w3.org/2001/XMLSchema#duration">PT15M</postAlarmValidityDuration>
     </owl:Class>
     
 
@@ -1141,8 +1374,8 @@
     <owl:Class rdf:about="https://w3id.org/mda/ontology#Sensor">
         <rdfs:subClassOf rdf:resource="https://w3id.org/mda/ontology#Component"/>
         <terms:identifier>Sensor</terms:identifier>
-        <rdfs:comment xml:lang="nl">Het fysieke object dat geplaatst wordt om een signaal te genereren — bijv. een pulse-oximetrieklip, een ECG-afleiding, een temperatuurprobe. Het meet of berekent zelf niets: het produceert enkel een ruw signaal (mda:producesSignal). Dat signaal omzetten in een metriek is de taak van mda:FunctionalUnit, via mda:SignalAnalysis. Een specialisatie van mda:Component.</rdfs:comment>
-        <rdfs:comment xml:lang="en">The physical object placed to generate a signal — e.g. a pulse-oximetry clip, an ECG lead, a temperature probe. It does not itself measure or compute anything: it only produces a raw signal (mda:producesSignal). Turning that signal into a metric is mda:FunctionalUnit&apos;s job, via mda:SignalAnalysis. A specialisation of mda:Component. Declared disjoint with mda:FunctionalUnit (see its own comment) — asserted there, applies symmetrically.</rdfs:comment>
+        <rdfs:comment xml:lang="nl">Het fysieke object dat geplaatst wordt om een signaal te genereren — bijv. een pulse-oximetrieklip, een ECG-afleiding, een temperatuurprobe. Het reageert op een stimulus en produceert een ruw signaal (mda:producesSignal); het berekent niets. Dat signaal omzetten in een metriek is de taak van mda:FunctionalUnit, via mda:SignalAnalysis. Een specialisatie van mda:Component.</rdfs:comment>
+        <rdfs:comment xml:lang="en">The physical object placed to generate a signal — e.g. a pulse-oximetry clip, an ECG lead, a temperature probe. It responds to a stimulus and produces a raw signal (mda:producesSignal); it computes nothing. Turning that signal into a metric is mda:FunctionalUnit&apos;s job, via mda:SignalAnalysis. A specialisation of mda:Component. Declared disjoint with mda:FunctionalUnit (see its own comment) — asserted there, applies symmetrically.</rdfs:comment>
         <rdfs:label xml:lang="en">Sensor</rdfs:label>
         <rdfs:label xml:lang="nl">Sensor</rdfs:label>
         <nodeKind rdf:resource="https://w3id.org/mda/ontology#Individuated"/>
@@ -1155,8 +1388,8 @@
 
     <owl:Class rdf:about="https://w3id.org/mda/ontology#Signal">
         <terms:identifier>Signal</terms:identifier>
-        <rdfs:comment xml:lang="en">A signal — either raw, produced by a sensor, or derived/intermediate, produced by a mda:SignalAnalysis step from other signals (e.g. augmented lead aVF, combined from ECG leads I and II). No structural distinction between the two: a later analysis step consuming a signal doesn&apos;t need to know whether it came from a sensor or from an earlier analysis.</rdfs:comment>
-        <rdfs:comment xml:lang="nl">Een signaal — ofwel ruw, geproduceerd door een sensor, ofwel afgeleid/tussenliggend, geproduceerd door een mda:SignalAnalysis-stap uit andere signalen (bijv. versterkte afleiding aVF, gecombineerd uit ECG-afleidingen I en II). Geen structureel onderscheid tussen beide: een latere analysestap die een signaal verbruikt hoeft niet te weten of het van een sensor komt of van een eerdere analyse.</rdfs:comment>
+        <rdfs:comment xml:lang="en">A signal — either raw, produced by a sensor, or derived/intermediate, produced by a mda:SignalAnalysis step from other signals (e.g. augmented lead aVF, derived from the RA, LA and LL raw signals). No structural distinction between the two: a later analysis step consuming a signal doesn&apos;t need to know whether it came from a sensor or from an earlier analysis.</rdfs:comment>
+        <rdfs:comment xml:lang="nl">Een signaal — ofwel ruw, geproduceerd door een sensor, ofwel afgeleid/tussenliggend, geproduceerd door een mda:SignalAnalysis-stap uit andere signalen (bijv. versterkte afleiding aVF, afgeleid uit de ruwe RA-, LA- en LL-signalen). Geen structureel onderscheid tussen beide: een latere analysestap die een signaal verbruikt hoeft niet te weten of het van een sensor komt of van een eerdere analyse.</rdfs:comment>
         <rdfs:label xml:lang="nl">Signaal</rdfs:label>
         <rdfs:label xml:lang="en">Signal</rdfs:label>
         <nodeKind rdf:resource="https://w3id.org/mda/ontology#Individuated"/>
@@ -1169,10 +1402,11 @@
 
     <owl:Class rdf:about="https://w3id.org/mda/ontology#SignalAnalysis">
         <terms:identifier>SignalAnalysis</terms:identifier>
-        <rdfs:comment xml:lang="nl">Eén berekeningsstap van een functionele eenheid: verbruikt één of meer signalen (bereikt via de inverse van mda:analyzedBy) en produceert ofwel een metriek (mda:producesMetric) ofwel een verder afgeleid signaal (mda:producesSignal) dat een latere stap op zijn beurt kan verbruiken. Zelf geen mda:Component — het is de berekening die een functionele eenheid uitvoert, geen fysiek onderdeel.</rdfs:comment>
-        <rdfs:comment xml:lang="en">One computation step of a functional unit: consumes one or more signals (reached via the inverse of mda:analyzedBy) and produces either a metric (mda:producesMetric) or a further, derived signal (mda:producesSignal) that a later step can itself consume. Not itself a mda:Component — it&apos;s the computation a functional unit performs, not a physical part.</rdfs:comment>
+        <rdfs:comment xml:lang="nl">Eén berekeningsstap van een functionele eenheid: verbruikt één of meer signalen en/of metrieken (bereikt via de inverse van mda:analyzedBy) en produceert ofwel een metriek (mda:producesMetric) ofwel een verder afgeleid signaal (mda:producesSignal) dat een latere stap op zijn beurt kan verbruiken. Zelf geen mda:Component — het is de berekening die een functionele eenheid uitvoert, geen fysiek onderdeel.</rdfs:comment>
+        <rdfs:comment xml:lang="en">One computation step of a functional unit: consumes one or more signals and/or metrics (reached via the inverse of mda:analyzedBy) and produces either a metric (mda:producesMetric) or a further, derived signal (mda:producesSignal) that a later step can itself consume. Not itself a mda:Component — it&apos;s the computation a functional unit performs, not a physical part. A step with metric inputs produces exactly one metric: one step with several inputs and several outputs would lose which input feeds which output. The class keeps the name SignalAnalysis for its signal-consuming origin; renaming it would touch every consumer for no change in meaning.</rdfs:comment>
         <rdfs:label xml:lang="nl">Signaalanalyse</rdfs:label>
         <rdfs:label xml:lang="en">Signal analysis</rdfs:label>
+        <nodeKind rdf:resource="https://w3id.org/mda/ontology#Individuated"/>
     </owl:Class>
     
 
@@ -1186,6 +1420,7 @@
         <rdfs:comment xml:lang="nl">Een therapeutische interventie of behandelingsmodaliteit.</rdfs:comment>
         <rdfs:label xml:lang="en">Therapeutic Modality</rdfs:label>
         <rdfs:label xml:lang="nl">Therapeutische Modaliteit</rdfs:label>
+        <nodeKind rdf:resource="https://w3id.org/mda/ontology#Individuated"/>
     </owl:Class>
     
 
@@ -1241,6 +1476,9 @@
     <rdf:Description rdf:about="https://w3id.org/mda/vocab/anatomical-position/Scheme">
         <instantiatesClass rdf:resource="https://w3id.org/mda/ontology#AnatomicalPosition"/>
     </rdf:Description>
+    <rdf:Description rdf:about="https://w3id.org/mda/vocab/clinical-event/Scheme">
+        <instantiatesClass rdf:resource="https://w3id.org/mda/ontology#ClinicalEvent"/>
+    </rdf:Description>
     <rdf:Description rdf:about="https://w3id.org/mda/vocab/component/Scheme">
         <instantiatesClass rdf:resource="https://w3id.org/mda/ontology#Component"/>
     </rdf:Description>
@@ -1273,6 +1511,9 @@
     </rdf:Description>
     <rdf:Description rdf:about="https://w3id.org/mda/vocab/sensor/Scheme">
         <instantiatesClass rdf:resource="https://w3id.org/mda/ontology#Sensor"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="https://w3id.org/mda/vocab/signal-analysis/Scheme">
+        <instantiatesClass rdf:resource="https://w3id.org/mda/ontology#SignalAnalysis"/>
     </rdf:Description>
     <rdf:Description rdf:about="https://w3id.org/mda/vocab/signal/Scheme">
         <instantiatesClass rdf:resource="https://w3id.org/mda/ontology#Signal"/>
